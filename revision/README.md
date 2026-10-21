@@ -14,12 +14,11 @@
 
 ## Modifiche di contenuto (minime)
 
-1. **Teorema 1** ristretto a bipartizioni in due blocchi contigui della catena di Jordan–Wigner, A={1,…,ℓ} oppure A={N−ℓ+1,…,N}, B = complemento. Aggiunto l'argomento per cui allora U_{O_A}⊗U_{O_B} = U_{O_A⊕det(O_A)O_B} a meno di una fase (orbita (50) ≡ definizione (5)), più l'osservazione che per bipartizioni non contigue l'identificazione fallisce (controesempio del referee A).
+1. **Teorema 1 e definizioni** (NL e FNL magic) solo per la bipartizione in blocchi contigui A={1,…,ℓ}, B={ℓ+1,…,N}: niente più T_π/π_AB. Aggiunto l'argomento per cui U_{O_A}⊗U_{O_B} = U_{O_A⊕det(O_A)O_B} a meno di una fase (orbita (50) ≡ definizione (5)), con una frase che dice che per altre bipartizioni l'identificazione fallisce (controesempio del referee A, citato solo nella risposta).
 2. **Peso di Jacobi** (ex Eq. 11): x^{-1/2}(1-x)^{N-2ℓ} (era x^{-1/2}(1-x)^{N-2ℓ-1/2}, typo); corretti di conseguenza i parametri dei polinomi di Jacobi P_n^{(-1/2,N-2ℓ)} e h_n. Il limite termodinamico (incl. 2−log₂(2+√3)) non cambia.
 3. **Appendice / SM** (referee A, punti 2–14): Eq. (124) corretta; spiegazione sotto (60); derivazione esplicita della (59) nel Lemma 1; frase sul "transpose" riscritta; prova (80)–(81) semplificata; (148) rimossa; frasi "LLM-ish" riscritte; typo "invvariant"; **prova del Lemma 5 sostituita con quella (più semplice) suggerita dal referee**; rimosso "with no factorial normalization"; notazione ‖·‖_HS uniforme; c_x^† = Σ x_j c_j^†; paragrafo di intuizione sulla logica della prova.
 4. Ringraziamenti ai referee e **dichiarazione sull'uso di strumenti AI (in rosso, da confermare/modificare dagli autori)**.
 5. Dalla revisione interna (non richiesti dai referee, ma errori veri):
-   - nella definizione di M^NL/M^FNL, π_AB deve **preservare l'ordine dei siti dentro A e dentro B** (una permutazione di qubit interna a un blocco non è gaussiana: senza questa precisazione il Teorema 1 fallisce anche per blocchi contigui, verificato numericamente);
    - espansione a tempi brevi nei circuiti casuali: va fatta attorno a λ=1 (stato iniziale prodotto), M ≈ [2ℓ − Tr(iΓ_A)²]/(2 ln 2) = ‖Γ_AB‖²/(2 ln 2); la conclusione √t non cambia;
    - autovalori di ih nella catena XY: ±2ε_k; le formule del quench (cos 2ε_k t, v_k = dε_k/dk) valgono con il tempo nelle unità di Calabrese–Essler/Fagotti–Calabrese, cioè evoluzione con H(μ)/2 → **controllare col codice di Fig. 3**;
    - soppressione della FNL magic nella fase ordinata: ristretta al caso Ising (η=1), come nell'originale;
@@ -39,4 +38,4 @@ Le legende "Eq.(6)" in `fig1_equilibrium.pdf` (Fig. 2a) e `numerics_5.pdf` (Fig.
 
 - La dichiarazione sull'uso di AI (Acknowledgments di `main.tex`, testo in rosso) e il paragrafo corrispondente nella risposta al referee A.
 - I `[...]` in rosso in `response.pdf`: bipartizione contigua (metà catena) per i dati di Fig. 3(d); paragrafo sull'uso di AI; nessuna figura ha usato la formula a N finito col peso vecchio; metodo di campionamento in Fig. 1(a); unità di tempo del quench rispetto al codice di Fig. 3.
-- Conteggio parole stimato con le regole APS: ~3340/3750 (testo 2654 + 13 righe di equazioni + 3 figure). End Matter ≈ 1.8 pagine (≤ 2). Abstract: 575 caratteri (≤ 600).
+- Conteggio parole stimato con le regole APS: ~3260/3750 (testo ~2580 + 13 righe di equazioni + 3 figure). End Matter ≈ 1.8 pagine (≤ 2). Abstract: 575 caratteri (≤ 600).

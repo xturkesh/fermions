@@ -1,7 +1,7 @@
 \documentclass[prx,twocolumn,superscriptaddress,aps,10pt, frontmatterverbose, reprint,footinbib,longbibliography=true]{revtex4-2}
 %DIF LATEXDIFF DIFFERENCE FILE
 %DIF DEL /tmp/claude-0/-home-user-fermions/9f73def0-51d4-54e6-bba7-9981a4e20e9f/scratchpad/v4clean.tex   Wed Oct 21 20:50:42 2026
-%DIF ADD main_v5.tex                                                                                     Wed Oct 21 21:49:48 2026
+%DIF ADD main_v5.tex                                                                                     Wed Oct 21 21:54:26 2026
 
 
 \usepackage{graphicx}
@@ -248,30 +248,37 @@ where $|\mathrm{B}(\theta_i)\rangle=\cos\theta_i\,|00\rangle_i+\sin\theta_i\,|11
 We now present our main quantity: non-local magic.
 We recall that the stabilizer entropy of order $\RENYI$ is defined for a pure state $|\Psi\rangle$ as $M_\RENYI(|\Psi\rangle)=(1-\RENYI)^{-1}\log_2 \zeta_\RENYI(|\Psi\rangle)$~\cite{Leone2022SRE}, where $\zeta_\RENYI= d^{-1}\sum_{P\in \mathcal{P}_N} \langle \Psi|P|\Psi\rangle^{2\RENYI}$ is the stabilizer purity and $\mathcal{P}_N=\{ \mathbb{I},X,Y,Z\}^{\otimes N}$  is the set of $N$-qubit Pauli strings. This quantity is a magic monotone for integer $\RENYI\ge 2$~\cite{piro,leone2024stabilizer}.
 
-The non-local magic (NLM) is defined for the bipartition $\Lambda = A\sqcup B$ and a pure state as 
-\begin{equation}
-    M_\RENYI^\textup{NL}:= \min_{U_A , U_B} M_\RENYI\left[T_{\pi_{AB}} (U_A\otimes U_B)T_{\pi_{AB}}^\dagger|\Psi\rangle\right]\;,\label{eq:defNLmagic}
-\end{equation}
-where $A=\{i_1,\dots,i_\ell\}\subset \Lambda$ contains $\ell$ qubits and $B=\Lambda\setminus A$ the remaining $N-\ell$ ones, $\pi_{AB}\in \mathrm{S}_N$ is \DIFdelbegin \DIFdel{any }\DIFdelend \DIFaddbegin \DIFadd{the }\DIFaddend permutation such that $\pi_{AB}(A)=\{1,\dots,\ell\}$ and $\pi_{AB}(B)=\{\ell+1,\dots, N\}$ \DIFaddbegin \DIFadd{preserving the order of the sites within $A$ and within $B$ (for $M_\RENYI^\textup{NL}$ any such permutation gives the same result, while for the Gaussian-restricted quantity defined below this choice matters)}\DIFaddend , and the minimization is over $\mathrm{U}(d_A)\otimes \mathrm{U}(d_B)$ with $d_A=2^{\ell}$ and $d_B = 2^{N-\ell}$. This is the magic that cannot be erased or extracted by local unitary operations. This notion is cognate to (but distinct from) that of {\em long-range magic}, that is, the non-stabilizerness that cannot be removed by finite-depth local unitary circuits \cite{Korbany2025}. One salient distinction is that maximally entangled states have vanishing non-local magic as they are locally equivalent to stabilizer states.
+\DIFaddbegin \DIFadd{Throughout this work, we consider the bipartition $\Lambda = A\sqcup B$ of the chain into the contiguous blocks $A=\{1,\dots,\ell\}$ and $B=\{\ell+1,\dots,N\}$. }\DIFaddend The non-local magic (NLM) \DIFdelbegin \DIFdel{is defined for the bipartition $\Lambda = A\sqcup B$ and }\DIFdelend \DIFaddbegin \DIFadd{of }\DIFaddend a pure state \DIFdelbegin \DIFdel{as 
+}\begin{displaymath}
+    \DIFdel{M_\RENYI^\textup{NL}:= \min_{U_A , U_B} M_\RENYI\left[T_{\pi_{AB}} (U_A\otimes U_B)T_{\pi_{AB}}^\dagger|\Psi\rangle\right]\;,%DIFDELCMD < \label{eq:defNLmagic}%%%
+}\end{displaymath}%DIFAUXCMD
+\DIFdelend \DIFaddbegin \DIFadd{is defined as 
+}\begin{equation}
+    \DIFadd{M_\RENYI^\textup{NL}:= \min_{U_A , U_B} M_\RENYI\left[(U_A\otimes U_B)|\Psi\rangle\right]\;,\label{eq:defNLmagic}
+}\end{equation}\DIFaddend 
+where \DIFdelbegin \DIFdel{$A=\{i_1,\dots,i_\ell\}\subset \Lambda$ contains $\ell$ qubits and $B=\Lambda\setminus A$ the remaining $N-\ell$ ones, $\pi_{AB}\in \mathrm{S}_N$ is any permutation such that $\pi_{AB}(A)=\{1,\dots,\ell\}$ and $\pi_{AB}(B)=\{\ell+1,\dots, N\}$, and }\DIFdelend the minimization is over $\mathrm{U}(d_A)\otimes \mathrm{U}(d_B)$ with $d_A=2^{\ell}$ and $d_B = 2^{N-\ell}$. This is the magic that cannot be erased or extracted by local unitary operations. This notion is cognate to (but distinct from) that of {\em long-range magic}, that is, the non-stabilizerness that cannot be removed by finite-depth local unitary circuits \cite{Korbany2025}. One salient distinction is that maximally entangled states have vanishing non-local magic as they are locally equivalent to stabilizer states.
 This minimization is superexponentially costly, rendering non-local magic intractable beyond a handful of qubits.
 In Ref.~\cite{Cao_2025}, it was shown that for $\RENYI = 2$ a reliable proxy for non-local magic can be obtained from the Schmidt spectrum of the state over the same bipartition.
 
 
 To study fermionic Gaussian states and their non-local magic, we introduce the fermionic non-local magic
-\begin{equation}
-    M_\RENYI^\textup{FNL}:= \!\!\min_{U_{O_A} , U_{O_B}} \!\!M_\RENYI\left[T_{\pi_{AB}} (U_{O_A}\otimes U_{O_B})T_{\pi_{AB}}^\dagger|\Psi\rangle\right],\label{eq:defFNLmagic}
-\end{equation}
-where now the minimization is over the Gaussian unitaries induced by $\mathrm{O}(2\ell)\oplus \mathrm{O}(2(N-\ell))$, hence $ M_\RENYI^\textup{NL} \leq  M_\RENYI^\textup{FNL}$. Up to a non-Gaussian permutation, this quantity corresponds to the minimization over the full unitary group for Gaussian systems. \DIFaddbegin \DIFadd{When $A$ and $B$ are two contiguous blocks of the Jordan--Wigner chain, i.e., $A=\{1,\dots,\ell\}$ or $A=\{N-\ell+1,\dots,N\}$, the local unitaries $T_{\pi_{AB}}(U_{O_A}\otimes U_{O_B})T_{\pi_{AB}}^\dagger$ are themselves Gaussian unitaries of the whole chain, induced by $\mathrm{O}(2\ell)\oplus\mathrm{O}(2(N-\ell))$ (see Appendix~\ref{app:proof:dpp}); for non-contiguous bipartitions this is in general not the case, since the qubit permutation $T_{\pi_{AB}}$ is not Gaussian.
-}\DIFaddend Throughout this work our main interest is the case $\RENYI=2$, the smallest R\'enyi index for which the stabilizer entropy is a magic monotone~\cite{piro,leone2024stabilizer}, the most studied in the literature, and the one we implicitly refer to when writing simply \emph{fermionic non-local magic}. Nevertheless, we will also comment on results for $\RENYI>2$, in particular in Appendix~\ref{Sec:generaliz}.
+\DIFdelbegin \begin{displaymath}
+    \DIFdel{M_\RENYI^\textup{FNL}:= \!\!\min_{U_{O_A} , U_{O_B}} \!\!M_\RENYI\left[T_{\pi_{AB}} (U_{O_A}\otimes U_{O_B})T_{\pi_{AB}}^\dagger|\Psi\rangle\right],%DIFDELCMD < \label{eq:defFNLmagic}%%%
+}\end{displaymath}%DIFAUXCMD
+\DIFdelend \DIFaddbegin \begin{equation}
+    \DIFadd{M_\RENYI^\textup{FNL}:= \!\!\min_{U_{O_A} , U_{O_B}} \!\!M_\RENYI\left[(U_{O_A}\otimes U_{O_B})|\Psi\rangle\right],\label{eq:defFNLmagic}
+}\end{equation}\DIFaddend 
+where now the minimization is over the Gaussian unitaries induced by $\mathrm{O}(2\ell)\oplus \mathrm{O}(2(N-\ell))$, hence $ M_\RENYI^\textup{NL} \leq  M_\RENYI^\textup{FNL}$. \DIFdelbegin \DIFdel{Up to a non-Gaussian permutation, this quantity corresponds to the minimization over the full unitary group for Gaussian systems}\DIFdelend \DIFaddbegin \DIFadd{Since $A$ and $B$ are contiguous blocks of the Jordan--Wigner chain, the local unitaries $U_{O_A}\otimes U_{O_B}$ are themselves Gaussian unitaries of the whole chain, induced by $\mathrm{O}(2\ell)\oplus\mathrm{O}(2(N-\ell))$ (see Appendix~\ref{app:proof:dpp})}\DIFaddend .
+Throughout this work our main interest is the case $\RENYI=2$, the smallest R\'enyi index for which the stabilizer entropy is a magic monotone~\cite{piro,leone2024stabilizer}, the most studied in the literature, and the one we implicitly refer to when writing simply \emph{fermionic non-local magic}. Nevertheless, we will also comment on results for $\RENYI>2$, in particular in Appendix~\ref{Sec:generaliz}.
 Our main result is that, for fermionic Gaussian states, the fermionic non-local magic can be evaluated exactly in $\mathrm{poly}(N)$ resources.
 
 \section{Results}
-Consider a pure fermionic Gaussian state $|\Psi_O\rangle$ with covariance matrix $\Gamma=O \Gamma_0 O^T$ and the bipartition $\Lambda = A\sqcup B$ \DIFaddbegin \DIFadd{into two contiguous blocks, $A=\{1,\dots,\ell\}$ or $A=\{N-\ell+1,\dots,N\}$ with $B=\Lambda\setminus A$}\DIFaddend , where we denote without loss of generality $A$ the smallest partition with $|A|=\ell\le N/2$. 
+Consider a pure fermionic Gaussian state $|\Psi_O\rangle$ with covariance matrix $\Gamma=O \Gamma_0 O^T$ and the bipartition $\Lambda = A\sqcup B$ \DIFdelbegin \DIFdel{, where we denote without loss of generality $A$ the smallest partition with $|A|=\ell\le N/2$}\DIFdelend \DIFaddbegin \DIFadd{into the contiguous blocks $A=\{1,\dots,\ell\}$ and $B=\{\ell+1,\dots,N\}$}\DIFaddend . 
 Our main result shows that the FNL magic is entirely determined by the spectrum of the reduced covariance matrix. Let $\{\lambda_i\}_{i=1,\dots,\ell}$ denote the non-negative eigenvalues of the $2\ell\times 2\ell$ reduced covariance matrix $i\Gamma_A := i\Gamma|_{\mathcal{I}_A}$ of the Majorana modes restricted to $A$, $\mathcal{I}_A:=\{2m-1,2m\;|\; m\in A\}$. Then, our main finding is the following closed-form expression at $\RENYI=2$.
 
 \begin{theorem}[Fermionic non-local magic of Gaussian states at $\RENYI=2$]
 \label{thm:global}
-Let $|\Psi_O\rangle$ be an arbitrary pure fermionic Gaussian state on $N$ modes and let $\Lambda=A\sqcup B$ \DIFdelbegin \DIFdel{with $|A|=\ell$}\DIFdelend \DIFaddbegin \DIFadd{be a bipartition into two contiguous blocks, $A=\{1,\dots,\ell\}$ or $A=\{N-\ell+1,\dots,N\}$, with $B=\Lambda\setminus A$ and $|A|=\ell\le N/2$}\DIFaddend . Then
+Let $|\Psi_O\rangle$ be an arbitrary pure fermionic Gaussian state on $N$ modes and let $\Lambda=A\sqcup B$ \DIFdelbegin \DIFdel{with $|A|=\ell$}\DIFdelend \DIFaddbegin \DIFadd{be the bipartition into the contiguous blocks $A=\{1,\dots,\ell\}$ and $B=\{\ell+1,\dots,N\}$}\DIFaddend . Then
 \begin{equation}
 \begin{split}
     M_{2}^{\mathrm{FNL}}(|\Psi_O\rangle)&=\sum_{i=1}^{\ell}\mathfrak{m}_2(\lambda_i^2)\;,\\
@@ -280,16 +287,22 @@ Let $|\Psi_O\rangle$ be an arbitrary pure fermionic Gaussian state on $N$ modes 
     \label{eq:analytic_NL}
 \end{equation}
 or, equivalently, in terms of the stabilizer purity,
-\begin{equation}
-\begin{split}
+\DIFdelbegin \begin{displaymath}
+\DIFdel{\begin{split}
 \max_{\substack{O_A\in \mathrm{O}(2\ell)\\ O_B\in \mathrm{O}(2(N-\ell))}}\!\!\!\!\zeta_2&\left[T_{\pi_{AB}}(U_{O_A}\otimes U_{O_B})T_{\pi_{AB}}^\dagger|\Psi_O\rangle\right]\\ &=\prod_{i=1}^{\ell}\left(1-\lambda_i^2+\lambda_i^4\right)\;,
 \end{split}
 \label{eq:thm_zeta}
-\end{equation}
+}\end{displaymath}%DIFAUXCMD
+\DIFdelend \DIFaddbegin \begin{equation}
+\DIFadd{\begin{split}
+\max_{\substack{O_A\in \mathrm{O}(2\ell)\\ O_B\in \mathrm{O}(2(N-\ell))}}\!\!\!\!\zeta_2&\left[(U_{O_A}\otimes U_{O_B})|\Psi_O\rangle\right]\\ &=\prod_{i=1}^{\ell}\left(1-\lambda_i^2+\lambda_i^4\right)\;,
+\end{split}
+\label{eq:thm_zeta}
+}\end{equation}\DIFaddend 
 the maximum being attained in the Botero--BCS canonical axes of Eq.~\eqref{eq:can_form}.
 \end{theorem}
 
-The proof, holding for any $1\le\ell\le N/2$, is given in full detail in Appendix~\ref{app:proof}. It assumes that the state $|\Psi_O\rangle$ is pure and Gaussian\DIFaddbegin \DIFadd{, and that $A$ and $B$ are contiguous blocks, which guarantees that the local Gaussian unitaries in Eq.~\eqref{eq:defFNLmagic} act on the covariance matrix as $O_A\oplus O_B$; for non-contiguous bipartitions the non-Gaussian qubit permutation $T_{\pi_{AB}}$ spoils this correspondence and Eq.~\eqref{eq:analytic_NL} does not hold in general}\DIFaddend .
+The proof \DIFdelbegin \DIFdel{, holding for any $1\le\ell\le N/2$, }\DIFdelend is given in full detail in Appendix~\ref{app:proof}. It assumes that the state $|\Psi_O\rangle$ is pure and Gaussian\DIFaddbegin \DIFadd{, and uses that $A$ and $B$ are contiguous blocks, which guarantees that the local Gaussian unitaries in Eq.~\eqref{eq:defFNLmagic} act on the covariance matrix as $O_A\oplus O_B$}\DIFaddend .
 The key point is that local Gaussian unitaries over a bipartition of the system bring any pure fermionic Gaussian state into a canonical modewise form $\ket{\Psi_{\rm can}}$ in Eq.~\eqref{eq:can_form}, consisting of independent two-mode Bell-like pairs~\cite{BoteroReznik2004}, a normal form that underlies several equivalent descriptions of fermionic Gaussian entanglement~\cite{SpeeSchwaigerGiedkeKraus2018,MorralYepesLangerGammonSmithKrausPollmann2025,langer2026matchgatecircuitrepresentationfermionic}.
 We prove that this representative is the \emph{global} maximizer of the stabilizer purity $\zeta_2$ on the local Gaussian orbit, i.e.
 $M_{2}^{\mathrm{FNL}}(|\Psi_O\rangle) = M_{2}(|\Psi_{\rm can}\rangle)$,
@@ -1135,7 +1148,7 @@ In this Appendix, we prove Theorem~\ref{thm:global}, i.e.\ the closed form of Eq
 \subsubsection{The stabilizer purity as a collision probability}
 \label{app:proof:dpp}
 
-We use the conventions of the main text, recalled here for convenience: $|\Psi\rangle$ is a pure fermionic Gaussian state on $N$ modes, $d=2^N$, $A$ is without loss of generality the smaller subsystem, $\ell\le N/2$,  and $\Gamma_{mn}=i\langle\Psi|[\gamma_m,\gamma_n]|\Psi\rangle/2$, with purity condition equivalent to
+We use the conventions of the main text, recalled here for convenience: $|\Psi\rangle$ is a pure fermionic Gaussian state on $N$ modes, $d=2^N$, \DIFdelbegin \DIFdel{$A$ is }\DIFdelend \DIFaddbegin \DIFadd{$A=\{1,\dots,\ell\}$ and $B=\{\ell+1,\dots,N\}$, with $\ell\le N/2$ }\DIFaddend without loss of generality\DIFdelbegin \DIFdel{the smaller subsystem, $\ell\le N/2$}\DIFdelend \DIFaddbegin \DIFadd{, since the maximization over the orbit~\eqref{eq:local-action} below is symmetric under the exchange of $A$ and $B$}\DIFaddend , and $\Gamma_{mn}=i\langle\Psi|[\gamma_m,\gamma_n]|\Psi\rangle/2$, with purity condition equivalent to
 \begin{equation}
     \Gamma^{\trans}=-\Gamma\;,\qquad \Gamma^2=-\mathbb{I}_{2N}\;.
     \label{eq:pure-covariance}
@@ -1160,7 +1173,7 @@ Local Gaussian unitaries act on covariance matrices as
     \Gamma\longmapsto (O_A\oplus O_B)\,\Gamma\,(O_A\oplus O_B)^{\trans}\;,
     \label{eq:local-action}
 \end{equation}
-with $O_A\in\mathrm{O}(2\ell)$ and $O_B\in\mathrm{O}(2(N-\ell))$\DIFdelbegin \DIFdel{, so that }\DIFdelend \DIFaddbegin \DIFadd{. For the contiguous bipartition of Theorem~\ref{thm:global}, say $A=\{1,\dots,\ell\}$, the order-preserving permutation $\pi_{AB}$ in Eq.~\eqref{eq:defFNLmagic} is the identity, and the Jordan--Wigner strings of the Majorana operators of $A$ do not leave $A$, while those of $B$ differ from the ones defined within $B$ only by the parity $P_A=\prod_{m\in A}Z_m$ of $A$. Since $U_{O_A}P_AU_{O_A}^\dagger=\det(O_A)\,P_A$, the qubit unitary $U_{O_A}\otimes U_{O_B}$ acts on the Majorana operators of the whole chain as $O_A\oplus\det(O_A)\,O_B$, i.e.\ it coincides, up to a global phase, with a Gaussian unitary of the chain belonging to the local group $\mathrm{O}(2\ell)\oplus\mathrm{O}(2(N-\ell))$; the same holds, exchanging the roles of $A$ and $B$, for $A=\{N-\ell+1,\dots,N\}$, where $T_{\pi_{AB}}$ is a cyclic shift. As $(O_A,O_B)\mapsto(O_A,\det(O_A)\,O_B)$ is a bijection, }\DIFaddend maximizing $\zeta_2$ over the local Gaussian orbit\DIFaddbegin \DIFadd{~\eqref{eq:local-action} }\DIFaddend is exactly the problem defined by Eq.~\eqref{eq:defFNLmagic}. \DIFaddbegin \DIFadd{For non-contiguous bipartitions this identification fails, because $T_{\pi_{AB}}$ is in general a non-Gaussian qubit permutation; for the same reason, $\pi_{AB}$ must preserve the order of the sites within $A$ and within $B$.
+with $O_A\in\mathrm{O}(2\ell)$ and $O_B\in\mathrm{O}(2(N-\ell))$\DIFdelbegin \DIFdel{, so that }\DIFdelend \DIFaddbegin \DIFadd{. For the contiguous blocks $A=\{1,\dots,\ell\}$ and $B=\{\ell+1,\dots,N\}$ of Eq.~\eqref{eq:defFNLmagic}, the Jordan--Wigner strings of the Majorana operators of $A$ do not leave $A$, while those of $B$ differ from the ones defined within $B$ only by the parity $P_A=\prod_{m\in A}Z_m$ of $A$. Since $U_{O_A}P_AU_{O_A}^\dagger=\det(O_A)\,P_A$, the qubit unitary $U_{O_A}\otimes U_{O_B}$ acts on the Majorana operators of the whole chain as $O_A\oplus\det(O_A)\,O_B$, i.e.\ it coincides, up to a global phase, with a Gaussian unitary of the chain belonging to the local group $\mathrm{O}(2\ell)\oplus\mathrm{O}(2(N-\ell))$. As $(O_A,O_B)\mapsto(O_A,\det(O_A)\,O_B)$ is a bijection, }\DIFaddend maximizing $\zeta_2$ over the local Gaussian orbit\DIFaddbegin \DIFadd{~\eqref{eq:local-action} }\DIFaddend is exactly the problem defined by Eq.~\eqref{eq:defFNLmagic}. \DIFaddbegin \DIFadd{This is where the contiguity of the blocks enters: for other bipartitions, the qubits of $A$ must first be brought together by a non-Gaussian qubit permutation, and the identification fails.
  }\DIFaddend We write $\mathrm{spec}(i\Gamma_A)=\{\pm\lambda_1,\dots,\pm\lambda_\ell\}$ with $0\le\lambda_j\le 1$ and set $\nu_j=\sqrt{1-\lambda_j^2}$.
 For completeness, we recall the covariance version of the modewise normal form of Eq.~\eqref{eq:can_form}, cf.~\cite{BoteroReznik2004}, which also fixes the orientation conventions used below. 
 
