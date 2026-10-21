@@ -27,7 +27,7 @@ La base è la versione sottomessa al giornale (terminologia GNL / "Gaussian-rest
 
 - Peso di Jacobi: Monte Carlo O(2N) Haar (ℓ=1..4, N≤16): peso corretto compatibile, vecchio escluso; h_n a 1e-41; 2−log₂(2+√3) confermato.
 - Teorema 1, blocco iniziale: U_{O_A}⊗U_{O_B} ∝ U_{O_A⊕det(O_A)O_B} (errore ~1e-15); bound mai violato e saturato; controesempio del referee confermato.
-- Teorema 1, **intervallo nel mezzo con shift ciclico** (N=5, A={2,3} e {3,4}; N=6): stato traslato gaussiano (|Γ'²+I|~1e-15), stessi λ, bound mai violato, ottimizzazione a livello di qubit lo raggiunge a 1e-14.
+- Teorema 1, **intervallo nel mezzo con shift ciclico** (N=5: A={2,3}, {3,4}; N=6: A={3,4}, {2,3,4}): stato traslato gaussiano (|Γ'²+I|~1e-15), stessi λ, bound mai violato, ottimizzazione a livello di qubit lo raggiunge a ~1e-14. Per N=6, A={5,6} verificati solo gaussianità e λ (ottimizzazione interrotta per timeout).
 - Prova alternativa del Lemma 5: verificata fino a 1e-57.
 
 ## Da fare / controllare
