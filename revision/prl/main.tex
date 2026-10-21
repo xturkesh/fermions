@@ -1,0 +1,258 @@
+\documentclass[aps,prl,twocolumn,superscriptaddress,reprint,longbibliography,nofootinbib]{revtex4-2}
+
+\usepackage{graphicx}
+\usepackage{dcolumn}
+\usepackage{bm}
+\usepackage[colorlinks,
+citecolor=teal,
+linkcolor=teal,
+urlcolor=teal]{hyperref}
+\usepackage{mathrsfs}
+\usepackage{amsfonts,amssymb,amsmath,mathtools}
+\usepackage{xcolor}
+\usepackage{dsfont}
+\usepackage{bbm}
+\usepackage{physics}
+\usepackage{orcidlink}
+\usepackage{amsthm}
+\usepackage[T1]{fontenc}
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}{Conjecture}
+
+\newcommand{\rev}[1]{\textcolor{red}{#1}}
+\newcommand{\trans}{\mathsf{T}}
+
+% === Custom macros ===
+\newcommand{\NL}{\mathrm{FNL}}
+\newcommand{\RENYI}{\alpha}
+\newcommand{\MNL}{\mathrm{M}_2^{\NL}}
+
+\begin{document}
+
+\title{Non-Local Magic Resources for Fermionic Gaussian States}
+
+\author{Daniele Iannotti\orcidlink{0009-0009-0738-5998}}
+\email{d.iannotti@ssmeridionale.it}
+\thanks{These two authors contributed equally}
+\affiliation{Scuola Superiore Meridionale, Largo S. Marcellino 10, 80138 Napoli, Italy}
+\affiliation{INFN Sezione di Napoli, via Cintia, 80126 Napoli, Italy}
+\affiliation{ Institut für Theoretische Physik, Universität zu Köln, Zülpicher Strasse 77, 50937 Köln, Germany}
+
+\author{Beatrice Magni\orcidlink{0009-0009-8577-0525}}
+\email{bmagni@uni-koeln.de}
+\thanks{These two authors contributed equally}
+\affiliation{ Institut für Theoretische Physik, Universität zu Köln, Zülpicher Strasse 77, 50937 Köln, Germany}
+
+\author{Riccardo Cioli\orcidlink{0009-0001-1286-3773}}
+\email{riccardo.cioli3@unibo.it}
+\affiliation{Dipartimento di Fisica e Astronomia, Università di Bologna and INFN, Sezione di Bologna, via Irnerio 46, I-40126 Bologna, Italy}
+
+\author{Alioscia Hamma\orcidlink{0000-0003-0662-719X}}
+\email{alioscia.hamma@unina.it }
+\affiliation{Scuola Superiore Meridionale, Largo S. Marcellino 10, 80138 Napoli, Italy}
+\affiliation{Dipartimento di Fisica `Ettore Pancini', Universit\`a degli Studi di Napoli Federico II, Via Cintia, 80126 Napoli, Italy}
+\affiliation{INFN Sezione di Napoli, via Cintia, 80126 Napoli, Italy}
+
+\author{Xhek Turkeshi\orcidlink{0000-0003-1093-3771}}
+\email{xturkesh@uni-koeln.de}
+\affiliation{ Institut für Theoretische Physik, Universität zu Köln, Zülpicher Strasse 77, 50937 Köln, Germany}
+
+\begin{abstract}
+Non-local magic quantifies the nonstabilizerness that local unitaries cannot remove, but its computation requires an intractable optimization. For fermionic Gaussian states and contiguous bipartitions, we prove a closed formula for the R\'enyi-2 non-local stabilizer entropy over local Gaussian unitaries, set by the reduced Majorana covariance matrix. We derive a Page-like curve for random states, logarithmic scaling at the XY critical point, and a quasiparticle picture after quenches. Our result enables measuring fermionic non-local magic via fermionic shadow tomography.
+\end{abstract}
+
+\maketitle
+
+\textit{Introduction.}---Entanglement and magic, or nonstabilizerness, are two fundamental notions of quantum complexity that capture complementary aspects of what makes a many-body system genuinely quantum~\cite{Horodecki2009,Chitambar2019resources,Veitch2014resource}.
+States with low entanglement admit efficient classical simulation via tensor networks~\cite{Schollw_ck_2011}, whereas states with low magic are accessible to stabilizer-based techniques such as tableau simulation~\cite{Gottesman1998,Bravyi2019simulationofquantum} or Pauli propagation~\cite{dowling2025magic,rudolph2025paulipropagationcomputationalframework}.
+While entanglement is a well-characterized concept in many-body physics~\cite{Laflorencie_2016,amico2008entanglement}, the role of magic has only recently come into focus, driven by the development of stabilizer entropies~\cite{Leone2022SRE,leone2024stabilizer}, scalable probes of nonstabilizerness whose computational cost is comparable to that of entanglement entropy~\cite{huang2026fastexactapproachstabilizer,xiao2026exponentiallyacceleratedsamplingpauli,sierant2026computingquantummagicstate} and which have an important operational meaning~\cite{Bittel_2026, Iannotti_2026, cusumano2025nonstabilizernessviolationschshinequalities}.
+This advance has stimulated a broad research program, from equilibrium phenomena~\cite{piro2,tarabunga2023manybody,oshino2026stabilizer,hoshino2025stabilizerrenyientropyencodes, aditya2025mpembaeffectsquantumcomplexity} to quantum-circuit and Hamiltonian dynamics~\cite{Turkeshi_2025,odavic2025stabilizer,tirrito2025anticoncentration,falcao2025nonstabilizerness, PhysRevB.106.214316, p8dn-glcw, lio2026quantumstatedesignsmagic, aditya2025growthspreadingquantumresources, Viscardi_2026}.
+
+A central open question concerns the interplay between entanglement and magic~\cite{tirrito2024quantifying,szombathy,Iannotti2025entanglement}.
+The recently introduced \emph{non-local magic}~\cite{Cao_2025,qian2025quantumnonlocalnonstabilizerness, munizzi2026magicnoncliffordgatestopological, cao2024non} isolates the irreducible nonstabilizerness that cannot be removed by local basis changes, thereby separating genuinely correlated magic from purely local contributions.
+However, non-local magic is defined through a minimization over all local unitaries acting on the full Hilbert space, rendering it intractable beyond a few qubits.
+Although estimation schemes exist for matrix-product states~\cite{Cao_2025}, where entanglement remains bounded, which classes of quantum matter admit an analytic characterization of non-local magic, especially in regimes with extensive entanglement, has remained an open question.
+
+In this Letter, we answer this question for fermionic Gaussian states and unitaries. We introduce the fermionic non-local (FNL) magic, which restricts the minimization to Gaussian unitaries, and prove (Theorem~\ref{thm:global}) that at R\'enyi index $\RENYI=2$ it admits a closed-form expression in terms of the eigenvalues of the reduced Majorana covariance matrix of a contiguous subsystem of size $\ell$, computable with $\mathrm{poly}(\ell)$ resources.
+The key insight is that the minimization over local \emph{Gaussian} unitaries is solved exactly by the BCS canonical form~\cite{BoteroReznik2004}.
+This is in stark contrast with the total magic, which requires Majorana Monte Carlo~\cite{Bera_2025} or perfect sampling~\cite{collura2026nonstabilizernessfermionicgaussianstates}, both converging in general with an exponential number of samples.
+We leverage this result to obtain an exact Page-like curve for typical fermionic Gaussian states, corroborated by SYK$_2$ eigenstates~\cite{Bera_2025,santra2025complexitytransitionschaoticquantum,jasser2025stabilizer, malvimat2026multipartitenonlocalmagicsyk, njgn-fksh}; logarithmic scaling of non-local magic at the XY critical point via the Fisher--Hartwig approach; a quasiparticle picture~\cite{calabrese2009} for magic spreading after quantum quenches; and diffusive growth in random Gaussian circuits.
+Because our result relies solely on two-point correlation functions, it provides a scalable route for the experimental estimation of fermionic non-local magic in large-scale quantum processors via fermionic shadow tomography~\cite{Wan_2023}.
+
+\textit{Setup.}---We consider $N$ qubits on a chain $\Lambda=\{1,\dots, N\}$, with Hilbert space dimension $d=2^N$~\cite{Mbeng2024,surace,sierant2026fermionic,sierant2026theorymatchgatecommutant}.
+The $2N$ Majorana operators are obtained via the Jordan--Wigner (JW) transformation, $\gamma_{2j-1} = \bigl(\prod_{m<j} Z_m\bigr)X_j$ and $\gamma_{2j} = \bigl(\prod_{m<j} Z_m\bigr)Y_j$, and satisfy $\{\gamma_j,\gamma_k\}=2 \delta_{jk}$.
+Fermionic Gaussian unitaries (FGU), or matchgates, act on the Majorana operators as rotations, $U_O\gamma_j U_O^\dagger = \sum_{m}O_{mj}\gamma_m$ with $O\in \mathrm{O}(2N)$; up to the reflection implemented by $X_1=\gamma_1$, they are generated by quadratic Hamiltonians
+\begin{equation}
+    H= \frac{i}{4}\sum_{m,n=1}^{2N} h_{m,n} \gamma_m\gamma_n\;,\qquad h=-h^{\trans}\;.\label{eq:ham}
+\end{equation}
+A pure fermionic Gaussian state (FGS) $|\Psi_O\rangle=U_O|\mathbf{0}\rangle$, with $|\mathbf{0}\rangle$ the fermionic vacuum, is fully characterized by its covariance matrix $\Gamma_{mn}=i\langle \Psi_O|[\gamma_m,\gamma_n]|\Psi_O\rangle/2$, given by $\Gamma= O\Gamma_0 O^{\trans}$ with $\Gamma_0=\bigoplus_{m=1}^N \bigl(\begin{smallmatrix}0&-1\\1&0\end{smallmatrix}\bigr)$.
+
+The stabilizer entropy of order $\RENYI$ of a pure state is $M_\RENYI=(1-\RENYI)^{-1}\log_2 \zeta_\RENYI$~\cite{Leone2022SRE}, where $\zeta_\RENYI= d^{-1}\sum_{P\in \mathcal{P}_N} \langle \Psi|P|\Psi\rangle^{2\RENYI}$ is the stabilizer purity and $\mathcal{P}_N$ the set of $N$-qubit Pauli strings; it is a magic monotone for integer $\RENYI\ge 2$~\cite{piro,leone2024stabilizer}.
+For a bipartition $\Lambda = A\sqcup B$ with $|A|=\ell$, the non-local magic is~\cite{Cao_2025}
+\begin{equation}
+    M_\RENYI^\textup{NL}:= \min_{U_A , U_B} M_\RENYI\left[T_{\pi_{AB}} (U_A\otimes U_B)T_{\pi_{AB}}^\dagger|\Psi\rangle\right]\;,\label{eq:defNLmagic}
+\end{equation}
+where $\pi_{AB}\in \mathrm{S}_N$ is any permutation such that $\pi_{AB}(A)=\{1,\dots,\ell\}$, $T_{\pi_{AB}}$ the corresponding qubit permutation, and the minimization is over $\mathrm{U}(2^\ell)\otimes \mathrm{U}(2^{N-\ell})$. This is the magic that cannot be erased by local unitaries; for instance, maximally entangled states have vanishing non-local magic, being locally equivalent to stabilizer states. It is distinct from long-range magic, which cannot be removed by finite-depth local circuits~\cite{Korbany2025}.
+The minimization in Eq.~\eqref{eq:defNLmagic} is superexponentially costly; for $\RENYI = 2$, a proxy can be obtained from the Schmidt spectrum~\cite{Cao_2025}.
+For fermionic Gaussian states, we introduce the FNL magic
+\begin{equation}
+    M_\RENYI^\textup{FNL}:= \!\!\min_{U_{O_A} , U_{O_B}} \!\!M_\RENYI\left[T_{\pi_{AB}} (U_{O_A}\otimes U_{O_B})T_{\pi_{AB}}^\dagger|\Psi\rangle\right],\label{eq:defFNLmagic}
+\end{equation}
+where the minimization is restricted to the Gaussian unitaries induced by $\mathrm{O}(2\ell)\oplus \mathrm{O}(2(N-\ell))$, hence $ M_\RENYI^\textup{NL} \leq  M_\RENYI^\textup{FNL}$.
+When $A$ and $B$ are two contiguous blocks of the JW chain, $A=\{1,\dots,\ell\}$ and $B=\{\ell+1,\dots,N\}$ (or vice versa), the local unitaries in Eq.~\eqref{eq:defFNLmagic} are themselves Gaussian unitaries of the whole chain and act on the covariance matrix as $\Gamma\mapsto(O_A\oplus O_B)\Gamma(O_A\oplus O_B)^{\trans}$ (End Matter); for non-contiguous bipartitions this is in general not the case, since the qubit permutation $T_{\pi_{AB}}$ is not Gaussian.
+
+\textit{Main result.}---Let $A$ and $B$ be contiguous blocks as above, with $|A|=\ell\le N/2$ without loss of generality, and let $\pm\lambda_i$, with $\lambda_i\in[0,1]$ and $i=1,\dots,\ell$, be the eigenvalues of the $2\ell\times 2\ell$ reduced covariance matrix $i\Gamma_A$ of the Majorana operators of $A$.
+
+\begin{theorem}
+\label{thm:global}
+For any pure fermionic Gaussian state $|\Psi_O\rangle$ on $N$ modes and any bipartition into two contiguous blocks, $A=\{1,\dots,\ell\}$ and $B=\{\ell+1,\dots,N\}$ (or vice versa), with $|A|=\ell\le N/2$,
+\begin{equation}
+\begin{split}
+    M_{2}^{\mathrm{FNL}}(|\Psi_O\rangle)&=\sum_{i=1}^{\ell}\mathfrak{m}_2(\lambda_i^2)\;,\\
+    \mathfrak{m}_2(x)&=-\log_2\!\left(1-x+x^2\right).
+\end{split}
+    \label{eq:analytic_NL}
+\end{equation}
+Equivalently, the maximum of the stabilizer purity over the local Gaussian orbit is $\max_{O_A,O_B}\zeta_2=\prod_{i=1}^{\ell}(1-\lambda_i^2+\lambda_i^4)$, attained in the canonical modewise axes of Ref.~\cite{BoteroReznik2004}.
+\end{theorem}
+
+Local FGU bring any pure FGS into a canonical modewise form of $\ell$ independent two-mode BCS-like pairs, $\cos\theta_i|00\rangle+\sin\theta_i|11\rangle$, and $N-2\ell$ unpaired modes~\cite{BoteroReznik2004}, a normal form that underlies several descriptions of fermionic Gaussian entanglement~\cite{SpeeSchwaigerGiedkeKraus2018,MorralYepesLangerGammonSmithKrausPollmann2025,langer2026matchgatecircuitrepresentationfermionic}.
+We prove that this representative is the \emph{global} maximizer of $\zeta_2$ on the local Gaussian orbit, from which Eq.~\eqref{eq:analytic_NL} follows by a direct computation of the two-qubit stabilizer entropy~\cite{Cao_2025,qian2025quantumnonlocalnonstabilizerness}.
+The proof is outlined in the End Matter and given in full in Sec.~S1 of the Supplemental Material (SM)~\cite{SM}. It combines a Wick-theorem representation of $\zeta_2$ as the collision probability of a determinantal point process with two ingredients of independent interest: a sharp bound on the collision probability of a Slater determinant in terms of its transpose overlap, and a determinant inequality for positive matrices of rank at most two.
+
+For integer $\RENYI>2$, we conjecture that the same structure survives,
+\begin{equation}
+\begin{split}
+      M_{\RENYI}^{\mathrm{FNL}} &= \sum_{i=1}^{\ell}\mathfrak{m}_\RENYI(\lambda_i^2)\;,\\
+      \mathfrak{m}_\RENYI(x)&=\frac{1}{1-\RENYI}\log_2\! \frac{\left(1-x \right)^{\RENYI }\!+1+ x^{ \RENYI }}{2}\;,
+\end{split}
+    \label{eq:analytic_NL_alpha}
+\end{equation}
+which reduces to Eq.~\eqref{eq:analytic_NL} at $\RENYI=2$. This conjecture is supported by extensive variational optimization (SM, Sec.~S2) and reproduces the same phenomenology as the $\RENYI=2$ case (SM, Sec.~S4); below we focus on $\RENYI=2$.
+
+Several remarks are in order. First, for $\ell\le 2$ the Gaussian minimization coincides with the full one, $M_2^{\mathrm{NL}}=M_2^{\mathrm{FNL}}$, and Eq.~\eqref{eq:analytic_NL} reproduces the expression of Ref.~\cite{Cao_2025}; for larger subsystems, non-Gaussian local unitaries can further decrease the magic, so that Theorem~\ref{thm:global} provides an upper bound, $M_2^{\mathrm{NL}}\le M_2^{\mathrm{FNL}}$.
+Second, Eq.~\eqref{eq:analytic_NL} requires only $\mathrm{poly}(\ell)$ operations, whereas even the total stabilizer entropy of FGS requires in the worst case an exponential number of samples~\cite{Bera_2025,collura2026nonstabilizernessfermionicgaussianstates}.
+Third, entanglement is necessary but not sufficient for non-local magic: $\mathfrak{m}_2(\lambda^2)$ vanishes both for unentangled ($\lambda=1$) and for maximally entangled ($\lambda=0$) modes. For instance, the rainbow state $\bigotimes_{j=1}^{N/2} (|0_j 0_{N+1-j}\rangle + |1_j 1_{N+1-j}\rangle)/\sqrt2$ is a FGS with maximal entanglement across $A=\{1,\dots,N/2\}$, i.e., $\lambda_j=0$, yet it is a stabilizer state with $M_2^{\mathrm{NL}}=M_2^{\mathrm{FNL}}=0$. Local non-Clifford rotations only add local magic; genuine non-local magic requires modes at intermediate entanglement, $0<\lambda_j<1$, e.g., generated by a joint non-Clifford Gaussian rotation of each pair~\cite{huang2026dismagickerunitarygatenonstabilizerness}.
+Finally, since Eq.~\eqref{eq:analytic_NL} depends only on $\Gamma_A$, a polynomial number of two-point functions, FNL magic is accessible via fermionic shadow tomography~\cite{Wan_2023}: random matchgate circuits followed by computational-basis measurements reconstruct $\Gamma_A$ with accuracy $\epsilon_\Gamma$ and failure probability $\delta$ with $O(\ell^2\log(\ell/\delta)/\epsilon_\Gamma^2)$ shots; the propagation of this error to $M_2^{\mathrm{FNL}}$ is discussed in the SM, Sec.~S3. This opens a scalable route beyond the recent two-qubit demonstration of non-local magic~\cite{ahmad2025experimentaldemonstrationnonlocalmagic}.
+
+\textit{Typical states.}---We first consider states $|\Psi_O\rangle$ with Haar-random $O\in \mathrm{O}(2N)$, whose statistics is invariant under mode permutations, and $A=\{1,\dots,\ell\}$, $\ell\le N/2$.
+The variables $x_m=\lambda_m^2$ form a Jacobi ensemble~\cite{Mehta2004,PhysRevB.103.L241118} with joint distribution $\propto\prod_{i<j}(x_i-x_j)^2\prod_m x_m^{-1/2}(1-x_m)^{N-2\ell}$.
+Since $M_2^\mathrm{FNL}$ is a sum of single-mode terms, its quenched average $\overline{M}_2^\mathrm{FNL}\equiv \mathbb{E}_{O}[M_2^\mathrm{FNL}]=\int_0^1 \mathfrak{m}_2(x)\varrho^{(\ell)}(x)dx$ only requires the one-point density $\varrho^{(\ell)}(x)$, which is known exactly at finite $N$ (End Matter). In the thermodynamic limit $\ell,N\to\infty$ at fixed $r=\ell/N\in[0,1/2]$, $\varrho^{(\ell)}/N$ converges to the free Jacobi law $\varrho_r(x) = \sqrt{(c-x)x}/[2\pi x(1-x)]$ supported on $[0,c]$, with $c=4r(1-r)$. Setting $x=c\sin^2\theta$, the FNL magic density $\overline{\mathsf{m}}_2^\mathrm{FNL}:=\overline{M}_2^\mathrm{FNL}/N$ reads
+\begin{equation}
+\overline{\mathsf{m}}_2^\mathrm{FNL}(r)\simeq \frac{c}{\pi}\int_0^{\pi/2} \frac{\cos^2 \theta}{1-c\sin^2\theta}\, \mathfrak{m}_2(c\sin^2 \theta)\,d\theta\;,\label{eq:ziopin2}
+\end{equation}
+symmetric under $r\to 1-r$.
+At half partition, $\overline{\mathsf{m}}_2^\mathrm{FNL}(1/2)= 2-\log_2(2+\sqrt{3})$, while for $r\to0$ we find $\overline{\mathsf{m}}_2^\mathrm{FNL}\simeq r^2/\ln 2$.
+This \emph{FNL magic Page curve} [Fig.~\ref{fig:typicality}(a)] has a quadratic onset for every $\RENYI$ (SM, Sec.~S4), with a transparent origin: when $\ell=O(1)$ and $N\to\infty$, the modes of $A$ are almost maximally entangled and carry no non-local magic. This is in sharp contrast with the entanglement Page curve, which grows linearly for small $r$~\cite{PhysRevE.106.034118,PhysRevLett.125.180604,PhysRevB.103.L241118}.
+
+To test universality beyond Haar-random states, we consider mid-spectrum eigenstates of the SYK$_2$ model, Eq.~\eqref{eq:ham} with $h_{m,n}\sim \mathcal{N}(0,1/N)$, obtained by flipping a random subset of $N/4$ to $N/2$ single-particle modes in the ground state (SM, Sec.~S5). Averaging over $10^3$ disorder realizations and $200$ eigenstates each, the data converge to Eq.~\eqref{eq:ziopin2} as $N$ increases [Fig.~\ref{fig:typicality}(b)].
+
+\begin{figure}[t!]
+    \centering
+    \includegraphics[width=\columnwidth]{fig1_typicality.pdf}
+    \caption{\textbf{FNL magic of typical fermionic Gaussian states.}
+    (a)~Page curve for Haar-random FGS: $\overline{M}_2^{\mathrm{FNL}}/N$ vs $r=\ell/N$, compared with the $N\to\infty$ prediction, Eq.~\eqref{eq:ziopin2}.
+    (b)~Average FNL magic of SYK$_2$ mid-spectrum eigenstates, in quantitative agreement with Eq.~\eqref{eq:ziopin2}.}
+    \label{fig:typicality}
+\end{figure}
+
+\begin{figure*}[t!]
+    \centering
+    \includegraphics[width=\linewidth]{fig1_equilibrium.pdf}
+    \caption{%
+    \textbf{Equilibrium FNL magic in the Ising and XY chains.}
+    (a)~Ising ground state with $N=8$, $\ell=4$: Eq.~\eqref{eq:analytic_NL} (crosses) agrees with the brute-force minimization over all local unitaries $U_A \otimes U_B$ (red markers) to numerical precision; the black line is the total stabilizer entropy $M_2$.
+    (b)~$M_2^{\mathrm{FNL}}$ vs transverse field $\mu$ in the thermodynamic limit for $\ell = 16, 32, 64, 128$; the black curve is the exact $\ell \to \infty$ result, Eq.~\eqref{eq:NL_peschel2}. The FNL magic peaks at the critical point $\mu_c = 1$.
+    (c)~$M_2^{\mathrm{FNL}}(\ell)$ at criticality ($\mu = 1$, red) grows logarithmically: the dashed line is the fit $\beta_{\mathrm{fit}}\ln\ell+b$, with $\beta_{\mathrm{fit}} \approx 0.1072$ and $b \approx 0.27$, in agreement with Eq.~\eqref{eq:alpha_NL}. In the gapped phases ($\mu = 0.5$, $4.0$), $M_2^{\mathrm{FNL}}$ saturates.
+    (d)~$M_2^{\mathrm{FNL}}/\ell$ over the XY phase diagram ($\mu$, $\eta$), from the exact corner-transfer-matrix formula: the FNL magic concentrates near the critical lines.
+    }
+    \label{fig:Ising_model}
+\end{figure*}
+
+\textit{Ground states.}---We now consider the XY chain with periodic boundary conditions,
+\begin{equation}
+    H = -\sum_{j=1}^{N}\!\left[\frac{1+\eta}{2}X_j X_{j+1} + \frac{1-\eta}{2}Y_j Y_{j+1} + \mu Z_j\right],
+    \label{eq:xy}
+\end{equation}
+which the JW transformation maps onto a quadratic Majorana chain of the form of Eq.~\eqref{eq:ham}.
+We study it as a \emph{fermionic} model: its ground state is a FGS and the natural notion of locality is that of the fermionic modes, so that $M_2^{\mathrm{FNL}}$ is the non-local magic of the free-fermion problem~\footnote{Minimizing over all local spin unitaries gives a quantity bounded from above by ours, $M_\RENYI^{\mathrm{NL}}\le M_\RENYI^{\mathrm{FNL}}$.}, and we take the contiguous block $A=\{1,\dots,\ell\}$.
+For $N\to\infty$ at fixed $\ell$, $\Gamma_A$ is a block-Toeplitz matrix with a $2\times2$ symbol $g(k)$ fixed by the Bogoliubov angle $\theta_k$ (End Matter). Hence, $M_2^{\mathrm{FNL}}$ is computed at cost $O(\ell^3)$, and its asymptotics for $\ell\gg1$ is controlled by the strong Szeg\H{o} theorem for smooth symbols and by the Fisher--Hartwig formula for singular ones~\cite{Jin_2004,Its_2005}.
+Since $|\det g(k)| = 1$, volume-law scaling is excluded; in the gapped phases, where $\theta_k$ is analytic, $M_2^{\mathrm{FNL}}$ saturates with exponentially small corrections~\cite{simon2010szego}, while logarithmic growth can only arise from singularities of the symbol, as at the Ising critical point $\mu=1$, $\eta=1$.
+
+Off criticality, the single-particle entanglement energies of a semi-infinite cut are known from corner transfer matrices~\cite{Peschel2009,Eisler2017}: they are equally spaced, $\varepsilon_n^{\mathrm{ent}} = (2n+1)\varepsilon$ for $\mu>1$ and $\varepsilon_n^{\mathrm{ent}} = 2n\varepsilon$ for $\mu<1$, with $n=0,1,\dots$ and $\varepsilon$ given in the End Matter. Since $\lambda_n = \tanh(\varepsilon_n^{\mathrm{ent}}/2)$~\cite{Peschel2004}, and the block has two boundaries,
+\begin{equation}
+    M_2^{\mathrm{FNL}}(\ell) \simeq 2\sum_{n=0}^{\infty} \mathfrak{m}_2\!\left[\tanh^2\left(\varepsilon_n^{\mathrm{ent}}/2\right)\right],
+    \label{eq:NL_peschel2}
+\end{equation}
+up to corrections exponentially small in $\ell/\xi$, with $\xi$ the correlation length. As $\mathfrak{m}_2(x)\simeq(1-x)/\ln 2$ for $x \to 1$, the series converges rapidly.
+In the ordered phase, $\mu<1$, the FNL magic is strongly suppressed: the $n=0$ mode is maximally entangled ($\lambda_0=0$), while all other modes are exponentially close to unentangled ($\lambda_n\to1$), so that every mode contributes an exponentially small amount, vanishing exactly in the GHZ limit $\mu\to0$. This is a striking example of a phase with area-law entanglement but negligible non-local magic.
+
+At $\mu=1$, the gap closes, $\varepsilon\to0$, the series in Eq.~\eqref{eq:NL_peschel2} diverges, and $\theta_k$ develops a jump at $k=0$. The Fisher--Hartwig asymptotic density of the eigenvalues $\lambda\in[0,1)$ for a block with two boundaries, $\rho(\lambda) \simeq 2\ln\ell\,[\pi^2(1-\lambda^2)]^{-1}$~\cite{Its_2005}, yields $M_2^{\mathrm{FNL}}(\ell)\simeq \beta_{\mathrm{FNL}}\ln\ell$, with
+\begin{equation}
+    \beta_{\mathrm{FNL}} = \frac{2}{\pi^2}\int_{0}^{1} \frac{\mathfrak{m}_2(\lambda^2)}{1-\lambda^2}\, d\lambda= \frac{\pi ^2-\ln ^2\left(7-4 \sqrt{3}\right)}{\pi ^2 \ln 16}\;,
+    \label{eq:alpha_NL}
+\end{equation}
+the non-local magic analog of $S \simeq (c/3)\ln\ell$~\cite{Calabrese2004entanglement}, with the central charge $c$ replaced by $\beta_{\mathrm{FNL}}$.
+
+Figure~\ref{fig:Ising_model} benchmarks these predictions. In panel (a), Eq.~\eqref{eq:analytic_NL} agrees with a brute-force minimization over the full group $\mathrm{U}(2^\ell)\otimes\mathrm{U}(2^{N-\ell})$ for $N=8$, $\ell=4$ (see SM, Sec.~S2, for random FGS). In panel (b), exact numerics for $N=10^6$ agree with Eq.~\eqref{eq:NL_peschel2}. In panel (c), a fit for $\ell > 50$ at $\mu = 1$ gives $\beta_{\mathrm{fit}} \approx 0.1072$, in excellent agreement with Eq.~\eqref{eq:alpha_NL}. Panel (d) shows that over the full XY phase diagram the FNL magic is concentrated near the critical lines.
+
+These results reflect an area law. Since $\mathfrak{m}_2(\lambda^2)\le 2\,\mathfrak{f}[(1+\lambda)/2]$, with $\mathfrak{f}$ the binary entropy, Eq.~\eqref{eq:analytic_NL} implies $M_2^{\mathrm{FNL}}\le 2S(A)$, the Gaussian analog of the bound of Ref.~\cite{Cao_2025}; by Hastings' theorem~\cite{Hastings_2007}, $M_2^{\mathrm{NL}}\le M_2^{\mathrm{FNL}}\le 2C_{\mathrm{ent}}|\partial A|$ in unique gapped ground states of one-dimensional local free-fermion Hamiltonians (End Matter).
+
+\begin{figure*}[t!]
+    \centering
+    \includegraphics[width=\linewidth]{fig2_dynamics_4panel.pdf}
+    \caption{%
+    \textbf{Dynamics of FNL magic.}
+    (a)~Quench at $\eta=1$ from the fully polarized state ($\mu_0\to\infty$) to the critical point ($\mu=1$): exact numerics (circles) agree with the quasiparticle prediction, Eq.~\eqref{eq:fagotti_mnl} (solid lines), for $\ell = 40, 60, 100, 160$. Dashed lines mark the stationary value, Eq.~\eqref{eq:mnl_stationary}.
+    (b)~Same for the quench $\mu_0 = 2 \to \mu = 1$, showing weaker FNL magic production due to the smaller Bogoliubov mismatch.
+    (c)~Stationary density $M_2^{\mathrm{FNL}}(\infty)/\ell$ vs the post-quench field $\mu$ ($\mu_0\to\infty$): Eq.~\eqref{eq:mnl_stationary} (solid) and GGE numerics at $\ell = 160$ (crosses).
+    (d)~Random Gaussian circuits: $\overline{M}_2^{\mathrm{FNL}}/N$ vs $\sqrt{t}/N$ for $N = 20, 40, 80$, showing diffusive growth and saturation to the Haar value $\overline{\mathsf{m}}_{2}^{\mathrm{FNL}}(1/2)=2-\log_2(2+\sqrt{3})$ (dashed line).}
+    \label{fig:dynamics}
+\end{figure*}
+
+\textit{Quench dynamics.}---We now turn to quantum quenches in the Ising chain ($\eta=1$): the system is prepared in the ground state of $H(\mu_0)$ and evolved with $H(\mu)$, $\mu\neq\mu_0$.
+The state remains Gaussian, and $\Gamma_A(t)$ is block-Toeplitz with a time-dependent symbol fixed by the post-quench dispersion $\varepsilon_k$ and by the mismatch $\Delta\theta_k = \theta_k - \theta_k^{(0)}$ between post- and pre-quench Bogoliubov angles (End Matter)~\cite{Calabrese2005evolution}.
+At long times, dephasing leads to a generalized Gibbs ensemble (GGE)~\cite{Calabrese2005evolution,vidmar2017entanglement} with stationary eigenvalues $\lambda_k^\infty=|\cos\Delta\theta_k|$, and the Szeg\H{o} theorem gives
+\begin{equation}
+    M_2^{\mathrm{FNL}}(\infty) = \frac{\ell}{\pi}\int_0^\pi\! dk\; \mathfrak{m}_2\!\left(\sin^2\!\Delta\theta_k\right)\;,
+    \label{eq:mnl_stationary}
+\end{equation}
+i.e., the quench generically produces volume-law FNL magic.
+Eq.~\eqref{eq:mnl_stationary} closely parallels the entanglement entropy of the same quench~\cite{Calabrese2005evolution}, $S=\frac{\ell}{\pi} \int_0^\pi dk\, \mathfrak{f}\bigl(\sin^2(\Delta\theta_k/2)\bigr)$: in terms of $\lambda_k^{\infty}$, the entanglement weight $\mathfrak{f}[(1+\lambda_k^{\infty})/2]$ is replaced by the magic weight $\mathfrak{m}_2[(\lambda_k^{\infty})^2]=\mathfrak{m}_2(\sin^2\!\Delta\theta_k)$, where we used $\mathfrak{m}_2(x)=\mathfrak{m}_2(1-x)$.
+This parallel extends to all times. Writing $M_2^{\mathrm{FNL}}$ as a contour integral of $\frac{d}{d\lambda}\ln\det(\lambda-i\Gamma_A)$ and evaluating the moments $\mathrm{Tr}(i\Gamma_A)^{2n}$ via the multidimensional stationary-phase approach of Ref.~\cite{Fagotti2008} (End Matter), we derive the quasiparticle formula
+\begin{equation}
+    M_2^{\mathrm{FNL}}(\ell,t) \simeq \int_0^\pi\!\frac{dk}{\pi}\,\min\!\bigl(2|v_k|\,t,\;\ell\bigr)\;\mathfrak{m}_2\!\bigl(\sin^2\Delta\theta_k\bigr),
+    \label{eq:fagotti_mnl}
+\end{equation}
+valid for $\ell, t \gg 1$ at fixed $t/\ell$, with $v_k = d\varepsilon_k/dk$ the group velocity.
+Eq.~\eqref{eq:fagotti_mnl} predicts linear growth up to $t^* = \ell/(2v_{\max})$, followed by saturation to Eq.~\eqref{eq:mnl_stationary}, and has a transparent interpretation~\cite{Calabrese2005evolution,Fagotti2008}: the quench creates pairs of entangled quasiparticles that propagate ballistically with velocities $\pm v_k$, and a pair contributes to the FNL magic of $A$ only when one partner is inside $A$ and the other outside. The magic carried by each pair, $\mathfrak{m}_2(\sin^2\Delta\theta_k)$, vanishes both when $\Delta\theta_k = 0$ (no entanglement production) and when $\Delta\theta_k = \pi/2$ (maximally entangled but stabilizer-like pairs), and is maximal in between.
+Figures~\ref{fig:dynamics}(a)--(c) show excellent agreement between Eqs.~\eqref{eq:mnl_stationary} and~\eqref{eq:fagotti_mnl} and exact numerics, obtained by diagonalizing $\Gamma_A(t)$, for the quenches $\mu_0 = \infty \to 1$ and $\mu_0 = 2 \to 1$.
+
+Finally, we consider brickwork circuits of nearest-neighbor Gaussian gates, each drawn from the Haar measure on $\mathrm{SO}(4)$, acting on $|\mathbf{0}\rangle$~\cite{tirrito2025magicphasetransitionsmonitored} (SM, Sec.~S5).
+In contrast with the ballistic spreading of integrable quenches, operator spreading in such circuits is diffusive~\cite{dias2021diffusiveoperatorspreadingrandom,swann}. At early times, $\mathfrak{m}_2(\lambda^2) \simeq \lambda^2/\ln 2$ gives $M_2^{\mathrm{FNL}}(t) \simeq \mathrm{Tr}[(i\Gamma_A(t))^2]/(2\ln 2)$, governed by the diffusive spreading of two-point correlations across the cut~\cite{dias2021diffusiveoperatorspreadingrandom}, so that $M_2^{\mathrm{FNL}} \propto \sqrt{t}$ for $1 \ll t \ll N^2$.
+Fig.~\ref{fig:dynamics}(d) shows an excellent data collapse of $\overline{M}_2^{\mathrm{FNL}}(t)/N$ as a function of $\sqrt{t}/N$, interpolating between $\sqrt{t}$ growth and saturation at the Page value $\overline{\mathsf{m}}_{2}^{\mathrm{FNL}}(1/2)$ on the diffusive timescale $t\sim N^2$.
+
+\textit{Conclusions.}---We have proved an exact closed form for the fermionic non-local magic of Gaussian states at $\RENYI=2$ for contiguous bipartitions, and conjectured its extension to $\RENYI>2$. By reducing the minimization over local Gaussian unitaries to a single diagonalization of the reduced covariance matrix, it establishes fermionic Gaussian states as a broad class of highly entangled many-body systems where Gaussian-restricted non-local magic is exactly tractable, and provides an upper bound on the unrestricted one. We used it to derive an exact Page-like curve, logarithmic scaling at criticality, a quasiparticle picture after quenches and diffusive growth in random circuits.
+This tractability opens several directions: fermionic Gaussian states in higher dimensions, where entanglement is sensitive to the Fermi surface~\cite{swingle2010entanglement}; whether $\beta_{\mathrm{FNL}}$ captures universal features of the underlying conformal field theory~\cite{Calabrese2004entanglement}, and the extension to interacting integrable models~\cite{Alba_2017,alba2019,Kudler_Flam_2021}; disordered~\cite{evers,sierant2020,IGLOI_2005,Monthus_2018,ruggiero2022} and topological~\cite{Kitaev2001chain,Kitaev_2006,beri,gskb-t5ql} systems; symmetry-resolved non-local magic~\cite{Goldstein,Bianchi_2022,aditya2026coherencedynamicsquantummanybody,iannotti2026nonstabilizernessu1symmetrychaotic, cepollaro2025stabilizerentropysubspaces, Esposito_2024} and quantum Mpemba effects~\cite{Ares_2023,Ares_2025,aditya2025mpembaeffectsquantumcomplexity}; and monitored~\cite{FisherRandom2023,Li_2025,oshima} and non-Hermitian~\cite{Ashida_2020,kawabata2026nonhermitiandisorderedsystems,schirooooo,gallo,granet,lapierre2025entanglementtransitionsstructuredrandom} free-fermion dynamics, where our formula applies along each quantum trajectory.
+
+\textit{Note added.}---While preparing this manuscript, we became aware of a closely related independent work by M. Collura, B. Beri, and E. Tirrito~\cite{collura2026nonlocalnonstabilizernessfreefermion}. When overlapping, our results are consistent.
+
+\begin{acknowledgments}
+This work is dedicated to Ada. We are particularly indebted to P. Sierant for spotting a mistake in a prior version of this manuscript, and we thank the anonymous referees for their careful reading and suggestions, including a simpler proof of a lemma in the SM.
+We thank L. Leone, A. Russotto, P. Calabrese, L. Piroli, and J. Odavi\'c for comments and collaborations on related topics.
+D.I. and B.M. acknowledge the Les Houches Summer School 2025 on Exact Solvability and Quantum Information, which facilitated work on this subject.
+D.I. acknowledges support from COST Action THEORY-CHALLENGES CA22113 under Short-Term Scientific Mission (STSM) grant E-COST-GRANT-CA22113-6901e967.
+B.M. and X.T. acknowledge support from DFG Emmy Noether Programme proposal "Digital Quantum Matter Out-of-Equilibrium" No. 560726973, DFG under Germany's Excellence Strategy – Cluster of Excellence Matter and Light for Quantum Computing (ML4Q) EXC 2004/2 – 390534769, and DFG Collaborative Research Center (CRC) 183 Project No. 277101999 - project B01.
+A.H. acknowledges support from PNRR MUR project PE0000023-NQSTI and the PNRR MUR project CN00000013-ICSC.
+% TODO (authors): confirm or edit the following AI-use statement before submission.
+\rev{Generative AI tools were used to assist in the preparation and editing of parts of this manuscript and of the Supplemental Material. All derivations and numerical results were checked by the authors, who take full responsibility for the content.}
+\end{acknowledgments}
+
+\textit{Data availability.}---The data generated in this study will be made publicly available on Zenodo upon publication.
+
+\nocite{Bapat1989,HornJohnson2012,Hough2006,MR38136,bhatia2013matrix,sfeo}
+\bibliography{ref_current}
+
+\input{endmatter}
+
+\end{document}

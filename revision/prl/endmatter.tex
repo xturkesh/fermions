@@ -1,0 +1,94 @@
+\section*{End Matter}
+
+\appendix
+
+\section{Contiguous blocks and strategy of the proof of Theorem~\ref{thm:global}}
+\label{em:proof}
+
+\textit{Local Gaussian orbit.}---Let $A=\{1,\dots,\ell\}$. Then $\pi_{AB}$ in Eq.~\eqref{eq:defFNLmagic} is trivial, the JW strings of the Majorana operators of $A$ do not leave $A$, and those of $B$ differ from the ones defined within $B$ only by the parity $P_A=\prod_{m\in A}Z_m$ of $A$. Since $U_{O_A}P_AU_{O_A}^\dagger=\det(O_A)P_A$, the qubit unitary $U_{O_A}\otimes U_{O_B}$ acts on the Majorana operators of the chain as $O_A\oplus\det(O_A)\,O_B$, i.e., it coincides up to a phase with a Gaussian unitary of the chain in $\mathrm{O}(2\ell)\oplus\mathrm{O}(2(N-\ell))$; the same holds, exchanging $A$ and $B$, for $A=\{N-\ell+1,\dots,N\}$, where $T_{\pi_{AB}}$ is a cyclic shift. As $(O_A,O_B)\mapsto(O_A,\det(O_A)\,O_B)$ is a bijection, Eq.~\eqref{eq:defFNLmagic} amounts to maximizing $\zeta_2$ over the orbit $\Gamma\mapsto(O_A\oplus O_B)\Gamma(O_A\oplus O_B)^{\trans}$.
+For non-contiguous bipartitions, $T_{\pi_{AB}}$ is a non-Gaussian qubit permutation and this identification fails: e.g., for $A=\{1,3\}$ and $B=\{2,4\}$, the state $(\alpha c_1^\dagger+\beta c_3^\dagger)(c_2^\dagger+c_4^\dagger)|\mathbf{0}\rangle/\sqrt2$ has $\lambda_1=\lambda_2=1$, while for $|\alpha|\neq|\beta|$, $\alpha\beta\ne0$, its reduced qubit state on $A$ has spectrum $\{|\alpha|^2,|\beta|^2\}$ and is therefore not locally equivalent to a stabilizer state.
+
+\textit{Strategy of the proof.}---On the local Gaussian orbit, $\zeta_2$ is the collision probability of a determinantal distribution which depends on two independent rotations and on \emph{all} minors of the matrix parametrizing the state, so that it is not evidently maximized at the canonical point. The proof (SM, Sec.~S1) is a chain of steps, each of which either removes one of these complications exactly, or bounds the functional by a simpler one that is tight at the canonical point.
+(1)~Wick's theorem turns $\zeta_2$ into the collision probability $d\sum_S p_S^2$ of the projection determinantal point process with kernel $K=(\mathbb{I}+i\Gamma)/2$~\cite{collura2026nonstabilizernessfermionicgaussianstates}.
+(2)~For any isometry $Q\in\mathbb{C}^{n\times k}$, the collision probability of the associated Slater determinant obeys $\mathcal{C}(Q)\le 2^{-k}\det(\mathbb{I}+\Sigma^\dagger\Sigma)$, with $\Sigma=Q^{\trans}Q$ the transpose overlap; this sharp bound is proved by induction on $n$.
+(3)~In the BCS parametrization, the dependence on the local rotations is packaged into $Z=O_AZ_0O_B^{\trans}$, with $Z_0=\bigoplus_j(\mathbb{I}_2+i\lambda_jJ)/\sqrt{1-\lambda_j^2}$, and $\zeta_2$ becomes, up to an orbit-invariant constant, the sum $\mathsf{F}(Z)$ of the fourth powers of all minors of $Z$; a Cauchy--Schwarz argument reduces the two rotations to one, $O_A=O_B$.
+(4)~The bound of step (2) gives $\mathsf{F}(Z)\le\mathsf{R}(H)$, a weighted sum over the principal minors of $H=Z^2$ only, with equality at $Z_0$.
+(5)~A principal-minor identity and a sign average combined with a Cayley transform rewrite $\mathsf{R}(H)$ exactly as a sum of squared principal minors of a single Hermitian matrix.
+(6)~Interpreting this sum as the probability of an event for another determinantal process, a change of basis within pairs of coordinates reduces it, up to an orbit-invariant prefactor, to $\mathsf{L}(U)=\sum_S|\det U_S|^2$ for a unitary $U$.
+(7)~A determinant inequality for positive matrices of rank at most two, $[z_1\cdots z_n]\det(\sum_iz_iB_i)\le\prod_i\|B_i\|_{\mathrm{HS}}$, proved with fermionic creation operators, bounds $\mathsf{L}(U)$ through the diagonal of $U$, and hence by the orbit invariant $\det(\mathbb{I}+T^\dagger T)$, $T=(U+U^{\trans})/2$.
+(8)~The canonical form saturates every inequality of the chain, which proves Theorem~\ref{thm:global}; a continuity argument covers $\lambda_j=1$, and padding with ancillas removes the assumption $N=2\ell$.
+
+\section{Finite-size Page curve}
+\label{em:page}
+
+For Haar-random $O\in\mathrm{O}(2N)$ and $|A|=\ell\le N/2$, the joint distribution of $x_m=\lambda_m^2$ is~\cite{PhysRevB.103.L241118}
+\begin{equation}
+    \mathbb{P}(x_1,\dots,x_\ell) = \frac{1}{Z_\ell}\prod_{1\le i<j\le \ell} (x_i-x_j)^2 \prod_{m=1}^\ell \frac{(1-x_m)^{N-2\ell}}{\sqrt{x_m}}\;,
+\end{equation}
+with $Z_\ell$ a normalization. The one-point density $\varrho^{(\ell)}(x)=\mathbb{E}_\mathbb{P}[\sum_m \delta(x-x_m)]$, normalized to $\int_0^1\varrho^{(\ell)}=\ell$, is given by the orthogonal-polynomial kernel~\cite{Mehta2004,sierant2026theorymatchgatecommutant,sierant2026fermionic}
+\begin{equation}
+\varrho^{(\ell)}(x) = w(x) \sum_{n=0}^{\ell-1} p_n(x)^2\;,\qquad w(x)=\frac{(1-x)^{N-2\ell}}{\sqrt{x}}\;,
+\label{eq:ziopino}
+\end{equation}
+where $p_n(x) = \mathrm{P}_n^{(-1/2,N-2\ell)}(1-2x)/\sqrt{h_n}$ are orthonormal with respect to $w$ on $[0,1]$, $\mathrm{P}_n^{(a,b)}$ are Jacobi polynomials, and
+\begin{equation}
+    h_n=\frac{\Gamma(n+\frac12) \Gamma(n+N-2\ell+1)}{(2n+N-2\ell+\frac12) \Gamma(n+1)\Gamma(n+N-2\ell+\frac12)}\;.
+\end{equation}
+Equation~\eqref{eq:ziopino} gives the exact quenched average $\overline{M}_2^\mathrm{FNL}=\int_0^1 \mathfrak{m}_2(x) \varrho^{(\ell)}(x) dx$ at finite $N$, which we benchmarked against direct sampling of Haar-random $O\in\mathrm{O}(2N)$, finding agreement within statistical errors. For $\ell,N\to\infty$ at fixed $r=\ell/N$, $\varrho^{(\ell)}/N$ converges to the free Jacobi law $\varrho_r$, whose total mass is $r$, which yields Eq.~\eqref{eq:ziopin2}; the exponents of $w(x)$ only affect $O(1/N)$ corrections to $\overline{M}_2^\mathrm{FNL}/N$.
+
+\section{XY chain and corner transfer matrices}
+\label{em:xy}
+
+After the JW mapping, Eq.~\eqref{eq:xy} takes the form of Eq.~\eqref{eq:ham} with $h_{2m-1,2m} = 2\mu$, $h_{2m,2m+1} = 1+\eta$, $h_{2m+2,2m-1} = 1-\eta$, the remaining entries being fixed by antisymmetry~\cite{Mbeng2024}. We take $N$ divisible by $4$, so that the ground state lies in the Neveu--Schwarz sector, $\gamma_{N+1}=-\gamma_1$, with momenta $k= \pi(2n+1)/N$, $n = 0,\dots, N/2-1$. A Fourier transform followed by a Bogoliubov rotation at each $k$ diagonalizes $ih$, with Bogoliubov angle and dispersion
+\begin{equation}
+\begin{split}
+    e^{i\theta_k} &= (\mu - \cos k+i\eta\sin k)/\varepsilon_k\;,\\
+    \varepsilon_k &= \sqrt{(\mu-\cos k)^2 + \eta^2\sin^2 k}\;.
+\end{split}
+    \label{eq:bogoliubov_angle}
+\end{equation}
+For $N\to\infty$, the reduced covariance matrix of $A=\{1,\dots,\ell\}$ is block Toeplitz,
+\begin{equation}
+\begin{split}
+    (\Gamma_A)_{mn} &= \int_{-\pi}^{\pi}\frac{dk}{2\pi}\,e^{ik(m-n)}\,g(k)\;,\\
+    g(k) &= \begin{pmatrix} 0 & e^{i\theta_k} \\ -e^{-i\theta_k} & 0 \end{pmatrix}.
+\end{split}
+\label{eq:block_toeplitz}
+\end{equation}
+The reduced state is $\rho_A\propto\exp(-H_{\mathrm{ent}})$, with $H_{\mathrm{ent}} = \frac{i}{2}\sum_{n} \varepsilon_n^{\mathrm{ent}}\,\tilde\gamma_{2n-1}\tilde\gamma_{2n}$ for suitable Majorana operators $\tilde\gamma$, so that $\lambda_n = \tanh(\varepsilon_n^{\mathrm{ent}}/2)$~\cite{Peschel2004}; $\lambda_n = 1$ corresponds to an unentangled mode. For a semi-infinite cut, the corner transfer matrix gives the equally spaced spectrum quoted in the main text~\cite{Peschel2009,Eisler2017}, with $\varepsilon = \pi K(\kappa')/K(\kappa)$, where $K$ is the complete elliptic integral of the first kind, $\kappa' = \sqrt{1-\kappa^2}$, and
+\begin{equation}
+    \kappa = \begin{cases}
+        \eta/\sqrt{\eta^2 + \mu^2 - 1} & \mu > 1 \;,\\[2pt]
+        \sqrt{\eta^2 + \mu^2 - 1}/\eta & \mu < 1,\; \eta^2 + \mu^2 > 1\;,\\[2pt]
+        \sqrt{(1 - \eta^2 - \mu^2)/(1 - \mu^2)} & \mu < 1,\; \eta^2 + \mu^2 < 1\;.
+    \end{cases}
+    \label{eq:elliptic_modulus}
+\end{equation}
+At $\mu=1$ ($\eta=1$), $\kappa\to1$ and $\varepsilon\to0$, with correlation length $\xi\simeq|\mu-1|^{-1}$.
+
+\textit{Area law.}---With $\mathfrak{f}(x):=-x\log_2x-(1-x)\log_2(1-x)$, the Gaussian entanglement entropy is $S(A)=\sum_i\mathfrak{f}[(1+\lambda_i)/2]$. The $\RENYI\to1$ limit of Eq.~\eqref{eq:analytic_NL_alpha} gives the weight $\frac12\mathfrak{f}(x)$, and since Rényi entropies are non-increasing in the index, $\mathfrak{m}_\RENYI(x)\le\frac12\mathfrak{f}(x)$ for $\RENYI\ge1$. Together with $\frac12\mathfrak{f}(\lambda^2)\le 2\,\mathfrak{f}[(1+\lambda)/2]$ for $\lambda\in[0,1)$, this gives $M_{\RENYI}^{\mathrm{FNL}}\le 2S(A)$, rigorous at $\RENYI=2$ by Theorem~\ref{thm:global}. Hastings' theorem~\cite{Hastings_2007}, $S(A)\le C_{\mathrm{ent}}|\partial A|$ for unique gapped ground states of one-dimensional local Hamiltonians, then yields $M_{\RENYI}^{\mathrm{NL}}\le M_{\RENYI}^{\mathrm{FNL}}\le 2C_{\mathrm{ent}}|\partial A|$.
+
+\section{Quench dynamics}
+\label{em:quench}
+
+After the quench $\mu_0\to\mu$ at $\eta=1$, $\Gamma_A(t)$ is block Toeplitz as in Eq.~\eqref{eq:block_toeplitz} (with $k\in[0,2\pi)$), with symbol~\cite{Calabrese2005evolution}
+\begin{equation}
+    g(k,t) = \begin{pmatrix} -q(k,t) & p(k,t) \\ -p(-k,t) & q(k,t) \end{pmatrix},
+    \label{eq:symbol_t}
+\end{equation}
+where $p(k,t) = e^{-i\theta_k}\left[\cos\Delta\theta_k + i\sin\Delta\theta_k\cos (2\varepsilon_k t) \right]$, $q(k,t) = i\,\sin\Delta\theta_k\,\sin (2\varepsilon_k t)$, $\varepsilon_k$ and $\theta_k$ refer to the post-quench Hamiltonian, and
+\begin{equation}
+    \cos\Delta\theta_k = \frac{(\mu-\cos k)(\mu_0-\cos k)+\sin^2 k}{\varepsilon_k\,\varepsilon_k^{(0)}}\;.
+    \label{eq:cos_delta_theta}
+\end{equation}
+At $t=0$, $g$ reduces to the ground-state symbol of $H(\mu_0)$, while for $t\to\infty$ the oscillating terms dephase, leaving $p(k,\infty) = e^{-i\theta_k}\cos\Delta\theta_k$ and $q=0$, i.e., the GGE leading to Eq.~\eqref{eq:mnl_stationary}.
+At finite times, we write
+\begin{equation}
+    M_2^{\mathrm{FNL}} = \frac{1}{4\pi i}\oint_\mathcal{C}d\lambda\;\mathfrak{m}_2(\lambda^2)\;\frac{d}{d\lambda}\ln \det(\lambda \mathbb{I}_{2\ell} - i\Gamma_A)\;,\label{eq:circccc}
+\end{equation}
+where $\mathcal{C}$ encircles all eigenvalues counterclockwise and the factor $1/2$ compensates the double counting of the $\pm\lambda_n$ pairs. Expanding in $\lambda^{-1}$ expresses $M_2^{\mathrm{FNL}}$ through the moments $\mathrm{Tr}(i\Gamma_A)^{2n}=\mathrm{Tr}\,W_+^{2n} + \mathrm{Tr}\,W_-^{2n}$, where $W_\pm = \mathcal{H} \pm i\mathcal{T}$ are Hermitian, with $\mathcal{T}_{jl} = \int \frac{dk}{2\pi}e^{-ik(j-l)}q(k,t)$ Toeplitz and $\mathcal{H}_{jl} = \int \frac{dk}{2\pi}e^{-ik(j+l-\ell-1)}p(k,t)$ Hankel. Following Ref.~\cite{Fagotti2008}, a multidimensional stationary-phase analysis of the resulting momentum integrals gives, for $\ell \gg 1$,
+\begin{equation}
+   \mathrm{Tr}(i\Gamma_A)^{2n}\simeq \frac{2\ell}{\pi}\!\int_0^\pi\!\!dk\Bigl[1-\bigl(1-\cos^{2n}\Delta\theta_k\bigr)\min\!\Bigl(1, \frac{2|v_k|t}{\ell}\Bigr)\Bigr],
+\label{eq:moments_asymptotic}
+\end{equation}
+which interpolates ballistically between the pure-state value $2\ell$ and the GGE moments. Inserting Eq.~\eqref{eq:moments_asymptotic} into Eq.~\eqref{eq:circccc} yields Eq.~\eqref{eq:fagotti_mnl}.

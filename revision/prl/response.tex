@@ -1,0 +1,108 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=2.3cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage[colorlinks,linkcolor=teal,urlcolor=teal]{hyperref}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\newcommand{\referee}[1]{\begin{quote}\itshape\small #1\end{quote}}
+\newcommand{\reply}{\textbf{Reply.}~}
+\newcommand{\todo}[1]{\textcolor{red}{[#1]}}
+
+\begin{document}
+
+\begin{center}
+{\Large\bfseries Reply to the Referees}\\[4pt]
+Manuscript QT10218 --- ``Non-Local Magic Resources for Fermionic Gaussian States''\\
+D. Iannotti, B. Magni, R. Cioli, A. Hamma, and X. Turkeshi
+\end{center}
+
+We thank both Referees for their careful reading of the revised manuscript. Below we reply point by point; all changes are listed. In this version, the manuscript is formatted as a Letter: the main results are in the main text, the technical details in the End Matter, and the remaining Appendices in the Supplemental Material (SM), whose content is otherwise unchanged except for the modifications listed below. The table at the end maps the equation numbers quoted in the reports to the new ones.
+
+\section*{Referee A}
+
+\referee{I believe that the current statement of theorem 1 is explicitly false. [...] the $T_{\pi_{AB}}$ in equations (5) and (7) is a non-Gaussian permutation of qubits while in the appendix (e.g.\ from equation (50)) we have only Gaussian operations. [...] Another change which would fix the theorem is to restrict to only considering contiguous partitions (so $A$ consists of the first $l$ modes and $B$ the rest).}
+
+\reply We thank the Referee for this important observation and for the explicit counterexample, which we have verified. We agree, and we have restricted Theorem~1 to bipartitions into two contiguous blocks of the Jordan--Wigner chain, $A=\{1,\dots,\ell\}$ and $B=\{\ell+1,\dots,N\}$ (or vice versa). In this case $T_{\pi_{AB}}$ is trivial (or a cyclic shift), and $U_{O_A}\otimes U_{O_B}$ coincides, up to a phase, with the Gaussian unitary of the whole chain associated with $O_A\oplus\det(O_A)\,O_B$; hence the minimization in Eq.~(5) [now Eq.~(3)] is exactly the maximization over the orbit of Eq.~(50) [now Eq.~(S5)] solved in the proof. This argument is now given in the End Matter (``Local Gaussian orbit'') and below Eq.~(S5) in the SM, together with a remark, based on the Referee's example, that the identification fails for non-contiguous bipartitions. The statement of Theorem~1, the abstract, and the discussion after the definition of the FNL magic have been modified accordingly. The restriction does not affect any of the applications: for Haar-random states and SYK$_2$ eigenstates the statistics of $\Gamma_A$ is invariant under mode permutations, while for the XY chain, the quenches, the random circuits and the variational checks we used contiguous blocks $A=\{1,\dots,\ell\}$ \todo{authors: please confirm for the random-circuit data of Fig.~3(d)}. With this restriction, $M_2^{\mathrm{NL}}\le M_2^{\mathrm{FNL}}$ continues to hold.
+
+\referee{[...] although the manuscript lacks any AI disclosure statement, in my opinion the new appendix appears to have significant LLM input. [...] overall it would be nice to have some intuition about why we are making the moves we are making [...].}
+
+\reply \todo{Authors: adapt this paragraph to your actual use of AI tools.} We have added a statement on the use of AI tools in the Acknowledgments, and we have revised all the passages indicated by the Referee (points 2--14 below). Moreover, at the beginning of Sec.~S1 we added a paragraph explaining the logic of the proof, i.e., why each step is taken, which complements the ``Odyssey'' figure; a shorter version is in the End Matter.
+
+\begin{enumerate}[leftmargin=*,label=\textbf{\arabic*.},start=2]
+\item \referee{I think the middle line of equation (124) isn't exactly right [...].}
+\reply Corrected: the expectation value now acts on the whole product, and the independence of the rows is used only in the last step [Eq.~(S75)].
+
+\item \referee{The text under equation (60) states that the equation is just Cauchy-Binet but in fact it requires some extra reasoning [...].}
+\reply We now state that the identity follows from the principal-minor expansion $\det(\mathbb{I}+Y)=\sum_J\det Y_{J,J}$ applied to $Y=X^\dagger X$, combined with the Cauchy--Binet formula for each principal minor of $X^\dagger X$ [below Eq.~(S16)].
+
+\item \referee{Lemma 1 is proved with the line ``The determinantal generating function gives'' [...] it would be nice to show the proof of this if so.}
+\reply We now derive Eq.~(59) [now Eq.~(S15)] explicitly: writing $(-1)^{|S\cap I|}=\prod_{i\in I}(1-2\,\mathbf{1}_{i\in S})$, expanding the product and using that the inclusion probabilities of the determinantal process are $\sum_{S\supseteq T}p_S=\det K_T$ (with a reference), the principal-minor expansion gives $\det(\mathbb{I}-2K_I)$. The expression ``generating function'' has been removed.
+
+\item \referee{I would be interested in an explanation of what the phrase ``The transpose, rather than the adjoint, is what remembers the particle--hole reality constraint in the fermionic application'' actually means [...].}
+\reply The sentence meant that the relevant object is the transpose overlap $\Sigma=Q^{\mathsf T}Q$ (the adjoint overlap $Q^\dagger Q=\mathbb{I}$ being trivial), because in the application (Proposition~S2) the reality of the covariance matrix translates into the complex orthogonality $Z^{\mathsf T}Z=\mathbb{I}$ of the BCS matrix, which makes $\Sigma$ explicitly computable. We replaced the sentence with this explanation.
+
+\item \referee{In the phrase ``The two chains coincide term by term, proving Eq.~(108)'', I am not sure what the chains are.}
+\reply The two ``chains'' were the two sequences of equalities for the two sides of Eq.~(108). This part has been replaced by the Referee's simpler proof (point~11).
+
+\item \referee{The proof between (80) and (81) is unnecessarily convoluted. [...]}
+\reply Simplified as suggested: $0<\mathcal{R}\le\mathbb{I}$ gives $\|\mathcal{R}\|\le1$ and $|e_1^\dagger\mathcal{R}u|\le\|u\|\le1$ [after Eq.~(S36)].
+
+\item \referee{[...] In my opinion equation (147) is already sufficient, (148) is unnecessary and somewhat confusing.}
+\reply Eq.~(148) has been removed.
+
+\item \referee{The text ``In this subsection we rewrite it exactly --- no inequality is involved --- [...]'' is very LLM-ish and slightly confusing [...].}
+\reply Rephrased (beginning of Sec.~S1.5).
+
+\item \referee{Just above equation (136), the word invariant only has one v in it.}
+\reply Corrected; we also clarified the sentence, which refers to the invariance of the probabilities under a unitary change of column gauge.
+
+\item \referee{The proof of lemma 5 and especially Equation (115) is (subjectively, for me) borderline unreadable. [...] I sketched this proof in section 4.}
+\reply We thank the Referee for the elegant alternative proof, which we have checked and adopted in Lemma~S5 [Eqs.~(S64)--(S67)], acknowledging the Referees in the Acknowledgments. (In Eqs.~(20)--(24) of the report, $\det(\mathbb{I}-H_SH_S^{\mathsf T})$ should read $\det(\mathbb{I}+H_SH_S^{\mathsf T})$ and the sums run over $A\subseteq S$, $B\subseteq S^c$; the conclusion is unchanged.) The sign-average identity previously established in the proof of Lemma~5 is now derived where it is used, in Proposition~S3.
+
+\item \referee{I don't think the text ``with no factorial normalization.'' in theorem 2 is necessary [...].}
+\reply Removed.
+
+\item \referee{[...] the notations $\|\cdot\|_{\mathrm{HS}}$ and $\|\cdot\|_2$ are used for exactly the same thing.}
+\reply We now use $\|\cdot\|_{\mathrm{HS}}$ throughout.
+
+\item \referee{The notation from equation (145) is technically consistent, but unfortunate [...].}
+\reply We now denote the creation operator by $c_x^\dagger=\sum_j x_jc_j^\dagger$, and its adjoint by $c_x$, throughout the proof of Theorem~S1 [Eqs.~(S96)--(S99)].
+\end{enumerate}
+
+We also corrected a few further typos in the Appendix (e.g., in the definition of the coefficient $[z_1\cdots z_n]f$ and in the Remark after Theorem~S1).
+
+\section*{Referee B}
+
+\referee{Equation (11) of the revised manuscript appears inconsistent with the previous result derived by Bianchi, Hackl, and Kieburg [...] Eq.~(11) of the manuscript therefore contains an additional factor $\prod_{m}(1-x_m)^{-1/2}$.}
+
+\reply We thank the Referee for the positive assessment of Theorem~1 and for spotting this inconsistency. The additional factor is a typo, which we carried over in the change of variables from $\lambda_m$ to $x_m=\lambda_m^2$: the correct weight is the one of Bianchi, Hackl and Kieburg, $x^{-1/2}(1-x)^{N-2\ell}$, which we now cite. Point by point:
+\begin{enumerate}[leftmargin=*]
+\item It is a typographical error.
+\item We corrected Eqs.~(14)--(15) consistently: $p_n(x)=\mathrm{P}_n^{(-1/2,N-2\ell)}(1-2x)/\sqrt{h_n}$, with $h_n=\Gamma(n+\tfrac12)\Gamma(n+N-2\ell+1)/[(2n+N-2\ell+\tfrac12)\Gamma(n+1)\Gamma(n+N-2\ell+\tfrac12)]$ [now Eqs.~(12)--(14) in the End Matter].
+\item The analytical curve in Fig.~1(a) is the $N\to\infty$ result, Eq.~(18) [now Eq.~(6)], as stated in the caption; the data are obtained from Haar-random $O\in\mathrm{O}(2N)$, $\Gamma=O\Gamma_0O^{\mathsf T}$ \todo{authors: confirm sampling method}. We rephrased the sentence on the comparison with Eq.~(14). As suggested, we checked the corrected finite-$N$ formula against direct sampling (for $\ell=1,2$ and several $N\ge2\ell$), finding agreement within statistical errors.
+\item The thermodynamic-limit results, Eqs.~(16)--(18), including the half-partition value $2-\log_2(2+\sqrt3)$, are unchanged, since the exponent of $(1-x)$ only affects the $O(1/N)$ corrections to $\overline{M}_2^{\mathrm{FNL}}/N$.
+\end{enumerate}
+
+\section*{Equation numbers}
+
+\begin{center}
+\small
+\begin{tabular}{ll|ll}
+\hline
+previous & this version & previous & this version\\
+\hline
+Eq.~(5) & Eq.~(3) & Eq.~(57) & Eq.~(S13)\\
+Eqs.~(6), (7) & Eq.~(4), Theorem~1 & Eqs.~(59), (60) & Eqs.~(S15), (S16)\\
+Eq.~(11) & Eq.~(12) & Eqs.~(80), (81) & Eq.~(S36) and text below\\
+Eqs.~(14), (15) & Eqs.~(13), (14) & Eq.~(108), Lemma~5 & Eq.~(S63), Lemma~S5\\
+Eqs.~(16)--(18) & text above Eq.~(6), Eq.~(6) & Eqs.~(115), (116) & replaced by Eqs.~(S64)--(S67)\\
+Eq.~(50) & Eq.~(S5) & Eq.~(124) & Eq.~(S75)\\
+Lemma~1 & Lemma~S1 & Eq.~(136) & Eq.~(S87)\\
+Theorems~2, 3 & Theorems~S1, S2 & Eqs.~(145), (147), (148) & Eqs.~(S96), (S98), removed\\
+\hline
+\end{tabular}
+\end{center}
+
+\end{document}
