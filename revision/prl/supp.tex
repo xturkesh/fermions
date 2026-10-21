@@ -60,7 +60,7 @@ urlcolor=teal]{hyperref}
 \captionsetup[subfigure]{justification=justified}
 
 % === Custom macros ===
-\newcommand{\NL}{\mathrm{FNL}}
+\newcommand{\NL}{\mathrm{GNL}}
 \newcommand{\RENYI}{\alpha}
 \newcommand{\MNL}{\mathrm{M}_2^{\NL}}
 \newcommand{\Mtot}{\mathrm{M}_2}
@@ -99,7 +99,7 @@ urlcolor=teal]{hyperref}
 
 \maketitle
 
-\noindent In this Supplemental Material, equations, figures and sections labelled with the prefix ``S'' refer to this document, while the remaining ones refer to the main text. Section~\ref{app:proof} contains the full proof of Theorem~\ref{M-thm:global}; Sec.~\ref{app:variational} the variational verification of Eqs.~\eqref{M-eq:analytic_NL} and~\eqref{M-eq:analytic_NL_alpha}; Sec.~\ref{app:experimental} the error analysis for the experimental estimation of the FNL magic; Sec.~\ref{Sec:generaliz} the generalization of our results to R\'enyi index $\RENYI>2$; and Sec.~\ref{app:numerics} further details on the numerical simulations.
+\noindent In this Supplemental Material, equations, figures and sections labelled with the prefix ``S'' refer to this document, while the remaining ones refer to the main text. Section~\ref{app:proof} contains the full proof of Theorem~\ref{M-thm:global}; Sec.~\ref{app:variational} the variational verification of Eqs.~\eqref{M-eq:analytic_NL} and~\eqref{M-eq:analytic_NL_alpha}; Sec.~\ref{app:experimental} the error analysis for the experimental estimation of the GNL magic; Sec.~\ref{Sec:generaliz} the generalization of our results to R\'enyi index $\RENYI>2$; and Sec.~\ref{app:numerics} further details on the numerical simulations.
 
 \section{Proof of Theorem~\ref{M-thm:global}: An Odyssey %as Nolan intended -- <3
 }
@@ -123,25 +123,25 @@ urlcolor=teal]{hyperref}
   island/.style={draw=coastm, line width=0.85pt, top color=sandLight, bottom color=sandm},
   step badge/.style={circle, fill=inkm, draw=white, line width=0.6pt, minimum size=4.4mm,
                      inner sep=0pt, text=white, font=\fontsize{6.6}{6.6}\selectfont\bfseries},
-  lab title/.style={text=inkm, font=\fontsize{8}{9}\selectfont\bfseries, align=center, inner sep=1pt},
-  lab formula/.style={text=inkm, font=\fontsize{7.3}{8.2}\selectfont, align=center, inner sep=1pt},
-  lab ref/.style={text=accentm, font=\fontsize{5.6}{6.4}\selectfont\bfseries, align=center, inner sep=1pt},
-  small label/.style={text=mutedm, font=\fontsize{5.6}{6.3}\selectfont\bfseries}]
+  note box/.style={rounded corners=2.5pt, fill=white, fill opacity=0.84, text opacity=1,
+                   draw=oceanEdge!75!inkm, line width=0.45pt, align=center,
+                   inner xsep=3pt, inner ysep=2.4pt, minimum height=9.3mm, outer sep=0pt},
+  leader/.style={draw=inkm!50, densely dotted, line width=0.65pt, line cap=round}]
 % ocean
 \path[rounded corners=10pt, top color=oceanTop, bottom color=oceanBottom,
-      draw=oceanEdge, line width=0.8pt] (0,0) rectangle (17,5.2);
+      draw=oceanEdge, line width=0.8pt] (0,0) rectangle (17,5.8);
 % route legs (drawn first, islands cover the departure ends)
-\draw[route] (0.5,2.35) to[out=50,in=230] (0.86,2.73);
-\draw[route] (1.35,3.25) to[out=-30,in=150] (2.59,2.44);
-\draw[route] (3.35,2.0) to[out=30,in=210] (4.69,2.76);
-\draw[route] (5.45,3.2) to[out=-30,in=150] (6.54,2.49);
-\draw[route] (7.3,2.05) to[out=25,in=205] (9.25,2.83);
-\draw[route] (10.05,3.2) to[out=-30,in=150] (11.29,2.42);
-\draw[route] (12.05,1.98) to[out=30,in=210] (13.29,2.81);
-\draw[route] (14.05,3.25) to[out=-25,in=160] (15.21,2.92);
+\draw[route] (0.5,2.65) to[out=50,in=230] (0.86,3.03);
+\draw[route] (1.35,3.55) to[out=-30,in=150] (2.59,2.74);
+\draw[route] (3.35,2.30) to[out=30,in=210] (4.69,3.06);
+\draw[route] (5.45,3.50) to[out=-30,in=150] (6.54,2.79);
+\draw[route] (7.30,2.35) to[out=25,in=205] (9.25,3.13);
+\draw[route] (10.05,3.50) to[out=-30,in=150] (11.29,2.72);
+\draw[route] (12.05,2.28) to[out=30,in=210] (13.29,3.11);
+\draw[route] (14.05,3.55) to[out=-25,in=160] (15.21,3.22);
 % sparse waves
-\foreach \wx/\wy/\ws in {2.35/4.42/0.85, 4.6/4.05/0.7, 11.6/4.42/0.8, 3.0/1.25/0.75,
-                         10.5/1.75/0.7, 13.3/1.3/0.8, 5.9/1.7/0.65, 15.9/4.35/0.7}{
+\foreach \wx/\wy/\ws in {2.35/4.72/0.85, 4.6/4.35/0.7, 11.6/4.72/0.8, 3.0/1.45/0.75,
+                         10.5/1.95/0.7, 13.3/1.5/0.8, 5.9/1.9/0.65, 15.9/4.65/0.7}{
   \begin{scope}[shift={(\wx,\wy)},scale=\ws]
     \draw[white, draw opacity=0.78, line width=0.55pt, line cap=round]
       (-0.31,0) .. controls (-0.18,0.08) and (-0.08,0.08) .. (0.03,0)
@@ -159,8 +159,8 @@ urlcolor=teal]{hyperref}
   \fill[accentm, fill opacity=0.44] (-0.72,0) -- (-0.06,0.11) -- (-0.16,0) -- (-0.06,-0.11) -- cycle;
   \node[text=inkm, font=\fontsize{4.6}{4.6}\selectfont\bfseries] at (0,0.95) {N};
 \end{scope}
-% the cutter, sailing the open water between Steps 4 and 6
-\begin{scope}[shift={(9.6,0.95)},scale=0.6,line cap=round,line join=round]
+% cutter
+\begin{scope}[shift={(9.72,1.14)},scale=0.46,line cap=round,line join=round]
   \draw[white, draw opacity=0.78, line width=0.55pt]
     (-0.86,-0.51) .. controls (-0.54,-0.42) and (-0.25,-0.44) .. (0.04,-0.52)
     .. controls (0.29,-0.59) and (0.59,-0.57) .. (0.84,-0.48);
@@ -189,10 +189,10 @@ urlcolor=teal]{hyperref}
   \fill[sandLight] (0.02,-0.41) circle (0.035);
   \fill[sandLight] (0.29,-0.38) circle (0.035);
 \end{scope}
-% islands (organic coastlines) with the step number inside
-\foreach \px/\py/\sc/\num/\coast in {1.35/3.25/0.42/1/1, 3.35/2.0/0.42/2/2, 5.45/3.2/0.42/3/3,
-                                     7.3/2.05/0.42/4/4, 10.05/3.2/0.42/5/1, 12.05/1.98/0.42/6/2,
-                                     14.05/3.25/0.42/7/3, 16.15/2.58/0.5/8/4}{
+% islands
+\foreach \px/\py/\sc/\num/\coast in {1.35/3.55/0.42/1/1, 3.35/2.30/0.42/2/2, 5.45/3.50/0.42/3/3,
+                                     7.30/2.35/0.42/4/4, 10.05/3.50/0.42/5/1, 12.05/2.28/0.42/6/2,
+                                     14.05/3.55/0.42/7/3, 16.15/2.88/0.50/8/4}{
   \begin{scope}[shift={(\px,\py)}]
     \begin{scope}[scale=\sc]
       \ifnum\coast=1
@@ -222,42 +222,62 @@ urlcolor=teal]{hyperref}
     \end{scope}
     \node[step badge] at (0,0) {\num};
   \end{scope}}
-% departure and arrival markers
-\fill[accentm] (0.5,2.35) circle (2.2pt);
-\fill[routem] (16.62,2.44) circle (2.0pt);
-% leaders island -> border label
-\foreach \ax/\ay/\bx/\by in {1.35/3.68/1.45/4.1, 5.45/3.63/5.55/4.1, 10.05/3.63/10.1/4.1, 14.05/3.68/14.1/4.1,
-                             3.35/1.55/3.35/1.18, 7.3/1.6/7.2/1.18, 12.05/1.53/12.1/1.18, 16.15/2.05/15.6/1.18}
-  \draw[inkm!45, densely dotted, semithick] (\ax,\ay) -- (\bx,\by);
-% border labels: what each step does (odd above, even below)
-\node[lab title] at (1.5,4.72) {collision probability};
-\node[lab formula] at (1.5,4.44) {$\zeta_2=d\sum_S p_S^2$};
-\node[lab ref] at (1.5,4.2) {LEMMA~\ref{lem:DPP}};
-\node[lab title] at (3.35,0.9) {the Slater bound};
-\node[lab formula] at (3.35,0.62) {$\mathcal{C}(Q)\le 2^{-k}\mathcal{D}(\Sigma)$};
-\node[lab ref] at (3.35,0.36) {LEMMA~\ref{lem:Slater-bound}};
-\node[lab title] at (5.6,4.72) {BCS parametrization};
-\node[lab formula] at (5.6,4.44) {$\zeta_2\propto\mathsf{F}(Z)$,\; $O_A=O_B$};
-\node[lab ref] at (5.6,4.2) {LEMMAS~\ref{lem:all-minors}--\ref{lem:two-to-one}};
-\node[lab title] at (7.2,0.9) {principal-minor residual};
-\node[lab formula] at (7.2,0.62) {$\mathsf{F}(Z)\le\mathsf{R}(H)$,\; $H=Z^2$};
-\node[lab ref] at (7.2,0.36) {PROP.~\ref{prop:residual}};
-\node[lab title] at (10.1,4.72) {principal minors \& Cayley};
-\node[lab formula] at (10.1,4.44) {$\mathsf{R}(H)=\Delta_\Omega^{-2}\sum_S\det(\mathcal{A}_S)^2$};
-\node[lab ref] at (10.1,4.2) {LEMMA~\ref{lem:PMT}, PROP.~\ref{prop:Cayley}};
-\node[lab title] at (12.1,0.9) {down to one unitary};
-\node[lab formula] at (12.1,0.62) {$\mathsf{R}(H)\propto\mathsf{L}(U)$};
-\node[lab title] at (14.1,4.72) {the rank-two bound};
-\node[lab formula] at (14.1,4.44) {$\mathsf{L}(U)^2\le2^{2\ell}\det(\mathbb{I}+T^\dagger T)$};
-\node[lab ref] at (14.1,4.2) {THMS.~\ref{thm:MD2}--\ref{thm:UL}};
-\node[lab title] at (15.45,0.9) {optimum at $Z_0$};
-\node[lab formula] at (15.45,0.62) {equality $\Rightarrow$ Thm.~\ref{M-thm:global}};
+% markers
+\fill[accentm] (0.5,2.65) circle (2.2pt);
+\fill[routem] (16.62,2.74) circle (2.0pt);
+% leaders to boxes
+\draw[leader] (1.35,3.98) -- (1.45,4.34);
+\draw[leader] (5.45,3.93) -- (5.55,4.34);
+\draw[leader] (10.05,3.93) -- (10.05,4.34);
+\draw[leader] (14.05,3.98) -- (14.15,4.34);
+\draw[leader] (3.35,1.85) -- (3.35,1.40);
+\draw[leader] (7.30,1.90) -- (7.25,1.40);
+\draw[leader] (12.05,1.83) -- (12.05,1.40);
+\draw[leader] (16.15,2.35) -- (15.65,1.40);
+% fixed-width annotation cards
+\node[note box, text width=3.25cm] at (1.75,5.02) {%
+  {\color{inkm}\fontsize{8}{9}\selectfont\bfseries collision probability}\\[-0.3pt]
+  {\color{inkm}\fontsize{7.0}{7.8}\selectfont $\zeta_2=d\sum_S p_S^2$}\\[-0.5pt]
+  {\color{accentm}\fontsize{5.4}{6.0}\selectfont\bfseries LEMMA~\ref{lem:DPP}}};
+
+\node[note box, text width=3.45cm] at (3.25,0.73) {%
+  {\color{inkm}\fontsize{8}{9}\selectfont\bfseries the Slater bound}\\[-0.3pt]
+  {\color{inkm}\fontsize{6.8}{7.7}\selectfont $\mathcal{C}(Q)\le 2^{-k}\mathcal{D}(\Sigma)$}\\[-0.5pt]
+  {\color{accentm}\fontsize{5.4}{6.0}\selectfont\bfseries LEMMA~\ref{lem:Slater-bound}}};
+
+\node[note box, text width=3.45cm] at (5.65,5.02) {%
+  {\color{inkm}\fontsize{8}{9}\selectfont\bfseries BCS parametrization}\\[-0.3pt]
+  {\color{inkm}\fontsize{6.8}{7.7}\selectfont $\zeta_2\propto\mathsf{F}(Z),\quad O_A=O_B$}\\[-0.5pt]
+  {\color{accentm}\fontsize{5.2}{5.8}\selectfont\bfseries LEMMAS~\ref{lem:all-minors}--\ref{lem:two-to-one}}};
+
+\node[note box, text width=3.85cm] at (7.35,0.73) {%
+  {\color{inkm}\fontsize{7.2}{8.2}\selectfont\bfseries principal-minor residual}\\[-0.3pt]
+  {\color{inkm}\fontsize{6.7}{7.6}\selectfont $\mathsf{F}(Z)\le\mathsf{R}(H),\quad H=Z^2$}\\[-0.5pt]
+  {\color{accentm}\fontsize{5.4}{6.0}\selectfont\bfseries PROP.~\ref{prop:residual}}};
+
+\node[note box, text width=4.1cm] at (9.95,5.02) {%
+  {\color{inkm}\fontsize{7.6}{8.6}\selectfont\bfseries principal minors \& Cayley}\\[-0.3pt]
+  {\color{inkm}\fontsize{6.4}{7.3}\selectfont $\mathsf{R}(H)=\Delta_\Omega^{-2}\!\sum_S\det(\mathcal{A}_S)^2$}\\[-0.5pt]
+  {\color{accentm}\fontsize{5.1}{5.8}\selectfont\bfseries LEMMA~\ref{lem:PMT}; PROP.~\ref{prop:Cayley}}};
+
+\node[note box, text width=3.25cm] at (11.95,0.73) {%
+  {\color{inkm}\fontsize{8}{9}\selectfont\bfseries down to one unitary}\\[-0.3pt]
+  {\color{inkm}\fontsize{6.9}{7.8}\selectfont $\mathsf{R}(H)\propto\mathsf{L}(U)$}};
+
+\node[note box, text width=4.15cm] at (14.25,5.02) {%
+  {\color{inkm}\fontsize{8}{9}\selectfont\bfseries the rank-two bound}\\[-0.3pt]
+  {\color{inkm}\fontsize{6.5}{7.4}\selectfont $\mathsf{L}(U)^2\le 2^{2\ell}\det\!\bigl(\mathbb{I}+T^\dagger T\bigr)$}\\[-0.5pt]
+  {\color{accentm}\fontsize{5.3}{5.9}\selectfont\bfseries THMS.~\ref{thm:MD2}--\ref{thm:UL}}};
+
+\node[note box, text width=2.90cm] at (15.40,0.73) {%
+  {\color{inkm}\fontsize{8}{9}\selectfont\bfseries optimum at $Z_0$}\\[-0.3pt]
+  {\color{inkm}\fontsize{6.7}{7.6}\selectfont equality $\Longrightarrow$ Thm.~\ref{M-thm:global}}};
 \end{tikzpicture}
 \caption{\textbf{The route of the proof of Theorem~\ref{M-thm:global}: an odyssey in eight steps.} The dashed route visits eight islands, one per step of the argument and one per subsection of this Section; each island carries its step number, and the matching label at the border states what the step does and its key relation. The essence of each step is spelled out in the text below.}
 \label{fig:odyssey}
 \end{figure*}
 
-In this Section, we prove Theorem~\ref{M-thm:global} of the main text, i.e.\ the closed form of Eq.~\eqref{M-eq:analytic_NL} for the fermionic non-local magic at $\RENYI=2$. The proof is a chain of eight steps, cf. Fig.~\ref{fig:odyssey}, one per subsection below.
+In this Section, we prove Theorem~\ref{M-thm:global} of the main text, i.e.\ the closed form of Eq.~\eqref{M-eq:analytic_NL} for the Gaussian-restricted non-local magic at $\RENYI=2$. The proof is a chain of eight steps, cf. Fig.~\ref{fig:odyssey}, one per subsection below.
 The logic of the argument is the following. On the local Gaussian orbit, $\zeta_2$ is the collision probability of a determinantal distribution; it depends on two independent rotations and on \emph{all} minors of the matrix parametrizing the state, so that it is not evidently maximized at the canonical point. Each step either removes one of these complications exactly, or bounds the functional by a simpler one which is tight at the canonical point: Steps 1--3 express $\zeta_2$ through the minors of a single BCS matrix $Z$ and reduce the two rotations to one; Step 4 bounds the sum over all minors by a sum over principal minors only; Steps 5--6 recast the latter, up to an orbit-invariant prefactor, as the sum $\mathsf{L}(U)$ of the squared principal minors of a single unitary $U$; Step 7 bounds $\mathsf{L}(U)$ through the diagonal of $U$, which is in turn controlled by an orbit invariant. Since every inequality of the chain is saturated by the canonical BCS form, the latter is the global maximizer (Step 8).
 (1)~\emph{Collision probability} (Sec.~\ref{app:proof:dpp}):  Wick's theorem turns the stabilizer purity $\zeta_2$ into the collision probability of a classical distribution $p_S$  built from the covariance matrix, $\zeta_2=d\sum_Sp_S^2$ (Lemma~\ref{lem:DPP})~\cite{collura2026nonstabilizernessfermionicgaussianstates}.
 (2)~\emph{The Slater bound}  (Sec.~\ref{app:proof:slater}): we bound the collision probability of a single Slater determinant by its transpose overlap, $\mathcal{C}(Q)\le2^{-k}\mathcal{D}(\Sigma)$ (Lemma~\ref{lem:Slater-bound}) --- the first key ingredient, used in Step~4.
@@ -272,7 +292,7 @@ The logic of the argument is the following. On the local Gaussian orbit, $\zeta_
 \subsection{The stabilizer purity as a collision probability}
 \label{app:proof:dpp}
 
-We use the conventions of the main text, recalled here for convenience: $|\Psi\rangle$ is a pure fermionic Gaussian state on $N$ modes, $d=2^N$, $A=\{1,\dots,\ell\}$ and $B=\{\ell+1,\dots,N\}$, with $\ell\le N/2$ without loss of generality, since the maximization over the orbit~\eqref{eq:local-action} below is symmetric under the exchange of $A$ and $B$, and $\Gamma_{mn}=i\langle\Psi|[\gamma_m,\gamma_n]|\Psi\rangle/2$, with purity condition equivalent to
+We use the conventions of the main text, recalled here for convenience: $|\Psi\rangle$ is a pure fermionic Gaussian state on $N$ modes, $d=2^N$, $A$ is a contiguous interval and $B$ its complement; by the reduction below we can take $A=\{1,\dots,\ell\}$ and $B=\{\ell+1,\dots,N\}$, with $\ell\le N/2$ without loss of generality, since the maximization over the orbit~\eqref{eq:local-action} is symmetric under the exchange of $A$ and $B$; finally, $\Gamma_{mn}=i\langle\Psi|[\gamma_m,\gamma_n]|\Psi\rangle/2$, with purity condition equivalent to
 \begin{equation}
     \Gamma^{\trans}=-\Gamma\;,\qquad \Gamma^2=-\mathbb{I}_{2N}\;.
     \label{eq:pure-covariance}
@@ -297,7 +317,7 @@ Local Gaussian unitaries act on covariance matrices as
     \Gamma\longmapsto (O_A\oplus O_B)\,\Gamma\,(O_A\oplus O_B)^{\trans}\;,
     \label{eq:local-action}
 \end{equation}
-with $O_A\in\mathrm{O}(2\ell)$ and $O_B\in\mathrm{O}(2(N-\ell))$. For the contiguous blocks $A=\{1,\dots,\ell\}$ and $B=\{\ell+1,\dots,N\}$ of Eq.~\eqref{M-eq:defFNLmagic}, the Jordan--Wigner strings of the Majorana operators of $A$ do not leave $A$, while those of $B$ differ from the ones defined within $B$ only by the parity $P_A=\prod_{m\in A}Z_m$ of $A$. Since $U_{O_A}P_AU_{O_A}^\dagger=\det(O_A)\,P_A$, the qubit unitary $U_{O_A}\otimes U_{O_B}$ acts on the Majorana operators of the whole chain as $O_A\oplus\det(O_A)\,O_B$, i.e.\ it coincides, up to a global phase, with a Gaussian unitary of the chain belonging to the local group $\mathrm{O}(2\ell)\oplus\mathrm{O}(2(N-\ell))$. As $(O_A,O_B)\mapsto(O_A,\det(O_A)\,O_B)$ is a bijection, maximizing $\zeta_2$ over the local Gaussian orbit~\eqref{eq:local-action} is exactly the problem defined by Eq.~\eqref{M-eq:defFNLmagic}. This is where the contiguity of the blocks enters: for other bipartitions, the qubits of $A$ must first be brought together by a non-Gaussian qubit permutation, and the identification fails.
+with $O_A\in\mathrm{O}(2\ell)$ and $O_B\in\mathrm{O}(2(N-\ell))$. Consider first $a=0$, i.e., $A=\{1,\dots,\ell\}$ and $B=\{\ell+1,\dots,N\}$, for which $T_{\pi_{AB}}$ in Eq.~\eqref{M-eq:defGNLmagic} is the identity. The Jordan--Wigner strings of the Majorana operators of $A$ do not leave $A$, while those of $B$ differ from the ones defined within $B$ only by the parity $P_A=\prod_{m\in A}Z_m$ of $A$. Since $U_{O_A}P_AU_{O_A}^\dagger=\det(O_A)\,P_A$, the qubit unitary $U_{O_A}\otimes U_{O_B}$ acts on the Majorana operators of the whole chain as $O_A\oplus\det(O_A)\,O_B$, i.e.\ it coincides, up to a global phase, with a Gaussian unitary of the chain belonging to the local group $\mathrm{O}(2\ell)\oplus\mathrm{O}(2(N-\ell))$. As $(O_A,O_B)\mapsto(O_A,\det(O_A)\,O_B)$ is a bijection, maximizing $\zeta_2$ over the local Gaussian orbit~\eqref{eq:local-action} is exactly the problem defined by Eq.~\eqref{M-eq:defGNLmagic}. For $a\neq0$, $M_\RENYI$ is invariant under the qubit permutation $T_{\pi_{AB}}$, a Clifford unitary, so that Eq.~\eqref{M-eq:defGNLmagic} is the same minimization for the state $T_{\pi_{AB}}^\dagger|\Psi\rangle$ with $a=0$. The cyclic shift maps every quadratic Majorana monomial into a quadratic Majorana monomial, up to a sign and to a factor of the fermion parity $\prod_{m=1}^NZ_m$ when the two Majorana operators lie on opposite sides of the boundary between the sites $N$ and $1$. Since pure fermionic Gaussian states have definite parity, $T_{\pi_{AB}}^\dagger|\Psi\rangle$ is again a pure fermionic Gaussian state, and its reduced covariance matrix on $\{1,\dots,\ell\}$ coincides with $\Gamma_A$, the Jordan--Wigner strings within the interval $A$ being unaffected. Hence we can take $a=0$ in the following. This is where the contiguity of $A$ and $B$ enters: for other bipartitions, the qubits of $A$ must be brought together by a permutation that does not preserve the Gaussian structure, and the identification fails.
  We write $\mathrm{spec}(i\Gamma_A)=\{\pm\lambda_1,\dots,\pm\lambda_\ell\}$ with $0\le\lambda_j\le 1$ and set $\nu_j=\sqrt{1-\lambda_j^2}$.
 Local Gaussian unitaries bring any pure fermionic Gaussian state into the canonical modewise form~\cite{BoteroReznik2004}
 \begin{equation}
@@ -1268,7 +1288,7 @@ for every unbalanced cut, with equality attained in the canonical Botero--BCS ax
 \section{Verification via variational optimization}
 \label{app:variational}
 
-We discuss here the numerical methods behind the results in Fig.~\ref{M-fig:Ising_model}(a), and substantiate our claim that fermionic non-local magic as defined in Eq.~\eqref{M-eq:defFNLmagic} coincides with magic of the canonical modewise form of the Gaussian state in Eq.~\eqref{eq:can_form}, for every R\'enyi index $\RENYI\ge2$; for $\RENYI=2$ this is a direct benchmark of the content of Theorem~\ref{M-thm:global}, proved in Sec.~\ref{app:proof}.
+We discuss here the numerical methods behind the results in Fig.~\ref{M-fig:Ising_model}(a), and substantiate our claim that Gaussian-restricted non-local magic as defined in Eq.~\eqref{M-eq:defGNLmagic} coincides with magic of the canonical modewise form of the Gaussian state in Eq.~\eqref{eq:can_form}, for every R\'enyi index $\RENYI\ge2$; for $\RENYI=2$ this is a direct benchmark of the content of Theorem~\ref{M-thm:global}, proved in Sec.~\ref{app:proof}.
 
 We adopt a standard variational optimization approach: given a Gaussian state $|\Psi\rangle$ on $N$ sites ($N$ even for simplicity), we define the cost function
 \begin{equation}
@@ -1293,10 +1313,10 @@ For the results shown in Fig.~\ref{M-fig:Ising_model}(a), we minimize the cost f
 \node[anchor=west,inner sep=0,font=\small] at (0.368,0.897) {Eq.(\ref*{M-eq:analytic_NL})};
 \end{scope}
 \end{tikzpicture}
-    \caption{Results of the comparison between non-local magic computed with the formula in Eq.~\eqref{M-eq:analytic_NL} (crosses) and the one obtained by minimizing the cost function in Eq.~\eqref{eq:cost_function} with both generic unitaries $U$ (red marker) and fermionic Gaussian unitaries $U_O$ (blue marker), for $100$ different realizations of random fermionic Gaussian states on $N=10$ sites, $\ell=5$. The realizations are ordered by increasing $M_2^{\mathrm{FNL}}$. The formula agrees with minimization over Gaussian unitaries to machine precision in all cases.}
+    \caption{Results of the comparison between non-local magic computed with the formula in Eq.~\eqref{M-eq:analytic_NL} (crosses) and the one obtained by minimizing the cost function in Eq.~\eqref{eq:cost_function} with both generic unitaries $U$ (red marker) and fermionic Gaussian unitaries $U_O$ (blue marker), for $100$ different realizations of random fermionic Gaussian states on $N=10$ sites, $\ell=5$. The realizations are ordered by increasing $M_2^{\mathrm{GNL}}$. The formula agrees with minimization over Gaussian unitaries to machine precision in all cases.}
     \label{fig:numerics_verification}
 \end{figure}
-Instead, in Fig.~\ref{fig:numerics_verification} we show the results of the minimization for $100$ realizations of random Gaussian states on $N=10$ qubits, $\ell=5$, where the minimum is taken both on generic and on fermionic Gaussian unitaries. We also plot the values of fermionic non-local magic obtained with our formula for these states, which agree within numerical precision with the results obtained by minimizing over Gaussian unitaries.
+Instead, in Fig.~\ref{fig:numerics_verification} we show the results of the minimization for $100$ realizations of random Gaussian states on $N=10$ qubits, $\ell=5$, where the minimum is taken both on generic and on fermionic Gaussian unitaries. We also plot the values of Gaussian-restricted non-local magic obtained with our formula for these states, which agree within numerical precision with the results obtained by minimizing over Gaussian unitaries.
 
 A few optimizations were considered in the steps to compute the cost function. When applying the unitaries on the state, it is convenient to reshape the state vector into a $d_A \times d_B$ matrix $\Psi$, such that the application of the unitary $U_A \otimes U_B$ can be computed as $U_A \Psi U_B^{T}$, with reduced cost $\mathcal{O}(d_A^2 d_B + d_A d_B^2)$.
 Moreover, the stabilizer entropy of the state vector can be computed using the algorithm introduced in Refs.~\cite{huang2026fastexactapproachstabilizer, sierant2026computingquantummagicstate}, which implements fast Walsh-Hadamard transforms to reduce the time complexity of the computation from $\mathcal{O}(8^N)$ to $\mathcal{O}(N4^N)$, and can also be parallelized for substantial speedup. Finally, the finite-difference method can be replaced with backpropagation, which allows the full $N_p$-dimensional gradient to be computed at a cost comparable to a small constant number of evaluations of the cost function, rather than $O(N_p)$. Note that the number of parameters $N_p$ grows exponentially in $N$ in the case of generic unitaries, and quadratically in $N$ for fermionic Gaussian ones.
@@ -1304,7 +1324,7 @@ Moreover, the stabilizer entropy of the state vector can be computed using the a
 
 \section{Error analysis for experimental accessibility}
 \label{app:experimental}
-We provide the error propagation analysis connecting the accuracy on $\Gamma_A$ to the accuracy on $M_2^{\mathrm{FNL}}$.
+We provide the error propagation analysis connecting the accuracy on $\Gamma_A$ to the accuracy on $M_2^{\mathrm{GNL}}$.
 Since $\mathfrak{m}_2(\lambda^2) = -\log_2(1-\lambda^2+\lambda^4)$ is smooth on $[0,1]$, its derivative
 \begin{equation}
     \frac{d}{d\lambda}\,\mathfrak{m}_2(\lambda^2) = \frac{2\lambda(1-2\lambda^2)}{(1-\lambda^2+\lambda^4)\ln 2}
@@ -1312,10 +1332,10 @@ Since $\mathfrak{m}_2(\lambda^2) = -\log_2(1-\lambda^2+\lambda^4)$ is smooth on 
 is bounded, so $\mathfrak{m}_2$ is uniformly Lipschitz on $[0,1]$ with constant $L = \max_{\lambda \in [0,1]} \bigl|\frac{d}{d\lambda}\mathfrak{m}_2(\lambda^2)\bigr| = O(1)$.
 Combining with the Hoffman--Wielandt stability bound for eigenvalues of $i\Gamma_A$,
 \begin{equation}
-    |\delta M_2^{\mathrm{FNL}}| \lesssim L\,\sqrt{\ell}\,\|\delta\Gamma_A\|_F\;.
+    |\delta M_2^{\mathrm{GNL}}| \lesssim L\,\sqrt{\ell}\,\|\delta\Gamma_A\|_F\;.
 \end{equation}
-A uniform entrywise error $\epsilon_\Gamma$ implies $\|\delta\Gamma_A\|_F = O(\ell \epsilon_\Gamma)$, giving $|\delta M_2^{\mathrm{FNL}}| = \mathcal{O}(\ell^{3/2}\epsilon_\Gamma)$.
-To estimate the non-local magic density $m_2^{\mathrm{FNL}} = M_2^{\mathrm{FNL}}/\ell$ with additive accuracy $\varepsilon$, one needs $\epsilon_\Gamma = \mathcal{O}(\varepsilon/\sqrt{\ell})$, yielding
+A uniform entrywise error $\epsilon_\Gamma$ implies $\|\delta\Gamma_A\|_F = O(\ell \epsilon_\Gamma)$, giving $|\delta M_2^{\mathrm{GNL}}| = \mathcal{O}(\ell^{3/2}\epsilon_\Gamma)$.
+To estimate the non-local magic density $m_2^{\mathrm{GNL}} = M_2^{\mathrm{GNL}}/\ell$ with additive accuracy $\varepsilon$, one needs $\epsilon_\Gamma = \mathcal{O}(\varepsilon/\sqrt{\ell})$, yielding
 \begin{equation}
     N_{\mathrm{shots}} = O\!\left(\frac{\ell^3\log(\ell/\delta)}{\varepsilon^2}\right).
 \end{equation}
@@ -1333,7 +1353,7 @@ We begin with the Page curve. From Eq.~\eqref{M-eq:ziopin2}, replacing $\mathfra
 
 Next, we consider the critical behavior in the Ising model. From Eq.~\eqref{M-eq:alpha_NL}, substituting $\mathfrak{m}_2 \mapsto \mathfrak{m}_\alpha$, a change of variables $\lambda = \frac{1-t}{1+t}$ leads to
 \begin{equation}
-\beta_{\mathrm{FNL}}(\alpha) = \frac{1}{\pi^2 (1-\alpha) \ln 2} \int_0^1 \frac{\hat{\mathfrak{m}}_\alpha(t)}{t}\, dt,
+\beta_{\mathrm{GNL}}(\alpha) = \frac{1}{\pi^2 (1-\alpha) \ln 2} \int_0^1 \frac{\hat{\mathfrak{m}}_\alpha(t)}{t}\, dt,
 \end{equation}
 where
 \begin{equation}
@@ -1341,12 +1361,12 @@ where
 \end{equation}
 Noting that $\hat{\mathfrak{m}}_\alpha(t) = \hat{\mathfrak{m}}_\alpha(1/t)$, the integral can equivalently be written as
 \begin{equation}
-\beta_{\mathrm{FNL}}(\alpha) = \frac{1}{2 \pi^2 (1-\alpha) \ln 2} \int_0^\infty \frac{\hat{\mathfrak{m}}_\alpha(t)}{t}\, dt,
+\beta_{\mathrm{GNL}}(\alpha) = \frac{1}{2 \pi^2 (1-\alpha) \ln 2} \int_0^\infty \frac{\hat{\mathfrak{m}}_\alpha(t)}{t}\, dt,
 \end{equation} 
 which corresponds to the Mellin transform of $\hat{\mathfrak{m}}_\alpha(t)$ evaluated as $s \to 0$.
 The result of the integral is given by 
 \begin{equation}
-\beta_{\mathrm{FNL}}(\alpha) = \frac{1}{2 (1-\alpha) \pi^2 \ln(2)}\sum_{j=1}^\alpha \mathrm{arccosh}^2(-r_j/2)\;,
+\beta_{\mathrm{GNL}}(\alpha) = \frac{1}{2 (1-\alpha) \pi^2 \ln(2)}\sum_{j=1}^\alpha \mathrm{arccosh}^2(-r_j/2)\;,
 \end{equation}
 where $r_j$ are the (generally complex) roots of the polynomial $R_\alpha(x)=(x-2)^\alpha+(x+2)^\alpha+4^\alpha$.
 
@@ -1357,8 +1377,8 @@ where $r_j$ are the (generally complex) roots of the polynomial $R_\alpha(x)=(x-
 \label{app:syk}
 The SYK$_2$ model is specified by the Hamiltonian  $H$ of the form in  Eq.~\eqref{M-eq:ham} with  $h$ a random antisymmetric matrix whose elements are drawn from the normal distribution $h_{m,n}\sim \mathcal{N}(0,{J^2}/{N})$ and set $J=1$. 
 The single-body Hamiltonian $ih$ is Hermitian with eigenvalues in $\pm\varepsilon_k$ pairs ($k=1,\dots,N$), each pair defining an effective fermionic mode. A many-body eigenstate is specified by a filling $\mathcal{F}\subset\{1,\dots,2N\}$ of $N$ single-particle modes with eigenvectors $|v_k\rangle$, yielding the one-body density matrix $\Xi=\sum_{k\in\mathcal{F}}|v_k\rangle\langle v_k|$ and the covariance matrix $\Gamma = i(2\Xi-\mathbb{I})$. 
-The ground state fills the $N$ lowest-energy modes; to probe typicality, we construct mid-spectrum eigenstates $H|E_n\rangle=E_n|E_n\rangle$  by flipping a random subset of $N/4$ to $N/2$ modes from the ground-state configuration, replacing occupied negative-energy modes with their positive-energy partners. For each of $N_{\mathrm{dis}}=1000$ disorder realizations, we compute $M_2^{\mathrm{FNL}}$ from $\Gamma$ and average over 200 excited eigenstates $|E_n\rangle$ per realization, obtaining $\overline{M}_2^{\mathrm{FNL}}=\mathbb{E}_{h}\,\mathbb{E}_{n}[M_2^{\mathrm{FNL}}(|E_n\rangle)]$.
-In Fig.~\ref{M-fig:typicality}(b), we plot the resulting non-local magic density $\overline{\mathsf{m}}_2^\mathrm{FNL}$ versus $r=\ell/N$ for $N=40,80,160$.
+The ground state fills the $N$ lowest-energy modes; to probe typicality, we construct mid-spectrum eigenstates $H|E_n\rangle=E_n|E_n\rangle$  by flipping a random subset of $N/4$ to $N/2$ modes from the ground-state configuration, replacing occupied negative-energy modes with their positive-energy partners. For each of $N_{\mathrm{dis}}=1000$ disorder realizations, we compute $M_2^{\mathrm{GNL}}$ from $\Gamma$ and average over 200 excited eigenstates $|E_n\rangle$ per realization, obtaining $\overline{M}_2^{\mathrm{GNL}}=\mathbb{E}_{h}\,\mathbb{E}_{n}[M_2^{\mathrm{GNL}}(|E_n\rangle)]$.
+In Fig.~\ref{M-fig:typicality}(b), we plot the resulting non-local magic density $\overline{\mathsf{m}}_2^\mathrm{GNL}$ versus $r=\ell/N$ for $N=40,80,160$.
 
 \subsection{Random Gaussian circuits}
 \label{app:circuits}
@@ -1368,7 +1388,7 @@ The full circuit after $t$ layers is $O(t) = \prod_{s=1}^t O_{\mathrm{layer}}^{(
 The initial state is the product state $|\mathbf{0}\rangle$ (vacuum of all fermionic modes), with covariance matrix $\Gamma_0$. 
 
 The time-evolved state remains Gaussian at all times, with covariance matrix $\Gamma(t) = O(t)\,\Gamma_0\,O(t)^T$.
-The fermionic non-local magic is therefore entirely determined by the restricted covariance matrix $\Gamma_A(t)$ and its eigenvalues $\pm\lambda_j(t)$.
+The Gaussian-restricted non-local magic is therefore entirely determined by the restricted covariance matrix $\Gamma_A(t)$ and its eigenvalues $\pm\lambda_j(t)$.
 
 
 \bibliography{ref_current}

@@ -6,7 +6,7 @@
 %Control: page (0) single
 %Control: year (1) truncated
 %Control: production of eprint (0) enabled
-\begin{thebibliography}{116}%
+\begin{thebibliography}{118}%
 \makeatletter
 \providecommand \@ifxundefined [1]{%
  \@ifx{#1\undefined}
@@ -775,7 +775,7 @@
   \BibitemOpen
   \bibinfo {note} {Note that, minimizing over all local spin unitaries would
   give a quantity bounded from above by ours, $M_\alpha ^{\protect \mathrm
-  {NL}}\le M_\alpha ^{\protect \mathrm {FNL}}$, as discussed in the first
+  {NL}}\le M_\alpha ^{\protect \mathrm {GNL}}$, as discussed in the first
   remark below Theorem~\ref {thm:global}.}\BibitemShut {Stop}%
 \bibitem [{\citenamefont {Jin}\ and\ \citenamefont {Korepin}(2004)}]{Jin_2004}%
   \BibitemOpen
@@ -827,6 +827,11 @@
   {journal} {\bibinfo  {journal} {J. Phys. A: Math. Theor.}\ }\textbf {\bibinfo
   {volume} {50}},\ \bibinfo {pages} {284003} (\bibinfo {year}
   {2017})}\BibitemShut {NoStop}%
+\bibitem [{Note2()}]{Note2}%
+  \BibitemOpen
+  \bibinfo {note} {We nevertheless find that throughout the XY phase diagram,
+  for the system sizes accessible to exact minimization, the agreement
+  persists, see Ref.~\cite {zenodo}.}\BibitemShut {Stop}%
 \bibitem [{\citenamefont {Calabrese}\ and\ \citenamefont
   {Cardy}(2004)}]{Calabrese2004entanglement}%
   \BibitemOpen
@@ -1251,4 +1256,8 @@
   {Bhatia}},\ }\href {https://doi.org/10.1007/978-1-4612-0653-8} {\emph
   {\bibinfo {title} {Matrix Analysis}}}\ (\bibinfo  {publisher} {Springer},\
   \bibinfo {year} {1997})\BibitemShut {NoStop}%
+\bibitem [{zen()}]{zenodo}%
+  \BibitemOpen
+  \href@noop {} {\bibinfo {title} {Code and data for the paper}}\BibitemShut
+  {NoStop}%
 \end{thebibliography}%

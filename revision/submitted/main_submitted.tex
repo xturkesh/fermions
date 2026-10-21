@@ -1,7 +1,4 @@
 \documentclass[prx,twocolumn,superscriptaddress,aps,10pt, frontmatterverbose, reprint,footinbib,longbibliography=true]{revtex4-2}
-%DIF LATEXDIFF DIFFERENCE FILE
-%DIF DEL /tmp/claude-0/-home-user-fermions/9f73def0-51d4-54e6-bba7-9981a4e20e9f/scratchpad/v4clean.tex   Wed Oct 21 20:50:42 2026
-%DIF ADD main_v5.tex                                                                                     Wed Oct 21 21:54:26 2026
 
 
 \usepackage{graphicx}
@@ -19,7 +16,8 @@ urlcolor=teal]{hyperref}
 \usepackage{xcolor}
 \usepackage{titlesec}
 \usepackage{lineno}
-\usepackage{tikz}
+%DIF 18a18-19
+\usepackage{tikz} %DIF > 
 \usetikzlibrary{arrows.meta} 
 \titlespacing*{\subsubsection}{0pt}{1\baselineskip}{1\baselineskip}
 
@@ -61,83 +59,34 @@ urlcolor=teal]{hyperref}
 \captionsetup[subfigure]{justification=justified}
 
 % === Custom macros ===
-\newcommand{\NL}{\mathrm{FNL}}
+\newcommand{\NL}{\mathrm{GNL}}
 \newcommand{\RENYI}{\alpha}
 \newcommand{\MNL}{\mathrm{M}_2^{\NL}}
 \newcommand{\Mtot}{\mathrm{M}_2}
 \newcommand{\Pcal}{\mathcal{P}_2}
 \newcommand{\GG}{\Gamma}
-%DIF PREAMBLE EXTENSION ADDED BY LATEXDIFF
-%DIF UNDERLINE PREAMBLE %DIF PREAMBLE
-\RequirePackage[normalem]{ulem} %DIF PREAMBLE
-\RequirePackage{color}\definecolor{RED}{rgb}{1,0,0}\definecolor{BLUE}{rgb}{0,0,1} %DIF PREAMBLE
-\providecommand{\DIFaddtex}[1]{{\protect\color{blue}\uwave{#1}}} %DIF PREAMBLE
-\providecommand{\DIFdeltex}[1]{{\protect\color{red}\sout{#1}}}                      %DIF PREAMBLE
-%DIF SAFE PREAMBLE %DIF PREAMBLE
-\providecommand{\DIFaddbegin}{} %DIF PREAMBLE
-\providecommand{\DIFaddend}{} %DIF PREAMBLE
+\providecommand{\DIFaddtex}[1]{{\protect\color{red}#1}} %DIF PREAMBLE
+\providecommand{\DIFdeltex}[1]{} %DIF PREAMBLE
+\providecommand{\DIFaddbegin}{\protect\color{red}} %DIF PREAMBLE
+\providecommand{\DIFaddend}{\protect\color{black}} %DIF PREAMBLE
 \providecommand{\DIFdelbegin}{} %DIF PREAMBLE
 \providecommand{\DIFdelend}{} %DIF PREAMBLE
 \providecommand{\DIFmodbegin}{} %DIF PREAMBLE
 \providecommand{\DIFmodend}{} %DIF PREAMBLE
-%DIF FLOATSAFE PREAMBLE %DIF PREAMBLE
-\providecommand{\DIFaddFL}[1]{\DIFadd{#1}} %DIF PREAMBLE
-\providecommand{\DIFdelFL}[1]{\DIFdel{#1}} %DIF PREAMBLE
-\providecommand{\DIFaddbeginFL}{} %DIF PREAMBLE
-\providecommand{\DIFaddendFL}{} %DIF PREAMBLE
+\providecommand{\DIFaddFL}[1]{{\protect\color{red}#1}} %DIF PREAMBLE
+\providecommand{\DIFdelFL}[1]{} %DIF PREAMBLE
+\providecommand{\DIFaddbeginFL}{\protect\color{red}} %DIF PREAMBLE
+\providecommand{\DIFaddendFL}{\protect\color{black}} %DIF PREAMBLE
 \providecommand{\DIFdelbeginFL}{} %DIF PREAMBLE
 \providecommand{\DIFdelendFL}{} %DIF PREAMBLE
 %DIF HYPERREF PREAMBLE %DIF PREAMBLE
 \providecommand{\DIFadd}[1]{\texorpdfstring{\DIFaddtex{#1}}{#1}} %DIF PREAMBLE
 \providecommand{\DIFdel}[1]{\texorpdfstring{\DIFdeltex{#1}}{}} %DIF PREAMBLE
-\newcommand{\DIFscaledelfig}{0.5}
-%DIF HIGHLIGHTGRAPHICS PREAMBLE %DIF PREAMBLE
-\RequirePackage{settobox} %DIF PREAMBLE
-\RequirePackage{letltxmacro} %DIF PREAMBLE
-\newsavebox{\DIFdelgraphicsbox} %DIF PREAMBLE
-\newlength{\DIFdelgraphicswidth} %DIF PREAMBLE
-\newlength{\DIFdelgraphicsheight} %DIF PREAMBLE
-% store original definition of \includegraphics %DIF PREAMBLE
-\LetLtxMacro{\DIFOincludegraphics}{\includegraphics} %DIF PREAMBLE
-\newcommand{\DIFaddincludegraphics}[2][]{{\color{blue}\fbox{\DIFOincludegraphics[#1]{#2}}}} %DIF PREAMBLE
-\newcommand{\DIFdelincludegraphics}[2][]{% %DIF PREAMBLE
-\sbox{\DIFdelgraphicsbox}{\DIFOincludegraphics[#1]{#2}}% %DIF PREAMBLE
-\settoboxwidth{\DIFdelgraphicswidth}{\DIFdelgraphicsbox} %DIF PREAMBLE
-\settoboxtotalheight{\DIFdelgraphicsheight}{\DIFdelgraphicsbox} %DIF PREAMBLE
-\scalebox{\DIFscaledelfig}{% %DIF PREAMBLE
-\parbox[b]{\DIFdelgraphicswidth}{\usebox{\DIFdelgraphicsbox}\\[-\baselineskip] \rule{\DIFdelgraphicswidth}{0em}}\llap{\resizebox{\DIFdelgraphicswidth}{\DIFdelgraphicsheight}{% %DIF PREAMBLE
-\setlength{\unitlength}{\DIFdelgraphicswidth}% %DIF PREAMBLE
-\begin{picture}(1,1)% %DIF PREAMBLE
-\thicklines\linethickness{2pt} %DIF PREAMBLE
-{\color[rgb]{1,0,0}\put(0,0){\framebox(1,1){}}}% %DIF PREAMBLE
-{\color[rgb]{1,0,0}\put(0,0){\line( 1,1){1}}}% %DIF PREAMBLE
-{\color[rgb]{1,0,0}\put(0,1){\line(1,-1){1}}}% %DIF PREAMBLE
-\end{picture}% %DIF PREAMBLE
-}\hspace*{3pt}}} %DIF PREAMBLE
-} %DIF PREAMBLE
-\LetLtxMacro{\DIFOaddbegin}{\DIFaddbegin} %DIF PREAMBLE
-\LetLtxMacro{\DIFOaddend}{\DIFaddend} %DIF PREAMBLE
-\LetLtxMacro{\DIFOdelbegin}{\DIFdelbegin} %DIF PREAMBLE
-\LetLtxMacro{\DIFOdelend}{\DIFdelend} %DIF PREAMBLE
-\DeclareRobustCommand{\DIFaddbegin}{\DIFOaddbegin \let\includegraphics\DIFaddincludegraphics} %DIF PREAMBLE
-\DeclareRobustCommand{\DIFaddend}{\DIFOaddend \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
-\DeclareRobustCommand{\DIFdelbegin}{\DIFOdelbegin \let\includegraphics\DIFdelincludegraphics} %DIF PREAMBLE
-\DeclareRobustCommand{\DIFdelend}{\DIFOaddend \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
-\LetLtxMacro{\DIFOaddbeginFL}{\DIFaddbeginFL} %DIF PREAMBLE
-\LetLtxMacro{\DIFOaddendFL}{\DIFaddendFL} %DIF PREAMBLE
-\LetLtxMacro{\DIFOdelbeginFL}{\DIFdelbeginFL} %DIF PREAMBLE
-\LetLtxMacro{\DIFOdelendFL}{\DIFdelendFL} %DIF PREAMBLE
-\DeclareRobustCommand{\DIFaddbeginFL}{\DIFOaddbeginFL \let\includegraphics\DIFaddincludegraphics} %DIF PREAMBLE
-\DeclareRobustCommand{\DIFaddendFL}{\DIFOaddendFL \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
-\DeclareRobustCommand{\DIFdelbeginFL}{\DIFOdelbeginFL \let\includegraphics\DIFdelincludegraphics} %DIF PREAMBLE
-\DeclareRobustCommand{\DIFdelendFL}{\DIFOaddendFL \let\includegraphics\DIFOincludegraphics} %DIF PREAMBLE
-%DIF COLORLISTINGS PREAMBLE %DIF PREAMBLE
+%DIF LISTINGS PREAMBLE %DIF PREAMBLE
 \RequirePackage{listings} %DIF PREAMBLE
-\RequirePackage{color} %DIF PREAMBLE
-\lstdefinelanguage{DIFcode}{ %DIF PREAMBLE
-%DIF DIFCODE_UNDERLINE %DIF PREAMBLE
-  moredelim=[il][\color{red}\sout]{\%DIF\ <\ }, %DIF PREAMBLE
-  moredelim=[il][\color{blue}\uwave]{\%DIF\ >\ } %DIF PREAMBLE
+\lstdefinelanguage{DIFcode}{ 
+  moredelim=[il][\color{white}\tiny]{\%DIF\ <\ }, %DIF PREAMBLE
+  moredelim=[il][\sffamily\bfseries]{\%DIF\ >\ } %DIF PREAMBLE
 } %DIF PREAMBLE
 \lstdefinestyle{DIFverbatimstyle}{ %DIF PREAMBLE
 	language=DIFcode, %DIF PREAMBLE
@@ -146,9 +95,7 @@ urlcolor=teal]{hyperref}
 	keepspaces=true %DIF PREAMBLE
 } %DIF PREAMBLE
 \lstnewenvironment{DIFverbatim}{\lstset{style=DIFverbatimstyle}}{} %DIF PREAMBLE
-\lstnewenvironment{DIFverbatim*}{\lstset{style=DIFverbatimstyle,showspaces=true}}{} %DIF PREAMBLE
-%DIF END PREAMBLE EXTENSION ADDED BY LATEXDIFF
-
+\lstnewenvironment{DIFverbatim*}{\lstset{style=DIFverbatimstyle,showspaces=true}}{} %DIF 
 \begin{document}
 %\linenumbers
 
@@ -186,7 +133,7 @@ urlcolor=teal]{hyperref}
 
 
 \begin{abstract}
-Entanglement and magic are fundamental resources that capture the complexity of quantum many-body systems. Non-local magic isolates the irreducible nonstabilizerness intrinsically tied to entanglement. However, evaluating this quantity generally requires a prohibitive minimization over the full Hilbert space, making it computationally inaccessible beyond a few qubits. Here, we overcome this bottleneck by establishing a closed-form expression for the non-local stabilizer entropies of fermionic Gaussian states over local Gaussian unitaries, which we prove at R\'enyi index $\RENYI=2$ for \DIFdelbegin \DIFdel{arbitrary subsystem }\DIFdelend \DIFaddbegin \DIFadd{contiguous subsystems of arbitrary }\DIFaddend size, and which can be evaluated in polynomial time directly from the eigenvalues of the reduced Majorana covariance matrix. We apply this framework to characterize fermionic non-local magic across diverse physical regimes: we derive an exact Page-like curve for typical random states, reveal logarithmic scaling at the quantum critical point of the XY model, and establish a quasiparticle picture for magic generation during out-of-equilibrium quantum quenches. Crucially, because our result relies solely on two-point correlation functions, it provides a scalable route for the experimental estimation of fermionic non-local magic in large-scale quantum processors via fermionic shadow tomography.
+Entanglement and magic are fundamental resources that capture the complexity of quantum many-body systems. Non-local magic isolates the irreducible nonstabilizerness intrinsically tied to entanglement. However, evaluating this quantity generally requires a prohibitive minimization over the full Hilbert space, making it computationally inaccessible beyond a few qubits. Here, we overcome this bottleneck by establishing a closed-form expression for the non-local stabilizer entropies of fermionic Gaussian states over local Gaussian unitaries, which we prove at R\'enyi index $\alpha=2$ for arbitrary subsystem size, and which can be evaluated in polynomial time directly from the eigenvalues of the reduced Majorana covariance matrix. We apply this framework to characterize fermionic Gaussian-restricted non-local magic across diverse physical regimes: we derive an exact Page-like curve for typical random states, reveal logarithmic scaling at the quantum critical point of the XY model, and establish a quasiparticle picture for magic generation during out-of-equilibrium quantum quenches. Crucially, because our result relies solely on two-point correlation functions, it provides a scalable route for the experimental estimation of Gaussian-restricted non-local magic in large-scale quantum processors via fermionic shadow tomography.
 \end{abstract}
 
 
@@ -203,12 +150,12 @@ The recently introduced \emph{non-local magic}~\cite{Cao_2025,qian2025quantumnon
 However, this conceptual advance comes at a steep computational cost: in general, non-local magic is defined through a minimization over all local unitaries acting on the full Hilbert space, rendering it intractable beyond a few qubits. 
 Although estimation schemes exist for matrix-product states~\cite{Cao_2025}, where entanglement remains bounded, which broader classes of quantum matter admit an analytic characterization of non-local magic, especially in regimes with extensive entanglement, has remained an open question.
 
-Here, we answer this question for fermionic Gaussian states and unitaries. We introduce the fermionic non-local (FNL) magic, which restricts the minimization to Gaussian unitaries. 
-We prove (cf. Theorem~\ref{thm:global}) that the FNL magic of order $\RENYI=2$ admits a closed-form expression (Eq.~\eqref{eq:analytic_NL}) in terms of the eigenvalues of the reduced Majorana covariance matrix on a \DIFaddbegin \DIFadd{contiguous }\DIFaddend subsystem of size $\ell$, computable with $\mathrm{poly}(\ell)$ resources. 
+Here, we answer this question for fermionic Gaussian states and unitaries. We introduce the fermionic Gaussian-restricted non-local (GNL) magic.
+We prove (cf.Theorem~\ref{thm:global}) that the GNL magic of order $\RENYI=2$ admits a closed-form expression (Eq.~\eqref{eq:analytic_NL}) in terms of the eigenvalues of the reduced Majorana covariance matrix on a subsystem of size $\ell$, computable with $\mathrm{poly}(\ell)$ resources. 
 The key insight behind this result is that the minimization over local \emph{Gaussian} unitaries is solved exactly by the BCS canonical form~\cite{BoteroReznik2004}. 
 This is in stark contrast with the total magic, which requires Majorana Monte Carlo~\cite{Bera_2025} or perfect sampling~\cite{collura2026nonstabilizernessfermionicgaussianstates}, both converging in general with an exponential number of samples.
 We leverage this result to obtain a series of rigorous physical insights: an exact Page-like curve for typical fermionic Gaussian states, corroborated numerically by SYK$_2$ eigenstates~\cite{Bera_2025,santra2025complexitytransitionschaoticquantum,jasser2025stabilizer, malvimat2026multipartitenonlocalmagicsyk, njgn-fksh}; logarithmic scaling of non-local magic at the XY critical point, captured analytically via the Fisher--Hartwig approach; a quasiparticle picture~\cite{calabrese2009} for magic spreading after quantum quenches; and diffusive growth in brickwork Gaussian random circuits.
-Because our result relies solely on two-point correlation functions, it also provides a scalable route for the experimental estimation of fermionic non-local magic in large-scale quantum processors via fermionic shadow tomography~\cite{Wan_2023}.
+Because our result relies solely on two-point correlation functions, it also provides a scalable route for the experimental estimation of Gaussian-restricted non-local magic in large-scale quantum processors via fermionic shadow tomography~\cite{Wan_2023}.
 
 \section{Methods}
 \label{sec:methods}
@@ -233,7 +180,7 @@ Denoting for any pure state $|\Psi\rangle$ the covariance matrix $\Gamma_{mn}=i\
     \end{pmatrix}}\;,
 \end{equation}
 using the adjoint transformation, one obtains that $|\Psi_O\rangle\langle \Psi_O|$ is uniquely fixed by $\Gamma= O\Gamma_0 O^T$. 
-For pure fermionic Gaussian states and any bipartition $\Lambda=A\sqcup B$ with $|A|=\ell\le N/2$ (made precise below), Ref.~\cite{BoteroReznik2004} showed that local \DIFdelbegin \DIFdel{FGU, $U_{O_A} \otimes U_{O_B}\in \mathfrak{M}_{N}$, }\DIFdelend \DIFaddbegin \DIFadd{Gaussian transformations $O_A\oplus O_B$ of the Majorana modes }\DIFaddend are sufficient to bring the state into a canonical modewise form of independent two-mode BCS-like pairs 
+For pure fermionic Gaussian states and any bipartition $\Lambda=A\sqcup B$ with $|A|=\ell\le N/2$ (made precise below), Ref.~\cite{BoteroReznik2004} showed that local FGU, $U_{O_A} \otimes U_{O_B}\in \mathfrak{M}_{N}$, are sufficient to bring the state into a canonical modewise form of independent two-mode BCS-like pairs 
 \begin{equation}
 \begin{split}
      |\Psi_{\mathrm{can}}\rangle
@@ -248,71 +195,58 @@ where $|\mathrm{B}(\theta_i)\rangle=\cos\theta_i\,|00\rangle_i+\sin\theta_i\,|11
 We now present our main quantity: non-local magic.
 We recall that the stabilizer entropy of order $\RENYI$ is defined for a pure state $|\Psi\rangle$ as $M_\RENYI(|\Psi\rangle)=(1-\RENYI)^{-1}\log_2 \zeta_\RENYI(|\Psi\rangle)$~\cite{Leone2022SRE}, where $\zeta_\RENYI= d^{-1}\sum_{P\in \mathcal{P}_N} \langle \Psi|P|\Psi\rangle^{2\RENYI}$ is the stabilizer purity and $\mathcal{P}_N=\{ \mathbb{I},X,Y,Z\}^{\otimes N}$  is the set of $N$-qubit Pauli strings. This quantity is a magic monotone for integer $\RENYI\ge 2$~\cite{piro,leone2024stabilizer}.
 
-\DIFaddbegin \DIFadd{Throughout this work, we consider the bipartition $\Lambda = A\sqcup B$ of the chain into the contiguous blocks $A=\{1,\dots,\ell\}$ and $B=\{\ell+1,\dots,N\}$. }\DIFaddend The non-local magic (NLM) \DIFdelbegin \DIFdel{is defined for the bipartition $\Lambda = A\sqcup B$ and }\DIFdelend \DIFaddbegin \DIFadd{of }\DIFaddend a pure state \DIFdelbegin \DIFdel{as 
-}\begin{displaymath}
-    \DIFdel{M_\RENYI^\textup{NL}:= \min_{U_A , U_B} M_\RENYI\left[T_{\pi_{AB}} (U_A\otimes U_B)T_{\pi_{AB}}^\dagger|\Psi\rangle\right]\;,%DIFDELCMD < \label{eq:defNLmagic}%%%
-}\end{displaymath}%DIFAUXCMD
-\DIFdelend \DIFaddbegin \DIFadd{is defined as 
-}\begin{equation}
-    \DIFadd{M_\RENYI^\textup{NL}:= \min_{U_A , U_B} M_\RENYI\left[(U_A\otimes U_B)|\Psi\rangle\right]\;,\label{eq:defNLmagic}
-}\end{equation}\DIFaddend 
-where \DIFdelbegin \DIFdel{$A=\{i_1,\dots,i_\ell\}\subset \Lambda$ contains $\ell$ qubits and $B=\Lambda\setminus A$ the remaining $N-\ell$ ones, $\pi_{AB}\in \mathrm{S}_N$ is any permutation such that $\pi_{AB}(A)=\{1,\dots,\ell\}$ and $\pi_{AB}(B)=\{\ell+1,\dots, N\}$, and }\DIFdelend the minimization is over $\mathrm{U}(d_A)\otimes \mathrm{U}(d_B)$ with $d_A=2^{\ell}$ and $d_B = 2^{N-\ell}$. This is the magic that cannot be erased or extracted by local unitary operations. This notion is cognate to (but distinct from) that of {\em long-range magic}, that is, the non-stabilizerness that cannot be removed by finite-depth local unitary circuits \cite{Korbany2025}. One salient distinction is that maximally entangled states have vanishing non-local magic as they are locally equivalent to stabilizer states.
+The non-local magic (NLM) is defined for the bipartition $\Lambda = A\sqcup B$ and a pure state as 
+\begin{equation}
+    M_\RENYI^\textup{NL}:= \min_{U_A , U_B} M_\RENYI\left[T_{\pi_{AB}} (U_A\otimes U_B)T_{\pi_{AB}}^\dagger|\Psi\rangle\right]\;,\label{eq:defNLmagic}
+\end{equation}
+where $A=\{i_1,\dots,i_\ell\}\subset \Lambda$ contains $\ell$ qubits and $B=\Lambda\setminus A$ the remaining $N-\ell$ ones, $\pi_{AB}\in \mathrm{S}_N$ is any permutation such that $\pi_{AB}(A)=\{1,\dots,\ell\}$ and $\pi_{AB}(B)=\{\ell+1,\dots, N\}$, and the minimization is over $\mathrm{U}(d_A)\otimes \mathrm{U}(d_B)$ with $d_A=2^{\ell}$ and $d_B = 2^{N-\ell}$. This is the magic that cannot be erased or extracted by local unitary operations. This notion is cognate to (but distinct from) that of {\em long-range magic}, that is, the non-stabilizerness that cannot be removed by finite-depth local unitary circuits \cite{Korbany2025}. One salient distinction is that maximally entangled states have vanishing non-local magic as they are locally equivalent to stabilizer states.
 This minimization is superexponentially costly, rendering non-local magic intractable beyond a handful of qubits.
 In Ref.~\cite{Cao_2025}, it was shown that for $\RENYI = 2$ a reliable proxy for non-local magic can be obtained from the Schmidt spectrum of the state over the same bipartition.
 
 
-To study fermionic Gaussian states and their non-local magic, we introduce the fermionic non-local magic
-\DIFdelbegin \begin{displaymath}
-    \DIFdel{M_\RENYI^\textup{FNL}:= \!\!\min_{U_{O_A} , U_{O_B}} \!\!M_\RENYI\left[T_{\pi_{AB}} (U_{O_A}\otimes U_{O_B})T_{\pi_{AB}}^\dagger|\Psi\rangle\right],%DIFDELCMD < \label{eq:defFNLmagic}%%%
-}\end{displaymath}%DIFAUXCMD
-\DIFdelend \DIFaddbegin \begin{equation}
-    \DIFadd{M_\RENYI^\textup{FNL}:= \!\!\min_{U_{O_A} , U_{O_B}} \!\!M_\RENYI\left[(U_{O_A}\otimes U_{O_B})|\Psi\rangle\right],\label{eq:defFNLmagic}
-}\end{equation}\DIFaddend 
-where now the minimization is over the Gaussian unitaries induced by $\mathrm{O}(2\ell)\oplus \mathrm{O}(2(N-\ell))$, hence $ M_\RENYI^\textup{NL} \leq  M_\RENYI^\textup{FNL}$. \DIFdelbegin \DIFdel{Up to a non-Gaussian permutation, this quantity corresponds to the minimization over the full unitary group for Gaussian systems}\DIFdelend \DIFaddbegin \DIFadd{Since $A$ and $B$ are contiguous blocks of the Jordan--Wigner chain, the local unitaries $U_{O_A}\otimes U_{O_B}$ are themselves Gaussian unitaries of the whole chain, induced by $\mathrm{O}(2\ell)\oplus\mathrm{O}(2(N-\ell))$ (see Appendix~\ref{app:proof:dpp})}\DIFaddend .
-Throughout this work our main interest is the case $\RENYI=2$, the smallest R\'enyi index for which the stabilizer entropy is a magic monotone~\cite{piro,leone2024stabilizer}, the most studied in the literature, and the one we implicitly refer to when writing simply \emph{fermionic non-local magic}. Nevertheless, we will also comment on results for $\RENYI>2$, in particular in Appendix~\ref{Sec:generaliz}.
-Our main result is that, for fermionic Gaussian states, the fermionic non-local magic can be evaluated exactly in $\mathrm{poly}(N)$ resources.
+To study fermionic Gaussian states and their non-local magic, we introduce the fermionic Gaussian-restricted non-local magic
+\begin{equation}
+    M_\RENYI^\textup{GNL}:= \!\!\min_{U_{O_A} , U_{O_B}} \!\!M_\RENYI\left[T_{\pi_{AB}} (U_{O_A}\otimes U_{O_B})T_{\pi_{AB}}^\dagger|\Psi\rangle\right],\label{eq:defGNLmagic}
+\end{equation}
+where now the minimization is over the Gaussian unitaries induced by $\mathrm{O}(2\ell)\oplus \mathrm{O}(2(N-\ell))$, hence $ M_\RENYI^\textup{NL} \leq  M_\RENYI^\textup{GNL}$. Up to a non-Gaussian permutation, this quantity corresponds to the minimization over the full unitary group for Gaussian systems.
+Throughout this work our main interest is the case $\RENYI=2$, the smallest R\'enyi index for which the stabilizer entropy is a magic monotone~\cite{piro,leone2024stabilizer}, the most studied in the literature, and the one we implicitly refer to when writing simply \emph{Gaussian-restricted non-local magic}. Nevertheless, we will also comment on results for $\RENYI>2$, in particular in Appendix~\ref{Sec:generaliz}.
+Our main result is that, for fermionic Gaussian states, the Gaussian-restricted non-local magic can be evaluated exactly in $\mathrm{poly}(N)$ resources.
 
 \section{Results}
-Consider a pure fermionic Gaussian state $|\Psi_O\rangle$ with covariance matrix $\Gamma=O \Gamma_0 O^T$ and the bipartition $\Lambda = A\sqcup B$ \DIFdelbegin \DIFdel{, where we denote without loss of generality $A$ the smallest partition with $|A|=\ell\le N/2$}\DIFdelend \DIFaddbegin \DIFadd{into the contiguous blocks $A=\{1,\dots,\ell\}$ and $B=\{\ell+1,\dots,N\}$}\DIFaddend . 
-Our main result shows that the FNL magic is entirely determined by the spectrum of the reduced covariance matrix. Let $\{\lambda_i\}_{i=1,\dots,\ell}$ denote the non-negative eigenvalues of the $2\ell\times 2\ell$ reduced covariance matrix $i\Gamma_A := i\Gamma|_{\mathcal{I}_A}$ of the Majorana modes restricted to $A$, $\mathcal{I}_A:=\{2m-1,2m\;|\; m\in A\}$. Then, our main finding is the following closed-form expression at $\RENYI=2$.
+Consider a pure fermionic Gaussian state $|\Psi_O\rangle$ with covariance matrix $\Gamma=O \Gamma_0 O^T$ and the bipartition $\Lambda = A\sqcup B$, where we denote without loss of generality $A$ the smallest partition with $|A|=\ell\le N/2$. 
+Our main result shows that the GNL magic is entirely determined by the spectrum of the reduced covariance matrix. Let $\{\lambda_i\}_{i=1,\dots,\ell}$ denote the non-negative eigenvalues of the $2\ell\times 2\ell$ reduced covariance matrix $i\Gamma_A := i\Gamma|_{\mathcal{I}_A}$ of the Majorana modes restricted to $A$, $\mathcal{I}_A:=\{2m-1,2m\;|\; m\in A\}$. Then, our main finding is the following closed-form expression at $\RENYI=2$.
 
-\begin{theorem}[Fermionic non-local magic of Gaussian states at $\RENYI=2$]
+\begin{theorem}[Gaussian-restricted non-local magic of Gaussian states at $\RENYI=2$]
 \label{thm:global}
-Let $|\Psi_O\rangle$ be an arbitrary pure fermionic Gaussian state on $N$ modes and let $\Lambda=A\sqcup B$ \DIFdelbegin \DIFdel{with $|A|=\ell$}\DIFdelend \DIFaddbegin \DIFadd{be the bipartition into the contiguous blocks $A=\{1,\dots,\ell\}$ and $B=\{\ell+1,\dots,N\}$}\DIFaddend . Then
+Let $|\Psi_O\rangle$ be an arbitrary pure fermionic Gaussian state on $N$ modes and let $\Lambda=A\sqcup B$ with $|A|=\ell$. Then
 \begin{equation}
 \begin{split}
-    M_{2}^{\mathrm{FNL}}(|\Psi_O\rangle)&=\sum_{i=1}^{\ell}\mathfrak{m}_2(\lambda_i^2)\;,\\
+    M_{2}^{\mathrm{GNL}}(|\Psi_O\rangle)&=\sum_{i=1}^{\ell}\mathfrak{m}_2(\lambda_i^2)\;,\\
     \mathfrak{m}_2(x)&=-\log_2\!\left(1-x+x^2\right),
 \end{split}
     \label{eq:analytic_NL}
 \end{equation}
 or, equivalently, in terms of the stabilizer purity,
-\DIFdelbegin \begin{displaymath}
-\DIFdel{\begin{split}
+\begin{equation}
+\begin{split}
 \max_{\substack{O_A\in \mathrm{O}(2\ell)\\ O_B\in \mathrm{O}(2(N-\ell))}}\!\!\!\!\zeta_2&\left[T_{\pi_{AB}}(U_{O_A}\otimes U_{O_B})T_{\pi_{AB}}^\dagger|\Psi_O\rangle\right]\\ &=\prod_{i=1}^{\ell}\left(1-\lambda_i^2+\lambda_i^4\right)\;,
 \end{split}
 \label{eq:thm_zeta}
-}\end{displaymath}%DIFAUXCMD
-\DIFdelend \DIFaddbegin \begin{equation}
-\DIFadd{\begin{split}
-\max_{\substack{O_A\in \mathrm{O}(2\ell)\\ O_B\in \mathrm{O}(2(N-\ell))}}\!\!\!\!\zeta_2&\left[(U_{O_A}\otimes U_{O_B})|\Psi_O\rangle\right]\\ &=\prod_{i=1}^{\ell}\left(1-\lambda_i^2+\lambda_i^4\right)\;,
-\end{split}
-\label{eq:thm_zeta}
-}\end{equation}\DIFaddend 
+\end{equation}
 the maximum being attained in the Botero--BCS canonical axes of Eq.~\eqref{eq:can_form}.
 \end{theorem}
 
-The proof \DIFdelbegin \DIFdel{, holding for any $1\le\ell\le N/2$, }\DIFdelend is given in full detail in Appendix~\ref{app:proof}. It assumes that the state $|\Psi_O\rangle$ is pure and Gaussian\DIFaddbegin \DIFadd{, and uses that $A$ and $B$ are contiguous blocks, which guarantees that the local Gaussian unitaries in Eq.~\eqref{eq:defFNLmagic} act on the covariance matrix as $O_A\oplus O_B$}\DIFaddend .
+The proof, holding for any $1\le\ell\le N/2$ , is given in full detail in Appendix~\ref{app:proof}. It assumes that the state $|\Psi_O\rangle$ is pure and Gaussian.
 The key point is that local Gaussian unitaries over a bipartition of the system bring any pure fermionic Gaussian state into a canonical modewise form $\ket{\Psi_{\rm can}}$ in Eq.~\eqref{eq:can_form}, consisting of independent two-mode Bell-like pairs~\cite{BoteroReznik2004}, a normal form that underlies several equivalent descriptions of fermionic Gaussian entanglement~\cite{SpeeSchwaigerGiedkeKraus2018,MorralYepesLangerGammonSmithKrausPollmann2025,langer2026matchgatecircuitrepresentationfermionic}.
 We prove that this representative is the \emph{global} maximizer of the stabilizer purity $\zeta_2$ on the local Gaussian orbit, i.e.
-$M_{2}^{\mathrm{FNL}}(|\Psi_O\rangle) = M_{2}(|\Psi_{\rm can}\rangle)$,
+$M_{2}^{\mathrm{GNL}}(|\Psi_O\rangle) = M_{2}(|\Psi_{\rm can}\rangle)$,
 from which Eq.~\eqref{eq:analytic_NL} follows by direct computation of the two-mode stabilizer entropy~\cite{Cao_2025,qian2025quantumnonlocalnonstabilizerness}.
 
 
 For integer $\RENYI>2$ we conjecture that the same structure survives, with the R\'enyi weight adapted accordingly,
     \begin{equation} 
     \begin{split}
-      M_{\RENYI}^{\mathrm{FNL}}(|\Psi_O\rangle)\! &= \sum_{i=1}^{\ell}\mathfrak{m}_\RENYI(\lambda_i^2)\;,
+      M_{\RENYI}^{\mathrm{GNL}}(|\Psi_O\rangle)\! &= \sum_{i=1}^{\ell}\mathfrak{m}_\RENYI(\lambda_i^2)\;,
     \end{split}
     \label{eq:analytic_NL_alpha}
     \end{equation}
@@ -329,8 +263,8 @@ which reduces to Eq.~\eqref{eq:analytic_NL} at $\RENYI=2$. This conjecture is su
 
 Several remarks are in order.
 First, the proof of Theorem~\ref{thm:global} relies heavily on the specific quadratic (collision) functional form. Proving the result for $\RENYI>2$ would require a different proof strategy, which we leave open for future investigations.
-Second, for small subsystems the restriction to Gaussian unitaries is immaterial. For $\ell\le 2$, structural simplifications make the Gaussian minimization coincide with the full one, $M_2^{\mathrm{NL}}=M_2^{\mathrm{FNL}}$, and Eq.~\eqref{eq:analytic_NL} reproduces the expression obtained in Ref.~\cite{Cao_2025} from the Schmidt spectrum. For larger subsystems, this is no longer the case: non-Gaussian local transformations can further decrease the magic even when the initial state is Gaussian, so that Theorem~\ref{thm:global} provides an upper bound on the generic non-local magic, $M_2^{\mathrm{NL}}\le M_2^{\mathrm{FNL}}$.
-Lastly, our formula is considerably simpler even than computing the \emph{total} stabilizer entropy $M_\RENYI$ for fermionic Gaussian states, which requires either Majorana Monte Carlo~\cite{Bera_2025} or perfect sampling~\cite{collura2026nonstabilizernessfermionicgaussianstates}, both requiring an exponential number of samples for convergence in the worst case. In contrast, evaluating $M_\RENYI^\mathrm{FNL}$ via Eqs.~\eqref{eq:analytic_NL} and~\eqref{eq:analytic_NL_alpha} requires only $\mathrm{poly}(\ell)$ operations.
+Second, for small subsystems the restriction to Gaussian unitaries is immaterial. For $\ell\le 2$, structural simplifications make the Gaussian minimization coincide with the full one, $M_2^{\mathrm{NL}}=M_2^{\mathrm{GNL}}$, and Eq.~\eqref{eq:analytic_NL} reproduces the expression obtained in Ref.~\cite{Cao_2025} from the Schmidt spectrum. For larger subsystems, this is no longer the case: non-Gaussian local transformations can further decrease the magic even when the initial state is Gaussian, so that Theorem~\ref{thm:global} provides an upper bound on the generic non-local magic, $M_2^{\mathrm{NL}}\le M_2^{\mathrm{GNL}}$.
+Lastly, our formula is considerably simpler even than computing the \emph{total} stabilizer entropy $M_\RENYI$ for fermionic Gaussian states, which requires either Majorana Monte Carlo~\cite{Bera_2025} or perfect sampling~\cite{collura2026nonstabilizernessfermionicgaussianstates}, both requiring an exponential number of samples for convergence in the worst case. In contrast, evaluating $M_\RENYI^\mathrm{GNL}$ via Eqs.~\eqref{eq:analytic_NL} and~\eqref{eq:analytic_NL_alpha} requires only $\mathrm{poly}(\ell)$ operations.
 
 In the following, we will consider throughout the case $\RENYI=2$, where the stabilizer entropy is a magic monotone and where Theorem~\ref{thm:global} applies. (Nevertheless, as aforementioned, we have checked that the same phenomenology holds for $\RENYI>2$, see Appendix~\ref{Sec:generaliz}.)
 We will show that the structure highlighted in Eq.~\eqref{eq:analytic_NL} enables several analytical results, both at equilibrium and out-of-equilibrium.
@@ -351,7 +285,7 @@ One might attempt to introduce magic into the rainbow state by applying local un
 
 
 \subsection{Experimental observability}
-A key practical advantage of Eq.~\eqref{eq:analytic_NL} is that the fermionic non-local magic of Gaussian states is entirely determined by the reduced covariance matrix $\Gamma_A$, a polynomial number of two-point correlation functions.
+A key practical advantage of Eq.~\eqref{eq:analytic_NL} is that the Gaussian-restricted non-local magic of Gaussian states is entirely determined by the reduced covariance matrix $\Gamma_A$, a polynomial number of two-point correlation functions.
 While a proof-of-principle demonstration of non-local magic has recently been reported on a superconducting processor in a two-qubit setting~\cite{ahmad2025experimentaldemonstrationnonlocalmagic}, our result opens a scalable route applicable to large fermionic Gaussian systems.
 
 A natural experimental protocol is \emph{fermionic shadow tomography}~\cite{Wan_2023}: random matchgate circuits are applied, followed by computational-basis measurements, and $\Gamma_A$ is inferred from the resulting classical-shadow data.
@@ -359,61 +293,50 @@ A conservative sample-complexity estimate yields, for failure probability at mos
 \[
 N_{\mathrm{shots}} = O\!\left(\frac{\ell^2 \log(\ell/\delta)}{\epsilon_\Gamma^2}\right),
 \]
-to reconstruct \(\Gamma_A\) with accuracy \(\epsilon_\Gamma\), while the propagation of this error  to \(M_2^{\mathrm{FNL}}\) is discussed in  Appendix~\ref{app:experimental}.
+to reconstruct \(\Gamma_A\) with accuracy \(\epsilon_\Gamma\), while the propagation of this error  to \(M_2^{\mathrm{GNL}}\) is discussed in  Appendix~\ref{app:experimental}.
 
 
-\subsection{Fermionic Non-local magic of typical Gaussian states}
-Having established the exact formula, we first investigate the fermionic non-local magic of \emph{typical} Gaussian states, i.e., states $|\Psi_O\rangle=U_O|\mathbf{0}\rangle$ generated by Haar-random $O\in \mathrm{O}(2N)$.
-Our goal is to compute the average $\overline{M}_2^\mathrm{FNL}\equiv \mathbb{E}_{O\sim \mathrm{O}(2N)}[M_2^\mathrm{FNL}(|\Psi_O\rangle)]$, which for our closed-form expression reduces to a random matrix theory problem~\cite{Mehta2004,Livan_2018,vidmar2017entanglement}.
-For a fixed subsystem $A$ of size $\ell\le N/2$, let us define the stochastic variables $x_k:=\lambda_k^2$, whose joint probability distribution is a Jacobi ensemble~\DIFdelbegin \DIFdel{\mbox{%DIFAUXCMD
-\cite{Mehta2004}
-}\hskip0pt%DIFAUXCMD
-}\begin{displaymath}
-    \DIFdel{\mathbb{P}(x_1,\dots,x_\ell) = \frac{\Delta(x_1,\dots,x_\ell)}{Z_\ell}  \prod_{m=1}^\ell \frac{(1-x_m)^{N-2\ell}}{\sqrt{x_m(1-x_m)}}\;,
-}\end{displaymath}%DIFAUXCMD
-\DIFdelend \DIFaddbegin \DIFadd{\mbox{%DIFAUXCMD
-\cite{Mehta2004,PhysRevB.103.L241118}
-}\hskip0pt%DIFAUXCMD
-}\begin{equation}
-    \DIFadd{\mathbb{P}(x_1,\dots,x_\ell) = \frac{\Delta(x_1,\dots,x_\ell)}{Z_\ell}  \prod_{m=1}^\ell \frac{(1-x_m)^{N-2\ell}}{\sqrt{x_m}}\;,
-}\end{equation}\DIFaddend 
+\subsection{Typical Gaussian states}
+Having established the exact formula, we first investigate the Gaussian-restricted non-local magic of \emph{typical} Gaussian states, i.e., states $|\Psi_O\rangle=U_O|\mathbf{0}\rangle$ generated by Haar-random $O\in \mathrm{O}(2N)$.
+Our goal is to compute the average $\overline{M}_2^\mathrm{GNL}\equiv \mathbb{E}_{O\sim \mathrm{O}(2N)}[M_2^\mathrm{GNL}(|\Psi_O\rangle)]$, which for our closed-form expression reduces to a random matrix theory problem~\cite{Mehta2004,Livan_2018,vidmar2017entanglement}.
+For a fixed subsystem $A$ of size $\ell\le N/2$, let us define the stochastic variables $x_k:=\lambda_k^2$, whose joint probability distribution is a Jacobi ensemble~\cite{Mehta2004}
+\begin{equation}
+    \mathbb{P}(x_1,\dots,x_\ell) = \frac{\Delta(x_1,\dots,x_\ell)}{Z_\ell}  \prod_{m=1}^\ell \frac{(1-x_m)^{N-2\ell}}{\sqrt{x_m(1-x_m)}}\;,
+\end{equation}
 with $\Delta(x_1,\dots,x_\ell)=\prod_{1\le i<j\le \ell} (x_i-x_j)^2$ the squared Vandermonde determinant  and $Z_\ell$ the normalization ensuring $\int \mathbb{P}(x_1,\dots,x_\ell)\prod_{m=1}^\ell (dx_m)=1$. 
-Since $M_2^\mathrm{FNL}=\sum_{m=1}^\ell \mathfrak{m}_2(x_m)$ is a sum over separate $x_m$ contributions, the only ingredient required is the one-point density function 
+Since $M_2^\mathrm{GNL}=\sum_{m=1}^\ell \mathfrak{m}_2(x_m)$ is a sum over separate $x_m$ contributions, the only ingredient required is the one-point density function 
 \begin{equation}
 \begin{split}
     \varrho^{(\ell)}(x):&=\mathbb{E}_\mathbb{P}\left[\sum_{m=1}^\ell \delta(x-x_m)\right] \\&= \ell \int \mathbb{P}(x,x_2,\dots,x_\ell)\prod_{m=2}^\ell (dx_m)\:,
 \end{split}
 \end{equation}
 where we used relabelling in the second step. Notice that $\int_0^1 \varrho^{(\ell)}(x) dx = \ell$.
-Thus, the average fermionic non-local magic is 
+Thus, the average Gaussian-restricted non-local magic is 
 \begin{equation}
-    \overline{M}_2^\mathrm{FNL}=\int_0^1 \mathfrak{m}_2(x) \varrho^{(\ell)}(x) dx\;.
+    \overline{M}_2^\mathrm{GNL}=\int_0^1 \mathfrak{m}_2(x) \varrho^{(\ell)}(x) dx\;.
 \end{equation}
 For the Jacobi ensemble, the one-point density is given by the standard orthogonal-polynomial kernel.
-Given \DIFdelbegin \DIFdel{$w(x) = (1-x)^{N-2\ell}/\sqrt{x(1-x)}$}\DIFdelend \DIFaddbegin \DIFadd{$w(x) = (1-x)^{N-2\ell}/\sqrt{x}$}\DIFaddend , we have~\cite{sierant2026theorymatchgatecommutant,sierant2026fermionic}
+Given $w(x) = (1-x)^{N-2\ell}/\sqrt{x(1-x)}$, we have~\cite{sierant2026theorymatchgatecommutant,sierant2026fermionic}
 \begin{equation}
 \varrho^{(\ell)}(x) = w(x) \sum_{n=0}^{\ell-1} [p_n(x)]^2\;,
 \label{eq:ziopino}
 \end{equation}
-where $p_n$ are polynomials in the domain $[0,1]$, that are orthonormal with respect to the weight $w(x)$, namely \DIFdelbegin \DIFdel{$p_n(x) = \mathrm{P}_n^{(-1/2,N-2\ell-1/2)}(1-2x)/\sqrt{h_n}$ }\DIFdelend \DIFaddbegin \DIFadd{$p_n(x) = \mathrm{P}_n^{(-1/2,N-2\ell)}(1-2x)/\sqrt{h_n}$ }\DIFaddend in terms of the Jacobi polynomials $\mathrm{P}_n^{(a,b)}$ and with normalization 
-\DIFdelbegin \begin{displaymath}
-    \DIFdel{h_n=\frac{\Gamma(n+1/2) \Gamma(n+N-2\ell+1/2)}{(2n+N-2\ell) \Gamma(n+1)\Gamma(n+N-2\ell)}.
-}\end{displaymath}%DIFAUXCMD
-\DIFdelend \DIFaddbegin \begin{equation}
-    \DIFadd{h_n=\frac{\Gamma(n+1/2) \Gamma(n+N-2\ell+1)}{(2n+N-2\ell+1/2) \Gamma(n+1)\Gamma(n+N-2\ell+1/2)}.
-}\end{equation}\DIFaddend  
-Eq.~\eqref{eq:ziopino} yields the exact average non-local magic at finite size $N$ for a given $\ell$, which we \DIFdelbegin \DIFdel{benchmark against }\DIFdelend \DIFaddbegin \DIFadd{benchmarked against direct sampling of Haar-random $O\in\mathrm{O}(2N)$, finding agreement within statistical errors; its thermodynamic limit, derived below, is compared with }\DIFaddend exact numerics in Fig.~\ref{fig:typicality}(a)\DIFdelbegin \DIFdel{, finding perfect agreement}\DIFdelend . We emphasize that this is a \emph{quenched} average --- performed outside the logarithm --- which is typically harder to evaluate than its annealed counterpart.
+where $p_n$ are polynomials in the domain $[0,1]$, that are orthonormal with respect to the weight $w(x)$, namely $p_n(x) = \mathrm{P}_n^{(-1/2,N-2\ell-1/2)}(1-2x)/\sqrt{h_n}$ in terms of the Jacobi polynomials $\mathrm{P}_n^{(a,b)}$ and with normalization 
+\begin{equation}
+    h_n=\frac{\Gamma(n+1/2) \Gamma(n+N-2\ell+1/2)}{(2n+N-2\ell) \Gamma(n+1)\Gamma(n+N-2\ell)}.
+\end{equation} 
+Eq.~\eqref{eq:ziopino} yields the exact average non-local magic at finite size $N$ for a given $\ell$, which we benchmark against exact numerics in Fig.~\ref{fig:typicality}(a), finding perfect agreement. We emphasize that this is a \emph{quenched} average --- performed outside the logarithm --- which is typically harder to evaluate than its annealed counterpart.
 
 \begin{figure}[t!]
     \centering
     \includegraphics[width=\columnwidth]{fig1_typicality.pdf}
-    \caption{\textbf{Fermionic non-local magic of typical fermionic Gaussian states.}
-    (a)~Page curve for Haar-random FGS: $\overline{M_2}^{\mathrm{FNL}}/N$ is plotted against the ratio $r=\ell/N$. The results are compared with the closed form expression for $N\to\infty$ in Eq.~\eqref{eq:ziopin2}.
-    (b)~The fermionic non-local magic Page curve is tested against the numerically computed average non-local magic for SYK$_2$ mid-spectrum eigenstates. The results are in quantitative agreement with Eq.~\eqref{eq:ziopin2}. }
+    \caption{\textbf{Gaussian-restricted non-local magic of typical fermionic Gaussian states.}
+    (a)~Page curve for Haar-random FGS: $\overline{M_2}^{\mathrm{GNL}}/N$ is plotted against the ratio $r=\ell/N$. The results are compared with the closed form expression for $N\to\infty$ in Eq.~\eqref{eq:ziopin2}.
+    (b)~The Gaussian-restricted non-local magic Page curve is tested against the numerically computed average non-local magic for SYK$_2$ mid-spectrum eigenstates. The results are in quantitative agreement with Eq.~\eqref{eq:ziopin2}. }
     \label{fig:typicality}
 \end{figure}
 
-We now turn to the thermodynamic limit $\ell,N\to\infty$ at fixed ratio $r=\ell/N\in[0,1/2]$, defining the fermionic non-local magic density $\overline{\mathsf{m}}_2^\mathrm{FNL}:=\overline{M}_2^\mathrm{FNL}/N$ (the final result is symmetric under $r\to 1-r$).
+We now turn to the thermodynamic limit $\ell,N\to\infty$ at fixed ratio $r=\ell/N\in[0,1/2]$, defining the Gaussian-restricted non-local magic density $\overline{\mathsf{m}}_2^\mathrm{GNL}:=\overline{M}_2^\mathrm{GNL}/N$ (the final result is symmetric under $r\to 1-r$).
 In this regime, the rescaled  one-point density $\varrho^{(\ell)}/N$ converges to the free Jacobi law with support $x\in [0,c]$, $c=4r(1-r)$,
 \begin{equation}
     \varrho_r(x) = \frac{\sqrt{(c-x)x}}{2\pi x(1-x)}\mathbf{1}_{[0,c]}(x)\;,
@@ -422,44 +345,44 @@ where $\mathbf{1}_A(x)$ is the characteristic function of $A$, $\mathbf{1}_A(x)=
 The total mass of the density is $\int_0^c \varrho_r(x) dx=r$, which is precisely the fraction of the number of eigenvalues over the system size. 
 Thus, in the scaling limit, we have
 \begin{equation}
-\overline{\mathsf{m}}_2^\mathrm{FNL}(r)\simeq \int_0^c \mathfrak{m}_2(x) \varrho_r(x)dx\;.
+\overline{\mathsf{m}}_2^\mathrm{GNL}(r)\simeq \int_0^c \mathfrak{m}_2(x) \varrho_r(x)dx\;.
 \end{equation}
 A more convenient parametrization is obtained by setting $x=c\sin^2\theta$  with $\theta\in[0,\pi/2]$. Then the integral is 
 \begin{equation}
-\overline{\mathsf{m}}_2^\mathrm{FNL}(r)\simeq \frac{c}{\pi}\int_0^{\pi/2} \frac{\cos^2 \theta}{1-c\sin^2\theta} \mathfrak{m}_2(c\sin^2 \theta)d\theta\;.\label{eq:ziopin2}
+\overline{\mathsf{m}}_2^\mathrm{GNL}(r)\simeq \frac{c}{\pi}\int_0^{\pi/2} \frac{\cos^2 \theta}{1-c\sin^2\theta} \mathfrak{m}_2(c\sin^2 \theta)d\theta\;.\label{eq:ziopin2}
 \end{equation}
 At exactly half bipartition, $r=1/2$, this integral can be performed exactly and the formula reduces to 
-$\overline{\mathsf{m}}_2^\mathrm{FNL}(r)\simeq 2-\log_2(2+\sqrt{3})$.
-On the other hand, for small $r\simeq 0$ (and by symmetry $r\simeq 1$), we have $c\simeq 4r$ and the integral yields $\overline{\mathsf{m}}_2^\mathrm{FNL}(r\simeq 0)\simeq \frac{r^2}{\ln(2)}+\mathcal{O}(r^3)$. 
-This {\em fermionic non-local magic Page curve} shows a  quadratic onset,  for every $\RENYI$ (see Appendix Sec.~\ref{Sec:generaliz}), with a transparent physical origin: when $\ell$ is of order one while $N\to\infty$, the $\ell$ modes of $A$ are almost, or exactly, maximally entangled and thus carry no non-local magic. 
+$\overline{\mathsf{m}}_2^\mathrm{GNL}(r)\simeq 2-\log_2(2+\sqrt{3})$.
+On the other hand, for small $r\simeq 0$ (and by symmetry $r\simeq 1$), we have $c\simeq 4r$ and the integral yields $\overline{\mathsf{m}}_2^\mathrm{GNL}(r\simeq 0)\simeq \frac{r^2}{\ln(2)}+\mathcal{O}(r^3)$. 
+This {\em Gaussian-restricted non-local magic Page curve} shows a  quadratic onset,  for every $\alpha$(see Appendix Sec.~\ref{Sec:generaliz}), with a transparent physical origin: when $\ell$ is of order one while $N\to\infty$, the $\ell$ modes of $A$ are almost, or exactly, maximally entangled and thus carry no non-local magic. 
 This is in sharp contrast with the entanglement Page curve, which vanishes only at $|A|=0$ and grows linearly for small $r$~\cite{PhysRevE.106.034118,PhysRevLett.125.180604,PhysRevB.103.L241118}.
 
 
 To test the universality of this result beyond Haar-random states, we consider the Sachdev--Ye--Kitaev model at quadratic order, $\mathrm{SYK}_2$.
 This model is specified by the  Hamiltonian  $H$ of the form in  Eq.~\eqref{eq:ham} with  $h$ a random antisymmetric matrix whose elements are drawn from the normal distribution $h_{m,n}\sim \mathcal{N}(0,{J^2}/{N})$ and set $J=1$. 
 The single-body Hamiltonian $ih$ is Hermitian with eigenvalues in $\pm\varepsilon_k$ pairs ($k=1,\dots,N$), each pair defining an effective fermionic mode. A many-body eigenstate is specified by a filling $\mathcal{F}\subset\{1,\dots,2N\}$ of $N$ single-particle modes with eigenvectors $|v_k\rangle$, yielding the one-body density matrix $\Xi=\sum_{k\in\mathcal{F}}|v_k\rangle\langle v_k|$ and the covariance matrix $\Gamma = i(2\Xi-\mathbb{I})$. 
-The ground state fills the $N$ lowest-energy modes; to probe typicality, we construct mid-spectrum eigenstates $H|E_n\rangle=E_n|E_n\rangle$  by flipping a random subset of $N/4$ to $N/2$ modes from the ground-state configuration, replacing occupied negative-energy modes with their positive-energy partners. For each of $N_{\mathrm{dis}}=1000$ disorder realizations, we compute $M_2^{\mathrm{FNL}}$ from $\Gamma$ and average over 200 excited eigenstates $|E_n\rangle$ per realization, obtaining $\overline{M}_2^{\mathrm{FNL}}=\mathbb{E}_{h}\,\mathbb{E}_{n}[M_2^{\mathrm{FNL}}(|E_n\rangle)]$.
-In Fig.~\ref{fig:typicality}(b), we plot the resulting non-local magic density $\overline{\mathsf{m}}_2^\mathrm{FNL}$ versus $r=\ell/N$ for $N=40,80,160$.
-The data converge to the analytical Haar prediction Eq.~\eqref{eq:ziopin2} as $N$ increases, confirming that mid-spectrum eigenstates of SYK$_2$ reproduce the typicality of fermionic non-local magic expected from random fermionic Gaussian states.
+The ground state fills the $N$ lowest-energy modes; to probe typicality, we construct mid-spectrum eigenstates $H|E_n\rangle=E_n|E_n\rangle$  by flipping a random subset of $N/4$ to $N/2$ modes from the ground-state configuration, replacing occupied negative-energy modes with their positive-energy partners. For each of $N_{\mathrm{dis}}=1000$ disorder realizations, we compute $M_2^{\mathrm{GNL}}$ from $\Gamma$ and average over 200 excited eigenstates $|E_n\rangle$ per realization, obtaining $\overline{M}_2^{\mathrm{GNL}}=\mathbb{E}_{h}\,\mathbb{E}_{n}[M_2^{\mathrm{GNL}}(|E_n\rangle)]$.
+In Fig.~\ref{fig:typicality}(b), we plot the resulting non-local magic density $\overline{\mathsf{m}}_2^\mathrm{GNL}$ versus $r=\ell/N$ for $N=40,80,160$.
+The data converge to the analytical Haar prediction Eq.~\eqref{eq:ziopin2} as $N$ increases, confirming that mid-spectrum eigenstates of SYK$_2$ reproduce the typicality of Gaussian-restricted non-local magic expected from random fermionic Gaussian states.
 
 
 
-\subsection{Fermionic Non-local magic in ground states}
+\subsection{Ground states of XY model}
 
 \begin{figure*}
     \centering
     \includegraphics[width=\linewidth]{fig1_equilibrium.pdf}
     \caption{%
-    \textbf{Equilibrium fermionic non-local magic in the Ising and XY models.}
-    (a)~Validation of Eq.~\eqref{eq:analytic_NL} for the Ising ground state with $N=8$, $\ell=4$: the fermionic non-local magic $M_2^{\mathrm{FNL}}$ from Eq.~\eqref{eq:analytic_NL} (crosses) agrees with the brute-force minimization over all local unitaries $U_A \otimes U_B$  (red marker) to numerical precision. The black line shows the total stabilizer entropy $M_2$ for reference.
-    (b)~$M_2^{\mathrm{FNL}}$ vs.\ transverse field $\mu$ in the thermodynamic limit for subsystem sizes $\ell = 16, 32, 64, 128$; the black curve is the exact $\ell \to \infty$ result from the Peschel entanglement spectrum, Eq.~\eqref{eq:NL_peschel2}. The fermionic non-local magic peaks at the critical point $\mu_c = 1$ and is suppressed in both gapped phases.
-    (c)~Scaling of $M_2^{\mathrm{FNL}}(\ell)$ at criticality ($\mu = 1$, red): logarithmic growth: the dashed line is the fit $\beta_{\mathrm{fit}}\ln\ell+b$,  with $\beta_{\mathrm{fit}} \approx 0.1072$  and $b \approx 0.27$, in agreement with the Fisher--Hartwig prediction Eq.~\eqref{eq:alpha_NL}. In the gapped phases ($\mu = 0.5$, $\mu = 4.0$), $M_2^{\mathrm{FNL}}$ saturates to a finite value.
-    (d)~Heatmap of $M_2^{\mathrm{FNL}}/\ell$ over the XY phase diagram ($\mu$, $\eta$), computed from the exact Peschel formula. The fermionic non-local magic is concentrated near the critical lines and is strongly suppressed deep in the gapped phases.
+    \textbf{Equilibrium Gaussian-restricted non-local magic in the Ising and XY models.}
+    (a)~Validation of Eq.~\eqref{eq:analytic_NL} for the Ising ground state with $N=8$, $\ell=4$: the Gaussian-restricted non-local magic $M_2^{\mathrm{GNL}}$ from Eq.~\eqref{eq:analytic_NL} (crosses) agrees with the brute-force minimization over all local unitaries $U_A \otimes U_B$  (red marker) to numerical precision. The black line shows the total stabilizer entropy $M_2$ for reference.
+    (b)~$M_2^{\mathrm{GNL}}$ vs.\ transverse field $\mu$ in the thermodynamic limit for subsystem sizes $\ell = 16, 32, 64, 128$; the black curve is the exact $\ell \to \infty$ result from the Peschel entanglement spectrum, Eq.~\eqref{eq:NL_peschel2}. The Gaussian-restricted non-local magic peaks at the critical point $\mu_c = 1$ and is suppressed in both gapped phases.
+    (c)~Scaling of $M_2^{\mathrm{GNL}}(\ell)$ at criticality ($\mu = 1$, red): logarithmic growth: the dashed line is the fit $\beta_{\mathrm{fit}}\ln\ell+b$,  with $\beta_{\mathrm{fit}} \approx 0.1072$  and $b \approx 0.27$, in agreement with the Fisher--Hartwig prediction Eq.~\eqref{eq:alpha_NL}. In the gapped phases ($\mu = 0.5$, $\mu = 4.0$), $M_2^{\mathrm{GNL}}$ saturates to a finite value.
+    (d)~Heatmap of $M_2^{\mathrm{GNL}}/\ell$ over the XY phase diagram ($\mu$, $\eta$), computed from the exact Peschel formula. The Gaussian-restricted non-local magic is concentrated near the critical lines and is strongly suppressed deep in the gapped phases.
     }
     \label{fig:Ising_model}
 \end{figure*}
 
-We now apply Eq.~\eqref{eq:analytic_NL} to study the equilibrium properties of fermionic non-local magic in the ground state of the XY chain
+We now apply Eq.~\eqref{eq:analytic_NL} to study the equilibrium properties of Gaussian-restricted non-local magic in the ground state of the XY chain
 \begin{equation}
     H = -\sum_{j=1}^{N}\!\left[\frac{1+\eta}{2}X_j X_{j+1} + \frac{1-\eta}{2}Y_j Y_{j+1} + \mu Z_j\right],
     \label{eq:xy}
@@ -467,10 +390,10 @@ We now apply Eq.~\eqref{eq:analytic_NL} to study the equilibrium properties of f
 with periodic boundary conditions.
 Using the Jordan--Wigner transformation, Eq.~\eqref{eq:xy} is mapped to the quadratic Hamiltonian $H$of the form in Eq.~\eqref{eq:ham} with single-body matrix entries $h_{2m-1,2m} = 2\mu$, $h_{2m,2m+1} = 1+\eta$, $h_{2m+2,2m-1} = 1-\eta$, and all remaining elements fixed by antisymmetry~\cite{Mbeng2024}. 
 Throughout this Section, the XY chain is studied as a \emph{fermionic} model, i.e.\ as a Majorana chain: after the Jordan--Wigner mapping the ground state is naturally written --- and exactly solvable --- as a fermionic Gaussian state, and the natural notion of locality is that of the fermionic modes. 
-Accordingly, $M_\RENYI^{\mathrm{FNL}}$ is the non-local magic of the \textit{free-fermion problem}, and the local Gaussian unitaries of Eq.~\eqref{eq:defFNLmagic} are, for a contiguous cut, implemented by genuine tensor products $U_{O_A}\otimes U_{O_B}$ of qubit unitaries (cf. also Appendix~\ref{app:proof}).
-Following standard practice in the literature, we simplify the nomenclature and keep referring to it as the XY model~\footnote{Note that, minimizing over all local spin unitaries would give a quantity bounded from above by ours, $M_\RENYI^{\mathrm{NL}}\le M_\RENYI^{\mathrm{FNL}}$, as discussed in the first remark below Theorem~\ref{thm:global}.}. 
+Accordingly, $M_\RENYI^{\mathrm{GNL}}$ is the non-local magic of the \textit{free-fermion problem}, and the local Gaussian unitaries of Eq.~\eqref{eq:defGNLmagic} are, for a contiguous cut, implemented by genuine tensor products $U_{O_A}\otimes U_{O_B}$ of qubit unitaries (cf. also Appendix~\ref{app:proof}).
+Following standard practice in the literature, we simplify the nomenclature and keep referring to it as the XY model~\footnote{Note that, minimizing over all local spin unitaries would give a quantity bounded from above by ours, $M_\RENYI^{\mathrm{NL}}\le M_\RENYI^{\mathrm{GNL}}$, as discussed in the first remark below Theorem~\ref{thm:global}.}. 
 We restrict to system sizes $N$ divisible by $4$, for which the ground state lies in the Neveu--Schwarz sector with antiperiodic fermionic boundary
-conditions \DIFdelbegin \DIFdel{$\gamma_{N+1}=-\gamma_1$}\DIFdelend \DIFaddbegin \DIFadd{$c_{N+1}=-c_1$, i.e., $\gamma_{2N+1}=-\gamma_1$ and $\gamma_{2N+2}=-\gamma_2$}\DIFaddend ~\cite{Mbeng2024}.
+conditions $\gamma_{N+1}=-\gamma_1$~\cite{Mbeng2024}.
 The allowed momenta are 
 $k=k(n)= \pi(2n+1)/N$ for $n = 0,\dots, N/2-1$, 
 spanning $(0,\pi)$ with $N/2$ equally spaced points; 
@@ -487,8 +410,9 @@ yielding the single-particle dispersion
     \varepsilon_k = \sqrt{(\mu-\cos k)^2 + \eta^2\sin^2 k}\;.
     \label{eq:dispersion}
 \end{equation}
-In the diagonal basis, the Hamiltonian reads \DIFdelbegin \DIFdel{$H = \frac{i}{2}\sum_k \varepsilon_k\,\tilde\gamma_{2k-1}\tilde\gamma_{2k}$}\DIFdelend \DIFaddbegin \DIFadd{$H = i\sum_k \varepsilon_k\,\tilde\gamma_{2k-1}\tilde\gamma_{2k}$, i.e., the eigenvalues of $ih$ are $\pm2\varepsilon_k$}\DIFaddend , where $\tilde\gamma_m = \sum_n G_{mn}\gamma_n$ are the rotated Majorana operators.
+In the diagonal basis, the Hamiltonian reads $H = \frac{i}{2}\sum_k \varepsilon_k\,\tilde\gamma_{2k-1}\tilde\gamma_{2k}$, where $\tilde\gamma_m = \sum_n G_{mn}\gamma_n$ are the rotated Majorana operators.
 The ground state is the vacuum of all Bogoliubov modes, with covariance matrix $\Gamma = G\,\Gamma_0\, G^T$.
+%DIF <  For the Ising model ($\eta = 1$), the gap closes at $k = 0$ when $\mu = \mu_c = 1$, with low-energy spectrum $\varepsilon_k \sim |k|$ characteristic of the $c=1/2$ conformal field theory.
 
 From now on, we consider the bipartition fixed by the contiguous interval $A=\{1,\dots,\ell\}$ and its complement $B=\Lambda\setminus A$.
 In the thermodynamic limit $N\to\infty$ with $\ell$ fixed, the reduced covariance matrix $\Gamma_A$ is a $2\ell\times 2\ell$ block-Toeplitz matrix with $2\times 2$ blocks depending only on $m-n$,
@@ -500,15 +424,15 @@ In the thermodynamic limit $N\to\infty$ with $\ell$ fixed, the reduced covarianc
 \end{split}
 \label{eq:block_toeplitz}
 \end{equation}
-The fermionic non-local magic $M_2^{\mathrm{FNL}} = \sum_n \mathfrak{m}_2(\lambda_n^2)$ is therefore a spectral function of $\Gamma_A$ with symbol $g(k)$, providing a direct route to efficient numerical evaluation.
+The Gaussian-restricted non-local magic $M_2^{\mathrm{GNL}} = \sum_n \mathfrak{m}_2(\lambda_n^2)$ is therefore a spectral function of $\Gamma_A$ with symbol $g(k)$, providing a direct route to efficient numerical evaluation.
 For a given Hamiltonian and subsystem size $\ell$, we construct $\Gamma_A$ by evaluating the integral in Eq.~\eqref{eq:block_toeplitz}, exact in the thermodynamic limit $N\to\infty$, and compute the non-local magic via Eq.~\eqref{eq:analytic_NL} from the eigenvalues $\pm\lambda_n$ ($\lambda_n\in[0,1]$) of $i\Gamma_A$.
 This procedure reaches large subsystem sizes $\ell$ at classical computational cost $\mathcal{O}(\ell^3)$.
 
 In the scaling limit $N\gg \ell\gg 1$, the asymptotic behavior of spectral functions of Toeplitz matrices is controlled by two classical results: the \emph{strong Szeg\H{o} theorem}, applicable when the symbol is smooth, and the \emph{Fisher--Hartwig formula}, which governs the corrections arising from singularities in the symbol~\cite{Jin_2004,Its_2005}.
 
-Since the symbol~\eqref{eq:block_toeplitz} satisfies $|\det g(k)| = 1$ for all $k$, the Szeg\H{o} theorem rules out volume-law scaling of $M_2^{\mathrm{FNL}}$.
-When $g(k)$ is smooth, as occurs in the gapped phases $\mu \neq 1$ where $\theta_k$ is analytic, the strong Szeg\H{o} theorem further implies that $M_2^{\mathrm{FNL}}$ saturates to a finite value as $\ell \to \infty$, with exponentially small corrections~\cite{simon2010szego}.
-Logarithmic growth can arise only from singularities in the symbol, which for the Ising model ($\eta=1$) occur at the critical point $\mu = \mu_c = 1$, where the Bogoliubov angle $\theta_k$ develops a jump discontinuity at $k = 0$.
+Since the symbol~\eqref{eq:block_toeplitz} satisfies $|\det g(k)| = 1$ for all $k$, the Szeg\H{o} theorem rules out volume-law scaling of $M_2^{\mathrm{GNL}}$.
+When $g(k)$ is smooth, as occurs in the gapped phases $\mu \neq 1$ where $\theta_k$ is analytic, the strong Szeg\H{o} theorem further implies that $M_2^{\mathrm{GNL}}$ saturates to a finite value as $\ell \to \infty$, with exponentially small corrections~\cite{simon2010szego}.
+Logarithmic growth can arise only from singularities in the symbol, which for the Ising model ($\eta=1$) occur at the critical point $\mu = \mu_c = 1$, where the Bogoliubov angle $\theta_k$ develops a jump discontinuity at $k = 0$\DIFdelbegin \DIFdel{(and $k = \pi$)}\DIFdelend .
 We now exploit this structure to obtain exact scaling forms in both regimes.
 
 \subsubsection{Exact results off criticality via corner transfer matrices}
@@ -527,7 +451,7 @@ so that the eigenvalues of $i\Gamma_A$ are $\pm\lambda_n$ with $\lambda_n = \tan
 Here $\lambda_n = 1$ corresponds to a pure (unentangled) mode and $\lambda_n < 1$ to an entangled one.
 
 For the XY model away from criticality, the entanglement spectrum of a semi-infinite bipartition fixed by $A=\mathbb{Z}_+=\{1,2,\dots\}$ is known in closed form through the corner transfer matrix approach~\cite{Peschel2009,Eisler2017}.
-As we show below, this leads to the exact computation of $M_2^\mathrm{FNL,\mathbb{Z}_+}$ in this regime. 
+As we show below, this leads to the exact computation of $M_2^\mathrm{GNL,\mathbb{Z}_+}$ in this regime. 
 This regime approximates the scaling limit $N\gg\ell\gg1$.
 The single-particle entanglement energies are equally spaced,
 \begin{equation}
@@ -548,44 +472,48 @@ where $\varepsilon = \pi K(\kappa')/K(\kappa)$ is the level spacing, $K(x)$ deno
 \end{equation}
 This leads to the exact expression for the off-critical phases
 \begin{equation}
-    M_2^{\mathrm{FNL},\mathbb{Z}_+} = \sum_{n=0}^{\infty} \mathfrak{m}_2\!\left[\tanh^2\left(\frac{\varepsilon_n^{\mathrm{ent}}}{2}\right)\right].
+    M_2^{\mathrm{GNL},\mathbb{Z}_+} = \sum_{n=0}^{\infty} \mathfrak{m}_2\!\left[\tanh^2\left(\frac{\varepsilon_n^{\mathrm{ent}}}{2}\right)\right].
     \label{eq:NL_peschel}
 \end{equation}
-For a block of $\ell$ sites in the infinite chain with periodic boundary conditions, two separate boundaries contribute, so that the fermionic non-local magic is twice the single-cut result
+For a block of $\ell$ sites in the infinite chain with periodic boundary conditions, two separate boundaries contribute, so that the Gaussian-restricted non-local magic is twice the single-cut result
 \begin{equation}
-    M_2^{\mathrm{FNL}}(\ell) \simeq  2M_2^{\mathrm{FNL},\mathbb{Z}_+} = 2\sum_{n=0}^{\infty} \mathfrak{m}_2\!\left[\tanh^2\left(\frac{\varepsilon_n^{\mathrm{ent}}}{2}\right)\right],
+    M_2^{\mathrm{GNL}}(\ell) \simeq  2M_2^{\mathrm{GNL},\mathbb{Z}_+} = 2\sum_{n=0}^{\infty} \mathfrak{m}_2\!\left[\tanh^2\left(\frac{\varepsilon_n^{\mathrm{ent}}}{2}\right)\right],
     \label{eq:NL_peschel2}
 \end{equation}
 up to corrections exponentially small in $\ell/\xi$, where $\xi$ is the correlation length of the problem. 
-Since $\mathfrak{m}_2(x)\simeq(1-x)/\ln 2$ vanishes linearly as $x \to 1$, and $1-\lambda_n^2 \to 0$ exponentially for large $n$, the series converges rapidly: for $\mu$ away from criticality, only a few terms contribute, consistently with the Szeg\H{o} prediction of a finite $M_2^{\mathrm{FNL}}$.
+Since $\mathfrak{m}_2(x)\simeq(1-x)/\ln 2$ vanishes linearly as $x \to 1$, and $1-\lambda_n^2 \to 0$ exponentially for large $n$, the series converges rapidly: for $\mu$ away from criticality, only a few terms contribute, consistently with the Szeg\H{o} prediction of a finite $M_2^{\mathrm{GNL}}$.
 
 In Fig.~\ref{fig:Ising_model} we benchmark these predictions against numerical simulations with periodic boundary conditions for the Ising model ($\eta=1$).
-In Fig.~\ref{fig:Ising_model}(a), we validate Eq.~\eqref{eq:analytic_NL} by comparing against a brute-force minimization over the full unitary group $\mathrm{U}(d_A)\otimes\mathrm{U}(d_B)$ for $N=8$, $\ell=4$: the two results agree to numerical precision.
-In Fig.~\ref{fig:Ising_model}(b), we compare exact numerics for $N=10^6$ qubits and $\ell = 16,32,64,128$ with the asymptotic formula Eq.~\eqref{eq:NL_peschel2}, finding quantitative agreement. Notably, for $\mu<1$ the non-local magic is strongly suppressed, $M_2^{\mathrm{FNL}}$ being exponentially small in the level spacing $\varepsilon$ of the entanglement spectrum and vanishing exactly only in the GHZ limit $\mu\to0$. This is the ordered (ferromagnetic) phase, whose ground state approaches the GHZ state $\frac{1}{\sqrt{2}}(|0\rangle^{\otimes N}+|1\rangle^{\otimes N})$ as $\mu\to 0$. The suppression of non-local magic in this regime can be understood from the Peschel entanglement spectrum, Eq.~\eqref{eq:peschel_spectrum}: for $\mu<1$ and $\eta=1$, the single-particle entanglement energies are $\varepsilon_n^{\mathrm{ent}}=2n\varepsilon$. The $n=0$ mode has $\varepsilon_0=0$, yielding $\lambda_0=\tanh(0)=0$ (a maximally entangled, stabilizer-like Bell pair), while all $n\ge 1$ modes have $\lambda_n=\tanh(n\varepsilon)$ exponentially close to $1$ (nearly unentangled modes). Since $\mathfrak{m}_2(0)=\mathfrak{m}_2(1)=0$, every mode contributes an exponentially small amount of non-local magic. This is a striking example of a phase with nonzero entanglement entropy (area law) but negligible  non-local magic. In contrast, the entanglement entropy receives a finite area-law contribution from the $n=0$ maximally entangled mode.
+In Fig.~\ref{fig:Ising_model}(a), we validate Eq.~\eqref{eq:analytic_NL} by comparing against a brute-force minimization over the full unitary group $\mathrm{U}(d_A)\otimes\mathrm{U}(d_B)$ for $N=8$, $\ell=4$: the two results agree to numerical precision. For a general model (i.e., beyond Ising or XY), however, we do not expect such agreement, and only the inequality
+$M_2^{\mathrm{NL}}\le \widetilde{M}_2^{\mathrm{NL}}$ is expected to hold,
+cf.~Appendix~\ref{app:variational}~\footnote{We nevertheless find that throughout the XY phase
+diagram, for the system sizes accessible to exact minimization, the agreement persists, see Ref.~\cite{zenodo}.}. 
+
+In Fig.~\ref{fig:Ising_model}(b), we compare exact numerics for $N=10^6$ qubits and $\ell = 16,32,64,128$ with the asymptotic formula Eq.~\eqref{eq:NL_peschel2}, finding quantitative agreement. Notably, for $\mu<1$ the non-local magic is strongly suppressed, $M_2^{\mathrm{GNL}}$ being exponentially small in the level spacing $\varepsilon$ of the entanglement spectrum and vanishing exactly only in the GHZ limit $\mu\to0$. This is the ordered (ferromagnetic) phase, whose ground state approaches the GHZ state $\frac{1}{\sqrt{2}}(|0\rangle^{\otimes N}+|1\rangle^{\otimes N})$ as $\mu\to 0$. The suppression of non-local magic in this regime can be understood from the Peschel entanglement spectrum, Eq.~\eqref{eq:peschel_spectrum}: for $\mu<1$ and $\eta=1$, the single-particle entanglement energies are $\varepsilon_n^{\mathrm{ent}}=2n\varepsilon$. The $n=0$ mode has $\varepsilon_0=0$, yielding $\lambda_0=\tanh(0)=0$ (a maximally entangled, stabilizer-like Bell pair), while all $n\ge 1$ modes have $\lambda_n=\tanh(n\varepsilon)$ exponentially close to $1$ (nearly unentangled modes). Since $\mathfrak{m}_2(0)=\mathfrak{m}_2(1)=0$, every mode contributes an exponentially small amount of non-local magic. This is a striking example of a phase with nonzero entanglement entropy (area law) but negligible  non-local magic. In contrast, the entanglement entropy receives a finite area-law contribution from the $n=0$ maximally entangled mode.
 
 At the critical point $\mu_c=1$ ($\eta=1$), the gap closes and the correlation length diverges as $\xi\simeq |\mu-1|^{-1}$; the spacing $\varepsilon \to 0$ (since $\kappa \to 1$ and $K(\kappa) \to \infty$), so the series in Eq.~\eqref{eq:NL_peschel2} diverges.
 The Bogoliubov angle $\theta_k$ develops a jump discontinuity at $k = 0$, placing the problem squarely in the Fisher--Hartwig regime~\cite{Jin_2004}.
 The key result is that the asymptotic density of the positive eigenvalues $\lambda_n \in [0,1)$  of $i\Gamma_A$ --- one per $\pm\lambda_n$ pair, with two Fisher--Hartwig boundary points for the block --- scales as $\rho(\lambda) \simeq 2\ln\ell\,[\pi^2(1-\lambda^2)]^{-1}$~\cite{Its_2005}.
-Inserting this spectral density into the fermionic non-local magic,
+Inserting this spectral density into the Gaussian-restricted non-local magic,
 \begin{equation}
-    M_2^{\mathrm{FNL}}(\ell) = \sum_{n} \mathfrak{m}_2(\lambda_n^2)\;\simeq\; \beta_{\mathrm{FNL}}\,\ln\ell,
+    M_2^{\mathrm{GNL}}(\ell) = \sum_{n} \mathfrak{m}_2(\lambda_n^2)\;\simeq\; \beta_{\mathrm{GNL}}\,\ln\ell,
 \end{equation}
 with constant
 \begin{equation}
-    \beta_{\mathrm{FNL}} = \frac{2}{\pi^2}\int_{0}^{1} \frac{\mathfrak{m}_2(\lambda^2)}{1-\lambda^2}\, d\lambda= \frac{\pi ^2-\ln ^2\left(7-4 \sqrt{3}\right)}{\pi ^2 \ln (16)}\;,
+    \beta_{\mathrm{GNL}} = \frac{2}{\pi^2}\int_{0}^{1} \frac{\mathfrak{m}_2(\lambda^2)}{1-\lambda^2}\, d\lambda= \frac{\pi ^2-\ln ^2\left(7-4 \sqrt{3}\right)}{\pi ^2 \ln (16)}\;,
     \label{eq:alpha_NL}
 \end{equation}
 where in the second step we performed the integral explicitly.
-This logarithmic scaling is the non-local magic analogue of $S \simeq (c/3)\ln\ell$~\cite{Calabrese2004entanglement}, with the central charge $c$ replaced by $\beta_{\mathrm{FNL}}$.
+This logarithmic scaling is the non-local magic analogue of $S \simeq (c/3)\ln\ell$~\cite{Calabrese2004entanglement}, with the central charge $c$ replaced by $\beta_{\mathrm{GNL}}$.
 In Fig.~\ref{fig:Ising_model}(c), a fit to the numerical data for $\ell > 50$ at $\mu = 1$ yields $\beta_{\mathrm{fit}} \approx 0.1072$, in excellent agreement with Eq.~\eqref{eq:alpha_NL}.
 
-Finally, in Fig.~\ref{fig:Ising_model}(d) we extend our analysis to the full XY phase diagram. The fermionic non-local magic is concentrated near the critical lines and is strongly suppressed deep in the gapped phases, where it saturates to a small $\mathcal{O}(1)$ value.
+Finally, in Fig.~\ref{fig:Ising_model}(d) we extend our analysis to the full XY phase diagram. The Gaussian-restricted non-local magic is concentrated near the critical lines and is strongly suppressed deep in the gapped phases, where it saturates to a small $\mathcal{O}(1)$ value.
 
-\subsection{Area law for fermionic non-local magic}
-\label{sec:FNL_area_law}
-The results presented in the previous subsection are more general. In fact,  Eq.~\eqref{eq:analytic_NL} immediately implies an area law for fermionic non-local magic in ground states of one-dimensional local gapped free-fermion Hamiltonians. We present the argument for arbitrary $\RENYI\ge1$; it is rigorous at $\RENYI=2$ by Theorem~\ref{thm:global}, while for $\RENYI\neq2$ it inherits the status of the conjectured weights of Eq.~\eqref{eq:analytic_NL_alpha}.
+\subsection{Area law for Gaussian-restricted non-local magic}
+\label{sec:GNL_area_law}
+The results presented in the previous subsection are more general. In fact,  Eq.~\eqref{eq:analytic_NL} immediately implies an area law for Gaussian-restricted non-local magic in ground states of one-dimensional local gapped free-fermion Hamiltonians. We present the argument for arbitrary $\RENYI\ge1$; it is rigorous at $\RENYI=2$ by Theorem~\ref{thm:global}, while for $\RENYI\neq2$ it inherits the status of the conjectured weights of Eq.~\eqref{eq:analytic_NL_alpha}.
 
-Let $|\Psi_O\rangle$ be such a Gaussian ground state and let \DIFdelbegin \DIFdel{$A$ }\DIFdelend \DIFaddbegin \DIFadd{$A=\{1,\dots,\ell\}$ }\DIFaddend be a contiguous \DIFdelbegin \DIFdel{interval}\DIFdelend \DIFaddbegin \DIFadd{block, as in Theorem~\ref{thm:global}}\DIFaddend . The Gaussian entanglement entropy is
+Let $|\Psi_O\rangle$ be such a Gaussian ground state and let $A$ be a contiguous interval. The Gaussian entanglement entropy is
 \begin{equation}
     S(A)=
     \sum_{i=1}^{\ell}
@@ -594,14 +522,14 @@ Let $|\Psi_O\rangle$ be such a Gaussian ground state and let \DIFdelbegin \DIFde
 \end{equation}
 where $\mathfrak{f}(x):=-x\log_2x-(1-x)\log_2(1-x)$. On the other hand, taking the limit \(\RENYI\to1\) in Eq.~\eqref{eq:analytic_NL_weights} gives
 \begin{equation}
-    M_{1}^{\mathrm{FNL}}(|\Psi_O\rangle)
+    M_{1}^{\mathrm{GNL}}(|\Psi_O\rangle)
     =
     \frac{1}{2}
     \sum_{i=1}^{\ell}
     \mathfrak{f}(\lambda_i^2).
-    \label{eq:M1_FNL}
+    \label{eq:M1_GNL}
 \end{equation}
-Moreover, $M_{\alpha}^{\mathrm{FNL}}\le M_{\beta}^{\mathrm{FNL}}$ for $\alpha\ge\beta$, since R\'enyi entropies are non-increasing in the index. By noticing that for every $\lambda\in[0,1)$
+Moreover, $M_{\alpha}^{\mathrm{GNL}}\le M_{\beta}^{\mathrm{GNL}}$ for $\alpha\ge\beta$, since R\'enyi entropies are non-increasing in the index. By noticing that for every $\lambda\in[0,1)$
 \begin{equation}
     \frac{1}{2}\mathfrak{f}(\lambda^2)
     \le
@@ -610,14 +538,14 @@ Moreover, $M_{\alpha}^{\mathrm{FNL}}\le M_{\beta}^{\mathrm{FNL}}$ for $\alpha\ge
 \end{equation}
 then, summing over the single-particle entanglement modes gives
 \begin{equation}
-    M_{\RENYI}^{\mathrm{FNL}}(|\Psi_O\rangle)
+    M_{\RENYI}^{\mathrm{GNL}}(|\Psi_O\rangle)
     \le
-    M_{1}^{\mathrm{FNL}}(|\Psi_O\rangle)
+    M_{1}^{\mathrm{GNL}}(|\Psi_O\rangle)
     \le
     2\, S(A),
     \qquad
     \RENYI\ge1.
-    \label{eq:FNL_bound_by_entropy_all_alpha}
+    \label{eq:GNL_bound_by_entropy_all_alpha}
 \end{equation}
 This is the Gaussian analogue of the general entanglement-controlled bound discussed for $M_2^{\mathrm{NL}}$ in Ref.~\cite{Cao_2025}.
 
@@ -630,10 +558,10 @@ with $C_{\mathrm{ent}}$ independent of $|A|$ and of the total system size. There
 \begin{equation}
     M_{\RENYI}^{\mathrm{NL}}(|\Psi_O\rangle)
     \le
-    M_{\RENYI}^{\mathrm{FNL}}(|\Psi_O\rangle)
+    M_{\RENYI}^{\mathrm{GNL}}(|\Psi_O\rangle)
     \le
     2\, C_{\mathrm{ent}}|\partial A|,
-    \label{eq:FNL_area_law_final}
+    \label{eq:GNL_area_law_final}
 \end{equation}
 whenever $\RENYI\ge1$. 
 
@@ -643,18 +571,16 @@ whenever $\RENYI\ge1$.
     \centering
     \includegraphics[width=\linewidth]{fig2_dynamics_4panel.pdf}
     \caption{%
-    \textbf{Dynamics of fermionic non-local magic.}
-    (a)~Quench at $\eta=1$ from the fully polarized state ($\mu_0\to\infty$) to the critical point ($\mu=1$): the exact numerics (circles) agrees quantitatively with the analytical prediction in Eq.~\eqref{eq:fagotti_mnl} (solid lines) for subsystem sizes \DIFdelbeginFL \DIFdelFL{$\ell = 40, 60, 100, 160$}\DIFdelendFL \DIFaddbeginFL \DIFaddFL{$\ell = 20, 40, 60, 100, 160$}\DIFaddendFL . Dashed lines mark the GGE stationary value.
-    (b)~Same for a finite quench $\mu_0 = 2 \to \mu = 1$, showing weaker fermionic non-local magic production due to the smaller Bogoliubov overlap $\sin^2\Delta\theta_k$.
-    (c)~Stationary-state density $M_2^{\mathrm{FNL}}(\infty)/\ell$ as a function of the post-quench field $\mu$ ($\mu_0\to\infty$): analytical prediction from Eq.~\eqref{eq:mnl_stationary} (solid) and GGE numerics at $\ell = 160$ (crosses).
-    (d)~Random Gaussian circuit dynamics:  $\overline{M_2}^{\mathrm{FNL}}/N$ is plotted against $\sqrt{t}/N$ for $N = 20, 40, 80$, exhibiting diffusive growth $\sim\!\sqrt{t}$ and saturation to the fermionic Gaussian Haar-random value $\overline{\mathsf{m}}_{2}^{\mathrm{FNL}}(r=1/2)=2-\log_2(2+\sqrt{3})$  (dashed line).}
+    \textbf{Dynamics of Gaussian-restricted non-local magic.}
+    (a)~Quench at $\eta=1$ from the fully polarized state ($\mu_0\to\infty$) to the critical point ($\mu=1$): the exact numerics (circles) agrees quantitatively with the analytical prediction in Eq.~\eqref{eq:fagotti_mnl} (solid lines) for subsystem sizes $\ell = 40, 60, 100, 160$. Dashed lines mark the GGE stationary value.
+    (b)~Same for a finite quench $\mu_0 = 2 \to \mu = 1$, showing weaker Gaussian-restricted non-local magic production due to the smaller Bogoliubov overlap $\sin^2\Delta\theta_k$.
+    (c)~Stationary-state density $M_2^{\mathrm{GNL}}(\infty)/\ell$ as a function of the post-quench field $\mu$ ($\mu_0\to\infty$): analytical prediction from Eq.~\eqref{eq:mnl_stationary} (solid) and GGE numerics at $\ell = 160$ (crosses).
+    (d)~Random Gaussian circuit dynamics:  $\overline{M_2}^{\mathrm{GNL}}/N$ is plotted against $\sqrt{t}/N$ for $N = 20, 40, 80$, exhibiting diffusive growth $\sim\!\sqrt{t}$ and saturation to the fermionic Gaussian Haar-random value $\overline{\mathsf{m}}_{2}^{\mathrm{GNL}}(r=1/2)=2-\log_2(2+\sqrt{3})$  (dashed line).}
     \label{fig:dynamics}
 \end{figure*}
 
-We now turn from equilibrium to the non-equilibrium dynamics of fermionic non-local magic, focusing on quantum quenches in the Ising chain.
-The system is prepared in the ground state $|\Psi_0\rangle$ of $H(\mu_0)$ and, at time $t=0$, the transverse field is suddenly quenched to $\mu \neq \mu_0$; the state then evolves unitarily as \DIFdelbegin \DIFdel{$|\Psi(t)\rangle = e^{-iH(\mu)t}|\Psi_0\rangle$}\DIFdelend \DIFaddbegin \DIFadd{$|\Psi(t)\rangle = e^{-iH(\mu)t/2}|\Psi_0\rangle$, where, following Refs.~\mbox{%DIFAUXCMD
-\cite{Calabrese2005evolution,Fagotti2008}}\hskip0pt%DIFAUXCMD
-, we measure time in units in which the evolution is generated by $H(\mu)/2$}\DIFaddend .
+We now turn from equilibrium to the non-equilibrium dynamics of Gaussian-restricted non-local magic, focusing on quantum quenches in the Ising chain.
+The system is prepared in the ground state $|\Psi_0\rangle$ of $H(\mu_0)$ and, at time $t=0$, the transverse field is suddenly quenched to $\mu \neq \mu_0$; the state then evolves unitarily as $|\Psi(t)\rangle = e^{-iH(\mu)t}|\Psi_0\rangle$.
 Since both the initial state and the time evolution preserve the Gaussian structure, $|\Psi(t)\rangle$ remains a fermionic Gaussian state at all times, fully characterized by its time-dependent covariance matrix $\Gamma(t)$.
 In particular, the time-dependent block-Toeplitz symbol of $\Gamma_A(t)$ takes the form~\cite{Calabrese2005evolution}
 \begin{equation}
@@ -686,26 +612,26 @@ At long times $t\to\infty$, the oscillating terms $\cos (2\varepsilon_k t)$ and 
 Only the time-independent part of $p$ survives, $p(k,\infty) = e^{-i\theta_k}\cos(\Delta\theta_k)$, while $q(k,\infty) = 0$.
 The resulting stationary covariance matrix is that of a generalized Gibbs ensemble (GGE)~\cite{Calabrese2005evolution,vidmar2017entanglement} and is again a block-Toeplitz matrix, now with a \emph{time-independent} symbol.
 The eigenvalues $\pm\lambda_k^\infty$ of the stationary $i\Gamma_A^\infty$ are determined by the Bogoliubov angle mismatch alone, $\lambda_k^\infty=|\cos\Delta\theta_k|$, 
- and the stationary fermionic non-local magic density is obtained via the Szeg\H{o} theorem~\cite{Calabrese2005evolution}
+ and the stationary Gaussian-restricted non-local magic density is obtained via the Szeg\H{o} theorem~\cite{Calabrese2005evolution}
 \begin{equation}
-    M_2^{\mathrm{FNL}}(\infty) = \frac{\ell}{\pi}\int_0^\pi\! dk\; \mathfrak{m}_2\!\left(\sin^2\!\Delta\theta_k\right)\;.
+    M_2^{\mathrm{GNL}}(\infty) = \frac{\ell}{\pi}\int_0^\pi\! dk\; \mathfrak{m}_2\!\left(\sin^2\!\Delta\theta_k\right)\;.
     \label{eq:mnl_stationary}
 \end{equation}
-This result reveals that for any $\mu\neq \mu_0$, the quench generically produces extensive (volume-law) fermionic non-local magic; the expression is symmetric under $\mu \leftrightarrow \mu_0$.
+This result reveals that for any $\mu\neq \mu_0$, the quench generically produces extensive (volume-law) Gaussian-restricted non-local magic; the expression is symmetric under $\mu \leftrightarrow \mu_0$.
 
 \subsubsection{Quasiparticle picture}
 Eq.~\eqref{eq:mnl_stationary} bears a striking structural similarity to the entanglement entropy of the same quench~\cite{Calabrese2005evolution}, $S=\frac{\ell}{\pi} \int_0^\pi\! dk\; \mathfrak{f}\bigl(\sin^2(\Delta\theta_k/2)\bigr)$, with $\mathfrak{f}(x):= -(1-x)\log_2(1-x)-x\log_2(x)$  the binary entropy: in terms of the stationary eigenvalues $\lambda_k^{\infty}=|\cos\Delta\theta_k|$, the entanglement weight $\mathfrak{f}\bigl((1+\lambda_k^{\infty})/2\bigr)$ is replaced by the magic weight $\mathfrak{m}_2\bigl((\lambda_k^{\infty})^2\bigr)=\mathfrak{m}_2(\sin^2\!\Delta\theta_k)$, using the symmetry $\mathfrak{m}_2(x)=\mathfrak{m}_2(1-x)$.
-This parallel extends beyond the stationary state and allows us to derive, from first principles, a quasiparticle picture for the spreading of fermionic non-local magic.
+This parallel extends beyond the stationary state and allows us to derive, from first principles, a quasiparticle picture for the spreading of Gaussian-restricted non-local magic.
 
 
-The fermionic non-local magic can be written as a contour integral over the characteristic polynomial $D_\ell(\lambda) = \det(\lambda \mathbb{I}_{2\ell} - i\Gamma_A)$,
+The Gaussian-restricted non-local magic can be written as a contour integral over the characteristic polynomial $D_\ell(\lambda) = \det(\lambda \mathbb{I}_{2\ell} - i\Gamma_A)$,
 \begin{equation}
-    M_2^{\mathrm{FNL}} = \frac{1}{4\pi i}\oint_\mathcal{C}d\lambda\;\mathfrak{m}_2(\lambda^2)\;\frac{d}{d\lambda}\ln D_\ell(\lambda)\;,\label{eq:circccc}
+    M_2^{\mathrm{GNL}} = \frac{1}{4\pi i}\oint_\mathcal{C}d\lambda\;\mathfrak{m}_2(\lambda^2)\;\frac{d}{d\lambda}\ln D_\ell(\lambda)\;,\label{eq:circccc}
 \end{equation}
 where $\mathcal{C}$ encircles all eigenvalues counterclockwise; the factor $1/2$ compensates the double counting of the $\pm\lambda_n$ pairs.
-Expanding $\ln D_\ell(\lambda)$ in powers of $\lambda^{-1}$ expresses $M_2^{\mathrm{FNL}}$ as a series in the even moments $\mathrm{Tr}(i\Gamma_A)^{2n}$.
+Expanding $\ln D_\ell(\lambda)$ in powers of $\lambda^{-1}$ expresses $M_2^{\mathrm{GNL}}$ as a series in the even moments $\mathrm{Tr}(i\Gamma_A)^{2n}$.
 The $2\ell \times 2\ell$ matrix $i\Gamma_A$ has a block-Toeplitz structure inherited from the symbol $g(k,t)$.
-Exploiting this structure, one can show that its $2\ell$ eigenvalues coincide with those of two Hermitian matrices $W_\pm = \mathcal{H} \pm i\mathcal{T}$, where $\mathcal{T}_{jl} = \int \frac{dk}{2\pi}\,e^{-ik(j-l)}\,q(k,t)$ is Toeplitz and $\mathcal{H}_{jl} = \int \frac{dk}{2\pi}\,e^{-ik(j+l-\ell-1)}\,p(k,t)$ is Hankel. This enables the exact time dependence of $M_2^\mathrm{FNL}(t)$ following the strategy in Ref.~\cite{Fagotti2008}. 
+Exploiting this structure, one can show that its $2\ell$ eigenvalues coincide with those of two Hermitian matrices $W_\pm = \mathcal{H} \pm i\mathcal{T}$, where $\mathcal{T}_{jl} = \int \frac{dk}{2\pi}\,e^{-ik(j-l)}\,q(k,t)$ is Toeplitz and $\mathcal{H}_{jl} = \int \frac{dk}{2\pi}\,e^{-ik(j+l-\ell-1)}\,p(k,t)$ is Hankel. This enables the exact time dependence of $M_2^\mathrm{GNL}(t)$ following the strategy in Ref.~\cite{Fagotti2008}. 
 The moments $\mathrm{Tr}(i\Gamma_A)^{2n} = \mathrm{Tr}\,W_+^{2n} + \mathrm{Tr}\,W_-^{2n}$ are then computed by expanding the matrix products into $2n$-fold momentum integrals.
 As shown in Ref.~\cite{Fagotti2008}, these integrals can be evaluated exactly in the limit $\ell \gg 1$ via a multidimensional stationary phase approximation.
 This procedure leads to the asymptotic expression\begin{equation}
@@ -720,54 +646,54 @@ where $v_k = d\varepsilon_k/dk$ is the group velocity.
 At $t=0$ the bracket equals one and all moments take the pure-state value $2\ell$, while the term proportional to $\min(1,2|v_k|t/\ell)$ interpolates ballistically towards  the stationary (GGE) moments $\frac{2\ell}{\pi}\int_0^\pi\cos^{2n}(\Delta\theta_k)\,dk$, capturing the propagation of quasiparticle pairs.
 Inserting Eq.~\eqref{eq:moments_asymptotic} into  Eq.~\eqref{eq:circccc} and carrying out the contour integration yields the quasiparticle formula
 \begin{equation}
-    M_2^{\mathrm{FNL}}(\ell,t) \simeq \int_0^\pi\!\frac{dk}{\pi}\,\min\!\bigl(2|v_k|\,t,\;\ell\bigr)\;\mathfrak{m}_2\!\bigl(\sin^2(\Delta\theta_k)\bigr),
+    M_2^{\mathrm{GNL}}(\ell,t) \simeq \int_0^\pi\!\frac{dk}{\pi}\,\min\!\bigl(2|v_k|\,t,\;\ell\bigr)\;\mathfrak{m}_2\!\bigl(\sin^2(\Delta\theta_k)\bigr),
     \label{eq:fagotti_mnl}
 \end{equation}
 valid in the scaling limit $\ell, t \gg 1$ with $t/\ell$ arbitrary.
 Eq.~\eqref{eq:fagotti_mnl} predicts linear growth $\MNL \propto t$ for $t < t^* = \ell/(2v_{\max})$ and saturation to the extensive value $\MNL(\infty)/\ell = \pi^{-1}\int_0^\pi \mathfrak{m}_2(\sin^2\!\Delta\theta_k)\, dk$ for $t \gg t^*$.
 Eq.~\eqref{eq:fagotti_mnl} has a transparent physical interpretation in terms of the quasiparticle picture~\cite{Calabrese2005evolution,Fagotti2008}: the quench creates pairs of entangled quasiparticles at each point, which propagate ballistically with mode-dependent velocities $\pm v_k$.
-A pair at momentum $k$ contributes to $M_2^{\mathrm{FNL}}$ of the block $A$ only when one partner has entered $A$ while the other remains outside, hence the $\min(2|v_k|t,\ell)$ factor.
-The weight $\mathfrak{m}_2(\sin^2\Delta\theta_k)$  quantifies the fermionic non-local magic carried by each entangled pair: it vanishes both when $\Delta\theta_k = 0$ (no quench, no entanglement production) and when $\Delta\theta_k = \pi/2$ (maximally entangled but stabilizer-like mode), and is maximal at intermediate values.
+A pair at momentum $k$ contributes to $M_2^{\mathrm{GNL}}$ of the block $A$ only when one partner has entered $A$ while the other remains outside, hence the $\min(2|v_k|t,\ell)$ factor.
+The weight $\mathfrak{m}_2(\sin^2\Delta\theta_k)$  quantifies the Gaussian-restricted non-local magic carried by each entangled pair: it vanishes both when $\Delta\theta_k = 0$ (no quench, no entanglement production) and when $\Delta\theta_k = \pi/2$ (maximally entangled but stabilizer-like mode), and is maximal at intermediate values.
 
 We benchmark Eq.~\eqref{eq:fagotti_mnl} at $\eta=1$ (Ising chain) by  evaluating numerically Eq.~\eqref{eq:mustang}. 
-Our results are reported in Fig.~\ref{fig:dynamics} for the quench $\mu_0 = \infty \to \mu = 1$ (panel (a))  and $\mu_0 = 2 \to \mu = 1$ (panel (b)) at subsystem sizes \DIFdelbegin \DIFdel{$\ell = 40, 60, 100, 160$}\DIFdelend \DIFaddbegin \DIFadd{$\ell = 20, 40, 60, 100, 160$}\DIFaddend . 
+Our results are reported in Fig.~\ref{fig:dynamics} for the quench $\mu_0 = \infty \to \mu = 1$ (panel (a))  and $\mu_0 = 2 \to \mu = 1$ (panel (b)) at subsystem sizes $\ell = 40, 60, 100, 160$. 
 The exact time evolution (markers), obtained by constructing the full block-Toeplitz $\Gamma_A(t)$ via Eq.~\eqref{eq:pq_symbol} and diagonalizing, is in excellent agreement with the semiclassical prediction (solid lines) from Eq.~\eqref{eq:fagotti_mnl}.
 The dashed horizontal lines indicate the stationary values from Eq.~\eqref{eq:mnl_stationary}, which are approached at $t \simeq t^\star$.
-In Fig.~\ref{fig:dynamics}(c) we benchmark the steady state $M_2^{\mathrm{FNL}}(\infty)$ with the analytical expression Eq.~\eqref{eq:mnl_stationary} for the GGE, again in perfect agreement. 
+In Fig.~\ref{fig:dynamics}(c) we benchmark the steady state $M_2^{\mathrm{GNL}}(\infty)$ with the analytical expression Eq.~\eqref{eq:mnl_stationary} for the GGE, again in perfect agreement. 
 
 \subsection{Random Gaussian circuit dynamics}
-Finally, we consider the dynamics of fermionic non-local magic under random Gaussian circuits~\cite{tirrito2025magicphasetransitionsmonitored}.
+Finally, we consider the dynamics of Gaussian-restricted non-local magic under random Gaussian circuits~\cite{tirrito2025magicphasetransitionsmonitored}.
 The circuit is composed of nearest-neighbor fermionic Gaussian unitaries arranged in a brick-wall geometry on $N$ sites.
 A single layer $O_{\mathrm{layer}} = O_{\mathrm{odd}}\,O_{\mathrm{even}}$ consists of an even and an odd half-step, namely $O_{\mathrm{even}} = \prod_{j=1}^{N/2} R_{2j-1,2j}$ and $O_{\mathrm{odd}} = \prod_{j=1}^{N/2-1} R_{2j,2j+1}$, where each $R_{j,j+1} \in \mathrm{SO}(4)$ is a random orthogonal matrix drawn independently from the Haar measure, acting on the four Majorana operators $(\gamma_{2j-1}, \gamma_{2j}, \gamma_{2j+1}, \gamma_{2j+2})$ of sites $j$ and $j+1$.
 The full circuit after $t$ layers is $O(t) = \prod_{s=1}^t O_{\mathrm{layer}}^{(s)} \in \mathrm{SO}(2N)$.
 The initial state is the product state $|\mathbf{0}\rangle$ (vacuum of all fermionic modes), with covariance matrix $\Gamma_0$. 
 
 The time-evolved state remains Gaussian at all times, with covariance matrix $\Gamma(t) = O(t)\,\Gamma_0\,O(t)^T$.
-The fermionic non-local magic is therefore entirely determined by the restricted covariance matrix $\Gamma_A(t)$ and its eigenvalues $\pm\lambda_j(t)$.
+The Gaussian-restricted non-local magic is therefore entirely determined by the restricted covariance matrix $\Gamma_A(t)$ and its eigenvalues $\pm\lambda_j(t)$.
 
 In contrast to the ballistic quasiparticle spreading found in the integrable quench setting, operator spreading in local random free-fermion circuits is \emph{diffusive}~\cite{dias2021diffusiveoperatorspreadingrandom,swann}.
-Since the fermionic non-local magic is a smooth spectral functional of $\Gamma_A(t)$, it inherits this diffusive transport.
-At early times \DIFdelbegin \DIFdel{, }\DIFdelend \DIFaddbegin \DIFadd{the modes of $A$ are nearly unentangled; }\DIFaddend expanding the single-mode contribution for \DIFdelbegin \DIFdel{small $\lambda$, $\mathfrak{m}_2(\lambda^2) \simeq \frac{\lambda^2}{\ln 2} + \mathcal{O}(\lambda^4)$}\DIFdelend \DIFaddbegin \DIFadd{$\lambda\to1$, $\mathfrak{m}_2(\lambda^2) \simeq \frac{1-\lambda^2}{\ln 2}$}\DIFaddend , so that \DIFdelbegin \DIFdel{$M_2^{\mathrm{FNL}}(t) \simeq \frac{1}{2\ln 2}\mathrm{Tr}[(i\Gamma_A(t))^2]$}\DIFdelend \DIFaddbegin \DIFadd{$M_2^{\mathrm{FNL}}(t) \simeq \frac{1}{2\ln 2}\{2\ell-\mathrm{Tr}[(i\Gamma_A(t))^2]\}=\frac{1}{2\ln 2}\|\Gamma_{AB}(t)\|_{\mathrm{HS}}^2$, with $\Gamma_{AB}$ the off-diagonal block of $\Gamma$}\DIFaddend , which is governed by the diffusive spreading of two-point correlations across the entanglement cut~\cite{dias2021diffusiveoperatorspreadingrandom}.
+Since the Gaussian-restricted non-local magic is a smooth spectral functional of $\Gamma_A(t)$, it inherits this diffusive transport.
+At early times, expanding the single-mode contribution for small $\lambda$, $\mathfrak{m}_2(\lambda^2) \simeq \frac{\lambda^2}{\ln 2} + \mathcal{O}(\lambda^4)$, so that $M_2^{\mathrm{GNL}}(t) \simeq \frac{1}{2\ln 2}\mathrm{Tr}[(i\Gamma_A(t))^2]$, which is governed by the diffusive spreading of two-point correlations across the entanglement cut~\cite{dias2021diffusiveoperatorspreadingrandom}.
 This argument yields
 \begin{equation}
-    M_2^{\mathrm{FNL}}(t) \propto \sqrt{t}\;, \qquad 1 \ll t \ll N^2\;.
+    M_2^{\mathrm{GNL}}(t) \propto \sqrt{t}\;, \qquad 1 \ll t \ll N^2\;.
 \end{equation}
-At late times, $M_2^{\mathrm{FNL}}$ saturates to the Haar-random fermionic Gaussian value, and the natural scaling variable is $\sqrt{t}/N$.
-In Fig.~\ref{fig:dynamics}(d), we plot $\overline{M_2}^{\mathrm{FNL}}(t)/N$ versus $\sqrt{t}/N$ for $N = 20, 40, 80$, finding an excellent data collapse onto a single scaling function that interpolates between $\sqrt{t}$ growth and saturation at the Page-curve value $\overline{\mathsf{m}}_{2}^{\mathrm{FNL}}(r=1/2)=2-\log_2(2+\sqrt{3})$  (dashed line).
+At late times, $M_2^{\mathrm{GNL}}$ saturates to the Haar-random fermionic Gaussian value, and the natural scaling variable is $\sqrt{t}/N$.
+In Fig.~\ref{fig:dynamics}(d), we plot $\overline{M_2}^{\mathrm{GNL}}(t)/N$ versus $\sqrt{t}/N$ for $N = 20, 40, 80$, finding an excellent data collapse onto a single scaling function that interpolates between $\sqrt{t}$ growth and saturation at the Page-curve value $\overline{\mathsf{m}}_{2}^{\mathrm{GNL}}(r=1/2)=2-\log_2(2+\sqrt{3})$  (dashed line).
 The saturation timescale $t\sim\mathcal{O}(N^2)$ is consistent with diffusive dynamics.
 
 \section{Discussion}
 
 \subsection{Summary}
-We have proved an exact, closed-form expression for the fermionic non-local magic of Gaussian states at R\'enyi index $\RENYI=2$. A generalized expression for $\RENYI>2$ is verified numerically and shares the same qualitative features.
+We have proved an exact, closed-form expression for the fermionic Gaussian-restricted non-local magic of Gaussian states at R\'enyi index $\RENYI=2$. A generalized expression for $\RENYI>2$ is verified numerically and shares the same qualitative features.
 By reducing the minimization over Gaussian unitaries, the computation simplifies to a single eigenvalue decomposition of the reduced covariance matrix, completely bypassing the prohibitive variational minimization over the full Hilbert space. This establishes fermionic Gaussian states as a broad class of highly entangled many-body systems where the related non-local magic is exactly tractable, providing a useful proxy for the non-local magic over the full Unitary group.
 Beyond the physical result, the proof introduces two ingredients that we expect to be of independent interest: a sharp bound controlling the collision probability of a single Slater determinant by its transpose overlap; and a Hadamard-type determinant inequality for positive matrices of rank at most two, proved using fermionic creation operators.
 
 
 We applied this framework across three key physical settings.
 For typical fermionic Gaussian states, we derived an exact Page-like curve via random matrix theory, a prediction independently confirmed by SYK$_2$ mid-spectrum eigenstates.
-At equilibrium, we characterized the fermionic non-local magic of the XY spin chain ground state, obtaining exact results in both gapped and critical phases: a finite saturation value off criticality via corner transfer matrices, and logarithmic scaling at the critical point via the Fisher--Hartwig formula.
-Out of equilibrium, we established a quasiparticle picture for the spreading of fermionic non-local magic after quantum quenches, finding linear growth up to a crossing time $t^\star= \ell/(2v_\mathrm{max})$  followed by saturation to a volume-law value.
+At equilibrium, we characterized the Gaussian-restricted non-local magic of the XY spin chain ground state, obtaining exact results in both gapped and critical phases: a finite saturation value off criticality via corner transfer matrices, and logarithmic scaling at the critical point via the Fisher--Hartwig formula.
+Out of equilibrium, we established a quasiparticle picture for the spreading of Gaussian-restricted non-local magic after quantum quenches, finding linear growth up to a crossing time $t^\star= \ell/(2v_\mathrm{max})$  followed by saturation to a volume-law value.
 In contrast, random Gaussian circuits exhibit diffusive growth, with non-local magic scaling as $\sqrt{t}$ before saturating at the Haar-random value on a timescale $t\sim N^2$.
 
 
@@ -775,18 +701,18 @@ In contrast, random Gaussian circuits exhibit diffusive growth, with non-local m
 The analytical tractability established here opens several natural directions for future investigation.
 
 \emph{Higher dimensional systems.}
-While our results are formulated for \DIFdelbegin \DIFdel{arbitrary }\DIFdelend \DIFaddbegin \DIFadd{contiguous }\DIFaddend bipartitions of one-dimensional chains, fermionic Gaussian states in higher dimensions $D>1$ offer a rich arena where entanglement and magic may exhibit qualitatively different behavior. In two and three dimensions, a richer structure tied to the geometry of the Fermi surface is expected, and the entanglement entropy obeys an area law with multiplicative logarithmic corrections $\mathcal{O}(\ell^{D-1}\ln\ell)$~\cite{swingle2010entanglement}. 
-Investigating how the scaling rate $\beta_\mathrm{FNL}$ emerges in such systems is a natural generalization.
+While our results are formulated for arbitrary bipartitions of one-dimensional chains, fermionic Gaussian states in higher dimensions $D>1$ offer a rich arena where entanglement and magic may exhibit qualitatively different behavior. In two and three dimensions, a richer structure tied to the geometry of the Fermi surface is expected, and the entanglement entropy obeys an area law with multiplicative logarithmic corrections $\mathcal{O}(\ell^{D-1}\ln\ell)$~\cite{swingle2010entanglement}. 
+Investigating how the scaling rate $\beta_\mathrm{GNL}$ emerges in such systems is a natural generalization.
 
 
 \emph{Conformal field theory and integrable systems.}
-A key question is to determine whether $\beta_{\mathrm{FNL}}$ captures universal features of the underlying conformal field theory, much as the central charge governs the scaling of entanglement entropy~\cite{Calabrese2004entanglement}.
+A key question is to determine whether $\beta_{\mathrm{GNL}}$ captures universal features of the underlying conformal field theory, much as the central charge governs the scaling of entanglement entropy~\cite{Calabrese2004entanglement}.
 Responding to this question requires extending our analysis to interacting integrable Hamiltonians, where Bethe-ansatz methods provide access to the entanglement spectrum.
 On the dynamical side, it remains an open question whether the quasiparticle picture that successfully describes the spreading of entanglement after a quantum quench~\cite{Alba_2017,alba2019,Kudler_Flam_2021} can be adapted to account for the growth of non-local magic in these models.
 
 \emph{Disordered systems.}
 Our formula provides a natural framework to study non-local magic in the presence of quenched disorder. 
-For example, in Anderson localization models~\cite{evers,sierant2020}, we expect deeply localized eigenstates to have a trivial structure, for which the fermionic non-local magic density $\mathfrak{m}_\RENYI(x)$ vanishes. 
+For example, in Anderson localization models~\cite{evers,sierant2020}, we expect deeply localized eigenstates to have a trivial structure, for which the Gaussian-restricted non-local magic density $\mathfrak{m}_\RENYI(x)$ vanishes. 
 Similarly, free fermionic models of strongly disordered systems~\cite{IGLOI_2005,Monthus_2018,ruggiero2022}, where rare Griffiths regions and anomalous entanglement scaling emerge, are another avenue of further study.
 
 \emph{Topological systems.}
@@ -794,35 +720,31 @@ One and two-dimensional topological phases, such as the Kitaev chain and model~\
 In such systems, the interplay of non-local magic and quantum coherent errors in fermionic systems is another fascinating direction to pursue~\cite{beri,gskb-t5ql}.
 
 \emph{Interplay with symmetry.}
-When the system possesses a continuous symmetry, such as $\mathcal{U}(1)$ charge conservation, the covariance matrix acquires a block structure that could enable a symmetry-resolved decomposition of $M_2^{\mathrm{FNL}}$ into contributions from different charge sectors~\cite{Goldstein}.
+When the system possesses a continuous symmetry, such as $\mathcal{U}(1)$ charge conservation, the covariance matrix acquires a block structure that could enable a symmetry-resolved decomposition of $M_2^{\mathrm{GNL}}$ into contributions from different charge sectors~\cite{Goldstein}.
 This connects to the broader program of symmetry-resolved entanglement~\cite{Bianchi_2022}, coherence~\cite{aditya2026coherencedynamicsquantummanybody} and stabilizer entropies, and may reveal sector-dependent magic resources~\cite{iannotti2026nonstabilizernessu1symmetrychaotic, cepollaro2025stabilizerentropysubspaces, Esposito_2024}.
-An intriguing related question is whether fermionic non-local magic exhibits quantum Mpemba-like effects~\cite{Ares_2023,Ares_2025,aditya2025mpembaeffectsquantumcomplexity}, where symmetry-broken initial conditions lead to anomalously fast relaxation of specific magic sectors.
+An intriguing related question is whether Gaussian-restricted non-local magic exhibits quantum Mpemba-like effects~\cite{Ares_2023,Ares_2025,aditya2025mpembaeffectsquantumcomplexity}, where symmetry-broken initial conditions lead to anomalously fast relaxation of specific magic sectors.
 
 \emph{Monitored systems and non-Hermitian dynamics.}
 Hybrid systems combining unitary evolution with local measurements give rise to measurement-induced phase transitions in entanglement~\cite{FisherRandom2023,Li_2025,oshima}.
 For free-fermionic setups, the dynamics remain within the Gaussian manifold, and our formula applies at each quantum trajectory.
-Whether fermionic non-local magic exhibits its own measurement-induced transition, and how it relates to the entanglement transition, is an open question.
+Whether Gaussian-restricted non-local magic exhibits its own measurement-induced transition, and how it relates to the entanglement transition, is an open question.
 Similarly, non-Hermitian free fermionic Hamiltonians~\cite{Ashida_2020,kawabata2026nonhermitiandisorderedsystems} generate effective Gaussian dynamics with complex spectra.
-Our framework makes amenable to analytic treatment the behavior of fermionic non-local magic in these settings~\cite{schirooooo,gallo,granet,lapierre2025entanglementtransitionsstructuredrandom}.
+Our framework makes amenable to analytic treatment the behavior of Gaussian-restricted non-local magic in these settings~\cite{schirooooo,gallo,granet,lapierre2025entanglementtransitionsstructuredrandom}.
 
 
 \begin{acknowledgments}
-This work is dedicated to Ada. We are particularly indebted to P. Sierant for spotting a mistake in a prior version of this manuscript. We thank \DIFaddbegin \DIFadd{the anonymous referees for their careful reading of the manuscript and, in particular, for pointing out the role of the contiguity of the bipartition in Theorem~\ref{thm:global}, the misprint in the Jacobi weight, and a simpler proof of Lemma~\ref{lem:PMT}. 
-We thank }\DIFaddend L. Leone, A. Russotto, P. Calabrese, L. Piroli, and J. Odavić for comments and collaborations on related topics.
+This work is dedicated to Ada. We are particularly indebted to P. Sierant for spotting a mistake in a prior version of this manuscript. 
+We thank L. Leone, A. Russotto, P. Calabrese, L. Piroli, and J. Odavić for comments and collaborations on related topics.
 
 \textbf{Fundings}
 D.I. and B.M. would like to acknowledge the Les Houches Summer School 2025 on Exact Solvability and Quantum Information, which facilitated work on this subject.
-D.I. acknowledges support from COST Action THEORY-CHALLENGES CA22113 under Short-Term Scientific Mission (STSM) grant E-COST-GRANT-CA22113-6901e967.  
+D.I. acknowledges support from COST Action THEORY-CHALLENGES CA22113 under Short-Term Scientific Mission (STSM) grant E-COST-GRANT-CA22113-6901e967 and Research Grants in Germany, 2026 (57812126) from the German Academic Exchange Service (DAAD).  
 B.M. and X.T. acknowledge support from DFG Emmy Noether Programme proposal "Digital Quantum Matter Out-of-Equilibrium" No. 560726973, DFG under Germany's Excellence Strategy – Cluster of Excellence Matter and Light for Quantum Computing (ML4Q) EXC 2004/2 – 390534769, and DFG Collaborative Research Center (CRC) 183 Project No. 277101999 - project B01. 
 A.H. acknowledges support from  PNRR MUR project PE0000023-NQSTI and the PNRR MUR project CN00000013-ICSC.
 
 \textbf{Data Availability.} The data generated in this study will be publicly shared at publication in Zenodo.
 
-%DIF >  TODO (authors): confirm or edit the following AI-use statement before submission.
-\DIFaddbegin \textbf{\DIFadd{Use of AI tools.}} \DIFadd{\rev{Generative AI tools were used to assist in the preparation and editing of parts of this manuscript, including the Appendix. All derivations and numerical results were checked by the authors, who take full responsibility for the content.}
-}
-
-\DIFaddend % \textbf{Author Contribution.} 
+% \textbf{Author Contribution.} 
 % DI, BM, and XT proved the main theorem and prepared the manuscript. 
 % BM, RC, and DI developed the code used in this work.
 % AH and XT designed and supervised the project. 
@@ -844,6 +766,7 @@ When overlapping, our results are consistent.
 }
 \label{app:proof}
 
+% Requires: \usepackage{tikz} and \usetikzlibrary{arrows.meta}
 \begin{figure*}[ht!]
 \centering
 \definecolor{oceanTop}{HTML}{EAF5F4}
@@ -856,168 +779,31 @@ When overlapping, our results are consistent.
 \definecolor{coastm}{HTML}{9A7138}
 \definecolor{routem}{HTML}{A84A42}
 \definecolor{accentm}{HTML}{187E79}
-\DIFdelbeginFL %DIFDELCMD < \begin{tikzpicture}[x=1cm,y=1cm,
-%DIFDELCMD <   route/.style={draw=routem, line width=1.05pt, dash pattern=on 3.2pt off 2.6pt, line cap=round,
-%DIFDELCMD <                 -{Stealth[length=2.5mm,width=1.9mm]}},
-%DIFDELCMD <   island/.style={draw=coastm, line width=0.85pt, top color=sandLight, bottom color=sandm},
-%DIFDELCMD <   step badge/.style={circle, fill=inkm, draw=white, line width=0.6pt, minimum size=4.4mm,
-%DIFDELCMD <                      inner sep=0pt, text=white, font=\fontsize{6.6}{6.6}\selectfont\bfseries},
-%DIFDELCMD <   lab title/.style={text=inkm, font=\fontsize{8}{9}\selectfont\bfseries, align=center, inner sep=1pt},
-%DIFDELCMD <   lab formula/.style={text=inkm, font=\fontsize{7.3}{8.2}\selectfont, align=center, inner sep=1pt},
-%DIFDELCMD <   lab ref/.style={text=accentm, font=\fontsize{5.6}{6.4}\selectfont\bfseries, align=center, inner sep=1pt},
-%DIFDELCMD <   small label/.style={text=mutedm, font=\fontsize{5.6}{6.3}\selectfont\bfseries}]
-%DIFDELCMD < % ocean
-%DIFDELCMD < \path[rounded corners=10pt, top color=oceanTop, bottom color=oceanBottom,
-%DIFDELCMD <       draw=oceanEdge, line width=0.8pt] (0,0) rectangle (17,5.2);
-%DIFDELCMD < % route legs (drawn first, islands cover the departure ends)
-%DIFDELCMD < \draw[route] (0.5,2.35) to[out=50,in=230] (0.86,2.73);
-%DIFDELCMD < \draw[route] (1.35,3.25) to[out=-30,in=150] (2.59,2.44);
-%DIFDELCMD < \draw[route] (3.35,2.0) to[out=30,in=210] (4.69,2.76);
-%DIFDELCMD < \draw[route] (5.45,3.2) to[out=-30,in=150] (6.54,2.49);
-%DIFDELCMD < \draw[route] (7.3,2.05) to[out=25,in=205] (9.25,2.83);
-%DIFDELCMD < \draw[route] (10.05,3.2) to[out=-30,in=150] (11.29,2.42);
-%DIFDELCMD < \draw[route] (12.05,1.98) to[out=30,in=210] (13.29,2.81);
-%DIFDELCMD < \draw[route] (14.05,3.25) to[out=-25,in=160] (15.21,2.92);
-%DIFDELCMD < % sparse waves
-%DIFDELCMD < \foreach \wx/\wy/\ws in {2.35/4.42/0.85, 4.6/4.05/0.7, 11.6/4.42/0.8, 3.0/1.25/0.75,
-%DIFDELCMD <                          10.5/1.75/0.7, 13.3/1.3/0.8, 5.9/1.7/0.65, 15.9/4.35/0.7}{
-%DIFDELCMD <   \begin{scope}[shift={(\wx,\wy)},scale=\ws]
-%DIFDELCMD <     \draw[white, draw opacity=0.78, line width=0.55pt, line cap=round]
-%DIFDELCMD <       (-0.31,0) .. controls (-0.18,0.08) and (-0.08,0.08) .. (0.03,0)
-%DIFDELCMD <       .. controls (0.14,-0.08) and (0.23,-0.08) .. (0.34,0);
-%DIFDELCMD <     \draw[white, draw opacity=0.52, line width=0.5pt, line cap=round]
-%DIFDELCMD <       (-0.22,-0.14) .. controls (-0.10,-0.07) and (0.00,-0.07) .. (0.10,-0.14)
-%DIFDELCMD <       .. controls (0.19,-0.20) and (0.27,-0.20) .. (0.34,-0.15);
-%DIFDELCMD <   \end{scope}}
-%DIFDELCMD < % compass rose
-%DIFDELCMD < \begin{scope}[shift={(0.82,0.88)},scale=0.5]
-%DIFDELCMD <   \draw[inkm, draw opacity=0.55, line width=0.65pt] (0,0) circle (0.42);
-%DIFDELCMD <   \fill[inkm, fill opacity=0.78] (0,0.72) -- (0.11,0.06) -- (0,0.16) -- (-0.11,0.06) -- cycle;
-%DIFDELCMD <   \fill[inkm, fill opacity=0.48] (0,-0.72) -- (0.11,-0.06) -- (0,-0.16) -- (-0.11,-0.06) -- cycle;
-%DIFDELCMD <   \fill[accentm, fill opacity=0.72] (0.72,0) -- (0.06,0.11) -- (0.16,0) -- (0.06,-0.11) -- cycle;
-%DIFDELCMD <   \fill[accentm, fill opacity=0.44] (-0.72,0) -- (-0.06,0.11) -- (-0.16,0) -- (-0.06,-0.11) -- cycle;
-%DIFDELCMD <   \node[text=inkm, font=\fontsize{4.6}{4.6}\selectfont\bfseries] at (0,0.95) {N};
-%DIFDELCMD < \end{scope}
-%DIFDELCMD < % the cutter, sailing the open water between Steps 4 and 6
-%DIFDELCMD < \begin{scope}[shift={(9.6,0.95)},scale=0.6,line cap=round,line join=round]
-%DIFDELCMD <   \draw[white, draw opacity=0.78, line width=0.55pt]
-%DIFDELCMD <     (-0.86,-0.51) .. controls (-0.54,-0.42) and (-0.25,-0.44) .. (0.04,-0.52)
-%DIFDELCMD <     .. controls (0.29,-0.59) and (0.59,-0.57) .. (0.84,-0.48);
-%DIFDELCMD <   \draw[oceanEdge, draw opacity=0.55, line width=0.45pt]
-%DIFDELCMD <     (-0.66,-0.65) .. controls (-0.37,-0.58) and (-0.17,-0.59) .. (0.09,-0.66)
-%DIFDELCMD <     .. controls (0.30,-0.72) and (0.48,-0.70) .. (0.66,-0.65);
-%DIFDELCMD <   \draw[inkm, draw opacity=0.58, line width=0.38pt]
-%DIFDELCMD <     (-0.04,0.79) -- (-0.59,-0.18) (-0.04,0.79) -- (0.65,-0.18);
-%DIFDELCMD <   \draw[inkm, line width=0.78pt] (-0.02,-0.24) -- (-0.04,0.82);
-%DIFDELCMD <   \path[fill=sandLight, fill opacity=0.94, draw=inkm, line width=0.52pt]
-%DIFDELCMD <     (0.02,0.71) .. controls (0.28,0.60) and (0.52,0.27) .. (0.59,-0.11)
-%DIFDELCMD <     .. controls (0.36,-0.06) and (0.18,-0.07) .. (0.02,-0.12) -- cycle;
-%DIFDELCMD <   \path[fill=accentm!68!white, fill opacity=0.94, draw=inkm, line width=0.52pt]
-%DIFDELCMD <     (-0.09,0.58) .. controls (-0.34,0.40) and (-0.50,0.13) .. (-0.54,-0.12)
-%DIFDELCMD <     .. controls (-0.36,-0.08) and (-0.21,-0.08) .. (-0.09,-0.12) -- cycle;
-%DIFDELCMD <   \draw[white, draw opacity=0.72, line width=0.35pt]
-%DIFDELCMD <     (0.09,0.54) .. controls (0.29,0.43) and (0.42,0.20) .. (0.47,-0.02);
-%DIFDELCMD <   \draw[coastm, line width=0.52pt] (-0.07,-0.14) -- (0.61,-0.14);
-%DIFDELCMD <   \path[fill=routem] (-0.04,0.80) -- (0.24,0.72) -- (-0.04,0.64) -- cycle;
-%DIFDELCMD <   \path[fill=inkm, draw=inkm, line width=0.55pt]
-%DIFDELCMD <     (-0.67,-0.22) -- (0.69,-0.22)
-%DIFDELCMD <     .. controls (0.47,-0.54) and (0.15,-0.62) .. (-0.18,-0.55)
-%DIFDELCMD <     .. controls (-0.40,-0.50) and (-0.56,-0.39) .. (-0.67,-0.22) -- cycle;
-%DIFDELCMD <   \draw[sandLight, line width=0.62pt] (-0.57,-0.25) -- (0.58,-0.25);
-%DIFDELCMD <   \fill[sandLight] (-0.25,-0.38) circle (0.035);
-%DIFDELCMD <   \fill[sandLight] (0.02,-0.41) circle (0.035);
-%DIFDELCMD <   \fill[sandLight] (0.29,-0.38) circle (0.035);
-%DIFDELCMD < \end{scope}
-%DIFDELCMD < % islands (organic coastlines) with the step number inside
-%DIFDELCMD < \foreach \px/\py/\sc/\num/\coast in {1.35/3.25/0.42/1/1, 3.35/2.0/0.42/2/2, 5.45/3.2/0.42/3/3,
-%DIFDELCMD <                                      7.3/2.05/0.42/4/4, 10.05/3.2/0.42/5/1, 12.05/1.98/0.42/6/2,
-%DIFDELCMD <                                      14.05/3.25/0.42/7/3, 16.15/2.58/0.5/8/4}{
-%DIFDELCMD <   \begin{scope}[shift={(\px,\py)}]
-%DIFDELCMD <     \begin{scope}[scale=\sc]
-%DIFDELCMD <       \ifnum\coast=1
-%DIFDELCMD <         \path[island] plot[smooth cycle,tension=0.72] coordinates {
-%DIFDELCMD <           (-1.67,0.05) (-1.49,0.57) (-0.83,0.83) (0.02,0.88) (0.86,0.77) (1.50,0.45)
-%DIFDELCMD <           (1.67,-0.05) (1.47,-0.55) (0.70,-0.79) (-0.19,-0.83) (-1.08,-0.69) (-1.59,-0.34)};
-%DIFDELCMD <       \fi
-%DIFDELCMD <       \ifnum\coast=2
-%DIFDELCMD <         \path[island] plot[smooth cycle,tension=0.72] coordinates {
-%DIFDELCMD <           (-1.66,0.18) (-1.34,0.64) (-0.58,0.84) (0.32,0.85) (1.13,0.67) (1.61,0.25)
-%DIFDELCMD <           (1.63,-0.27) (1.16,-0.68) (0.35,-0.82) (-0.57,-0.78) (-1.35,-0.53) (-1.68,-0.12)};
-%DIFDELCMD <       \fi
-%DIFDELCMD <       \ifnum\coast=3
-%DIFDELCMD <         \path[island] plot[smooth cycle,tension=0.72] coordinates {
-%DIFDELCMD <           (-1.65,0.00) (-1.46,0.48) (-0.92,0.76) (-0.11,0.89) (0.74,0.83) (1.45,0.55)
-%DIFDELCMD <           (1.67,0.08) (1.52,-0.44) (0.86,-0.73) (0.02,-0.84) (-0.84,-0.76) (-1.49,-0.48)};
-%DIFDELCMD <       \fi
-%DIFDELCMD <       \ifnum\coast=4
-%DIFDELCMD <         \path[island] plot[smooth cycle,tension=0.72] coordinates {
-%DIFDELCMD <           (-1.67,0.11) (-1.30,0.61) (-0.54,0.84) (0.36,0.82) (1.17,0.71) (1.59,0.30)
-%DIFDELCMD <           (1.64,-0.20) (1.31,-0.61) (0.56,-0.81) (-0.34,-0.82) (-1.16,-0.61) (-1.61,-0.29)};
-%DIFDELCMD <       \fi
-%DIFDELCMD <       \path[draw=white, draw opacity=0.45, line width=0.45pt]
-%DIFDELCMD <         plot[smooth cycle,tension=0.72] coordinates {
-%DIFDELCMD <           (-1.55,0.08) (-1.28,0.50) (-0.61,0.71) (0.21,0.73) (0.95,0.61) (1.38,0.28)
-%DIFDELCMD <           (1.42,-0.17) (1.08,-0.54) (0.35,-0.68) (-0.47,-0.66) (-1.18,-0.49) (-1.50,-0.20)};
-%DIFDELCMD <     \end{scope}
-%DIFDELCMD <     \node[step badge] at (0,0) {\num};
-%DIFDELCMD <   \end{scope}}
-%DIFDELCMD < % departure and arrival markers
-%DIFDELCMD < \fill[accentm] (0.5,2.35) circle (2.2pt);
-%DIFDELCMD < \fill[routem] (16.62,2.44) circle (2.0pt);
-%DIFDELCMD < % leaders island -> border label
-%DIFDELCMD < \foreach \ax/\ay/\bx/\by in {1.35/3.68/1.45/4.1, 5.45/3.63/5.55/4.1, 10.05/3.63/10.1/4.1, 14.05/3.68/14.1/4.1,
-%DIFDELCMD <                              3.35/1.55/3.35/1.18, 7.3/1.6/7.2/1.18, 12.05/1.53/12.1/1.18, 16.15/2.05/15.6/1.18}
-%DIFDELCMD <   \draw[inkm!45, densely dotted, semithick] (\ax,\ay) -- (\bx,\by);
-%DIFDELCMD < % border labels: what each step does (odd above, even below)
-%DIFDELCMD < \node[lab title] at (1.5,4.72) {collision probability};
-%DIFDELCMD < \node[lab formula] at (1.5,4.44) {$\zeta_2=d\sum_S p_S^2$};
-%DIFDELCMD < \node[lab ref] at (1.5,4.2) {LEMMA~\ref{lem:DPP}};
-%DIFDELCMD < \node[lab title] at (3.35,0.9) {the Slater bound};
-%DIFDELCMD < \node[lab formula] at (3.35,0.62) {$\mathcal{C}(Q)\le 2^{-k}\mathcal{D}(\Sigma)$};
-%DIFDELCMD < \node[lab ref] at (3.35,0.36) {LEMMA~\ref{lem:Slater-bound}};
-%DIFDELCMD < \node[lab title] at (5.6,4.72) {BCS parametrization};
-%DIFDELCMD < \node[lab formula] at (5.6,4.44) {$\zeta_2\propto\mathsf{F}(Z)$,\; $O_A=O_B$};
-%DIFDELCMD < \node[lab ref] at (5.6,4.2) {LEMMAS~\ref{lem:all-minors}--\ref{lem:two-to-one}};
-%DIFDELCMD < \node[lab title] at (7.2,0.9) {principal-minor residual};
-%DIFDELCMD < \node[lab formula] at (7.2,0.62) {$\mathsf{F}(Z)\le\mathsf{R}(H)$,\; $H=Z^2$};
-%DIFDELCMD < \node[lab ref] at (7.2,0.36) {PROP.~\ref{prop:residual}};
-%DIFDELCMD < \node[lab title] at (10.1,4.72) {two sign averages};
-%DIFDELCMD < \node[lab formula] at (10.1,4.44) {$\mathsf{R}(H)=\Delta_\Omega^{-2}\sum_S\det(\mathcal{A}_S)^2$};
-%DIFDELCMD < \node[lab ref] at (10.1,4.2) {LEMMA~\ref{lem:PMT}, PROP.~\ref{prop:Cayley}};
-%DIFDELCMD < \node[lab title] at (12.1,0.9) {down to one unitary};
-%DIFDELCMD < \node[lab formula] at (12.1,0.62) {$\mathsf{R}(H)\propto\mathsf{L}(U)$};
-%DIFDELCMD < \node[lab title] at (14.1,4.72) {the rank-two bound};
-%DIFDELCMD < \node[lab formula] at (14.1,4.44) {$\mathsf{L}(U)^2\le2^{2\ell}\det(\mathbb{I}+T^\dagger T)$};
-%DIFDELCMD < \node[lab ref] at (14.1,4.2) {THMS.~\ref{thm:MD2}--\ref{thm:UL}};
-%DIFDELCMD < \node[lab title] at (15.45,0.9) {optimum at $Z_0$};
-%DIFDELCMD < \node[lab formula] at (15.45,0.62) {equality $\Rightarrow$ Thm.~\ref{thm:global}};
-%DIFDELCMD < \end{tikzpicture}
-%DIFDELCMD < %%%
-\DIFdelendFL \DIFaddbeginFL \begin{tikzpicture}[x=1cm,y=1cm,
+\begin{tikzpicture}[x=1cm,y=1cm,
   route/.style={draw=routem, line width=1.05pt, dash pattern=on 3.2pt off 2.6pt, line cap=round,
                 -{Stealth[length=2.5mm,width=1.9mm]}},
   island/.style={draw=coastm, line width=0.85pt, top color=sandLight, bottom color=sandm},
   step badge/.style={circle, fill=inkm, draw=white, line width=0.6pt, minimum size=4.4mm,
                      inner sep=0pt, text=white, font=\fontsize{6.6}{6.6}\selectfont\bfseries},
-  lab title/.style={text=inkm, font=\fontsize{8}{9}\selectfont\bfseries, align=center, inner sep=1pt},
-  lab formula/.style={text=inkm, font=\fontsize{7.3}{8.2}\selectfont, align=center, inner sep=1pt},
-  lab ref/.style={text=accentm, font=\fontsize{5.6}{6.4}\selectfont\bfseries, align=center, inner sep=1pt},
-  small label/.style={text=mutedm, font=\fontsize{5.6}{6.3}\selectfont\bfseries}]
+  note box/.style={rounded corners=2.5pt, fill=white, fill opacity=0.84, text opacity=1,
+                   draw=oceanEdge!75!inkm, line width=0.45pt, align=center,
+                   inner xsep=3pt, inner ysep=2.4pt, minimum height=9.3mm, outer sep=0pt},
+  leader/.style={draw=inkm!50, densely dotted, line width=0.65pt, line cap=round}]
 % ocean
 \path[rounded corners=10pt, top color=oceanTop, bottom color=oceanBottom,
-      draw=oceanEdge, line width=0.8pt] (0,0) rectangle (17,5.2);
+      draw=oceanEdge, line width=0.8pt] (0,0) rectangle (17,5.8);
 % route legs (drawn first, islands cover the departure ends)
-\draw[route] (0.5,2.35) to[out=50,in=230] (0.86,2.73);
-\draw[route] (1.35,3.25) to[out=-30,in=150] (2.59,2.44);
-\draw[route] (3.35,2.0) to[out=30,in=210] (4.69,2.76);
-\draw[route] (5.45,3.2) to[out=-30,in=150] (6.54,2.49);
-\draw[route] (7.3,2.05) to[out=25,in=205] (9.25,2.83);
-\draw[route] (10.05,3.2) to[out=-30,in=150] (11.29,2.42);
-\draw[route] (12.05,1.98) to[out=30,in=210] (13.29,2.81);
-\draw[route] (14.05,3.25) to[out=-25,in=160] (15.21,2.92);
+\draw[route] (0.5,2.65) to[out=50,in=230] (0.86,3.03);
+\draw[route] (1.35,3.55) to[out=-30,in=150] (2.59,2.74);
+\draw[route] (3.35,2.30) to[out=30,in=210] (4.69,3.06);
+\draw[route] (5.45,3.50) to[out=-30,in=150] (6.54,2.79);
+\draw[route] (7.30,2.35) to[out=25,in=205] (9.25,3.13);
+\draw[route] (10.05,3.50) to[out=-30,in=150] (11.29,2.72);
+\draw[route] (12.05,2.28) to[out=30,in=210] (13.29,3.11);
+\draw[route] (14.05,3.55) to[out=-25,in=160] (15.21,3.22);
 % sparse waves
-\foreach \wx/\wy/\ws in {2.35/4.42/0.85, 4.6/4.05/0.7, 11.6/4.42/0.8, 3.0/1.25/0.75,
-                         10.5/1.75/0.7, 13.3/1.3/0.8, 5.9/1.7/0.65, 15.9/4.35/0.7}{
+\foreach \wx/\wy/\ws in {2.35/4.72/0.85, 4.6/4.35/0.7, 11.6/4.72/0.8, 3.0/1.45/0.75,
+                         10.5/1.95/0.7, 13.3/1.5/0.8, 5.9/1.9/0.65, 15.9/4.65/0.7}{
   \begin{scope}[shift={(\wx,\wy)},scale=\ws]
     \draw[white, draw opacity=0.78, line width=0.55pt, line cap=round]
       (-0.31,0) .. controls (-0.18,0.08) and (-0.08,0.08) .. (0.03,0)
@@ -1035,8 +821,8 @@ When overlapping, our results are consistent.
   \fill[accentm, fill opacity=0.44] (-0.72,0) -- (-0.06,0.11) -- (-0.16,0) -- (-0.06,-0.11) -- cycle;
   \node[text=inkm, font=\fontsize{4.6}{4.6}\selectfont\bfseries] at (0,0.95) {N};
 \end{scope}
-% the cutter, sailing the open water between Steps 4 and 6
-\begin{scope}[shift={(9.6,0.95)},scale=0.6,line cap=round,line join=round]
+% cutter
+\begin{scope}[shift={(9.72,1.14)},scale=0.46,line cap=round,line join=round]
   \draw[white, draw opacity=0.78, line width=0.55pt]
     (-0.86,-0.51) .. controls (-0.54,-0.42) and (-0.25,-0.44) .. (0.04,-0.52)
     .. controls (0.29,-0.59) and (0.59,-0.57) .. (0.84,-0.48);
@@ -1065,10 +851,10 @@ When overlapping, our results are consistent.
   \fill[sandLight] (0.02,-0.41) circle (0.035);
   \fill[sandLight] (0.29,-0.38) circle (0.035);
 \end{scope}
-% islands (organic coastlines) with the step number inside
-\foreach \px/\py/\sc/\num/\coast in {1.35/3.25/0.42/1/1, 3.35/2.0/0.42/2/2, 5.45/3.2/0.42/3/3,
-                                     7.3/2.05/0.42/4/4, 10.05/3.2/0.42/5/1, 12.05/1.98/0.42/6/2,
-                                     14.05/3.25/0.42/7/3, 16.15/2.58/0.5/8/4}{
+% islands
+\foreach \px/\py/\sc/\num/\coast in {1.35/3.55/0.42/1/1, 3.35/2.30/0.42/2/2, 5.45/3.50/0.42/3/3,
+                                     7.30/2.35/0.42/4/4, 10.05/3.50/0.42/5/1, 12.05/2.28/0.42/6/2,
+                                     14.05/3.55/0.42/7/3, 16.15/2.88/0.50/8/4}{
   \begin{scope}[shift={(\px,\py)}]
     \begin{scope}[scale=\sc]
       \ifnum\coast=1
@@ -1098,48 +884,68 @@ When overlapping, our results are consistent.
     \end{scope}
     \node[step badge] at (0,0) {\num};
   \end{scope}}
-% departure and arrival markers
-\fill[accentm] (0.5,2.35) circle (2.2pt);
-\fill[routem] (16.62,2.44) circle (2.0pt);
-% leaders island -> border label
-\foreach \ax/\ay/\bx/\by in {1.35/3.68/1.45/4.1, 5.45/3.63/5.55/4.1, 10.05/3.63/10.1/4.1, 14.05/3.68/14.1/4.1,
-                             3.35/1.55/3.35/1.18, 7.3/1.6/7.2/1.18, 12.05/1.53/12.1/1.18, 16.15/2.05/15.6/1.18}
-  \draw[inkm!45, densely dotted, semithick] (\ax,\ay) -- (\bx,\by);
-% border labels: what each step does (odd above, even below)
-\node[lab title] at (1.5,4.72) {collision probability};
-\node[lab formula] at (1.5,4.44) {$\zeta_2=d\sum_S p_S^2$};
-\node[lab ref] at (1.5,4.2) {LEMMA~\ref{lem:DPP}};
-\node[lab title] at (3.35,0.9) {the Slater bound};
-\node[lab formula] at (3.35,0.62) {$\mathcal{C}(Q)\le 2^{-k}\mathcal{D}(\Sigma)$};
-\node[lab ref] at (3.35,0.36) {LEMMA~\ref{lem:Slater-bound}};
-\node[lab title] at (5.6,4.72) {BCS parametrization};
-\node[lab formula] at (5.6,4.44) {$\zeta_2\propto\mathsf{F}(Z)$,\; $O_A=O_B$};
-\node[lab ref] at (5.6,4.2) {LEMMAS~\ref{lem:all-minors}--\ref{lem:two-to-one}};
-\node[lab title] at (7.2,0.9) {principal-minor residual};
-\node[lab formula] at (7.2,0.62) {$\mathsf{F}(Z)\le\mathsf{R}(H)$,\; $H=Z^2$};
-\node[lab ref] at (7.2,0.36) {PROP.~\ref{prop:residual}};
-\node[lab title] at (10.1,4.72) {principal minors \& Cayley};
-\node[lab formula] at (10.1,4.44) {$\mathsf{R}(H)=\Delta_\Omega^{-2}\sum_S\det(\mathcal{A}_S)^2$};
-\node[lab ref] at (10.1,4.2) {LEMMA~\ref{lem:PMT}, PROP.~\ref{prop:Cayley}};
-\node[lab title] at (12.1,0.9) {down to one unitary};
-\node[lab formula] at (12.1,0.62) {$\mathsf{R}(H)\propto\mathsf{L}(U)$};
-\node[lab title] at (14.1,4.72) {the rank-two bound};
-\node[lab formula] at (14.1,4.44) {$\mathsf{L}(U)^2\le2^{2\ell}\det(\mathbb{I}+T^\dagger T)$};
-\node[lab ref] at (14.1,4.2) {THMS.~\ref{thm:MD2}--\ref{thm:UL}};
-\node[lab title] at (15.45,0.9) {optimum at $Z_0$};
-\node[lab formula] at (15.45,0.62) {equality $\Rightarrow$ Thm.~\ref{thm:global}};
+% markers
+\fill[accentm] (0.5,2.65) circle (2.2pt);
+\fill[routem] (16.62,2.74) circle (2.0pt);
+% leaders to boxes
+\draw[leader] (1.35,3.98) -- (1.45,4.34);
+\draw[leader] (5.45,3.93) -- (5.55,4.34);
+\draw[leader] (10.05,3.93) -- (10.05,4.34);
+\draw[leader] (14.05,3.98) -- (14.15,4.34);
+\draw[leader] (3.35,1.85) -- (3.35,1.40);
+\draw[leader] (7.30,1.90) -- (7.25,1.40);
+\draw[leader] (12.05,1.83) -- (12.05,1.40);
+\draw[leader] (16.15,2.35) -- (15.65,1.40);
+% fixed-width annotation cards
+\node[note box, text width=3.25cm] at (1.75,5.02) {%
+  {\color{inkm}\fontsize{8}{9}\selectfont\bfseries collision probability}\\[-0.3pt]
+  {\color{inkm}\fontsize{7.0}{7.8}\selectfont $\zeta_2=d\sum_S p_S^2$}\\[-0.5pt]
+  {\color{accentm}\fontsize{5.4}{6.0}\selectfont\bfseries LEMMA~\ref{lem:DPP}}};
+
+\node[note box, text width=3.45cm] at (3.25,0.73) {%
+  {\color{inkm}\fontsize{8}{9}\selectfont\bfseries the Slater bound}\\[-0.3pt]
+  {\color{inkm}\fontsize{6.8}{7.7}\selectfont $\mathcal{C}(Q)\le 2^{-k}\mathcal{D}(\Sigma)$}\\[-0.5pt]
+  {\color{accentm}\fontsize{5.4}{6.0}\selectfont\bfseries LEMMA~\ref{lem:Slater-bound}}};
+
+\node[note box, text width=3.45cm] at (5.65,5.02) {%
+  {\color{inkm}\fontsize{8}{9}\selectfont\bfseries BCS parametrization}\\[-0.3pt]
+  {\color{inkm}\fontsize{6.8}{7.7}\selectfont $\zeta_2\propto\mathsf{F}(Z),\quad O_A=O_B$}\\[-0.5pt]
+  {\color{accentm}\fontsize{5.2}{5.8}\selectfont\bfseries LEMMAS~\ref{lem:all-minors}--\ref{lem:two-to-one}}};
+
+\node[note box, text width=3.85cm] at (7.35,0.73) {%
+  {\color{inkm}\fontsize{7.2}{8.2}\selectfont\bfseries principal-minor residual}\\[-0.3pt]
+  {\color{inkm}\fontsize{6.7}{7.6}\selectfont $\mathsf{F}(Z)\le\mathsf{R}(H),\quad H=Z^2$}\\[-0.5pt]
+  {\color{accentm}\fontsize{5.4}{6.0}\selectfont\bfseries PROP.~\ref{prop:residual}}};
+
+\node[note box, text width=3.55cm] at (9.95,5.02) {%
+  {\color{inkm}\fontsize{8}{9}\selectfont\bfseries two sign averages}\\[-0.3pt]
+  {\color{inkm}\fontsize{6.4}{7.3}\selectfont $\mathsf{R}(H)=\Delta_\Omega^{-2}\!\sum_S\det(\mathcal{A}_S)^2$}\\[-0.5pt]
+  {\color{accentm}\fontsize{5.1}{5.8}\selectfont\bfseries LEMMA~\ref{lem:PMT}; PROP.~\ref{prop:Cayley}}};
+
+\node[note box, text width=3.25cm] at (11.95,0.73) {%
+  {\color{inkm}\fontsize{8}{9}\selectfont\bfseries down to one unitary}\\[-0.3pt]
+  {\color{inkm}\fontsize{6.9}{7.8}\selectfont $\mathsf{R}(H)\propto\mathsf{L}(U)$}};
+
+\node[note box, text width=4.15cm] at (14.25,5.02) {%
+  {\color{inkm}\fontsize{8}{9}\selectfont\bfseries the rank-two bound}\\[-0.3pt]
+  {\color{inkm}\fontsize{6.5}{7.4}\selectfont $\mathsf{L}(U)^2\le 2^{2\ell}\det\!\bigl(\mathbb{I}+T^\dagger T\bigr)$}\\[-0.5pt]
+  {\color{accentm}\fontsize{5.3}{5.9}\selectfont\bfseries THMS.~\ref{thm:MD2}--\ref{thm:UL}}};
+
+\node[note box, text width=2.90cm] at (15.40,0.73) {%
+  {\color{inkm}\fontsize{8}{9}\selectfont\bfseries optimum at $Z_0$}\\[-0.3pt]
+  {\color{inkm}\fontsize{6.7}{7.6}\selectfont equality $\Longrightarrow$ Thm.~\ref{thm:global}}};
 \end{tikzpicture}
-\DIFaddendFL \caption{\textbf{The route of the proof of Theorem~\ref{thm:global}: an odyssey in eight steps.} The dashed route visits eight islands, one per step of the argument and one per subsection of this Appendix; each island carries its step number, and the matching label at the border states what the step does and its key relation. The essence of each step is spelled out in the text below.}
+\caption{\textbf{The route of the proof of Theorem~\ref{thm:global}: an odyssey in eight steps.} The dashed route visits eight islands, one per step of the argument and one per subsection of this Appendix; each island carries its step number, and the matching label at the border states what the step does and its key relation. The essence of each step is spelled out in the text below.}
 \label{fig:odyssey}
 \end{figure*}
 
-In this Appendix, we prove Theorem~\ref{thm:global}, i.e.\ the closed form of Eq.~\eqref{eq:analytic_NL} for the fermionic non-local magic at $\RENYI=2$. The proof is a chain of eight steps, cf. Fig.~\ref{fig:odyssey}, one per subsection below.
-\DIFaddbegin \DIFadd{The logic of the argument is the following. On the local Gaussian orbit, $\zeta_2$ is the collision probability of a determinantal distribution; it depends on two independent rotations and on }\emph{\DIFadd{all}} \DIFadd{minors of the matrix parametrizing the state, so that it is not evidently maximized at the canonical point. Each step either removes one of these complications exactly, or bounds the functional by a simpler one which is tight at the canonical point: Steps 1--3 express $\zeta_2$ through the minors of a single BCS matrix $Z$ and reduce the two rotations to one; Step 4 bounds the sum over all minors by a sum over principal minors only; Steps 5--6 recast the latter, up to an orbit-invariant prefactor, as the sum $\mathsf{L}(U)$ of the squared principal minors of a single unitary $U$; Step 7 bounds $\mathsf{L}(U)$ through the diagonal of $U$, which is in turn controlled by an orbit invariant. Since every inequality of the chain is saturated by the canonical BCS form, the latter is the global maximizer (Step 8).
-}\DIFaddend (1)~\emph{Collision probability} (Sec.~\ref{app:proof:dpp}):  Wick's theorem turns the stabilizer purity $\zeta_2$ into the collision probability of a classical distribution $p_S$  built from the covariance matrix, $\zeta_2=d\sum_Sp_S^2$ (Lemma~\ref{lem:DPP})~\cite{collura2026nonstabilizernessfermionicgaussianstates}.
+
+In this Appendix, we prove Theorem~\ref{thm:global}, i.e.\ the closed form of Eq.~\eqref{eq:analytic_NL} for the Gaussian-restricted non-local magic at $\RENYI=2$. The proof is a chain of eight steps, cf. Fig.~\ref{fig:odyssey}, one per subsection below.
+(1)~\emph{Collision probability} (Sec.~\ref{app:proof:dpp}):  Wick's theorem turns the stabilizer purity $\zeta_2$ into the collision probability of a classical distribution $p_S$  built from the covariance matrix, $\zeta_2=d\sum_Sp_S^2$ (Lemma~\ref{lem:DPP})~\cite{collura2026nonstabilizernessfermionicgaussianstates}.
 (2)~\emph{The Slater bound}  (Sec.~\ref{app:proof:slater}): we bound the collision probability of a single Slater determinant by its transpose overlap, $\mathcal{C}(Q)\le2^{-k}\mathcal{D}(\Sigma)$ (Lemma~\ref{lem:Slater-bound}) --- the first key ingredient, used in Step~4.
 (3)~\emph{BCS parametrization} (Sec.~\ref{app:proof:thouless}): all the dependence of $\zeta_2$ on the local rotations is packaged into the single matrix $Z=O_AZ_0O_B^{\trans}$, and $\zeta_2$ becomes, up to a constant along the orbit, the sum $\mathsf{F}(Z)$ of the fourth powers of the moduli of all the minors of $Z$ (Lemma~\ref{lem:all-minors})~\cite{Mbeng2024,surace}; a Cauchy--Schwarz argument then reduces the two independent rotations to a single one, $O_A=O_B$  (Lemma~\ref{lem:two-to-one}).
 (4)~\emph{Principal-minor residual} (Sec.~\ref{app:proof:residual}): the Slater bound of Step~2  converts the all-minors functional into the residual  $\mathsf{R}(H)$ of $H=Z^2$, $\mathsf{F}(Z)\le\mathsf{R}(H)$, with equality at the canonical point (Proposition~\ref{prop:residual}).
-(5)~\emph{\DIFdelbegin \DIFdel{Two sign averages}\DIFdelend \DIFaddbegin \DIFadd{Principal-minor and Cayley transforms}\DIFaddend } (Sec.~\ref{app:proof:cayley}): \DIFdelbegin \DIFdel{averages }\DIFdelend \DIFaddbegin \DIFadd{a principal-minor identity and an average }\DIFaddend over independent random signs, combined with a Cayley transform, rewrite the residual exactly as $\mathsf{R}(H)=\Delta_\Omega^{-2}\sum_S\det(\mathcal{A}_S)^2$, a sum of squared principal minors of a single Hermitian matrix $\mathcal{A}$ (Lemma~\ref{lem:PMT}, Proposition~\ref{prop:Cayley}).
+(5)~\emph{Two sign averages} (Sec.~\ref{app:proof:cayley}): averages over independent random signs, combined with a Cayley transform, rewrite the residual exactly as $\mathsf{R}(H)=\Delta_\Omega^{-2}\sum_S\det(\mathcal{A}_S)^2$, a sum of squared principal minors of a single Hermitian matrix $\mathcal{A}$ (Lemma~\ref{lem:PMT}, Proposition~\ref{prop:Cayley}).
 (6)~\emph{Down to one unitary} (Sec.~\ref{app:proof:graph}): interpreting this sum as a probability, a change of basis within pairs of coordinates collapses it to the functional $\mathsf{L}(U)=\sum_S|\det U_S|^2$ of a single unitary matrix, times a prefactor constant along the orbit, see also Refs.~\cite{collura2026nonstabilizernessfermionicgaussianstates,sfeo}.
 (7)~\emph{The rank-two bound} (Sec.~\ref{app:proof:MD2}): a determinant inequality for positive matrices of rank at most two --- the second key ingredient --- bounds $\mathsf{L}(U)$ through the diagonal of $U$, hence by the orbit invariant $\det(\mathbb{I}_{2\ell}+T^\dagger T)$ with $T=(U+U^{\trans})/2$ (Theorems~\ref{thm:MD2}--\ref{thm:UL}).
 (8)~\emph{Conclusion} (Sec.~\ref{app:proof:completion}): the canonical BCS form saturates every inequality of the chain; a continuity argument covers the endpoints $\lambda_j=1$, and padding with ancillas removes the balanced-cut assumption, proving Theorem~\ref{thm:global}.
@@ -1148,7 +954,7 @@ In this Appendix, we prove Theorem~\ref{thm:global}, i.e.\ the closed form of Eq
 \subsubsection{The stabilizer purity as a collision probability}
 \label{app:proof:dpp}
 
-We use the conventions of the main text, recalled here for convenience: $|\Psi\rangle$ is a pure fermionic Gaussian state on $N$ modes, $d=2^N$, \DIFdelbegin \DIFdel{$A$ is }\DIFdelend \DIFaddbegin \DIFadd{$A=\{1,\dots,\ell\}$ and $B=\{\ell+1,\dots,N\}$, with $\ell\le N/2$ }\DIFaddend without loss of generality\DIFdelbegin \DIFdel{the smaller subsystem, $\ell\le N/2$}\DIFdelend \DIFaddbegin \DIFadd{, since the maximization over the orbit~\eqref{eq:local-action} below is symmetric under the exchange of $A$ and $B$}\DIFaddend , and $\Gamma_{mn}=i\langle\Psi|[\gamma_m,\gamma_n]|\Psi\rangle/2$, with purity condition equivalent to
+We use the conventions of the main text, recalled here for convenience: $|\Psi\rangle$ is a pure fermionic Gaussian state on $N$ modes, $d=2^N$, $A$ is without loss of generality the smaller subsystem, $\ell\le N/2$,  and $\Gamma_{mn}=i\langle\Psi|[\gamma_m,\gamma_n]|\Psi\rangle/2$, with purity condition equivalent to
 \begin{equation}
     \Gamma^{\trans}=-\Gamma\;,\qquad \Gamma^2=-\mathbb{I}_{2N}\;.
     \label{eq:pure-covariance}
@@ -1173,8 +979,8 @@ Local Gaussian unitaries act on covariance matrices as
     \Gamma\longmapsto (O_A\oplus O_B)\,\Gamma\,(O_A\oplus O_B)^{\trans}\;,
     \label{eq:local-action}
 \end{equation}
-with $O_A\in\mathrm{O}(2\ell)$ and $O_B\in\mathrm{O}(2(N-\ell))$\DIFdelbegin \DIFdel{, so that }\DIFdelend \DIFaddbegin \DIFadd{. For the contiguous blocks $A=\{1,\dots,\ell\}$ and $B=\{\ell+1,\dots,N\}$ of Eq.~\eqref{eq:defFNLmagic}, the Jordan--Wigner strings of the Majorana operators of $A$ do not leave $A$, while those of $B$ differ from the ones defined within $B$ only by the parity $P_A=\prod_{m\in A}Z_m$ of $A$. Since $U_{O_A}P_AU_{O_A}^\dagger=\det(O_A)\,P_A$, the qubit unitary $U_{O_A}\otimes U_{O_B}$ acts on the Majorana operators of the whole chain as $O_A\oplus\det(O_A)\,O_B$, i.e.\ it coincides, up to a global phase, with a Gaussian unitary of the chain belonging to the local group $\mathrm{O}(2\ell)\oplus\mathrm{O}(2(N-\ell))$. As $(O_A,O_B)\mapsto(O_A,\det(O_A)\,O_B)$ is a bijection, }\DIFaddend maximizing $\zeta_2$ over the local Gaussian orbit\DIFaddbegin \DIFadd{~\eqref{eq:local-action} }\DIFaddend is exactly the problem defined by Eq.~\eqref{eq:defFNLmagic}. \DIFaddbegin \DIFadd{This is where the contiguity of the blocks enters: for other bipartitions, the qubits of $A$ must first be brought together by a non-Gaussian qubit permutation, and the identification fails.
- }\DIFaddend We write $\mathrm{spec}(i\Gamma_A)=\{\pm\lambda_1,\dots,\pm\lambda_\ell\}$ with $0\le\lambda_j\le 1$ and set $\nu_j=\sqrt{1-\lambda_j^2}$.
+with $O_A\in\mathrm{O}(2\ell)$ and $O_B\in\mathrm{O}(2(N-\ell))$, so that maximizing $\zeta_2$ over the local Gaussian orbit is exactly the problem defined by Eq.~\eqref{eq:defGNLmagic}.
+ We write $\mathrm{spec}(i\Gamma_A)=\{\pm\lambda_1,\dots,\pm\lambda_\ell\}$ with $0\le\lambda_j\le 1$ and set $\nu_j=\sqrt{1-\lambda_j^2}$.
 For completeness, we recall the covariance version of the modewise normal form of Eq.~\eqref{eq:can_form}, cf.~\cite{BoteroReznik2004}, which also fixes the orientation conventions used below. 
 
 \begin{proposition}[Local covariance normal form]
@@ -1269,21 +1075,11 @@ Let $K=(\mathbb{I}+i\Gamma)/2$. Then $K$ is a Hermitian rank-$N$ projector, the 
 \end{lemma}
 
 \begin{proof}
-Equation~\eqref{eq:pure-covariance} gives $K^\dagger=K$, $K^2=K$ and $\mathrm{Tr}\,K=N$. For a projection kernel, the Cauchy--Binet formula gives $p_S\ge0$ and $\sum_{|S|=N}p_S=1$. Extend $p$ by zero from the $N$-th slice to all subsets of $[2N]$ and use the Boolean Fourier convention $\widehat p(I)=\sum_{|S|=N}p_S(-1)^{|S\cap I|}$. \DIFdelbegin \DIFdel{The determinantal generating function gives
-}\begin{displaymath}
-    \DIFdel{\widehat p(I)=\det(\mathbb{I}_{|I|}-2K_I)=(-i)^{|I|}\det\Gamma_I\;,
-}\end{displaymath}%DIFAUXCMD
-\DIFdelend \DIFaddbegin \DIFadd{For the projection DPP, the inclusion probabilities are principal minors of the kernel, $\sum_{S\supseteq T}p_S=\det K_T$ for every $T\subseteq[2N]$~\mbox{%DIFAUXCMD
-\cite{Hough2006}}\hskip0pt%DIFAUXCMD
-. Writing $(-1)^{|S\cap I|}=\prod_{i\in I}(1-2\,\mathbf{1}_{i\in S})$ and expanding the product,
-}\begin{equation}
-\DIFadd{\begin{split}
-    \widehat p(I)&=\sum_{T\subseteq I}(-2)^{|T|}\!\!\sum_{S\supseteq T}p_S=\sum_{T\subseteq I}(-2)^{|T|}\det K_T\\
-    &=\det(\mathbb{I}_{|I|}-2K_I)=(-i)^{|I|}\det\Gamma_I\;,
-\end{split}
-}\end{equation}\DIFaddend 
-\DIFaddbegin \DIFadd{where we used the principal-minor expansion $\det(\mathbb{I}+X)=\sum_{T}\det X_{T}$ and $\mathbb{I}-2K=-i\Gamma$,
-}\DIFaddend so that Parseval's identity on the Boolean cube yields $\sum_{|S|=N}p_S^2=d^{-2}\sum_I\det(\Gamma_I)^2$. Combining with Eq.~\eqref{eq:zeta-M} proves Eq.~\eqref{eq:DPP-collision}.
+Equation~\eqref{eq:pure-covariance} gives $K^\dagger=K$, $K^2=K$ and $\mathrm{Tr}\,K=N$. For a projection kernel, the Cauchy--Binet formula gives $p_S\ge0$ and $\sum_{|S|=N}p_S=1$. Extend $p$ by zero from the $N$-th slice to all subsets of $[2N]$ and use the Boolean Fourier convention $\widehat p(I)=\sum_{|S|=N}p_S(-1)^{|S\cap I|}$. The determinantal generating function gives
+\begin{equation}
+    \widehat p(I)=\det(\mathbb{I}_{|I|}-2K_I)=(-i)^{|I|}\det\Gamma_I\;,
+\end{equation}
+so that Parseval's identity on the Boolean cube yields $\sum_{|S|=N}p_S^2=d^{-2}\sum_I\det(\Gamma_I)^2$. Combining with Eq.~\eqref{eq:zeta-M} proves Eq.~\eqref{eq:DPP-collision}.
 \end{proof}
 
 
@@ -1291,7 +1087,7 @@ Equation~\eqref{eq:pure-covariance} gives $K^\dagger=K$, $K^2=K$ and $\mathrm{Tr
 \subsubsection{A sharp collision inequality for one Slater determinant}
 \label{app:proof:slater}
 
-The first new ingredient bounds the collision probability of an arbitrary Slater determinant~\cite{Mbeng2024,surace}, specified by the isometry $Q$ whose columns span the occupied space, by its \emph{transpose} overlap $Q^{\trans}Q$. The transpose \DIFdelbegin \DIFdel{, rather than the adjoint, is what remembers the particle--hole reality constraint in the fermionic application}\DIFdelend \DIFaddbegin \DIFadd{overlap is the relevant object because, in the application of Sec.~\ref{app:proof:residual}, the reality of the covariance matrix translates into the complex orthogonality $Z^{\trans}Z=\mathbb{I}$ of the BCS matrix introduced below, which makes $Q^{\trans}Q$ explicitly computable}\DIFaddend .
+The first new ingredient bounds the collision probability of an arbitrary Slater determinant~\cite{Mbeng2024,surace}, specified by the isometry $Q$ whose columns span the occupied space, by its \emph{transpose} overlap $Q^{\trans}Q$. The transpose, rather than the adjoint, is what remembers the particle--hole reality constraint in the fermionic application.
 
 Throughout this subsection we use the shorthand
 \begin{equation}
@@ -1299,8 +1095,7 @@ Throughout this subsection we use the shorthand
     =\sum_{I,J}\left|\det X_{I,J}\right|^2 ,
     \label{eq:Dfunctional}
 \end{equation}
-\DIFdelbegin \DIFdel{the second equality being the Cauchy--Binet expansion, in which }\DIFdelend \DIFaddbegin \DIFadd{where }\DIFaddend $(I,J)$ runs over all pairs of index sets of equal cardinality, the empty pair contributing $1$. \DIFaddbegin \DIFadd{The second equality follows from the principal-minor expansion $\det(\mathbb{I}+Y)=\sum_J\det Y_{J,J}$, applied to $Y=X^\dagger X$, combined with the Cauchy--Binet formula $\det[(X^\dagger X)_{J,J}]=\det[(X_{:,J})^\dagger X_{:,J}]=\sum_{|I|=|J|}|\det X_{I,J}|^2$, where $X_{:,J}$ denotes the columns of $X$ in $J$.
-}\DIFaddend 
+the second equality being the Cauchy--Binet expansion, in which $(I,J)$ runs over all pairs of index sets of equal cardinality, the empty pair contributing $1$.
 
 \begin{lemma}[Sharp Slater collision bound]
 \label{lem:Slater-bound}
@@ -1359,6 +1154,7 @@ The matrices $Q_1$ and $Q_0$ have $k-1$ and $k$ columns respectively, so the ind
 \end{equation}
 where the factor $2$ in front of $p^2$ is precisely the mismatch $2^{-(k-1)}=2\cdot 2^{-k}$ between the normalizations at $k-1$ and $k$ columns.
 
+%DIF <  \emph{Step 3: bookkeeping of minors.}
 To this end, let us apply Eq.~\eqref{eq:Dfunctional} to $\Sigma_0$ and split the sum according to whether the index $1$ belongs to the row set, to the column set, to both, or to neither:
 \begin{equation}
 \begin{split}
@@ -1390,6 +1186,7 @@ Collecting the four classes,
     \label{eq:minor-classes-S}
 \end{equation}
 
+%DIF <  \emph{Step 4: bounding the cross term.}
 We claim that $\mathrm{Re}\,\mathcal{Z}\ge-\mathcal{D}(V)$. The strategy is to compute one and the same derivative in two different ways. Shift the $(1,1)$ entry of $\Sigma_0$ by a real amount $q$ and set
 \begin{equation}
     f(q):=\mathcal{D}\!\left(\Sigma_0+q\,e_1e_1^{\trans}\right).
@@ -1406,7 +1203,8 @@ so that in particular $\mathrm{Re}\,\mathcal{Z}=\tfrac12f'(0)$.
 \begin{equation}\mathcal{D}\!\left(\left[\,w\;V\,\right]\right)=\mathcal{D}(V)\left[1+w^\dagger w-w^\dagger V\left(\mathbb{I}+V^\dagger V\right)^{-1}V^\dagger w\right].
 \end{equation}
 The Woodbury identity~\cite{MR38136} $V(\mathbb{I}+V^\dagger V)^{-1}V^\dagger=\mathbb{I}-(\mathbb{I}+VV^\dagger)^{-1}$ collapses the bracket into
-\begin{equation}
+\DIFdelbegin \DIFdel{,
+}\DIFdelend \begin{equation}
 \begin{split}
     \mathcal{D}\!\left(\left[\,w\;V\,\right]\right)&=\mathcal{D}(V)\left[1+w^\dagger\mathcal{R}\,w\right],\\
     \mathcal{R}&:=\left(\mathbb{I}+VV^\dagger\right)^{-1}.
@@ -1423,17 +1221,17 @@ Consistently, the coefficient of $q^2$ here is $\mathcal{D}(V)\,e_1^\dagger\math
 \begin{equation}
     \mathrm{Re}\,\mathcal{Z}=\mathcal{D}(V)\,\mathrm{Re}\!\left(e_1^\dagger\mathcal{R}\,u\right),
 \end{equation}
-and it remains to bound the scalar. The matrix $Q_0$ is an isometry, so $\lVert Q_0\rVert=1$; since transposition and complex conjugation preserve the operator norm, $\lVert\Sigma_0\rVert=\lVert Q_0^{\trans}Q_0\rVert\le1$, and in particular its first column $u=\Sigma_0e_1$ obeys $\lVert u\rVert\le1$. Moreover $VV^\dagger\succeq0$ gives $0<\mathcal{R}\le\mathbb{I}$, \DIFdelbegin \DIFdel{so that Cauchy--Schwarz in the inner product defined by $\mathcal{R}$ yields
-}\begin{displaymath}
-    \DIFdel{\left|e_1^\dagger\mathcal{R}\,u\right|\le\lVert\mathcal{R}^{1/2}e_1\rVert\,\lVert\mathcal{R}^{1/2}u\rVert\le\lVert e_1\rVert\,\lVert u\rVert\le1 .
-}\end{displaymath}%DIFAUXCMD
-\DIFdelend \DIFaddbegin \DIFadd{hence $\lVert\mathcal{R}\rVert\le1$ and $|e_1^\dagger\mathcal{R}\,u|\le\lVert\mathcal{R}\rVert\,\lVert u\rVert\le1$.
-}\DIFaddend Hence $\mathrm{Re}(e_1^\dagger\mathcal{R}u)\ge-1$ and, $\mathcal{D}(V)$ being nonnegative,
+and it remains to bound the scalar. The matrix $Q_0$ is an isometry, so $\lVert Q_0\rVert=1$; since transposition and complex conjugation preserve the operator norm, $\lVert\Sigma_0\rVert=\lVert Q_0^{\trans}Q_0\rVert\le1$, and in particular its first column $u=\Sigma_0e_1$ obeys $\lVert u\rVert\le1$. Moreover $VV^\dagger\succeq0$ gives $0<\mathcal{R}\le\mathbb{I}$, so that Cauchy--Schwarz in the inner product defined by $\mathcal{R}$ yields
+\begin{equation}
+    \left|e_1^\dagger\mathcal{R}\,u\right|\le\lVert\mathcal{R}^{1/2}e_1\rVert\,\lVert\mathcal{R}^{1/2}u\rVert\le\lVert e_1\rVert\,\lVert u\rVert\le1 .
+\end{equation}
+Hence $\mathrm{Re}(e_1^\dagger\mathcal{R}u)\ge-1$ and, $\mathcal{D}(V)$ being nonnegative,
 \begin{equation}
     \mathrm{Re}\,\mathcal{Z}\ge-\mathcal{D}(V)=-(\mathcal{N}+\mathcal{X})\;.
     \label{eq:cross-lower}
 \end{equation}
 
+%DIF <  \emph{Step 5: conclusion.}
 We prove Eq.~\eqref{eq:determinant-deletion} using Eq.~\eqref{eq:minor-classes-S0}, Eq.~\eqref{eq:minor-classes-S} and $r=1-p$, so that $1-p^2-r^2=2pr$,
 \begin{equation}
 \begin{split}
@@ -1475,6 +1273,7 @@ and at the canonical point
 \end{lemma}
 
 \begin{proof}
+%DIF <  \emph{Step 1: the graph parametrization.}
 After a gauge choice in the occupied space, the rank-$2\ell$ projector of Lemma~\ref{lem:DPP} is represented by the isometry
 \begin{equation}
     Q_Z=\begin{pmatrix}iZ\\ \mathbb{I}_{2\ell}\end{pmatrix}\left(\mathbb{I}+Z^\dagger Z\right)^{-1/2}\;,
@@ -1506,6 +1305,7 @@ We are left to determine $\det\widetilde{Q}_S$: expanding along the rows selecte
 \end{equation}
 where the first equality uses $Z^\dagger Z=O_B(Z_0^\dagger Z_0)O_B^{\trans}$, which has the same determinant as $Z_0^\dagger Z_0$, and the second follows blockwise: from $(\mathbb{I}_2+i\lambda_jJ)^2=(1+\lambda_j^2)\mathbb{I}_2+2i\lambda_jJ$ one finds $\mathbb{I}_2+Z_{0,j}^2=2(\mathbb{I}_2+i\lambda_jJ)/\nu_j^2$ , so that $\det(\mathbb{I}_2+Z_{0,j}^2)=4/\nu_j^2$ and $\kappa=\prod_{j}(\nu_j/2)$. Altogether, $p_S=\kappa^2|\det Z_{I,J}|^2$: squaring and summing over all $S$, i.e.\ over all pairs $(I,J)$ with $|I|=|J|$, gives $\sum_{|S|=2\ell}p_S^2=\kappa^4\mathsf{F}(Z)$, and Lemma~\ref{lem:DPP} with $N=2\ell$, $d=2^{2\ell}$ and $\kappa^4=2^{-4\ell}\prod_j\nu_j^4$ proves Eq.~\eqref{eq:physical-F}.
 
+%DIF <  \emph{Step 4: the canonical value.}
 The functional $\mathsf{F}$ is multiplicative on direct sums, and a direct $2\times2$ computation gives
 \begin{equation}
     \mathsf{F}\!\left(\frac{\mathbb{I}_2+i\lambda J}{\sqrt{1-\lambda^2}}\right)=\frac{4\left(1-\lambda^2+\lambda^4\right)}{(1-\lambda^2)^2}\;,
@@ -1590,14 +1390,10 @@ The purpose of this subsection is to bound $\mathsf{F}(Z)$ by a simpler quantity
 \begin{proposition}[All-minors residual]
 \label{prop:residual}
 With $Z$ and $H$ as above,
-\DIFdelbegin \begin{displaymath}
-    \DIFdel{\mathsf{F}(Z)\le \mathsf{R}(H)\;,\quad \mathsf{R}(H)=\sum_{I\subseteq[m]}2^{-|I|}\det\!\left(\mathbb{I}+H_I\overline{H_I}\right),
-    %DIFDELCMD < \label{eq:R-definition}%%%
-}\end{displaymath}%DIFAUXCMD
-\DIFdelend \DIFaddbegin \begin{equation}
-    \DIFadd{\mathsf{F}(Z)\le \mathsf{R}(H)\;,\quad \mathsf{R}(H)=\sum_{I\subseteq[2\ell]}2^{-|I|}\det\!\left(\mathbb{I}+H_I\overline{H_I}\right),
+\begin{equation}
+    \mathsf{F}(Z)\le \mathsf{R}(H)\;,\quad \mathsf{R}(H)=\sum_{I\subseteq[m]}2^{-|I|}\det\!\left(\mathbb{I}+H_I\overline{H_I}\right),
     \label{eq:R-definition}
-}\end{equation}\DIFaddend 
+\end{equation}
 with equality at the canonical point, $\mathsf{F}(Z_0)=\mathsf{R}(H_0)$, $H_0=Z_0^2$.
 \end{proposition}
 
@@ -1635,7 +1431,7 @@ This matches exactly the single-block value of $\mathsf{F}$ in Eq.~\eqref{eq:F_Z
 \subsubsection{Principal-minor and Cayley transforms}
 \label{app:proof:cayley}
 
-We are left with the maximization of the residual $\mathsf{R}(H)$ over the orbit $H=OH_0O^{\trans}$. In this subsection we rewrite it \DIFdelbegin \DIFdel{exactly --- no inequality is involved --- }\DIFdelend as an unweighted sum of squared principal minors of a single Hermitian matrix $\mathcal{A}$, at the price of a prefactor that will turn out to be constant along the orbit (Sec.~\ref{app:proof:graph}). The \DIFdelbegin \DIFdel{only tool is, once more, the }\DIFdelend \DIFaddbegin \DIFadd{tools are a principal-minor identity (Lemma~\ref{lem:PMT}) and an }\DIFaddend average over independent random signs \DIFdelbegin \DIFdel{, used twice}\DIFdelend \DIFaddbegin \DIFadd{combined with a Cayley transform (Proposition~\ref{prop:Cayley})}\DIFaddend .
+We are left with the maximization of the residual $\mathsf{R}(H)$ over the orbit $H=OH_0O^{\trans}$. In this subsection we rewrite it exactly --- no inequality is involved --- as an unweighted sum of squared principal minors of a single Hermitian matrix $\mathcal{A}$, at the price of a prefactor that will turn out to be constant along the orbit (Sec.~\ref{app:proof:graph}). The only tool is, once more, the average over independent random signs, used twice.
 For notational convenience, let us fix $m=2\ell$ in the following. 
 \begin{lemma}[Orthogonal principal-minor transform]
 \label{lem:PMT}
@@ -1647,23 +1443,18 @@ Let $H\in\mathbb{C}^{m\times m}$ satisfy $HH^{\trans}=\mathbb{I}_m$, let $t\ge0$
 \end{lemma}
 
 \begin{proof}
-\DIFdelbegin \DIFdel{Let $D=\mathrm{diag}(\varepsilon_1,\dots,\varepsilon_m)$, where $\varepsilon_i=\pm1$ are independent random signs with uniform distribution, so that the average of any nonempty product of distinct signs vanishes; we write $\varepsilon_S=\prod_{i\in S}\varepsilon_i$. We recall the principal minor expansion
-}\begin{displaymath}
-    \DIFdel{\det\!\left(\sqrt b\,\mathbb{I}+\sqrt a\,DH\right)= \sum_{S\subseteq[m]}a^{|S|/2}b^{(m-|S|)/2} \varepsilon_S \det(H_S)\,.
-}\end{displaymath}%DIFAUXCMD
-\DIFdelend \DIFaddbegin \DIFadd{We use the principal-minor expansion $\det(c\,\mathbb{I}_k-X)=\sum_{A\subseteq[k]}c^{k-|A|}(-1)^{|A|}\det X_{A,A}$, valid for any $k\times k$ matrix $X$ and any scalar $c$~\mbox{%DIFAUXCMD
-\cite{HornJohnson2012}}\hskip0pt%DIFAUXCMD
-. Fix $S\subseteq[m]$, let $S^c=[m]\setminus S$, and write $H_S=H_{S,S}$. The condition $HH^{\trans}=\mathbb{I}_m$ restricted to the rows in $S$ reads
-}\begin{equation}
-    \DIFadd{H_SH_S^{\trans}=\mathbb{I}_{|S|}-X_S\;,\qquad X_S:=H_{S,S^c}H_{S,S^c}^{\trans}\;.
-}\end{equation}\DIFaddend 
-\DIFdelbegin \DIFdel{Thus, upon average over the signs, }\DIFdelend \DIFaddbegin \DIFadd{For $A\subseteq S$, }\DIFaddend the \DIFdelbegin \DIFdel{right-hand side can be written
-}\begin{displaymath}
-    \DIFdel{\sum_{S\subseteq[m]}a^{|S|}b^{m-|S|}\det(H_S)^2=\mathbb{E}_D\det\!\left(\sqrt b\,\mathbb{I}+\sqrt a\,DH\right)^2 .
-}\end{displaymath}%DIFAUXCMD
-\DIFdel{Because $HH^{\trans}=\mathbb{I}$ and $D^2=\mathbb{I}$, we have
-}\begin{displaymath}
-    \DIFdel{\begin{split}
+Let $D=\mathrm{diag}(\varepsilon_1,\dots,\varepsilon_m)$, where $\varepsilon_i=\pm1$ are independent random signs with uniform distribution, so that the average of any nonempty product of distinct signs vanishes; we write $\varepsilon_S=\prod_{i\in S}\varepsilon_i$.
+We recall the principal minor expansion
+\begin{equation}
+    \det\!\left(\sqrt b\,\mathbb{I}+\sqrt a\,DH\right)= \sum_{S\subseteq[m]}a^{|S|/2}b^{(m-|S|)/2} \varepsilon_S \det(H_S)\,.
+\end{equation}
+Thus, upon average over the signs, the right-hand side can be written
+\begin{equation}
+    \sum_{S\subseteq[m]}a^{|S|}b^{m-|S|}\det(H_S)^2=\mathbb{E}_D\det\!\left(\sqrt b\,\mathbb{I}+\sqrt a\,DH\right)^2 .
+\end{equation}
+Because $HH^{\trans}=\mathbb{I}$ and $D^2=\mathbb{I}$, we have
+\begin{equation}
+    \begin{split}
       &\left(\sqrt b\,\mathbb{I}+\sqrt a\,DH\right)   \left(\sqrt b\,\mathbb{I}+\sqrt a\,DH\right)^\trans\\
 &=
 b\,\mathbb{I}
@@ -1673,31 +1464,26 @@ b\,\mathbb{I}
 (a+b)\mathbb{I}
 +\sqrt{ab}\left(DH+H^{\trans}D\right),
     \end{split}
-}\end{displaymath}%DIFAUXCMD
-\DIFdel{so the determinant inside the expectation equals
-}\begin{displaymath}
-\DIFdel{\begin{split}
+\end{equation}
+so the determinant inside the expectation equals
+\begin{equation}
+\begin{split}
     &\det\!\left((a+b)\mathbb{I}+\sqrt{ab}\,(H^{\trans}D+DH)\right)\\
     &\qquad\qquad=\det\!\left(t\mathbb{I}+XX^{\trans}\right),\quad X=\mathbb{I}+\sqrt t\,DH\;,
 \end{split}
-}\end{displaymath}%DIFAUXCMD
-\DIFdel{with $ab=t$ and $a+b=1+2t$. Using the }\DIFdelend \DIFaddbegin \DIFadd{principal submatrix $(X_S)_{A,A}=H_{A,S^c}H_{A,S^c}^{\trans}$ has, by the }\DIFaddend Cauchy--Binet formula, \DIFdelbegin \DIFdel{$\mathbb{E}_D\det(t\mathbb{I}+XX^{\trans})=\sum_{|I|=|J|}t^{m-|I|}\mathbb{E}_D\det(X_{I,J})^2$.Since $X_{ij}=\delta_{ij}+ \sqrt{t}\, \varepsilon_i H_{ij}$, expanding $\det(X_{I,J})$ over the set $Q'\subseteq I\cap J$ of entries supplied by the identity gives
-}\begin{displaymath}
-    \DIFdel{\det(X_{I,J})= \sum_{Q' \subseteq I \cap J} \pm\,t^{|I \setminus Q'|/2} \big(\prod_{i\in I\setminus Q'}\varepsilon_i\big)\det(H_{I\setminus Q',J\setminus Q'})\,,
-}\end{displaymath}%DIFAUXCMD
-%DIFDELCMD <  
-%DIFDELCMD < %%%
-\DIFdel{up to $Q'$-dependent signs fixed by the row and column orderings, which are immaterial in what follows. Upon squaring, the sign  averaging kills the cross terms from two distinct sets $Q'_1\neq Q'_2$ --- their sign products run over the nonempty symmetric difference $Q'_1\,\triangle\,Q'_2$ --- while the $Q'$-dependent signs square to one, giving
-}\begin{displaymath}
-    \DIFdel{\mathbb{E}_D\det(X_{I,J})^2=\sum_{Q'\subseteq I\cap J}t^{|I|-|Q'|}\det(H_{I\setminus Q',J\setminus Q'})^2 .
-}\end{displaymath}%DIFAUXCMD
-\DIFdelend \DIFaddbegin \DIFadd{determinant $\sum_{B\subseteq S^c,\,|B|=|A|}\det(H_{A,B})^2$. Hence
-}\begin{equation}
-    \DIFadd{\det\!\left(c\,\mathbb{I}_{|S|}-X_S\right)=\sum_{\substack{A\subseteq S,\ B\subseteq S^c\\|A|=|B|}}c^{|S|-|A|}(-1)^{|A|}\det(H_{A,B})^2\;.
-    \label{eq:PMT-key}
-}\end{equation}\DIFaddend 
-\DIFdelbegin \DIFdel{Hence, changing variables to $I'=I\setminus Q'$ and $J'=J\setminus Q'$, and setting $R'=[m]\setminus (I' \cup J')$ and $L'=R' \setminus Q'$ (primes denote auxiliary index sets), }\begin{displaymath}
-    \DIFdel{\begin{split}
+\end{equation}
+with $ab=t$ and $a+b=1+2t$.
+Using the Cauchy--Binet formula, $\mathbb{E}_D\det(t\mathbb{I}+XX^{\trans})=\sum_{|I|=|J|}t^{m-|I|}\mathbb{E}_D\det(X_{I,J})^2$. Since $X_{ij}=\delta_{ij}+ \sqrt{t}\, \varepsilon_i H_{ij}$, expanding $\det(X_{I,J})$ over the set $Q'\subseteq I\cap J$ of entries supplied by the identity gives
+\begin{equation}
+    \det(X_{I,J})= \sum_{Q' \subseteq I \cap J} \pm\,t^{|I \setminus Q'|/2} \big(\prod_{i\in I\setminus Q'}\varepsilon_i\big)\det(H_{I\setminus Q',J\setminus Q'})\,,
+\end{equation} 
+up to $Q'$-dependent signs fixed by the row and column orderings, which are immaterial in what follows. Upon squaring, the sign  averaging kills the cross terms from two distinct sets $Q'_1\neq Q'_2$ --- their sign products run over the nonempty symmetric difference $Q'_1\,\triangle\,Q'_2$ --- while the $Q'$-dependent signs square to one, giving
+\begin{equation}
+    \mathbb{E}_D\det(X_{I,J})^2=\sum_{Q'\subseteq I\cap J}t^{|I|-|Q'|}\det(H_{I\setminus Q',J\setminus Q'})^2 .
+\end{equation} 
+Hence, changing variables to $I'=I\setminus Q'$ and $J'=J\setminus Q'$, and setting $R'=[m]\setminus (I' \cup J')$ and $L'=R' \setminus Q'$ (primes denote auxiliary index sets),
+\begin{equation}
+    \begin{split}
         &\sum_{S\subseteq[m]}a^{|S|}b^{m-|S|}\det(H_S)^2\\
         &=\sum_{|I|=|J|} \sum_{Q'\subseteq I\cap J}t^{m-|Q'|}   \det(H_{I\setminus Q',J\setminus Q'})^2\\
         &= \sum_{\substack{I',J'\subseteq[m]\\ |I'|=|J'|}} \sum_{Q'\subseteq[m]\setminus(I'\cup J')}
@@ -1721,37 +1507,19 @@ t^{|L'|}
 &=\sum_{\substack{I',J'\subseteq[m]\\ |I'|=|J'|}} t^{|I'\cup J'|}(1+t)^{m-|I' \cup J'|}
 \det(H_{I',J'})^2 \,.
     \end{split}
-}\end{displaymath}%DIFAUXCMD
-\DIFdelend \DIFaddbegin \DIFadd{For the right-hand side of Eq.~\eqref{eq:PMT}, $\det(H_S)^2=\det(H_SH_S^{\trans})=\det(\mathbb{I}_{|S|}-X_S)$ is Eq.~\eqref{eq:PMT-key} at $c=1$. Multiplying by $a^{|S|}b^{m-|S|}$ and summing over $S$, we exchange the order of summation: for fixed disjoint $A,B$ with $|A|=|B|$, the sets $S$ with $A\subseteq S$ and $B\subseteq S^c$ are $S=A\cup E$ with $E\subseteq[m]\setminus(A\cup B)$, a set of $m-2|A|$ elements, so that the binomial theorem gives
-}\begin{equation}
-\DIFadd{\begin{split}
-    &\sum_{S\subseteq[m]}a^{|S|}b^{m-|S|}\det(H_S)^2\\
-    &=\sum_{\substack{A\cap B=\emptyset\\|A|=|B|}}(-1)^{|A|}\det(H_{A,B})^2\,a^{|A|}b^{|B|}\\
-    &\qquad\times\sum_{E\subseteq[m]\setminus(A\cup B)}a^{|E|}b^{m-2|A|-|E|}\\
-    &=\sum_{\substack{A\cap B=\emptyset\\|A|=|B|}}(-ab)^{|A|}(a+b)^{m-2|A|}\det(H_{A,B})^2\;.
-\end{split}
-}\end{equation}\DIFaddend 
-\DIFdelbegin %DIFDELCMD < 
+\end{equation} 
 
-%DIFDELCMD < %%%
-\DIFdelend For the left-hand side\DIFdelbegin \DIFdel{of }\DIFdelend \DIFaddbegin \DIFadd{, $\mathbb{I}+H_SH_S^{\trans}=2\,\mathbb{I}_{|S|}-X_S$, so $\det(\mathbb{I}+H_SH_S^{\trans})$ is }\DIFaddend Eq.~\DIFdelbegin \DIFdel{\eqref{eq:PMT}, we arrive at the same result:
-}\begin{displaymath}
-    \DIFdel{\begin{split}
+For the left-hand side of Eq.~\eqref{eq:PMT}, we arrive at the same result:
+\begin{equation}
+    \begin{split}
         &\sum_{I\subseteq[m]}t^{|I|}\det\!\left(\mathbb{I}+H_IH_I^{\trans}\right)= \sum_{I\subseteq[m]}t^{|I|}\sum_{\substack{I',J'\subseteq I \\ |I'|=|J'|}} \det(H_{I',J'})^2\\
         &=\sum_{\substack{I',J'\subseteq [m] \\ |I'|=|J'|}} \left( \sum_{\substack{I\subseteq [m] \\ I' \cup J' \subseteq I}} t^{|I|} \right) \det(H_{I',J'})^2\\
         &= \sum_{\substack{I',J'\subseteq [m] \\ |I'|=|J'|}} \left( \sum_{K' \subseteq [m] \setminus (I' \cup J')} t^{|I' \cup J'|+|K'|} \right) \det(H_{I',J'})^2\\
         &= \sum_{\substack{I',J'\subseteq[m]\\ |I'|=|J'|}} t^{|I'\cup J'|}(1+t)^{m-|I' \cup J'|}
 \det(H_{I',J'})^2\,.
     \end{split}
-}\end{displaymath}%DIFAUXCMD
-\DIFdelend \DIFaddbegin \DIFadd{\eqref{eq:PMT-key} at $c=2$. Multiplying by $t^{|S|}$, with $t^{|S|}2^{|S|-|A|}=t^{|A|}(2t)^{|E|}$ for $S=A\cup E$, the same exchange of summations gives
-}\begin{equation}
-\DIFadd{\begin{split}
-    &\sum_{S\subseteq[m]}t^{|S|}\det\!\left(\mathbb{I}+H_SH_S^{\trans}\right)\\
-    &=\sum_{\substack{A\cap B=\emptyset\\|A|=|B|}}(-t)^{|A|}(1+2t)^{m-2|A|}\det(H_{A,B})^2\;.
-\end{split}
-}\end{equation}\DIFaddend 
-The two \DIFdelbegin \DIFdel{chains coincide term by term}\DIFdelend \DIFaddbegin \DIFadd{expressions coincide when $ab=t$ and $a+b=1+2t$}\DIFaddend , proving Eq.~\eqref{eq:PMT}.
+\end{equation}
+The two chains coincide term by term, proving Eq.~\eqref{eq:PMT}.
 \end{proof}
 
 We apply Lemma~\ref{lem:PMT} at $t=1/2$, i.e.\ with
@@ -1764,7 +1532,7 @@ Since $H$ is Hermitian, $\overline{H_I}=H_I^{\trans}$, and Eq.~\eqref{eq:R-defin
     \mathsf{R}(H)=\sum_{S\subseteq[2\ell]}a^{|S|}b^{2\ell-|S|}\det(H_S)^2\;.
     \label{eq:R-weighted-principal}
 \end{equation}
-These weights are precisely the ones for which \DIFdelbegin \DIFdel{a second sign transform }\DIFdelend \DIFaddbegin \DIFadd{the sign average in Proposition~\ref{prop:Cayley} }\DIFaddend produces a simple Cayley numerator.
+These weights are precisely the ones for which a second sign transform produces a simple Cayley numerator.
 
 \begin{proposition}[Cayley reduction]
 \label{prop:Cayley}
@@ -1786,9 +1554,8 @@ and set $\Delta_\Omega=\det(\mathbb{I}_{2\ell}-i\Omega)>0$ and $\mathcal{A}=\mat
 The representation~\eqref{eq:H-Cayley} follows blockwise from $H=OZ_0^2O^{\trans}$ and real orthogonal conjugation: for one block, $(\mathbb{I}_2-i\lambda_jJ)^{-1}=(\mathbb{I}_2+i\lambda_jJ)/\nu_j^2$, so $(\mathbb{I}_2+i\lambda_jJ)(\mathbb{I}_2-i\lambda_jJ)^{-1}=(\mathbb{I}_2+i\lambda_jJ)^2/\nu_j^2=Z_{0,j}^2$, and conjugating by $O$ preserves the Cayley form; since $0\le\lambda_j<1$, $\mathbb{I}_{2\ell}-i\Omega$ is positive Hermitian and $\Delta_\Omega>0$ (the eigenvalues of $i\Omega$ are $\pm\lambda_j$, so those of $\mathbb{I}_{2\ell}-i\Omega$ are $1\mp\lambda_j>0$); moreover $\Omega$ is real antisymmetric, so $i\Omega$, and with it $\mathcal{A}$, is Hermitian. 
 
 Let $D=\operatorname{diag}(\varepsilon_1,\ldots,\varepsilon_{2\ell})$,
-where the $\varepsilon_k$ are independent uniform signs\DIFdelbegin \DIFdel{. By }\DIFdelend \DIFaddbegin \DIFadd{, and write $\varepsilon_S=\prod_{k\in S}\varepsilon_k$. Since $(DH)_S=D_SH_S$, the principal-minor expansion gives $\det(\sqrt b\,\mathbb{I}_{2\ell}+\sqrt a\,DH)=\sum_{S}a^{|S|/2}b^{(2\ell-|S|)/2}\varepsilon_S\det(H_S)$; squaring and averaging over the signs, $\mathbb{E}_D[\varepsilon_S\varepsilon_{S'}]=\delta_{S,S'}$ removes all cross terms, and }\DIFaddend Eq.~\eqref{eq:R-weighted-principal} \DIFdelbegin \DIFdel{and the sign-average identity established at the beginning of the proof of Lemma~\ref{lem:PMT}, we have
-}\DIFdelend \DIFaddbegin \DIFadd{gives
-}\DIFaddend \begin{equation}
+where the $\varepsilon_k$ are independent uniform signs. By Eq.~\eqref{eq:R-weighted-principal} and the sign-average identity established at the beginning of the proof of Lemma~\ref{lem:PMT}, we have
+\begin{equation}
 \mathsf{R}(H)
 =
 \mathbb{E}_D
@@ -1825,8 +1592,8 @@ $\mathbb{I}_{2\ell}+D\mathcal{A}$. We use the elementary fact that, for
 a random matrix with independent rows, the expected squared
 determinant depends only on the second moments of its individual
 rows. Indeed, expanding the determinants with the Leibniz formula, we get
-\DIFdelbegin \begin{displaymath}
-\DIFdel{\begin{split}
+\begin{equation}
+\begin{split}
     \mathbb{E}\det(M)^2
 &=
 \mathbb{E}\!\left[\left(\sum_{\sigma\in\mathfrak{S}_{2\ell}}
@@ -1841,24 +1608,8 @@ M_{k,\sigma(k)}
 \prod_{k=1}^{2\ell}
 \mathbb{E}\!\left[M_{k,\sigma(k)}M_{k,\tau(k)}\right]
 \end{split}
-}\end{displaymath}%DIFAUXCMD
-\DIFdelend \DIFaddbegin \begin{equation}
-\DIFadd{\begin{split}
-    \mathbb{E}\det(M)^2
-&=
-\mathbb{E}\!\left[\left(\sum_{\sigma\in\mathfrak{S}_{2\ell}}
-\mathrm{sgn}(\sigma)
-\prod_{k=1}^{2\ell}
-M_{k,\sigma(k)}
-\right)^2\right]\;,\\
-&=\sum_{\sigma,\tau\in \mathfrak{S}_{2\ell}} \mathrm{sgn}(\sigma) \mathrm{sgn}(\tau)\,
-\mathbb{E}\!\left[\prod_{k=1}^{2\ell}M_{k,\sigma(k)}M_{k,\tau(k)}\right]\\
-&=\sum_{\sigma,\tau\in \mathfrak{S}_{2\ell}} \mathrm{sgn}(\sigma) \mathrm{sgn}(\tau)
-\prod_{k=1}^{2\ell}
-\mathbb{E}\!\left[M_{k,\sigma(k)}M_{k,\tau(k)}\right]
-\end{split}
-}\end{equation}\DIFaddend 
-where $\mathrm{sgn}(\sigma)$ denotes the sign of the permutation $\sigma$ and $\mathfrak{S}_{2\ell}$ the permutation group over $2\ell$ elements and \DIFaddbegin \DIFadd{only }\DIFaddend in the last step we used the statistical independence of the rows\DIFaddbegin \DIFadd{, which factorizes the expectation of the product over $k$}\DIFaddend .
+\end{equation}
+where $\mathrm{sgn}(\sigma)$ denotes the sign of the permutation $\sigma$ and $\mathfrak{S}_{2\ell}$ the permutation group over $2\ell$ elements and in the last step we used the statistical independence of the rows.
 
 To compare the row second moments, fix $k$, let $u=e_k^{\trans}$
 be row $k$ of $\mathbb{I}_{2\ell}$, and let $v=e_k^\trans\cdot(i\Omega)$ be
@@ -1908,7 +1659,8 @@ Finally, the principal-minor expansion combined with the prefactor in Eq.~\eqref
 \subsubsection{ Reduction to a unitary-matrix functional }
 \label{app:proof:graph}
 
-
+\DIFdelbegin \DIFdel{\rev{The sum in Eq.~\eqref{eq:Cayley-reduction} can be evaluated as the probability of a simple event for another distribution of the same type as in Lemma~\ref{lem:DPP}. Let}
+}
 
 It remains to evaluate the sum $\sum_S\det(\mathcal{A}_S)^2$ in Eq.~\eqref{eq:Cayley-reduction}, which is not obviously maximized at the canonical point. To that end, we interpret it as the probability of a simple event for another distribution of the same type as in Lemma~\ref{lem:DPP}: this probabilistic reading lets us change basis freely within pairs of coordinates, and in a suitable basis the sum collapses to a functional of a single unitary matrix. Let
 \begin{equation}\mathcal{M}=\begin{pmatrix}\mathbb{I}_{2\ell}\\ \mathcal{A}\end{pmatrix},\quad \mathcal{G}=\mathcal{M}^\dagger \mathcal{M}=\mathbb{I}_{2\ell}+\mathcal{A}^2,\quad Q=\mathcal{M}\mathcal{G}^{-1/2}.
@@ -1939,9 +1691,9 @@ which maps $Q$ to
 \begin{equation}
     \mathcal{W}Q=\frac{1}{\sqrt2}\begin{pmatrix} U_+\\ U_-\end{pmatrix}.
 \end{equation}
-The probability of $E$ is insensitive to the rotation $\mathcal{W}$. This can be seen \DIFdelbegin \DIFdel{as standard compariso }\DIFdelend \DIFaddbegin \DIFadd{from the standard correspondence }\DIFaddend between distributions of the type of Lemma~\ref{lem:DPP} and free fermions: for an isometry $Q$, the probabilities $p_{\mathcal{S}}$ are the occupation-number probabilities of the Slater-determinant state whose occupied single-particle space is spanned by the columns of $Q$, and a number-conserving single-particle unitary maps free fermion states to free fermion states, transforming $Q$ accordingly. In this language, $E$ is the event that each pair of modes $\{i,2\ell+i\}$ hosts exactly one particle; the subspace of the Fock space with this occupation pattern is invariant under arbitrary unitaries mixing only the two modes of each pair, and $\mathcal{W}$ is precisely of this form, so $\mathbb{P}(E)$ is unchanged.
+The probability of $E$ is insensitive to the rotation $\mathcal{W}$. This can be seen as standard compariso between distributions of the type of Lemma~\ref{lem:DPP} and free fermions: for an isometry $Q$, the probabilities $p_{\mathcal{S}}$ are the occupation-number probabilities of the Slater-determinant state whose occupied single-particle space is spanned by the columns of $Q$, and a number-conserving single-particle unitary maps free fermion states to free fermion states, transforming $Q$ accordingly. In this language, $E$ is the event that each pair of modes $\{i,2\ell+i\}$ hosts exactly one particle; the subspace of the Fock space with this occupation pattern is invariant under arbitrary unitaries mixing only the two modes of each pair, and $\mathcal{W}$ is precisely of this form, so $\mathbb{P}(E)$ is unchanged.
 
-\DIFdelbegin \DIFdel{By }\DIFdelend \DIFaddbegin \DIFadd{Moreover, the probabilities $p_{\mathcal{S}}$ depend on the isometry only through the projector it defines, and are therefore invariant under a unitary change of column gauge, cf.\ }\DIFaddend Lemma~\ref{lem:Slater-bound}\DIFdelbegin \DIFdel{a further invvariant transformation can be introduced}\DIFdelend \DIFaddbegin \DIFadd{; we use this freedom below}\DIFaddend .
+By Lemma~\ref{lem:Slater-bound} a further invvariant transformation can be introduced.
 Define
 \begin{equation}
 U_{\pm}=(\mathbb{I}_{2\ell}\pm i\mathcal{A})\,\mathcal{G}^{-1/2}\;.
@@ -1987,58 +1739,45 @@ so both $\det(\mathbb{I}_{2\ell}+\mathcal{A}^2)$ and $\Delta_\Omega=\det(\mathbb
 \label{app:proof:MD2}
 
 Now we introduce a matrix inequality independent of the fermionic application; we will use it below to bound $\mathsf{L}(U)$ through the diagonal entries of $U$ alone. 
-For a polynomial $f(z_1, \cdots,z_n)$ the symbol, $[z_1\cdots z_n]f$ indicates the coefficient of the monomial $z_1\cdots z_n$, e.g. if \DIFdelbegin \DIFdel{$f(z_1,z_2)=2z_1+z_2+3 z_1z_3$}\DIFdelend \DIFaddbegin \DIFadd{$f(z_1,z_2)=2z_1+z_2+3 z_1z_2$}\DIFaddend , then $[z_1 \, z_2]f=3$.
+For a polynomial $f(z_1, \cdots,z_n)$ the symbol, $[z_1\cdots z_n]f$ indicates the coefficient of the monomial $z_1\cdots z_n$, e.g. if $f(z_1,z_2)=2z_1+z_2+3 z_1z_3$, then $[z_1 \, z_2]f=3$.
 The left-hand side of Eq.~\eqref{eq:MD2} below is known in the linear-algebra literature as a mixed discriminant, cf.\ Ref.~\cite{Bapat1989}.
 
 
 \begin{theorem}[Rank-two determinant inequality]
 \label{thm:MD2}
 Let $B_1,\dots,B_n\succeq0$ be Hermitian $n\times n$ matrices with $\mathrm{rank}\,B_i\le2$. Then
-\DIFdelbegin \begin{displaymath}
-    [\DIFdel{z_1\cdots z_n}]\DIFdel{\det\!\Big(\sum_{i=1}^nz_iB_i\Big)\le\prod_{i=1}^n\|B_i\|_{\mathrm{HS}}\;,
-    %DIFDELCMD < \label{eq:MD2}%%%
-}\end{displaymath}%DIFAUXCMD
-\DIFdelend \DIFaddbegin \begin{equation}
-    [\DIFadd{z_1\cdots z_n}]\DIFadd{\det\!\Big(\sum_{i=1}^nz_iB_i\Big)\le\prod_{i=1}^n\|B_i\|_{\mathrm{HS}}\;.
+\begin{equation}
+    [z_1\cdots z_n]\det\!\Big(\sum_{i=1}^nz_iB_i\Big)\le\prod_{i=1}^n\|B_i\|_{\mathrm{HS}}\;,
     \label{eq:MD2}
-}\end{equation}\DIFaddend 
-\DIFdelbegin \DIFdel{with no factorial normalization.
-}\DIFdelend \end{theorem}
+\end{equation}
+with no factorial normalization.
+\end{theorem}
 
 \begin{proof}
 The strategy is to realize the coefficient in Eq.~\eqref{eq:MD2} as the norm of an operator built by $n$ successive applications of maps $\Phi_{B_j}$, each of which is a norm contraction.
 
 Consider the Fock space of $n$ fermionic modes, with creation operators $c_i^\dagger$ associated with the canonical basis vectors $e_i$ of $\mathbb{C}^n$, and for $x\in\mathbb{C}^n$ let
-\DIFdelbegin \begin{displaymath}
-  \DIFdel{c_x=\sum_{i=1}^n x_i\,c_i^\dagger
-}\end{displaymath}%DIFAUXCMD
-\DIFdelend \DIFaddbegin \begin{equation}
-  \DIFadd{c_x^\dagger=\sum_{i=1}^n x_i\,c_i^\dagger
-}\end{equation}\DIFaddend  
+\begin{equation}
+  c_x=\sum_{i=1}^n x_i\,c_i^\dagger
+\end{equation} 
 be the operator creating one particle in the single-particle state $x$; it maps the $r$-particle sector into the $(r+1)$-particle one. Given a rank-2 matrix $B=\lambda\,uu^\dagger+\mu\,vv^\dagger$ with $u,v \in \mathbb{C}^n$ orthonormal vectors and $\lambda,\mu\ge0$, we define the map
-\DIFdelbegin \begin{displaymath}
-    \DIFdel{\Phi_B(X)=\lambda\,c_uXc_u^\dagger+\mu\,c_vXc_v^\dagger\;,
-}\end{displaymath}%DIFAUXCMD
-\DIFdelend \DIFaddbegin \begin{equation}
-    \DIFadd{\Phi_B(X)=\lambda\,c_u^\dagger Xc_u+\mu\,c_v^\dagger Xc_v\;,
-}\end{equation}\DIFaddend 
+\begin{equation}
+    \Phi_B(X)=\lambda\,c_uXc_u^\dagger+\mu\,c_vXc_v^\dagger\;,
+\end{equation}
 which raises the particle number by one.
-We claim that, for the Hilbert--Schmidt norm \DIFdelbegin \DIFdel{$||\cdot||_2$}\DIFdelend \DIFaddbegin \DIFadd{$\|\cdot\|_{\mathrm{HS}}$}\DIFaddend , the following holds
-\DIFdelbegin \begin{displaymath}\DIFdel{\|\Phi_B(X)\|_{2}\le(\lambda^2+\mu^2)^{1/2}\|X\|_{2}=\|B\|_{\mathrm{HS}}\|X\|_{2}\;,
-    %DIFDELCMD < \label{eq:Phi-contraction}%%%
-}\end{displaymath}%DIFAUXCMD
-\DIFdelend \DIFaddbegin \begin{equation}\DIFadd{\|\Phi_B(X)\|_{\mathrm{HS}}\le(\lambda^2+\mu^2)^{1/2}\|X\|_{\mathrm{HS}}=\|B\|_{\mathrm{HS}}\|X\|_{\mathrm{HS}}\;,
+We claim that, for the Hilbert--Schmidt norm $||\cdot||_2$, the following holds
+\begin{equation}\|\Phi_B(X)\|_{2}\le(\lambda^2+\mu^2)^{1/2}\|X\|_{2}=\|B\|_{\mathrm{HS}}\|X\|_{2}\;,
     \label{eq:Phi-contraction}
-}\end{equation}\DIFaddend 
-where the last equality \DIFdelbegin \DIFdel{follows from
-}\begin{displaymath}
-    \DIFdel{\|B\|_{\mathrm{HS}}^2=\mathrm{Tr}(B^2)=\lambda^2\,\mathrm{Tr}(uu^\dagger)+\mu^2\,\mathrm{Tr}(vv^\dagger)=\lambda^2+\mu^2\;,}\end{displaymath}%DIFAUXCMD
-\DIFdel{the cross terms vanishing by $u^\dagger v=0$}\DIFdelend \DIFaddbegin \DIFadd{holds because $\lambda$ and $\mu$ are the nonzero eigenvalues of $B$}\DIFaddend .
+\end{equation}
+where the last equality follows from
+\begin{equation}
+    \|B\|_{\mathrm{HS}}^2=\mathrm{Tr}(B^2)=\lambda^2\,\mathrm{Tr}(uu^\dagger)+\mu^2\,\mathrm{Tr}(vv^\dagger)=\lambda^2+\mu^2\;,\end{equation}
+the cross terms vanishing by $u^\dagger v=0$.
 
-To prove the claim, we decompose the Fock space into the four occupation sectors $00,10,01,11$ of the two modes $u,v$, and correspondingly the operator $X$ into blocks $X_{s,s'}$ labeled by pairs of sectors. All four sectors are canonically identified with the Fock space of the remaining $n-2$ modes through the maps \DIFdelbegin \DIFdel{$c_u,c_v$}\DIFdelend \DIFaddbegin \DIFadd{$c_u^\dagger,c_v^\dagger$}\DIFaddend ; the sign ambiguity of this identification is absorbed in the constant $\chi$ below. Creation by $u$ uses the input sectors $00,01$ and sends them to $10,11$, whereas creation by $v$ uses $00,10$ and sends them to $01,11$: the operator \DIFdelbegin \DIFdel{$c_uXc_u^\dagger$ }\DIFdelend \DIFaddbegin \DIFadd{$c_u^\dagger Xc_u$ }\DIFaddend has support on the output blocks $(10,10)$, $(10,11)$, $(11,10)$, $(11,11)$, and \DIFdelbegin \DIFdel{$c_vXc_v^\dagger$ }\DIFdelend \DIFaddbegin \DIFadd{$c_v^\dagger Xc_v$ }\DIFaddend on $(01,01)$, $(01,11)$, $(11,01)$, $(11,11)$. The two branches are therefore mutually orthogonal in the trace inner product except in the single common output block $(11,11)$, where the inputs $X_{01,01}$ and $X_{10,10}$ meet with a relative fermionic sign $\chi\in\{\pm1\}$ arising from \DIFdelbegin \DIFdel{$c_uc_v=-c_vc_u$}\DIFdelend \DIFaddbegin \DIFadd{$c_u^\dagger c_v^\dagger=-c_v^\dagger c_u^\dagger$}\DIFaddend .
+To prove the claim, we decompose the Fock space into the four occupation sectors $00,10,01,11$ of the two modes $u,v$, and correspondingly the operator $X$ into blocks $X_{s,s'}$ labeled by pairs of sectors. All four sectors are canonically identified with the Fock space of the remaining $n-2$ modes through the maps $c_u,c_v$; the sign ambiguity of this identification is absorbed in the constant $\chi$ below. Creation by $u$ uses the input sectors $00,01$ and sends them to $10,11$, whereas creation by $v$ uses $00,10$ and sends them to $01,11$: the operator $c_uXc_u^\dagger$ has support on the output blocks $(10,10)$, $(10,11)$, $(11,10)$, $(11,11)$, and $c_vXc_v^\dagger$ on $(01,01)$, $(01,11)$, $(11,01)$, $(11,11)$. The two branches are therefore mutually orthogonal in the trace inner product except in the single common output block $(11,11)$, where the inputs $X_{01,01}$ and $X_{10,10}$ meet with a relative fermionic sign $\chi\in\{\pm1\}$ arising from $c_uc_v=-c_vc_u$.
 Thus, 
-\DIFdelbegin \begin{displaymath}
-\DIFdel{\label{eq:norm_squared}
+\begin{equation}
+\label{eq:norm_squared}
 \begin{aligned}
 \|\Phi_B(X)\|_2^2
 &=
@@ -2077,100 +1816,37 @@ c_v X c_v^\dagger
 X_{01,01},\,X_{10,10}
 \right\rangle_{\mathrm{HS}} .
 \end{aligned}
-}\end{displaymath}%DIFAUXCMD
-\DIFdelend \DIFaddbegin \begin{equation}
-\DIFadd{\label{eq:norm_squared}
-\begin{aligned}
-\|\Phi_B(X)\|_{\mathrm{HS}}^2
-&=
-\lambda^2 \|c_u^\dagger X c_u\|_{\mathrm{HS}}^2
-+\mu^2 \|c_v^\dagger X c_v\|_{\mathrm{HS}}^2
-\\
-&+2\lambda\mu\,
-\operatorname{Re}
-\left\langle
-c_u^\dagger X c_u,\,
-c_v^\dagger X c_v
-\right\rangle_{\mathrm{HS}}
-\\[1ex]
-&=
-\lambda^2
-(
-\|X_{00,00}\|_{\mathrm{HS}}^2
-+\|X_{00,01}\|_{\mathrm{HS}}^2
-\\
-&+\|X_{01,00}\|_{\mathrm{HS}}^2
-+\|X_{01,01}\|_{\mathrm{HS}}^2 )
-\\
-&\quad
-+\mu^2
-(
-\|X_{00,00}\|_{\mathrm{HS}}^2
-+\|X_{00,10}\|_{\mathrm{HS}}^2
-\\
-&+\|X_{10,00}\|_{\mathrm{HS}}^2
-+\|X_{10,10}\|_{\mathrm{HS}}^2 )
-\\
-&\quad
-+2\chi\lambda\mu\,
-\operatorname{Re}
-\left\langle
-X_{01,01},\,X_{10,10}
-\right\rangle_{\mathrm{HS}} .
-\end{aligned}
-}\end{equation}\DIFaddend 
+\end{equation}
 
 Focussing on the block with the mixed product,
-\DIFdelbegin \begin{displaymath}
-\DIFdel{\begin{split}
+\begin{equation}
+\begin{split}
     &\lambda^2\|X_{01,01}\|_2^2+\mu^2\|X_{10,10}\|_2^2\\
     &\qquad +2\chi\lambda\mu\,\mathrm{Re}\langle X_{01,01},X_{10,10}\rangle\\
     &\le(\lambda^2+\mu^2)\left(\|X_{01,01}\|_2^2+\|X_{10,10}\|_2^2\right),
-\end{split}}\end{displaymath}%DIFAUXCMD
-\DIFdelend \DIFaddbegin \begin{equation}
-\DIFadd{\begin{split}
-    &\lambda^2\|X_{01,01}\|_{\mathrm{HS}}^2+\mu^2\|X_{10,10}\|_{\mathrm{HS}}^2\\
-    &\qquad +2\chi\lambda\mu\,\mathrm{Re}\langle X_{01,01},X_{10,10}\rangle\\
-    &\le(\lambda^2+\mu^2)\left(\|X_{01,01}\|_{\mathrm{HS}}^2+\|X_{10,10}\|_{\mathrm{HS}}^2\right),
-\end{split}}\end{equation}\DIFaddend 
+\end{split}\end{equation}
 which holds because the right-hand side minus the  left-hand side is a complete square,
-\DIFdelbegin \begin{displaymath}
-    \DIFdel{\left\|\mu X_{01,01}-\chi\lambda X_{10,10}\right\|_2^2\ge0\;.
-}\end{displaymath}%DIFAUXCMD
-\DIFdelend \DIFaddbegin \begin{equation}
-    \DIFadd{\left\|\mu X_{01,01}-\chi\lambda X_{10,10}\right\|_{\mathrm{HS}}^2\ge0\;.
-}\end{equation}\DIFaddend 
+\begin{equation}
+    \left\|\mu X_{01,01}-\chi\lambda X_{10,10}\right\|_2^2\ge0\;.
+\end{equation}
 Inserting this majorization in Eq.~\eqref{eq:norm_squared} proves Eq.~\eqref{eq:Phi-contraction}.
 
-Let now $C_0=|\mathrm{vac}\rangle\langle\mathrm{vac}|$ be the vacuum projector, with \DIFdelbegin \DIFdel{$\|C_0\|_{2}=1$}\DIFdelend \DIFaddbegin \DIFadd{$\|C_0\|_{\mathrm{HS}}=1$}\DIFaddend , and set recursively $C_j=\Phi_{B_j}(C_{j-1})$ for $1\le j\le n$. Iterating Eq.~\eqref{eq:Phi-contraction} $n$ times gives
-\DIFdelbegin \begin{displaymath}
-    \DIFdel{\|C_n\|_{2}\le\prod_{j=1}^n\|B_j\|_{\mathrm{HS}}\;.
-    %DIFDELCMD < \label{eq:Cn-bound}%%%
-}\end{displaymath}%DIFAUXCMD
-\DIFdelend \DIFaddbegin \begin{equation}
-    \DIFadd{\|C_n\|_{\mathrm{HS}}\le\prod_{j=1}^n\|B_j\|_{\mathrm{HS}}\;.
+Let now $C_0=|\mathrm{vac}\rangle\langle\mathrm{vac}|$ be the vacuum projector, with $\|C_0\|_{2}=1$, and set recursively $C_j=\Phi_{B_j}(C_{j-1})$ for $1\le j\le n$. Iterating Eq.~\eqref{eq:Phi-contraction} $n$ times gives
+\begin{equation}
+    \|C_n\|_{2}\le\prod_{j=1}^n\|B_j\|_{\mathrm{HS}}\;.
     \label{eq:Cn-bound}
-}\end{equation}\DIFaddend 
+\end{equation}
 Choosing spectral decompositions $B_j=\sum_{r=1}^2\lambda_{j,r}\,u_{j,r}u_{j,r}^\dagger$, with orthonormal eigenvectors and $\lambda_{j,r}\ge0$ (allowing zero eigenvalues), the recursion unrolls to
-\DIFdelbegin \begin{displaymath}
-\DIFdel{\begin{split}
+\begin{equation}
+\begin{split}
     C_n&=\sum_{r_1,\dots,r_n}\Big(\prod_{j=1}^n\lambda_{j,r_j}\Big)\,|\psi_{\vec r}\rangle\langle\psi_{\vec r}|\;,\\
     |\psi_{\vec r}\rangle&=c_{u_{n,r_n}}\cdots c_{u_{1,r_1}}|\mathrm{vac}\rangle\;.
     \end{split}
-}\end{displaymath}%DIFAUXCMD
-\DIFdelend \DIFaddbegin \begin{equation}
-\DIFadd{\begin{split}
-    C_n&=\sum_{r_1,\dots,r_n}\Big(\prod_{j=1}^n\lambda_{j,r_j}\Big)\,|\psi_{\vec r}\rangle\langle\psi_{\vec r}|\;,\\
-    |\psi_{\vec r}\rangle&=c^\dagger_{u_{n,r_n}}\cdots c^\dagger_{u_{1,r_1}}|\mathrm{vac}\rangle\;.
-    \end{split}
-}\end{equation}\DIFaddend 
+\end{equation}
 The $n$-particle sector of $n$ modes is one-dimensional, spanned by the fully occupied state $|\mathrm{full}\rangle=c_n^\dagger\cdots c_1^\dagger|\mathrm{vac}\rangle$, and applying $n$ creation operators to the vacuum gives
-\DIFdelbegin \begin{displaymath}
-    \DIFdel{c_{x_n}\cdots c_{x_1}|\mathrm{vac}\rangle=\pm\det(x_1,\dots,x_n)\,|\mathrm{full}\rangle\;,
-}\end{displaymath}%DIFAUXCMD
-\DIFdelend \DIFaddbegin \begin{equation}
-    \DIFadd{c^\dagger_{x_n}\cdots c^\dagger_{x_1}|\mathrm{vac}\rangle=\pm\det(x_1,\dots,x_n)\,|\mathrm{full}\rangle\;,
-}\end{equation}\DIFaddend 
+\begin{equation}
+    c_{x_n}\cdots c_{x_1}|\mathrm{vac}\rangle=\pm\det(x_1,\dots,x_n)\,|\mathrm{full}\rangle\;,
+\end{equation}
 where $\det(x_1,\dots,x_n)$ is the determinant of the matrix with columns $x_1,\dots,x_n$. Hence
 \begin{equation}
 \begin{split}C_n=\Big[\sum_{r_1,\dots,r_n}&\Big(\prod_{j=1}^n\lambda_{j,r_j}\Big)\left|\det(u_{1,r_1},\dots,u_{n,r_n})\right|^2\Big]\\
@@ -2179,9 +1855,8 @@ where $\det(x_1,\dots,x_n)$ is the determinant of the matrix with columns $x_1,\
 \label{eq:Cn-scalar}
 \end{equation}
 It remains to identify the scalar in brackets with the coefficient in Eq.~\eqref{eq:MD2}. 
-Let $V$ be the matrix whose columns are \DIFdelbegin \DIFdel{$v_{j,r}:=\sqrt{z_j\lambda_{j,r}}\,u_{j,r}.$
-}\DIFdelend \DIFaddbegin \DIFadd{$v_{j,r}:=\sqrt{z_j\lambda_{j,r}}\,u_{j,r}$;
-}\DIFaddend then $VV^\dagger=\sum_{j=1}^n z_jB_j$. By the Cauchy--Binet formula,
+Let $V$ be the matrix whose columns are $v_{j,r}:=\sqrt{z_j\lambda_{j,r}}\,u_{j,r}.$
+then $VV^\dagger=\sum_{j=1}^n z_jB_j$. By the Cauchy--Binet formula,
 \begin{equation}
     \det\!\left(\sum_{j=1}^n z_jB_j\right)
 =\det(VV^\dagger)
@@ -2191,18 +1866,12 @@ The coefficient of $z_1\cdots z_n$ receives contributions precisely from
 those subsets $S$ containing one column from each pair $(v_{j,1},v_{j,2})$. Thus, writing $X_{\vec r}:=(u_{1,r_1},\ldots,u_{n,r_n}),
 \quad r_j\in\{1,2\}$,
 
-\DIFdelbegin \begin{displaymath}
-    \DIFdel{|\det V_{\vec r}|^2
+\begin{equation}
+    |\det V_{\vec r}|^2
 =
 \left(\prod_{j=1}^n z_j\lambda_{j,r_j}\right)
 |\det X_{\vec r}|^2.
-}\end{displaymath}%DIFAUXCMD
-\DIFdelend \DIFaddbegin \begin{equation}
-    \DIFadd{|\det V_{\vec r}|^2
-=
-\left(\prod_{j=1}^n z_j\lambda_{j,r_j}\right)
-|\det X_{\vec r}|^2,
-}\end{equation}\DIFaddend 
+\end{equation}
 and summing over $\vec{r}$ we have
 \begin{equation}
     [z_1\cdots z_n]\det\!\left(\sum_{j=1}^n z_jB_j\right)
@@ -2214,7 +1883,7 @@ and summing over $\vec{r}$ we have
 Since the Hilbert--Schmidt norm of a nonnegative multiple of the rank-one projector $|\mathrm{full}\rangle\langle\mathrm{full}|$ is the multiple itself, combining with Eq.~\eqref{eq:Cn-bound} proves Eq.~\eqref{eq:MD2}. \end{proof}
 
 \begin{remark}
-The rank restriction in Theorem~\ref{thm:MD2} is essential: for $B_i=\mathbb{I}_n/n$ the left-hand side of Eq.~\eqref{eq:MD2} is $n!/n^n$ while the right-hand side is $n^{-n/2}$, the former being already larger at $n=3$\DIFdelbegin \DIFdel{therefore does not extend to positive matrices of arbitrary rank}\DIFdelend , so that Eq.~\eqref{eq:MD2} does not extend to \DIFaddbegin \DIFadd{positive }\DIFaddend matrices of arbitrary rank.\end{remark}
+The rank restriction in Theorem~\ref{thm:MD2} is essential: for $B_i=\mathbb{I}_n/n$ the left-hand side of Eq.~\eqref{eq:MD2} is $n!/n^n$ while the right-hand side is $n^{-n/2}$, the former being already larger at $n=3$ therefore does not extend to positive matrices of arbitrary rank, so that Eq.~\eqref{eq:MD2} does not extend to matrices of arbitrary rank.\end{remark}
 
 We now combine Theorem~\ref{thm:MD2} with a standard singular-value argument: the diagonal of $U$ controls $\mathsf{L}(U)$, and the diagonal is in turn controlled by the matrix $T=(U+U^{\trans})/2$, whose singular values are invariant along the orbit $U\mapsto OUO^{\trans}$. This yields a bound on $\mathsf{L}(U)$ by an orbit-invariant quantity.
 
@@ -2336,7 +2005,7 @@ for every unbalanced cut, with equality attained in the canonical Botero--BCS ax
 \subsection{Verification via variational optimization}
 \label{app:variational}
 
-We discuss here the numerical methods behind the results in Fig.~\ref{fig:Ising_model}(a), and substantiate our claim that fermionic non-local magic as defined in Eq.~\eqref{eq:defFNLmagic} coincides with magic of the canonical modewise form of the Gaussian state in Eq.~\eqref{eq:can_form}, for every R\'enyi index $\RENYI\ge2$; for $\RENYI=2$ this is a direct benchmark of the content of Theorem~\ref{thm:global}, proved in Appendix~\ref{app:proof}.
+We discuss here the numerical methods behind the results in Fig.~\ref{fig:Ising_model}(a), and substantiate our claim that Gaussian-restricted non-local magic as defined in Eq.~\eqref{eq:defGNLmagic} coincides with magic of the canonical modewise form of the Gaussian state in Eq.~\eqref{eq:can_form}, for every R\'enyi index $\RENYI\ge2$; for $\RENYI=2$ this is a direct benchmark of the content of Theorem~\ref{thm:global}, proved in Appendix~\ref{app:proof}.
 
 We adopt a standard variational optimization approach: given a Gaussian state $|\Psi\rangle$ on $N$ sites ($N$ even for simplicity), we define the cost function
 \begin{equation}
@@ -2355,10 +2024,10 @@ For the results shown in Fig.~\ref{fig:Ising_model}(a), we minimize the cost fun
 \begin{figure}
     \centering
     \includegraphics[width=0.9\linewidth]{numerics_5.pdf}
-    \caption{Results of the comparison between non-local magic computed with the formula in Eq.~\eqref{eq:analytic_NL} (crosses) and the one obtained by minimizing the cost function in Eq.~\eqref{eq:cost_function} with both generic unitaries $U$ (red marker) and fermionic Gaussian unitaries $U_O$ (blue marker), for $100$ different realizations of random fermionic Gaussian states on $N=10$ sites, $\ell=5$. The realizations are ordered by increasing $M_2^{\mathrm{FNL}}$. The formula agrees with minimization over Gaussian unitaries to machine precision in all cases.}
+    \caption{Results of the comparison between non-local magic computed with the formula in Eq.~\eqref{eq:analytic_NL} (crosses) and the one obtained by minimizing the cost function in Eq.~\eqref{eq:cost_function} with both generic unitaries $U$ (red marker) and fermionic Gaussian unitaries $U_O$ (blue marker), for $100$ different realizations of random fermionic Gaussian states on $N=10$ sites, $\ell=5$. The realizations are ordered by increasing $M_2^{\mathrm{GNL}}$. The formula agrees with minimization over Gaussian unitaries to machine precision in all cases.}
     \label{fig:numerics_verification}
 \end{figure}
-Instead, in Fig.~\ref{fig:numerics_verification} we show the results of the minimization for $100$ realizations of random Gaussian states on $N=10$ qubits, $\ell=5$, where the minimum is taken both on generic and on fermionic Gaussian unitaries. We also plot the values of fermionic non-local magic obtained with our formula for these states, which agree within numerical precision with the results obtained by minimizing over Gaussian unitaries.
+Instead, in Fig.~\ref{fig:numerics_verification} we show the results of the minimization for $100$ realizations of random Gaussian states on $N=10$ qubits, $\ell=5$, where the minimum is taken both on generic and on fermionic Gaussian unitaries. We also plot the values of Gaussian-restricted non-local magic obtained with our formula for these states, which agree within numerical precision with the results obtained by minimizing over Gaussian unitaries.
 
 A few optimizations were considered in the steps to compute the cost function. When applying the unitaries on the state, it is convenient to reshape the state vector into a $d_A \times d_B$ matrix $\Psi$, such that the application of the unitary $U_A \otimes U_B$ can be computed as $U_A \Psi U_B^{T}$, with reduced cost $\mathcal{O}(d_A^2 d_B + d_A d_B^2)$.
 Moreover, the stabilizer entropy of the state vector can be computed using the algorithm introduced in Refs.~\cite{huang2026fastexactapproachstabilizer, sierant2026computingquantummagicstate}, which implements fast Walsh-Hadamard transforms to reduce the time complexity of the computation from $\mathcal{O}(8^N)$ to $\mathcal{O}(N4^N)$, and can also be parallelized for substantial speedup. Finally, the finite-difference method can be replaced with backpropagation, which allows the full $N_p$-dimensional gradient to be computed at a cost comparable to a small constant number of evaluations of the cost function, rather than $O(N_p)$. Note that the number of parameters $N_p$ grows exponentially in $N$ in the case of generic unitaries, and quadratically in $N$ for fermionic Gaussian ones.
@@ -2366,7 +2035,7 @@ Moreover, the stabilizer entropy of the state vector can be computed using the a
 
 \subsection{Error analysis for experimental accessibility}
 \label{app:experimental}
-We provide the error propagation analysis connecting the accuracy on $\Gamma_A$ to the accuracy on $M_2^{\mathrm{FNL}}$.
+We provide the error propagation analysis connecting the accuracy on $\Gamma_A$ to the accuracy on $M_2^{\mathrm{GNL}}$.
 Since $\mathfrak{m}_2(\lambda^2) = -\log_2(1-\lambda^2+\lambda^4)$ is smooth on $[0,1]$, its derivative
 \begin{equation}
     \frac{d}{d\lambda}\,\mathfrak{m}_2(\lambda^2) = \frac{2\lambda(1-2\lambda^2)}{(1-\lambda^2+\lambda^4)\ln 2}
@@ -2374,10 +2043,10 @@ Since $\mathfrak{m}_2(\lambda^2) = -\log_2(1-\lambda^2+\lambda^4)$ is smooth on 
 is bounded, so $\mathfrak{m}_2$ is uniformly Lipschitz on $[0,1]$ with constant $L = \max_{\lambda \in [0,1]} \bigl|\frac{d}{d\lambda}\mathfrak{m}_2(\lambda^2)\bigr| = O(1)$.
 Combining with the Hoffman--Wielandt stability bound for eigenvalues of $i\Gamma_A$,
 \begin{equation}
-    |\delta M_2^{\mathrm{FNL}}| \lesssim L\,\sqrt{\ell}\,\|\delta\Gamma_A\|_F\;.
+    |\delta M_2^{\mathrm{GNL}}| \lesssim L\,\sqrt{\ell}\,\|\delta\Gamma_A\|_F\;.
 \end{equation}
-A uniform entrywise error $\epsilon_\Gamma$ implies $\|\delta\Gamma_A\|_F = O(\ell \epsilon_\Gamma)$, giving $|\delta M_2^{\mathrm{FNL}}| = \mathcal{O}(\ell^{3/2}\epsilon_\Gamma)$.
-To estimate the non-local magic density $m_2^{\mathrm{FNL}} = M_2^{\mathrm{FNL}}/\ell$ with additive accuracy $\varepsilon$, one needs $\epsilon_\Gamma = \mathcal{O}(\varepsilon/\sqrt{\ell})$, yielding
+A uniform entrywise error $\epsilon_\Gamma$ implies $\|\delta\Gamma_A\|_F = O(\ell \epsilon_\Gamma)$, giving $|\delta M_2^{\mathrm{GNL}}| = \mathcal{O}(\ell^{3/2}\epsilon_\Gamma)$.
+To estimate the non-local magic density $m_2^{\mathrm{GNL}} = M_2^{\mathrm{GNL}}/\ell$ with additive accuracy $\varepsilon$, one needs $\epsilon_\Gamma = \mathcal{O}(\varepsilon/\sqrt{\ell})$, yielding
 \begin{equation}
     N_{\mathrm{shots}} = O\!\left(\frac{\ell^3\log(\ell/\delta)}{\varepsilon^2}\right).
 \end{equation}
@@ -2395,7 +2064,7 @@ We begin with the Page curve. From Eq.~\eqref{eq:ziopin2}, replacing $\mathfrak{
 
 Next, we consider the critical behavior in the Ising model. From Eq.~\eqref{eq:alpha_NL}, substituting $\mathfrak{m}_2 \mapsto \mathfrak{m}_\alpha$, a change of variables $\lambda = \frac{1-t}{1+t}$ leads to
 \begin{equation}
-\beta_{\mathrm{FNL}}(\alpha) = \frac{1}{\pi^2 (1-\alpha) \ln 2} \int_0^1 \frac{\hat{\mathfrak{m}}_\alpha(t)}{t}\, dt,
+\beta_{\mathrm{GNL}}(\alpha) = \frac{1}{\pi^2 (1-\alpha) \ln 2} \int_0^1 \frac{\hat{\mathfrak{m}}_\alpha(t)}{t}\, dt,
 \end{equation}
 where
 \begin{equation}
@@ -2403,12 +2072,12 @@ where
 \end{equation}
 Noting that $\hat{\mathfrak{m}}_\alpha(t) = \hat{\mathfrak{m}}_\alpha(1/t)$, the integral can equivalently be written as
 \begin{equation}
-\beta_{\mathrm{FNL}}(\alpha) = \frac{1}{2 \pi^2 (1-\alpha) \ln 2} \int_0^\infty \frac{\hat{\mathfrak{m}}_\alpha(t)}{t}\, dt,
+\beta_{\mathrm{GNL}}(\alpha) = \frac{1}{2 \pi^2 (1-\alpha) \ln 2} \int_0^\infty \frac{\hat{\mathfrak{m}}_\alpha(t)}{t}\, dt,
 \end{equation} 
 which corresponds to the Mellin transform of $\hat{\mathfrak{m}}_\alpha(t)$ evaluated as $s \to 0$.
 The result of the integral is given by 
 \begin{equation}
-\beta_{\mathrm{FNL}}(\alpha) = \frac{1}{2 (1-\alpha) \pi^2 \ln(2)}\sum_{j=1}^\alpha \mathrm{arccosh}^2(-r_j/2)\;,
+\beta_{\mathrm{GNL}}(\alpha) = \frac{1}{2 (1-\alpha) \pi^2 \ln(2)}\sum_{j=1}^\alpha \mathrm{arccosh}^2(-r_j/2)\;,
 \end{equation}
 where $r_j$ are the (generally complex) roots of the polynomial $R_\alpha(x)=(x-2)^\alpha+(x+2)^\alpha+4^\alpha$.
 
