@@ -15,6 +15,7 @@ urlcolor=teal]{hyperref}
 \usepackage{physics}
 \usepackage{orcidlink}
 \usepackage{amsthm}
+\usepackage{tikz}
 \usepackage[T1]{fontenc}
 \newtheorem{theorem}{Theorem}
 \newtheorem{conjecture}{Conjecture}
@@ -92,20 +93,20 @@ For a bipartition $\Lambda = A\sqcup B$ with $|A|=\ell$, the non-local magic is~
 \begin{equation}
     M_\RENYI^\textup{NL}:= \min_{U_A , U_B} M_\RENYI\left[T_{\pi_{AB}} (U_A\otimes U_B)T_{\pi_{AB}}^\dagger|\Psi\rangle\right]\;,\label{eq:defNLmagic}
 \end{equation}
-where $\pi_{AB}\in \mathrm{S}_N$ is any permutation such that $\pi_{AB}(A)=\{1,\dots,\ell\}$, $T_{\pi_{AB}}$ the corresponding qubit permutation, and the minimization is over $\mathrm{U}(2^\ell)\otimes \mathrm{U}(2^{N-\ell})$. This is the magic that cannot be erased by local unitaries; for instance, maximally entangled states have vanishing non-local magic, being locally equivalent to stabilizer states. It is distinct from long-range magic, which cannot be removed by finite-depth local circuits~\cite{Korbany2025}.
+where $\pi_{AB}\in \mathrm{S}_N$ maps $A$ onto $\{1,\dots,\ell\}$ and $B$ onto $\{\ell+1,\dots,N\}$ preserving the order of the sites within $A$ and within $B$, $T_{\pi_{AB}}$ is the corresponding qubit permutation, and the minimization is over $\mathrm{U}(2^\ell)\otimes \mathrm{U}(2^{N-\ell})$. This is the magic that cannot be erased by local unitaries; for instance, maximally entangled states have vanishing non-local magic, being locally equivalent to stabilizer states. It is distinct from long-range magic, which cannot be removed by finite-depth local circuits~\cite{Korbany2025}.
 The minimization in Eq.~\eqref{eq:defNLmagic} is superexponentially costly; for $\RENYI = 2$, a proxy can be obtained from the Schmidt spectrum~\cite{Cao_2025}.
 For fermionic Gaussian states, we introduce the FNL magic
 \begin{equation}
     M_\RENYI^\textup{FNL}:= \!\!\min_{U_{O_A} , U_{O_B}} \!\!M_\RENYI\left[T_{\pi_{AB}} (U_{O_A}\otimes U_{O_B})T_{\pi_{AB}}^\dagger|\Psi\rangle\right],\label{eq:defFNLmagic}
 \end{equation}
 where the minimization is restricted to the Gaussian unitaries induced by $\mathrm{O}(2\ell)\oplus \mathrm{O}(2(N-\ell))$, hence $ M_\RENYI^\textup{NL} \leq  M_\RENYI^\textup{FNL}$.
-When $A$ and $B$ are two contiguous blocks of the JW chain, $A=\{1,\dots,\ell\}$ and $B=\{\ell+1,\dots,N\}$ (or vice versa), the local unitaries in Eq.~\eqref{eq:defFNLmagic} are themselves Gaussian unitaries of the whole chain and act on the covariance matrix as $\Gamma\mapsto(O_A\oplus O_B)\Gamma(O_A\oplus O_B)^{\trans}$ (End Matter); for non-contiguous bipartitions this is in general not the case, since the qubit permutation $T_{\pi_{AB}}$ is not Gaussian.
+When $A$ and $B$ are two contiguous blocks of the JW chain, i.e., $A=\{1,\dots,\ell\}$ or $A=\{N-\ell+1,\dots,N\}$ with $B=\Lambda\setminus A$, $T_{\pi_{AB}}$ is the identity or a cyclic shift, and the local unitaries in Eq.~\eqref{eq:defFNLmagic} are themselves Gaussian unitaries of the whole chain, so that Eq.~\eqref{eq:defFNLmagic} is a minimization over the orbit $\Gamma\mapsto(O_A\oplus O_B)\Gamma(O_A\oplus O_B)^{\trans}$ (End Matter); for non-contiguous bipartitions this is in general not the case, since the qubit permutation $T_{\pi_{AB}}$ is not Gaussian.
 
 \textit{Main result.}---Let $A$ and $B$ be contiguous blocks as above, with $|A|=\ell\le N/2$ without loss of generality, and let $\pm\lambda_i$, with $\lambda_i\in[0,1]$ and $i=1,\dots,\ell$, be the eigenvalues of the $2\ell\times 2\ell$ reduced covariance matrix $i\Gamma_A$ of the Majorana operators of $A$.
 
 \begin{theorem}
 \label{thm:global}
-For any pure fermionic Gaussian state $|\Psi_O\rangle$ on $N$ modes and any bipartition into two contiguous blocks, $A=\{1,\dots,\ell\}$ and $B=\{\ell+1,\dots,N\}$ (or vice versa), with $|A|=\ell\le N/2$,
+For any pure fermionic Gaussian state $|\Psi_O\rangle$ on $N$ modes and any bipartition into two contiguous blocks, $A=\{1,\dots,\ell\}$ or $A=\{N-\ell+1,\dots,N\}$, with $B=\Lambda\setminus A$ and $|A|=\ell\le N/2$,
 \begin{equation}
 \begin{split}
     M_{2}^{\mathrm{FNL}}(|\Psi_O\rangle)&=\sum_{i=1}^{\ell}\mathfrak{m}_2(\lambda_i^2)\;,\\
@@ -158,7 +159,13 @@ To test universality beyond Haar-random states, we consider mid-spectrum eigenst
 
 \begin{figure*}[t!]
     \centering
-    \includegraphics[width=\linewidth]{fig1_equilibrium.pdf}
+    \begin{tikzpicture}
+    \node[anchor=south west,inner sep=0] (img) at (0,0) {\includegraphics[width=\linewidth]{fig1_equilibrium.pdf}};
+    \begin{scope}[x={(img.south east)},y={(img.north west)}]
+    \fill[white] (0.0795,0.735) rectangle (0.131,0.825);
+    \node[anchor=west,inner sep=0,font=\fontsize{10}{10}\selectfont] at (0.0805,0.778) {Eq.(\ref*{eq:analytic_NL})};
+    \end{scope}
+    \end{tikzpicture}
     \caption{%
     \textbf{Equilibrium FNL magic in the Ising and XY chains.}
     (a)~Ising ground state with $N=8$, $\ell=4$: Eq.~\eqref{eq:analytic_NL} (crosses) agrees with the brute-force minimization over all local unitaries $U_A \otimes U_B$ (red markers) to numerical precision; the black line is the total stabilizer entropy $M_2$.
@@ -175,7 +182,7 @@ To test universality beyond Haar-random states, we consider mid-spectrum eigenst
     \label{eq:xy}
 \end{equation}
 which the JW transformation maps onto a quadratic Majorana chain of the form of Eq.~\eqref{eq:ham}.
-We study it as a \emph{fermionic} model: its ground state is a FGS and the natural notion of locality is that of the fermionic modes, so that $M_2^{\mathrm{FNL}}$ is the non-local magic of the free-fermion problem~\footnote{Minimizing over all local spin unitaries gives a quantity bounded from above by ours, $M_\RENYI^{\mathrm{NL}}\le M_\RENYI^{\mathrm{FNL}}$.}, and we take the contiguous block $A=\{1,\dots,\ell\}$.
+We study it as a \emph{fermionic} model: its ground state is a FGS and the natural notion of locality is that of the fermionic modes, so that $M_2^{\mathrm{FNL}}$ is the non-local magic of the free-fermion problem, and we take the contiguous block $A=\{1,\dots,\ell\}$.
 For $N\to\infty$ at fixed $\ell$, $\Gamma_A$ is a block-Toeplitz matrix with a $2\times2$ symbol $g(k)$ fixed by the Bogoliubov angle $\theta_k$ (End Matter). Hence, $M_2^{\mathrm{FNL}}$ is computed at cost $O(\ell^3)$, and its asymptotics for $\ell\gg1$ is controlled by the strong Szeg\H{o} theorem for smooth symbols and by the Fisher--Hartwig formula for singular ones~\cite{Jin_2004,Its_2005}.
 Since $|\det g(k)| = 1$, volume-law scaling is excluded; in the gapped phases, where $\theta_k$ is analytic, $M_2^{\mathrm{FNL}}$ saturates with exponentially small corrections~\cite{simon2010szego}, while logarithmic growth can only arise from singularities of the symbol, as at the Ising critical point $\mu=1$, $\eta=1$.
 
@@ -185,7 +192,7 @@ Off criticality, the single-particle entanglement energies of a semi-infinite cu
     \label{eq:NL_peschel2}
 \end{equation}
 up to corrections exponentially small in $\ell/\xi$, with $\xi$ the correlation length. As $\mathfrak{m}_2(x)\simeq(1-x)/\ln 2$ for $x \to 1$, the series converges rapidly.
-In the ordered phase, $\mu<1$, the FNL magic is strongly suppressed: the $n=0$ mode is maximally entangled ($\lambda_0=0$), while all other modes are exponentially close to unentangled ($\lambda_n\to1$), so that every mode contributes an exponentially small amount, vanishing exactly in the GHZ limit $\mu\to0$. This is a striking example of a phase with area-law entanglement but negligible non-local magic.
+In the ordered phase of the Ising chain ($\eta=1$, $\mu<1$), the FNL magic is strongly suppressed: the $n=0$ mode is maximally entangled ($\lambda_0=0$), while all other modes are exponentially close to unentangled ($\lambda_n\to1$), so that every mode contributes an exponentially small amount, vanishing exactly in the GHZ limit $\mu\to0$. This is a striking example of a phase with area-law entanglement but negligible non-local magic.
 
 At $\mu=1$, the gap closes, $\varepsilon\to0$, the series in Eq.~\eqref{eq:NL_peschel2} diverges, and $\theta_k$ develops a jump at $k=0$. The Fisher--Hartwig asymptotic density of the eigenvalues $\lambda\in[0,1)$ for a block with two boundaries, $\rho(\lambda) \simeq 2\ln\ell\,[\pi^2(1-\lambda^2)]^{-1}$~\cite{Its_2005}, yields $M_2^{\mathrm{FNL}}(\ell)\simeq \beta_{\mathrm{FNL}}\ln\ell$, with
 \begin{equation}
@@ -203,7 +210,7 @@ These results reflect an area law. Since $\mathfrak{m}_2(\lambda^2)\le 2\,\mathf
     \includegraphics[width=\linewidth]{fig2_dynamics_4panel.pdf}
     \caption{%
     \textbf{Dynamics of FNL magic.}
-    (a)~Quench at $\eta=1$ from the fully polarized state ($\mu_0\to\infty$) to the critical point ($\mu=1$): exact numerics (circles) agree with the quasiparticle prediction, Eq.~\eqref{eq:fagotti_mnl} (solid lines), for $\ell = 40, 60, 100, 160$. Dashed lines mark the stationary value, Eq.~\eqref{eq:mnl_stationary}.
+    (a)~Quench at $\eta=1$ from the fully polarized state ($\mu_0\to\infty$) to the critical point ($\mu=1$): exact numerics (circles) agree with the quasiparticle prediction, Eq.~\eqref{eq:fagotti_mnl} (solid lines), for $\ell = 20, 40, 60, 100, 160$. Dashed lines mark the stationary value, Eq.~\eqref{eq:mnl_stationary}.
     (b)~Same for the quench $\mu_0 = 2 \to \mu = 1$, showing weaker FNL magic production due to the smaller Bogoliubov mismatch.
     (c)~Stationary density $M_2^{\mathrm{FNL}}(\infty)/\ell$ vs the post-quench field $\mu$ ($\mu_0\to\infty$): Eq.~\eqref{eq:mnl_stationary} (solid) and GGE numerics at $\ell = 160$ (crosses).
     (d)~Random Gaussian circuits: $\overline{M}_2^{\mathrm{FNL}}/N$ vs $\sqrt{t}/N$ for $N = 20, 40, 80$, showing diffusive growth and saturation to the Haar value $\overline{\mathsf{m}}_{2}^{\mathrm{FNL}}(1/2)=2-\log_2(2+\sqrt{3})$ (dashed line).}
@@ -218,19 +225,19 @@ At long times, dephasing leads to a generalized Gibbs ensemble (GGE)~\cite{Calab
     \label{eq:mnl_stationary}
 \end{equation}
 i.e., the quench generically produces volume-law FNL magic.
-Eq.~\eqref{eq:mnl_stationary} closely parallels the entanglement entropy of the same quench~\cite{Calabrese2005evolution}, $S=\frac{\ell}{\pi} \int_0^\pi dk\, \mathfrak{f}\bigl(\sin^2(\Delta\theta_k/2)\bigr)$: in terms of $\lambda_k^{\infty}$, the entanglement weight $\mathfrak{f}[(1+\lambda_k^{\infty})/2]$ is replaced by the magic weight $\mathfrak{m}_2[(\lambda_k^{\infty})^2]=\mathfrak{m}_2(\sin^2\!\Delta\theta_k)$, where we used $\mathfrak{m}_2(x)=\mathfrak{m}_2(1-x)$.
+Equation~\eqref{eq:mnl_stationary} closely parallels the entanglement entropy of the same quench~\cite{Calabrese2005evolution}, $S=(\ell/\pi) \int_0^\pi dk\, \mathfrak{f}\bigl(\sin^2(\Delta\theta_k/2)\bigr)$: in terms of $\lambda_k^{\infty}$, the entanglement weight $\mathfrak{f}[(1+\lambda_k^{\infty})/2]$ is replaced by the magic weight $\mathfrak{m}_2[(\lambda_k^{\infty})^2]=\mathfrak{m}_2(\sin^2\!\Delta\theta_k)$, where we used $\mathfrak{m}_2(x)=\mathfrak{m}_2(1-x)$.
 This parallel extends to all times. Writing $M_2^{\mathrm{FNL}}$ as a contour integral of $\frac{d}{d\lambda}\ln\det(\lambda-i\Gamma_A)$ and evaluating the moments $\mathrm{Tr}(i\Gamma_A)^{2n}$ via the multidimensional stationary-phase approach of Ref.~\cite{Fagotti2008} (End Matter), we derive the quasiparticle formula
 \begin{equation}
     M_2^{\mathrm{FNL}}(\ell,t) \simeq \int_0^\pi\!\frac{dk}{\pi}\,\min\!\bigl(2|v_k|\,t,\;\ell\bigr)\;\mathfrak{m}_2\!\bigl(\sin^2\Delta\theta_k\bigr),
     \label{eq:fagotti_mnl}
 \end{equation}
 valid for $\ell, t \gg 1$ at fixed $t/\ell$, with $v_k = d\varepsilon_k/dk$ the group velocity.
-Eq.~\eqref{eq:fagotti_mnl} predicts linear growth up to $t^* = \ell/(2v_{\max})$, followed by saturation to Eq.~\eqref{eq:mnl_stationary}, and has a transparent interpretation~\cite{Calabrese2005evolution,Fagotti2008}: the quench creates pairs of entangled quasiparticles that propagate ballistically with velocities $\pm v_k$, and a pair contributes to the FNL magic of $A$ only when one partner is inside $A$ and the other outside. The magic carried by each pair, $\mathfrak{m}_2(\sin^2\Delta\theta_k)$, vanishes both when $\Delta\theta_k = 0$ (no entanglement production) and when $\Delta\theta_k = \pi/2$ (maximally entangled but stabilizer-like pairs), and is maximal in between.
-Figures~\ref{fig:dynamics}(a)--(c) show excellent agreement between Eqs.~\eqref{eq:mnl_stationary} and~\eqref{eq:fagotti_mnl} and exact numerics, obtained by diagonalizing $\Gamma_A(t)$, for the quenches $\mu_0 = \infty \to 1$ and $\mu_0 = 2 \to 1$.
+Equation~\eqref{eq:fagotti_mnl} predicts linear growth up to $t^* = \ell/(2v_{\max})$, followed by saturation to Eq.~\eqref{eq:mnl_stationary}, and has a transparent interpretation~\cite{Calabrese2005evolution,Fagotti2008}: the quench creates pairs of entangled quasiparticles that propagate ballistically with velocities $\pm v_k$, and a pair contributes to the FNL magic of $A$ only when one partner is inside $A$ and the other outside. The magic carried by each pair, $\mathfrak{m}_2(\sin^2\Delta\theta_k)$, vanishes both when $\Delta\theta_k = 0$ (no entanglement production) and when $\Delta\theta_k = \pi/2$ (maximally entangled but stabilizer-like pairs), and is maximal in between.
+Figures~\ref{fig:dynamics}(a)--(c) show excellent agreement between Eqs.~\eqref{eq:mnl_stationary} and~\eqref{eq:fagotti_mnl} and exact numerics, obtained by diagonalizing $\Gamma_A(t)$, for the quenches $\mu_0 = \infty \to 1$ and $\mu_0 = 2 \to 1$ [panels (a), (b)] and for $\mu_0\to\infty$ at varying $\mu$ [panel (c)].
 
-Finally, we consider brickwork circuits of nearest-neighbor Gaussian gates, each drawn from the Haar measure on $\mathrm{SO}(4)$, acting on $|\mathbf{0}\rangle$~\cite{tirrito2025magicphasetransitionsmonitored} (SM, Sec.~S5).
-In contrast with the ballistic spreading of integrable quenches, operator spreading in such circuits is diffusive~\cite{dias2021diffusiveoperatorspreadingrandom,swann}. At early times, $\mathfrak{m}_2(\lambda^2) \simeq \lambda^2/\ln 2$ gives $M_2^{\mathrm{FNL}}(t) \simeq \mathrm{Tr}[(i\Gamma_A(t))^2]/(2\ln 2)$, governed by the diffusive spreading of two-point correlations across the cut~\cite{dias2021diffusiveoperatorspreadingrandom}, so that $M_2^{\mathrm{FNL}} \propto \sqrt{t}$ for $1 \ll t \ll N^2$.
-Fig.~\ref{fig:dynamics}(d) shows an excellent data collapse of $\overline{M}_2^{\mathrm{FNL}}(t)/N$ as a function of $\sqrt{t}/N$, interpolating between $\sqrt{t}$ growth and saturation at the Page value $\overline{\mathsf{m}}_{2}^{\mathrm{FNL}}(1/2)$ on the diffusive timescale $t\sim N^2$.
+Finally, we consider brickwork circuits of nearest-neighbor Gaussian gates, each drawn from the Haar measure on $\mathrm{SO}(4)$, acting on $|\mathbf{0}\rangle$, with the half-chain bipartition $A=\{1,\dots,N/2\}$~\cite{tirrito2025magicphasetransitionsmonitored} (SM, Sec.~S5).
+In contrast with the ballistic spreading of integrable quenches, operator spreading in such circuits is diffusive~\cite{dias2021diffusiveoperatorspreadingrandom,swann}. At early times the modes of $A$ are nearly unentangled, and $\mathfrak{m}_2(x) \simeq (1-x)/\ln 2$ for $x\to1$ gives $M_2^{\mathrm{FNL}}(t) \simeq [2\ell-\mathrm{Tr}(i\Gamma_A(t))^2]/(2\ln 2)=\|\Gamma_{AB}(t)\|_{\mathrm{HS}}^2/(2\ln 2)$, with $\Gamma_{AB}$ the off-diagonal block of $\Gamma$, governed by the diffusive spreading of two-point correlations across the cut~\cite{dias2021diffusiveoperatorspreadingrandom}, so that $M_2^{\mathrm{FNL}} \propto \sqrt{t}$ for $1 \ll t \ll N^2$.
+Figure~\ref{fig:dynamics}(d) shows an excellent data collapse of $\overline{M}_2^{\mathrm{FNL}}(t)/N$ as a function of $\sqrt{t}/N$, interpolating between $\sqrt{t}$ growth and saturation at the Page value $\overline{\mathsf{m}}_{2}^{\mathrm{FNL}}(1/2)$ on the diffusive timescale $t\sim N^2$.
 
 \textit{Conclusions.}---We have proved an exact closed form for the fermionic non-local magic of Gaussian states at $\RENYI=2$ for contiguous bipartitions, and conjectured its extension to $\RENYI>2$. By reducing the minimization over local Gaussian unitaries to a single diagonalization of the reduced covariance matrix, it establishes fermionic Gaussian states as a broad class of highly entangled many-body systems where Gaussian-restricted non-local magic is exactly tractable, and provides an upper bound on the unrestricted one. We used it to derive an exact Page-like curve, logarithmic scaling at criticality, a quasiparticle picture after quenches and diffusive growth in random circuits.
 This tractability opens several directions: fermionic Gaussian states in higher dimensions, where entanglement is sensitive to the Fermi surface~\cite{swingle2010entanglement}; whether $\beta_{\mathrm{FNL}}$ captures universal features of the underlying conformal field theory~\cite{Calabrese2004entanglement}, and the extension to interacting integrable models~\cite{Alba_2017,alba2019,Kudler_Flam_2021}; disordered~\cite{evers,sierant2020,IGLOI_2005,Monthus_2018,ruggiero2022} and topological~\cite{Kitaev2001chain,Kitaev_2006,beri,gskb-t5ql} systems; symmetry-resolved non-local magic~\cite{Goldstein,Bianchi_2022,aditya2026coherencedynamicsquantummanybody,iannotti2026nonstabilizernessu1symmetrychaotic, cepollaro2025stabilizerentropysubspaces, Esposito_2024} and quantum Mpemba effects~\cite{Ares_2023,Ares_2025,aditya2025mpembaeffectsquantumcomplexity}; and monitored~\cite{FisherRandom2023,Li_2025,oshima} and non-Hermitian~\cite{Ashida_2020,kawabata2026nonhermitiandisorderedsystems,schirooooo,gallo,granet,lapierre2025entanglementtransitionsstructuredrandom} free-fermion dynamics, where our formula applies along each quantum trajectory.
@@ -238,7 +245,7 @@ This tractability opens several directions: fermionic Gaussian states in higher 
 \textit{Note added.}---While preparing this manuscript, we became aware of a closely related independent work by M. Collura, B. Beri, and E. Tirrito~\cite{collura2026nonlocalnonstabilizernessfreefermion}. When overlapping, our results are consistent.
 
 \begin{acknowledgments}
-This work is dedicated to Ada. We are particularly indebted to P. Sierant for spotting a mistake in a prior version of this manuscript, and we thank the anonymous referees for their careful reading and suggestions, including a simpler proof of a lemma in the SM.
+This work is dedicated to Ada. We are particularly indebted to P. Sierant for spotting a mistake in a prior version of this manuscript, and we thank the anonymous referees for their careful reading and, in particular, for pointing out the role of the contiguity of the bipartition in Theorem~\ref{thm:global}, the misprint in the Jacobi weight, and a simpler proof of a lemma in the SM.
 We thank L. Leone, A. Russotto, P. Calabrese, L. Piroli, and J. Odavi\'c for comments and collaborations on related topics.
 D.I. and B.M. acknowledge the Les Houches Summer School 2025 on Exact Solvability and Quantum Information, which facilitated work on this subject.
 D.I. acknowledges support from COST Action THEORY-CHALLENGES CA22113 under Short-Term Scientific Mission (STSM) grant E-COST-GRANT-CA22113-6901e967.
