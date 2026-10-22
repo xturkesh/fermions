@@ -89,17 +89,17 @@ Fermionic Gaussian unitaries (FGU), or matchgates, act on the Majorana operators
 A pure fermionic Gaussian state (FGS) $|\Psi_O\rangle=U_O|\mathbf{0}\rangle$, with $|\mathbf{0}\rangle$ the fermionic vacuum, is fully characterized by its covariance matrix $\Gamma_{mn}=i\langle \Psi_O|[\gamma_m,\gamma_n]|\Psi_O\rangle/2$, given by $\Gamma= O\Gamma_0 O^{\trans}$ with $\Gamma_0=\bigoplus_{m=1}^N \bigl(\begin{smallmatrix}0&-1\\1&0\end{smallmatrix}\bigr)$.
 
 The stabilizer entropy of order $\RENYI$ of a pure state is $M_\RENYI=(1-\RENYI)^{-1}\log_2 \zeta_\RENYI$~\cite{Leone2022SRE}, where $\zeta_\RENYI= d^{-1}\sum_{P\in \mathcal{P}_N} \langle \Psi|P|\Psi\rangle^{2\RENYI}$ is the stabilizer purity and $\mathcal{P}_N$ the set of $N$-qubit Pauli strings; it is a magic monotone for integer $\RENYI\ge 2$~\cite{piro,leone2024stabilizer}.
-Throughout, we consider bipartitions $\Lambda = A\sqcup B$ of the chain into a contiguous interval $A=\{a+1,\dots,a+\ell\}$ and its complement $B$, contiguous as well once the sites $N$ and $1$ are identified. The non-local magic is~\cite{Cao_2025}
+Throughout, we consider the bipartition $\Lambda = A\sqcup B$ of the chain into the contiguous blocks $A=\{1,\dots,\ell\}$ and $B=\{\ell+1,\dots,N\}$. The non-local magic is~\cite{Cao_2025}
 \begin{equation}
-    M_\RENYI^\textup{NL}:= \min_{U_A , U_B} M_\RENYI\left[T_{\pi_{AB}}(U_A\otimes U_B)T_{\pi_{AB}}^\dagger|\Psi\rangle\right]\;,\label{eq:defNLmagic}
+    M_\RENYI^\textup{NL}:= \min_{U_A , U_B} M_\RENYI\left[(U_A\otimes U_B)|\Psi\rangle\right]\;,\label{eq:defNLmagic}
 \end{equation}
-where $T_{\pi_{AB}}$ is the qubit permutation implementing the cyclic shift $\pi_{AB}:i\mapsto i-a \pmod N$, which maps $A$ onto $\{1,\dots,\ell\}$ and $B$ onto $\{\ell+1,\dots,N\}$ preserving contiguity, and the minimization is over $\mathrm{U}(2^\ell)\otimes \mathrm{U}(2^{N-\ell})$. This is the magic that cannot be erased by local unitaries; for instance, maximally entangled states have vanishing non-local magic, being locally equivalent to stabilizer states. It is distinct from long-range magic, which cannot be removed by finite-depth local circuits~\cite{Korbany2025}.
+where the minimization is over $\mathrm{U}(2^\ell)\otimes \mathrm{U}(2^{N-\ell})$. This is the magic that cannot be erased by local unitaries; for instance, maximally entangled states have vanishing non-local magic, being locally equivalent to stabilizer states. It is distinct from long-range magic, which cannot be removed by finite-depth local circuits~\cite{Korbany2025}.
 The minimization in Eq.~\eqref{eq:defNLmagic} is superexponentially costly; for $\RENYI = 2$, a proxy can be obtained from the Schmidt spectrum~\cite{Cao_2025}.
 For fermionic Gaussian states, we introduce the GNL magic
 \begin{equation}
-    M_\RENYI^\textup{GNL}:= \!\!\min_{U_{O_A} , U_{O_B}} \!\!M_\RENYI\left[T_{\pi_{AB}}(U_{O_A}\otimes U_{O_B})T_{\pi_{AB}}^\dagger|\Psi\rangle\right],\label{eq:defGNLmagic}
+    M_\RENYI^\textup{GNL}:= \!\!\min_{U_{O_A} , U_{O_B}} \!\!M_\RENYI\left[(U_{O_A}\otimes U_{O_B})|\Psi\rangle\right],\label{eq:defGNLmagic}
 \end{equation}
-where the minimization is restricted to the Gaussian unitaries of $A$ and $B$ induced by $O_A\in\mathrm{O}(2\ell)$ and $O_B\in\mathrm{O}(2(N-\ell))$, hence $ M_\RENYI^\textup{NL} \leq  M_\RENYI^\textup{GNL}$. For $a=0$, $T_{\pi_{AB}}$ is the identity and $U_{O_A}\otimes U_{O_B}$ is itself a Gaussian unitary of the whole chain, so that Eq.~\eqref{eq:defGNLmagic} amounts to a maximization of $\zeta_2$ over the local orthogonal orbit $\Gamma\mapsto(O_A\oplus O_B)\Gamma(O_A\oplus O_B)^{\trans}$ (End Matter).
+where the minimization is restricted to the Gaussian unitaries of $A$ and $B$ induced by $O_A\in\mathrm{O}(2\ell)$ and $O_B\in\mathrm{O}(2(N-\ell))$, hence $ M_\RENYI^\textup{NL} \leq  M_\RENYI^\textup{GNL}$. Since $A$ and $B$ are contiguous, $U_{O_A}\otimes U_{O_B}$ is itself a Gaussian unitary of the whole chain, so that Eq.~\eqref{eq:defGNLmagic} amounts to a maximization of $\zeta_2$ over the local orthogonal orbit $\Gamma\mapsto(O_A\oplus O_B)\Gamma(O_A\oplus O_B)^{\trans}$ (End Matter).
 
 \textit{Main result.}---Let $\pm\lambda_i$, with $\lambda_i\in[0,1]$ and $i=1,\dots,\ell$, be the eigenvalues of the $2\ell\times 2\ell$ reduced covariance matrix $i\Gamma_A$ of the Majorana operators of $A$.
 
