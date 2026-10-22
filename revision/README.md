@@ -17,7 +17,7 @@ La base è la versione sottomessa al giornale (terminologia GNL / "Gaussian-rest
 
 ## Modifiche di contenuto di questo round
 
-1. **Definizioni (Eq. 2–3) e Teorema 1 per intervalli contigui** A={a+1,…,a+ℓ} e complemento B (contiguo identificando i siti N e 1); T_π = shift ciclico i↦i−a. Argomento aggiunto (End Matter "Local Gaussian orbit" + SM sotto Eq. S5): per a=0, U_{O_A}⊗U_{O_B} ∝ U_{O_A⊕det(O_A)O_B}; per a≠0 lo shift ciclico manda stati gaussiani (parità definita) in stati gaussiani con lo stesso Γ_A. Frase che dice che per bipartizioni non contigue l'identificazione fallisce (referee A).
+1. **Teorema 1 solo per blocchi contigui** A={1,…,ℓ}, B={ℓ+1,…,N} (suggerimento del referee A). Nelle definizioni (Eq. 2–3) A è un intervallo contiguo {a+1,…,a+ℓ} e T_π lo shift ciclico i↦i−a (che preserva la contiguità); il teorema è il caso a=0. Argomento aggiunto (End Matter "Local Gaussian orbit" + SM sotto Eq. S5): U_{O_A}⊗U_{O_B} ∝ U_{O_A⊕det(O_A)O_B}, quindi Eq. (3) = massimizzazione di ζ₂ sull'orbita (S5). Frase che dice che per bipartizioni non contigue l'identificazione fallisce (referee A).
 2. **Peso di Jacobi**: x^{-1/2}(1-x)^{N-2ℓ} (typo), con P_n^{(-1/2,N-2ℓ)} e h_n corretti; limite termodinamico invariato.
 3. **Appendice/SM** (referee A, punti 2–14): Eq. (124); spiegazione sotto (60); derivazione della (59); frase sul "transpose"; (80)–(81) semplificata; (148) rimossa; frasi riscritte; "invvariant"; **prova del Lemma 5 del referee**; "factorial normalization" rimosso; ‖·‖_HS; c_x^†; paragrafo di intuizione sulla prova.
 4. Ringraziamenti ai referee e **dichiarazione sull'uso di AI (in rosso, da confermare)**.
@@ -27,7 +27,7 @@ La base è la versione sottomessa al giornale (terminologia GNL / "Gaussian-rest
 
 - Peso di Jacobi: Monte Carlo O(2N) Haar (ℓ=1..4, N≤16): peso corretto compatibile, vecchio escluso; h_n a 1e-41; 2−log₂(2+√3) confermato.
 - Teorema 1, blocco iniziale: U_{O_A}⊗U_{O_B} ∝ U_{O_A⊕det(O_A)O_B} (errore ~1e-15); bound mai violato e saturato; controesempio del referee confermato.
-- Teorema 1, **intervallo nel mezzo con shift ciclico** (N=5: A={2,3}, {3,4}; N=6: A={3,4}, {2,3,4}): stato traslato gaussiano (|Γ'²+I|~1e-15), stessi λ, bound mai violato, ottimizzazione a livello di qubit lo raggiunge a ~1e-14. Per N=6, A={5,6} verificati solo gaussianità e λ (ottimizzazione interrotta per timeout).
+- Shift ciclico (non usato nel teorema): per intervalli nel mezzo (N=5: A={2,3}, {3,4}; N=6: A={3,4}, {2,3,4}) lo stato traslato resta gaussiano con gli stessi λ e il bound viene raggiunto a ~1e-14; per N=6, A={5,6} solo gaussianità e λ verificati. Il teorema è comunque enunciato solo per a=0.
 - Prova alternativa del Lemma 5: verificata fino a 1e-57.
 
 ## Da fare / controllare

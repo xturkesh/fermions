@@ -59,7 +59,7 @@ Referee~B writes that the revised manuscript ``\textit{has been substantially st
 
 \medskip
 \noindent
-Referee~A writes that, as far as they can tell, the result proved in the Appendix, i.e., that Eq.~(57) is the maximum of $\zeta_2$ on the orbit of Eq.~(50), is correct, and points out that its identification with the definition of Eq.~(5) requires the bipartition to be contiguous. \emph{We have adopted the fix suggested by the Referee}: the definitions and Theorem~1 now refer to a contiguous interval $A$ and its complement $B$ (contiguous up to a cyclic shift), which covers all the applications of the manuscript, and we have added the corresponding argument to the proof. We have also adopted the simpler proof of Lemma~5 sketched by the Referee, and revised the Appendix following all their suggestions.
+Referee~A writes that, as far as they can tell, the result proved in the Appendix, i.e., that Eq.~(57) is the maximum of $\zeta_2$ on the orbit of Eq.~(50), is correct, and points out that its identification with the definition of Eq.~(5) requires the bipartition to be contiguous. \emph{We have adopted the fix suggested by the Referee}: Theorem~1 is now stated for the contiguous blocks $A=\{1,\dots,\ell\}$ and $B=\{\ell+1,\dots,N\}$, which covers all the applications of the manuscript, and we have added the corresponding argument to the proof. We have also adopted the simpler proof of Lemma~5 sketched by the Referee, and revised the Appendix following all their suggestions.
 
 \medskip
 \noindent
@@ -84,7 +84,7 @@ Beatrice Magni, on behalf of the Authors
 \medskip
 
 \begin{itemize}[leftmargin=*]
-\item \textbf{Contiguous bipartitions} (Referee~A, Point~1): the definitions of the non-local and Gaussian-restricted non-local magic [previous Eqs.~(4)--(5), now Eqs.~(2)--(3)] and Theorem~1 now refer to a contiguous interval $A=\{a+1,\dots,a+\ell\}$ and its complement $B$, with $T_{\pi_{AB}}$ the cyclic shift mapping $A$ onto $\{1,\dots,\ell\}$. New paragraph in the End Matter (``Local Gaussian orbit'') and below Eq.~(S5) showing that, in this case, the minimization of Eq.~(3) is exactly the maximization of $\zeta_2$ over the local orthogonal orbit solved in the proof.
+\item \textbf{Contiguous bipartitions} (Referee~A, Point~1): Theorem~1 is now stated for the contiguous blocks $A=\{1,\dots,\ell\}$ and $B=\{\ell+1,\dots,N\}$. In the definitions of the non-local and Gaussian-restricted non-local magic [previous Eqs.~(4)--(5), now Eqs.~(2)--(3)], $A$ is a contiguous interval and $T_{\pi_{AB}}$ the cyclic shift mapping it onto $\{1,\dots,\ell\}$. New paragraph in the End Matter (``Local Gaussian orbit'') and below Eq.~(S5) showing that, for the blocks of Theorem~1, the minimization of Eq.~(3) is exactly the maximization of $\zeta_2$ over the local orthogonal orbit solved in the proof.
 \item \textbf{Jacobi weight} (Referee~B): typo corrected in the joint distribution of the $x_m$ and, consistently, in the parameters and normalization of the Jacobi polynomials [previous Eqs.~(11), (14), (15), now Eqs.~(12)--(14)].
 \item \textbf{Proof of Theorem~1} (Referee~A, Points~2--14): new paragraph explaining the logic of the proof at the beginning of Sec.~S1 (and a summary in the End Matter); new proof of Lemma~S5 following the Referee's suggestion; explicit derivation of Eq.~(S15) in Lemma~S1; justification of Eq.~(S16); corrected Eq.~(S75); simplified bound after Eq.~(S36); removed the previous Eq.~(148); notation $c_x^\dagger=\sum_jx_jc_j^\dagger$ and $\|\cdot\|_{\mathrm{HS}}$ in the proof of Theorem~S1; rephrased the passages indicated by the Referee; corrected typos.
 \item \textbf{Acknowledgments}: added a statement on the use of AI tools and thanked the Referees.
@@ -141,16 +141,11 @@ We thank the Referee for this comment. We have added a statement on the use of A
 \end{quote}
 
 \reply{
-We thank the Referee for this important observation and for the explicit counterexample of Sec.~3 of the report, which we have verified. We agree, and we have adopted the second fix suggested by the Referee, which preserves the upper bound $M_2^{\NLl}\le M_2^{\FNL}$ on the unrestricted non-local magic. The definitions of the non-local and Gaussian-restricted non-local magic [previous Eqs.~(4)--(5), now Eqs.~(2)--(3)] and Theorem~1 now refer to a contiguous interval $A=\{a+1,\dots,a+\ell\}$ and its complement $B$, which is contiguous as well once the sites $N$ and $1$ are identified, and $T_{\pi_{AB}}$ is now the cyclic shift $i\mapsto i-a \pmod N$, which maps $A$ onto $\{1,\dots,\ell\}$ and $B$ onto $\{\ell+1,\dots,N\}$.
+We thank the Referee for this important observation and for the explicit counterexample of Sec.~3 of the report, which we have verified. We agree, and we have adopted the second fix suggested by the Referee, which preserves the upper bound $M_2^{\NLl}\le M_2^{\FNL}$ on the unrestricted non-local magic. Theorem~1 is now stated for the contiguous blocks $A=\{1,\dots,\ell\}$ and $B=\{\ell+1,\dots,N\}$. Accordingly, in the definitions of the non-local and Gaussian-restricted non-local magic [previous Eqs.~(4)--(5), now Eqs.~(2)--(3)], $A=\{a+1,\dots,a+\ell\}$ is a contiguous interval, and $T_{\pi_{AB}}$ is the cyclic shift $i\mapsto i-a \pmod N$, which maps $A$ onto $\{1,\dots,\ell\}$ and $B$ onto $\{\ell+1,\dots,N\}$ preserving contiguity; Theorem~1 corresponds to $a=0$.
 
 \medskip
 \noindent
-The missing step of the proof is now given in the End Matter (``Local Gaussian orbit'') and below Eq.~(S5):
-\begin{itemize}
-  \item for $a=0$, the Jordan--Wigner strings of the Majorana operators of $A$ do not leave $A$, while those of $B$ differ from the ones defined within $B$ only by the parity $P_A$ of $A$. Since $U_{O_A}P_AU_{O_A}^\dagger=\det(O_A)P_A$, the qubit unitary $U_{O_A}\otimes U_{O_B}$ coincides, up to a phase, with the Gaussian unitary of the whole chain associated with $O_A\oplus\det(O_A)\,O_B$; as $(O_A,O_B)\mapsto(O_A,\det(O_A)\,O_B)$ is a bijection, Eq.~(3) is exactly the maximization of $\zeta_2$ over the orbit of Eq.~(50) [now Eq.~(S5)];
-  \item for $a\neq0$, $M_2$ is invariant under the qubit permutation $T_{\pi_{AB}}$, and the cyclic shift maps pure fermionic Gaussian states, which have definite parity, into pure fermionic Gaussian states with the same reduced covariance matrix $\Gamma_A$, which reduces this case to $a=0$.
-\end{itemize}
-We have also checked these statements numerically, by maximizing $\zeta_2$ at the qubit level over $T_{\pi_{AB}}(U_{O_A}\otimes U_{O_B})T_{\pi_{AB}}^\dagger$ for random Gaussian states and intervals in the middle of the chain. We have added a remark that the identification fails for non-contiguous bipartitions, as shown by the Referee's example. The restriction does not affect any of the applications of the manuscript: for Haar-random states and SYK$_2$ eigenstates the statistics of $\Gamma_A$ is invariant under mode permutations, while for the XY chain, the quenches, the random circuits and the variational checks we use contiguous blocks $A=\{1,\dots,\ell\}$ \todo{confirm for the random-circuit data of Fig.~3(d)}.
+The missing step of the proof is now given in the End Matter (``Local Gaussian orbit'') and below Eq.~(S5): for $A=\{1,\dots,\ell\}$, the Jordan--Wigner strings of the Majorana operators of $A$ do not leave $A$, while those of $B$ differ from the ones defined within $B$ only by the parity $P_A$ of $A$. Since $U_{O_A}P_AU_{O_A}^\dagger=\det(O_A)P_A$, the qubit unitary $U_{O_A}\otimes U_{O_B}$ coincides, up to a phase, with the Gaussian unitary of the whole chain associated with $O_A\oplus\det(O_A)\,O_B$; as $(O_A,O_B)\mapsto(O_A,\det(O_A)\,O_B)$ is a bijection, Eq.~(3) is exactly the maximization of $\zeta_2$ over the orbit of Eq.~(50) [now Eq.~(S5)]. We have also checked this numerically, by maximizing $\zeta_2$ at the qubit level over $U_{O_A}\otimes U_{O_B}$ for random Gaussian states. We have added a remark that the identification fails for non-contiguous bipartitions, as shown by the Referee's example. The restriction does not affect any of the applications of the manuscript: for Haar-random states and SYK$_2$ eigenstates the statistics of $\Gamma_A$ is invariant under mode permutations, while for the XY chain, the quenches, the random circuits and the variational checks we use contiguous blocks $A=\{1,\dots,\ell\}$ \todo{confirm for the random-circuit data of Fig.~3(d)}.
 }
 
 \vspace{0.4cm}
@@ -359,7 +354,7 @@ We thank the Referee for these two sections, which we have used as described in 
 \end{quote}
 
 \reply{
-We thank the Referee for their positive assessment of the revised manuscript. Following Referee~A, Theorem~1 is now stated for contiguous bipartitions, see our reply to Referee~A.
+We thank the Referee for their positive assessment of the revised manuscript. Following Referee~A, Theorem~1 is now stated for the contiguous blocks $A=\{1,\dots,\ell\}$ and $B=\{\ell+1,\dots,N\}$, see our reply to Referee~A.
 }
 
 \vspace{0.4cm}

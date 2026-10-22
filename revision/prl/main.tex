@@ -99,13 +99,13 @@ For fermionic Gaussian states, we introduce the GNL magic
 \begin{equation}
     M_\RENYI^\textup{GNL}:= \!\!\min_{U_{O_A} , U_{O_B}} \!\!M_\RENYI\left[T_{\pi_{AB}}(U_{O_A}\otimes U_{O_B})T_{\pi_{AB}}^\dagger|\Psi\rangle\right],\label{eq:defGNLmagic}
 \end{equation}
-where the minimization is restricted to the Gaussian unitaries of $A$ and $B$ induced by $O_A\in\mathrm{O}(2\ell)$ and $O_B\in\mathrm{O}(2(N-\ell))$, hence $ M_\RENYI^\textup{NL} \leq  M_\RENYI^\textup{GNL}$. Thanks to contiguity, $U_{O_A}\otimes U_{O_B}$ is itself a Gaussian unitary of the whole chain, while the cyclic shift maps Gaussian states into Gaussian states with the same $\Gamma_A$, so that Eq.~\eqref{eq:defGNLmagic} amounts to a maximization of $\zeta_2$ over a local orthogonal orbit $\Gamma\mapsto(O_A\oplus O_B)\Gamma(O_A\oplus O_B)^{\trans}$ (End Matter).
+where the minimization is restricted to the Gaussian unitaries of $A$ and $B$ induced by $O_A\in\mathrm{O}(2\ell)$ and $O_B\in\mathrm{O}(2(N-\ell))$, hence $ M_\RENYI^\textup{NL} \leq  M_\RENYI^\textup{GNL}$. For $a=0$, $T_{\pi_{AB}}$ is the identity and $U_{O_A}\otimes U_{O_B}$ is itself a Gaussian unitary of the whole chain, so that Eq.~\eqref{eq:defGNLmagic} amounts to a maximization of $\zeta_2$ over the local orthogonal orbit $\Gamma\mapsto(O_A\oplus O_B)\Gamma(O_A\oplus O_B)^{\trans}$ (End Matter).
 
 \textit{Main result.}---Let $\pm\lambda_i$, with $\lambda_i\in[0,1]$ and $i=1,\dots,\ell$, be the eigenvalues of the $2\ell\times 2\ell$ reduced covariance matrix $i\Gamma_A$ of the Majorana operators of $A$.
 
 \begin{theorem}
 \label{thm:global}
-For any pure fermionic Gaussian state $|\Psi_O\rangle$ on $N$ modes, any contiguous interval $A=\{a+1,\dots,a+\ell\}$ and its complement $B$,
+For any pure fermionic Gaussian state $|\Psi_O\rangle$ on $N$ modes and the contiguous blocks $A=\{1,\dots,\ell\}$ and $B=\{\ell+1,\dots,N\}$,
 \begin{equation}
 \begin{split}
     M_{2}^{\mathrm{GNL}}(|\Psi_O\rangle)&=\sum_{i=1}^{\ell}\mathfrak{m}_2(\lambda_i^2)\;,\\
