@@ -15,5 +15,5 @@ run marked_up; bibtex marked_up > /dev/null; run marked_up; bibtex marked_up > /
 latexdiff --math-markup=whole --preamble=red_preamble.tex ../submitted/main_submitted_clean.tex main.tex 2>/dev/null > main_red.tex
 python3 strip_deletions.py main_red.tex
 run main_red; bibtex main_red > /dev/null; run main_red; bibtex main_red > /dev/null; run main_red; run main_red
-run response; run response  # Fig. R1 from ../checks/small_N_check.py
+run response; run response
 grep -h "undefined" main.log marked_up.log main_red.log response.log | grep -v "There were" || true
