@@ -66,7 +66,7 @@ Both points concern parts of the manuscript that were already present in its fir
 
 \medskip
 \noindent
-Referee~A's remaining comments (Points~2--14) concern the presentation of the proof: requests for more explanation, wording, notation, a typo, and one intermediate line whose final result the Referee confirms. We have implemented all of them, including the shorter proof of Lemma~5 that the Referee kindly sketched, and added a paragraph explaining the logic of the proof. We have also added a statement on the use of AI tools. \todo{Keep this sentence only if the AI statement in the manuscript is confirmed.}
+Referee~A's remaining comments (Points~2--14) concern the presentation of the proof: requests for more explanation, wording, notation, a typo, and one intermediate line whose final result the Referee confirms. We have implemented all of them, including the Referee's shorter proof of Lemma~5, and added a paragraph explaining the logic of the proof. We have also added a statement on the use of AI tools.
 
 \medskip
 \noindent
@@ -117,7 +117,7 @@ Beatrice Magni, on behalf of the Authors \todo{signature}
 \end{quote}
 
 \reply{
-We thank the Referee for the careful reading of the proof, for confirming that the result proved in the Appendix is correct, and for identifying the missing step between that result and Theorem~1. We agree with the Referee, and have fixed Theorem~1 as detailed in our reply to Point~1 below.
+The Referee considers the result proved in the Appendix correct. The objection concerns its identification with the definition of Eq.~(5) for non-contiguous bipartitions, which we have removed by restricting the definitions and Theorem~1 to contiguous blocks, as the Referee suggests (Point~1).
 }
 
 \vspace{0.4cm}
@@ -129,8 +129,7 @@ We thank the Referee for the careful reading of the proof, for confirming that t
 \end{quote}
 
 \reply{
-\todo{Adapt this paragraph, and the statement in the Acknowledgments, to the actual use of AI tools.}
-We thank the Referee for this comment. We have added a statement on the use of AI tools in the Acknowledgments, and we have revised all the passages indicated by the Referee (Points~2--14 below). Moreover, we have added at the beginning of Appendix~V\,A a paragraph explaining the logic of the proof, i.e., why each step is taken: $\zeta_2$ is a collision probability depending on two independent rotations and on all the minors of the matrix parametrizing the state; each step either removes one of these complications exactly, or bounds the functional by a simpler one which is tight at the canonical point, so that the canonical form, saturating every inequality of the chain, is the global maximizer.
+AI tools were not used substantively in the previous version of the manuscript, and the proof was written and checked by the authors; for this reason no statement was included. We have now added one in the Acknowledgments: some support from AI tools was used in the writing and presentation. The Referee's impression concerns the style of some passages, not the result of the proof, which the Referee considers correct. We have rewritten the passages indicated (Points~5, 6, 9 and~12) and added at the beginning of Appendix~V\,A a short paragraph explaining the logic of the proof.
 }
 
 \vspace{0.4cm}
@@ -145,11 +144,7 @@ We thank the Referee for this comment. We have added a statement on the use of A
 \end{quote}
 
 \reply{
-We thank the Referee for this important observation and for the explicit counterexample of Sec.~3 of the report, which we have verified. We agree, and we have adopted the second fix suggested by the Referee, which preserves the upper bound $M_2^{\NLl}\le M_2^{\FNL}$ on the unrestricted non-local magic. Both Theorem~1 and, for consistency, the definitions of the non-local and Gaussian-restricted non-local magic, Eqs.~(4)--(5), now refer to the contiguous blocks $A=\{1,\dots,\ell\}$ and $B=\{\ell+1,\dots,N\}$, so that no qubit permutation $T_{\pi_{AB}}$ appears.
-
-\medskip
-\noindent
-The missing step of the proof is now given below Eq.~(50): for $A=\{1,\dots,\ell\}$, the Jordan--Wigner strings of the Majorana operators of $A$ do not leave $A$, while those of $B$ differ from the ones defined within $B$ only by the parity $P_A$ of $A$. Since $U_{O_A}P_AU_{O_A}^\dagger=\det(O_A)P_A$, the qubit unitary $U_{O_A}\otimes U_{O_B}$ coincides, up to a phase, with the Gaussian unitary of the whole chain associated with $O_A\oplus\det(O_A)\,O_B$; as $(O_A,O_B)\mapsto(O_A,\det(O_A)\,O_B)$ is a bijection, Eq.~(5) is exactly the maximization of $\zeta_2$ over the orbit of Eq.~(50). We have also checked this numerically, by maximizing $\zeta_2$ at the qubit level over $U_{O_A}\otimes U_{O_B}$ for random Gaussian states. We have added a remark that the identification fails for non-contiguous bipartitions, as shown by the Referee's example. The restriction does not affect any of the applications of the manuscript: for Haar-random states and SYK$_2$ eigenstates the statistics of $\Gamma_A$ is invariant under mode permutations, while for the XY chain, the quenches, the random circuits (half chain, $A=\{1,\dots,N/2\}$) and the variational checks we use contiguous blocks $A=\{1,\dots,\ell\}$.
+We thank the Referee for the counterexample. The identification stated below Eq.~(50) requires contiguous blocks, and the counterexample uses a non-contiguous bipartition. We have adopted the second fix proposed by the Referee, which keeps the bound $M_2^{\NLl}\le M_2^{\FNL}$: the definitions, Eqs.~(4)--(5), and Theorem~1 now refer to $A=\{1,\dots,\ell\}$ and $B=\{\ell+1,\dots,N\}$. Below Eq.~(50) we now show that in this case $U_{O_A}\otimes U_{O_B}$ coincides, up to a phase, with the Gaussian unitary associated with $O_A\oplus\det(O_A)\,O_B$, so that Eq.~(5) is exactly the maximization over the orbit of Eq.~(50); we also note that this fails for non-contiguous bipartitions. All the applications of the manuscript use contiguous blocks, or ensembles invariant under mode permutations, so no result changes.
 }
 
 \vspace{0.4cm}
@@ -162,7 +157,7 @@ The missing step of the proof is now given below Eq.~(50): for $A=\{1,\dots,\ell
 \end{quote}
 
 \reply{
-We thank the Referee. We have corrected the middle line of Eq.~(124) [now Eq.~(119)]: the expectation value now acts on the whole product, and the independence of the rows is used only in the last step.
+We thank the Referee. Corrected [now Eq.~(119)]: the independence of the rows is used only in the last step.
 }
 
 \vspace{0.4cm}
@@ -175,7 +170,7 @@ We thank the Referee. We have corrected the middle line of Eq.~(124) [now Eq.~(1
 \end{quote}
 
 \reply{
-We thank the Referee. We now state that Eq.~(60) follows from the principal-minor expansion $\det(\mathbb{I}+Y)=\sum_J\det Y_{J,J}$ applied to $Y=X^\dagger X$, combined with the Cauchy--Binet formula for each principal minor of $X^\dagger X$.
+Eq.~(60) follows from $\det(\mathbb{I}+Y)=\sum_J\det Y_{J,J}$ with $Y=X^\dagger X$, together with the Cauchy--Binet formula for each principal minor; this is now stated.
 }
 
 \vspace{0.4cm}
@@ -188,7 +183,7 @@ We thank the Referee. We now state that Eq.~(60) follows from the principal-mino
 \end{quote}
 
 \reply{
-We thank the Referee. We now derive Eq.~(59) explicitly: writing $(-1)^{|S\cap I|}=\prod_{i\in I}(1-2\,\mathbf{1}_{i\in S})$, expanding the product, and using that the inclusion probabilities of the projection determinantal point process are the principal minors of the kernel, $\sum_{S\supseteq T}p_S=\det K_T$ (for which we added a reference), the principal-minor expansion gives $\widehat p(I)=\det(\mathbb{I}_{|I|}-2K_I)=(-i)^{|I|}\det\Gamma_I$. The expression ``generating function'' has been removed.
+Eq.~(59) is now derived explicitly, from the inclusion probabilities of the projection determinantal process, $\sum_{S\supseteq T}p_S=\det K_T$ (with a reference), and the principal-minor expansion. The phrase ``generating function'' has been removed.
 }
 
 \vspace{0.4cm}
@@ -201,7 +196,7 @@ We thank the Referee. We now derive Eq.~(59) explicitly: writing $(-1)^{|S\cap I
 \end{quote}
 
 \reply{
-We thank the Referee. The sentence meant that the relevant object in Lemma~2 is the transpose overlap $\Sigma=Q^{\trans}Q$ (the adjoint overlap $Q^\dagger Q=\mathbb{I}$ being trivial), because in the application of Proposition~2 the reality of the covariance matrix translates into the complex orthogonality $Z^{\trans}Z=\mathbb{I}$ of the BCS matrix, which makes $\Sigma$ explicitly computable. We have replaced the sentence with this explanation.
+The relevant object in Lemma~2 is the transpose overlap $Q^{\trans}Q$, the adjoint one being trivial, $Q^\dagger Q=\mathbb{I}$: in Proposition~2 the reality of $\Gamma$ gives $Z^{\trans}Z=\mathbb{I}$, which makes $Q^{\trans}Q$ computable. The sentence has been replaced by this explanation.
 }
 
 \vspace{0.4cm}
@@ -214,7 +209,7 @@ We thank the Referee. The sentence meant that the relevant object in Lemma~2 is 
 \end{quote}
 
 \reply{
-The two ``chains'' were the two sequences of equalities for the two sides of Eq.~(108) [now Eq.~(107)]. This part of the proof has been replaced by the simpler proof suggested by the Referee, see Point~11.
+The two sequences of equalities for the two sides of Eq.~(108). This part has been replaced, see Point~11.
 }
 
 \vspace{0.4cm}
@@ -227,7 +222,7 @@ The two ``chains'' were the two sequences of equalities for the two sides of Eq.
 \end{quote}
 
 \reply{
-We agree, and we have simplified the argument as suggested: $0<\mathcal{R}\le\mathbb{I}$ gives $\|\mathcal{R}\|\le1$, hence $|e_1^\dagger\mathcal{R}u|\le\|u\|\le1$ (below Eq.~(80); the previous Eq.~(81) has been removed).
+Simplified as suggested (below Eq.~(80)); the previous Eq.~(81) has been removed.
 }
 
 \vspace{0.4cm}
@@ -240,7 +235,7 @@ We agree, and we have simplified the argument as suggested: $0<\mathcal{R}\le\ma
 \end{quote}
 
 \reply{
-We agree, and we have removed Eq.~(148).
+Removed.
 }
 
 \vspace{0.4cm}
@@ -253,7 +248,7 @@ We agree, and we have removed Eq.~(148).
 \end{quote}
 
 \reply{
-We agree, and we have rephrased the sentence (beginning of Sec.~V\,A\,5).
+Rephrased (beginning of Sec.~V\,A\,5).
 }
 
 \vspace{0.4cm}
@@ -266,7 +261,7 @@ We agree, and we have rephrased the sentence (beginning of Sec.~V\,A\,5).
 \end{quote}
 
 \reply{
-Corrected (above Eq.~(131)). We have also clarified the sentence, which refers to the invariance of the probabilities under a unitary change of column gauge.
+Corrected (above Eq.~(131)).
 }
 
 \vspace{0.4cm}
@@ -279,7 +274,7 @@ Corrected (above Eq.~(131)). We have also clarified the sentence, which refers t
 \end{quote}
 
 \reply{
-We thank the Referee for the elegant alternative proof, which we have checked and adopted in Lemma~5 [Eqs.~(108)--(111)], acknowledging the Referees in the Acknowledgments. (In Eqs.~(20)--(24) of the report, $\det(I-H_SH_S^{\trans})$ should read $\det(I+H_SH_S^{\trans})$, and the sums run over $A\subseteq S$ and $B\subseteq S^c$; the conclusion is unchanged.) The sign-average identity previously established in the proof of Lemma~5 is now derived where it is used, in Proposition~3.
+Readability is subjective, and we find the Referee's argument no easier to follow than ours. Since the Referee represents the readership, we have nevertheless followed the suggestion and adopted the Referee's argument, after correcting it: in Eqs.~(20)--(24) of the report, $\det(I-H_SH_S^{\trans})$ should read $\det(I+H_SH_S^{\trans})$, and the sums run over $A\subseteq S$ and $B\subseteq S^c$. The proof now consists of Eqs.~(108)--(111); the sign-average identity previously used there is derived in Proposition~3, where it is needed.
 }
 
 \vspace{0.4cm}
@@ -292,7 +287,7 @@ We thank the Referee for the elegant alternative proof, which we have checked an
 \end{quote}
 
 \reply{
-We agree, and we have removed it.
+Removed.
 }
 
 \vspace{0.4cm}
@@ -305,7 +300,7 @@ We agree, and we have removed it.
 \end{quote}
 
 \reply{
-We agree, and we now use $\|\cdot\|_{\mathrm{HS}}$ throughout Appendix~V\,A.
+We now use $\|\cdot\|_{\mathrm{HS}}$ throughout.
 }
 
 \vspace{0.4cm}
@@ -318,7 +313,7 @@ We agree, and we now use $\|\cdot\|_{\mathrm{HS}}$ throughout Appendix~V\,A.
 \end{quote}
 
 \reply{
-We agree. We now denote the creation operator by $c_x^\dagger=\sum_jx_jc_j^\dagger$ [Eq.~(140)], and its adjoint by $c_x$, throughout the proof of Theorem~2.
+Changed to $c_x^\dagger=\sum_jx_jc_j^\dagger$ [Eq.~(140)] throughout the proof of Theorem~2.
 }
 
 \vspace{0.4cm}
@@ -333,7 +328,7 @@ We agree. We now denote the creation operator by $c_x^\dagger=\sum_jx_jc_j^\dagg
 \end{quote}
 
 \reply{
-We thank the Referee for these two sections, which we have used as described in our replies to Points~1 and~11.
+Used as described in our replies to Points~1 and~11.
 }
 
 
