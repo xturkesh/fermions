@@ -11,5 +11,9 @@ latexdiff --math-markup=whole --type=UNDERLINE ../submitted/main_submitted_clean
 sed -i 's|\\providecommand{\\DIFdeltex}\[1\]{.*}|\\providecommand{\\DIFdeltex}[1]{{\\protect\\color{red}\\sout{#1}}} %DIF PREAMBLE|' marked_up.tex
 sed -i 's|\\providecommand{\\DIFaddtex}\[1\]{.*}|\\providecommand{\\DIFaddtex}[1]{{\\protect\\color{red}\\uwave{#1}}} %DIF PREAMBLE|' marked_up.tex
 run marked_up; bibtex marked_up > /dev/null; run marked_up; bibtex marked_up > /dev/null; run marked_up; run marked_up
+# manuscript with all changes in red (deletions omitted), as in the previous submission
+latexdiff --math-markup=whole --preamble=red_preamble.tex ../submitted/main_submitted_clean.tex main.tex 2>/dev/null > main_red.tex
+python3 strip_deletions.py main_red.tex
+run main_red; bibtex main_red > /dev/null; run main_red; bibtex main_red > /dev/null; run main_red; run main_red
 run response; run response  # Fig. R1 from ../checks/small_N_check.py
-grep -h "undefined" main.log marked_up.log response.log | grep -v "There were" || true
+grep -h "undefined" main.log marked_up.log main_red.log response.log | grep -v "There were" || true

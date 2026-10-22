@@ -66,11 +66,11 @@ Both points concern parts of the manuscript that were already present in its fir
 
 \medskip
 \noindent
-Referee~A's remaining comments (Points~2--14) concern the presentation of the proof: requests for more explanation, wording, notation, a typo, and one intermediate line whose final result the Referee confirms. We have implemented all of them, including the Referee's shorter proof of Lemma~5, and added a paragraph explaining the logic of the proof. We have also added a statement on the use of AI tools.
+Referee~A's remaining comments (Points~2--14) concern the presentation of the proof: requests for more explanation, wording, notation, a typo, and one intermediate line whose final result the Referee confirms. We have implemented all of them, including the Referee's shorter proof of Lemma~5, and made the logic of the proof, already outlined in the manuscript, more explicit. We have also added a statement on the use of AI tools.
 
 \medskip
 \noindent
-We enclose the revised manuscript, a version with all changes highlighted, and a point-by-point reply.
+We enclose the revised manuscript, with all changes in red, and a point-by-point reply.
 
 \medskip
 \noindent
@@ -89,7 +89,7 @@ Beatrice Magni, on behalf of the Authors \todo{signature}
 \begin{itemize}[leftmargin=*]
 \item \textbf{Contiguous bipartitions} (Referee~A, Point~1): the definitions of the non-local and Gaussian-restricted non-local magic, Eqs.~(4)--(5), and Theorem~1 now refer to the contiguous blocks $A=\{1,\dots,\ell\}$ and $B=\{\ell+1,\dots,N\}$, so that no qubit permutation $T_{\pi_{AB}}$ appears. New sentence below Eq.~(5) and new paragraph below Eq.~(50) showing that, in this case, the minimization of Eq.~(5) is exactly the maximization of $\zeta_2$ over the local orthogonal orbit solved in the proof; abstract and introduction updated accordingly.
 \item \textbf{Jacobi weight} (Referee~B): typo corrected in Eq.~(11) and, consistently, in the parameters and normalization of the Jacobi polynomials, Eq.~(15) and the text above it; reference to Bianchi, Hackl and Kieburg added; sentence on the comparison with numerics corrected.
-\item \textbf{Proof of Theorem~1} (Referee~A, Points~2--14): new paragraph explaining the logic of the proof at the beginning of Appendix~V\,A; new proof of Lemma~5 following the Referee's suggestion; explicit derivation of Eq.~(59); justification of Eq.~(60); corrected Eq.~(119) [previously (124)]; simplified bound below Eq.~(80); removed the previous Eq.~(148); notation $c_x^\dagger=\sum_jx_jc_j^\dagger$ and $\|\cdot\|_{\mathrm{HS}}$ in the proof of Theorem~2; rephrased the passages indicated by the Referee; corrected typos.
+\item \textbf{Proof of Theorem~1} (Referee~A, Points~2--14): the logic of the proof, already outlined in the Introduction and below Theorem~1, is now stated explicitly at the beginning of Appendix~V\,A; new proof of Lemma~5 following the Referee's suggestion; explicit derivation of Eq.~(59); justification of Eq.~(60); corrected Eq.~(119) [previously (124)]; simplified bound below Eq.~(80); removed the previous Eq.~(148); notation $c_x^\dagger=\sum_jx_jc_j^\dagger$ and $\|\cdot\|_{\mathrm{HS}}$ in the proof of Theorem~2; rephrased the passages indicated by the Referee; corrected typos.
 \item \textbf{Acknowledgments}: added a statement on the use of AI tools and thanked the Referees.
 \item \textbf{Further corrections}: early-time expansion of the GNL magic in random Gaussian circuits (expansion around $\lambda=1$, the circuits starting from a product state); time units of the quench formulas made explicit; the suppression of the GNL magic in the ordered phase is now stated, as originally intended, for the Ising chain; antiperiodic boundary condition written for the fermions, $c_{N+1}=-c_1$; list of subsystem sizes in Fig.~3 ($\ell=20,\dots,160$).
 \end{itemize}
@@ -129,7 +129,11 @@ The Referee considers the result proved in the Appendix correct. The objection c
 \end{quote}
 
 \reply{
-AI tools were not used substantively in the previous version of the manuscript, and the proof was written and checked by the authors; for this reason no statement was included. We have now added one in the Acknowledgments: some support from AI tools was used in the writing and presentation. The Referee's impression concerns the style of some passages, not the result of the proof, which the Referee considers correct. We have rewritten the passages indicated (Points~5, 6, 9 and~12) and added at the beginning of Appendix~V\,A a short paragraph explaining the logic of the proof.
+AI tools were not used substantively in the previous version of the manuscript, and the proof was written and checked by the authors; for this reason no statement was included. We have now added one in the Acknowledgments: some support from AI tools was used in the writing and presentation. The Referee's impression concerns the style of some passages, not the result of the proof, which the Referee considers correct; we have rewritten the passages indicated (Points~5, 6, 9 and~12).
+
+\medskip
+\noindent
+Concerning the intuition, we respectfully note that the reason for the moves of the proof was already given in the manuscript. Since the optimization runs over local fermionic Gaussian unitaries, the proof is formulated in the fermionic language, and the natural candidate for the optimum is the BCS canonical form of Botero and Reznik, as stated in the Introduction (``\textit{the minimization over local Gaussian unitaries is solved exactly by the BCS canonical form}'') and below Theorem~1. All the subsequent steps serve to show that this form is the global maximizer of $\zeta_2$ on the orbit: the roadmap of Fig.~4 is precisely this ``why''. To make it more visible, we now state it explicitly at the beginning of Appendix~V\,A, followed by a short summary of the role of each step.
 }
 
 \vspace{0.4cm}

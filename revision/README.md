@@ -15,6 +15,18 @@
 
 La base è la versione sottomessa al giornale (terminologia GNL / "Gaussian-restricted", paragrafo e nota su Fig. 2(a) con citazione Zenodo, grant DAAD, figura Odyssey ridisegnata, figure 1–2 con etichette GNL).
 
+## Versione PRX Quantum (`prxq/`) — da usare per il resubmit/appeal
+
+| File | Contenuto |
+|---|---|
+| `prxq/main_red.pdf` | Manoscritto con **tutte le modifiche in rosso** (cancellazioni omesse, come nella sottomissione precedente) |
+| `prxq/main.pdf` (`main.tex`) | Manoscritto pulito (sorgente) = versione sottomessa + modifiche minime |
+| `prxq/marked_up.pdf` | Diff con cancellazioni barrate (opzionale) |
+| `prxq/response.pdf` (`response.tex`) | Lettera all'editor (appeal) + lista modifiche + risposte ai referee + Fig. R1 + tabella equazioni |
+| `prxq/build.sh` | Compila tutto (main, marked_up, main_red, response) |
+| `checks/small_N_check.py` | Fig. R1: campionamento Haar a N piccolo vs formula a N finito (peso corretto e stampato) |
+| `email_editor.md` | Mail all'editor (richiesta di un terzo round) |
+
 ## Modifiche di contenuto di questo round
 
 1. **Definizioni (Eq. 2–3) e Teorema 1 solo per i blocchi contigui** A={1,…,ℓ}, B={ℓ+1,…,N} (suggerimento del referee A): niente più T_π/π_AB né shift ciclico. Argomento aggiunto (End Matter "Local Gaussian orbit" + SM sotto Eq. S5): U_{O_A}⊗U_{O_B} ∝ U_{O_A⊕det(O_A)O_B}, quindi Eq. (3) = massimizzazione di ζ₂ sull'orbita (S5). Frase che dice che per bipartizioni non contigue l'identificazione fallisce (referee A).
