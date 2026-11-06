@@ -99,7 +99,7 @@ urlcolor=teal]{hyperref}
 
 \maketitle
 
-\noindent In this Supplemental Material, equations, figures and sections labelled with the prefix ``S'' refer to this document, while the remaining ones refer to the main text. Section~\ref{app:proof} contains the full proof of Theorem~\ref{M-thm:global}; Sec.~\ref{app:variational} the variational verification of Eqs.~\eqref{M-eq:analytic_NL} and~\eqref{M-eq:analytic_NL_alpha}; Sec.~\ref{app:experimental} the error analysis for the experimental estimation of the GNL magic; Sec.~\ref{Sec:generaliz} the generalization of our results to R\'enyi index $\RENYI>2$; Sec.~\ref{app:numerics} further details on the numerical simulations; and Secs.~\ref{app:rainbow}--\ref{app:outlook} the illustrative example of the rainbow state, further details on the XY chain and on the quench dynamics, and an extended outlook.
+\noindent In this Supplemental Material, equations, figures and sections labelled with the prefix ``S'' refer to this document, while the remaining ones refer to the main text. Section~\ref{app:proof} contains the full proof of Theorem~\ref{M-thm:global}; Sec.~\ref{app:variational} the variational verification of Eqs.~\eqref{M-eq:analytic_NL} and~\eqref{M-eq:analytic_NL_alpha}; Sec.~\ref{app:experimental} the error analysis for the experimental estimation of the GNL magic; Sec.~\ref{Sec:generaliz} the generalization of our results to R\'enyi index $\RENYI>2$; Sec.~\ref{app:numerics} further details on the numerical simulations; and Secs.~\ref{app:rainbow}--\ref{app:outlook} the illustrative example of the rainbow state, further details on the XY chain and on the quench dynamics, and a summary of the applications with an extended outlook.
 
 \section{Proof of Theorem~\ref{M-thm:global}: An Odyssey %as Nolan intended -- <3
 }
@@ -325,7 +325,7 @@ Local Gaussian unitaries bring any pure fermionic Gaussian state into the canoni
 := \prod_{i=1}^{\ell}\bigl(\cos\theta_i+\sin\theta_i\,c_i^\dagger c_{\ell+i}^\dagger\bigr)|\mathbf{0}\rangle\;,
 \label{eq:can_form}
 \end{equation}
-where $c_j^\dagger$ creates a fermion in mode $j$: the $i$th mode of $A$ and the $i$th mode of $B$ form the pair $\cos\theta_i\,|00\rangle+\sin\theta_i\,|11\rangle$, while the remaining $N-2\ell$ modes of $B$ are empty.
+where $c_j=(\gamma_{2j-1}+i\gamma_{2j})/2$, $c_j|\mathbf{0}\rangle=0$: in the occupation basis, the $i$th mode of $A$ and the $i$th mode of $B$ form the pair $\cos\theta_i\,|00\rangle+\sin\theta_i\,|11\rangle$, with $\cos2\theta_i=\lambda_i$ and $\sin2\theta_i=\nu_i$, while the remaining $N-2\ell$ modes of $B$ are empty. Its covariance matrix coincides with the normal form of Proposition~\ref{prop:covariance-normal-form} up to a permutation and sign flips of the Majorana operators within $A$ and within $B$, which are Clifford and leave $\zeta_2$ unchanged.
 For completeness, we recall the covariance version of this modewise normal form, cf.~\cite{BoteroReznik2004}, which also fixes the orientation conventions used below. 
 
 \begin{proposition}[Local covariance normal form]
@@ -1395,7 +1395,8 @@ One might attempt to introduce magic into the rainbow state by applying local un
 
 \section{Ground states of the XY model: details}
 \label{app:xy}
-Using the Jordan--Wigner transformation, Eq.~\eqref{M-eq:xy} is mapped to the quadratic Hamiltonian $H$of the form in Eq.~\eqref{M-eq:ham} with single-body matrix entries $h_{2m-1,2m} = 2\mu$, $h_{2m,2m+1} = 1+\eta$, $h_{2m+2,2m-1} = 1-\eta$, and all remaining elements fixed by antisymmetry~\cite{Mbeng2024}.
+Following standard practice in the literature, we keep referring to the Majorana chain obtained from Eq.~\eqref{M-eq:xy} as the XY model; minimizing over all local spin unitaries would give a quantity bounded from above by ours, $M_\RENYI^{\mathrm{NL}}\le M_\RENYI^{\mathrm{GNL}}$.
+Using the Jordan--Wigner transformation, Eq.~\eqref{M-eq:xy} is mapped to the quadratic Hamiltonian $H$ of the form in Eq.~\eqref{M-eq:ham} with single-body matrix entries $h_{2m-1,2m} = 2\mu$, $h_{2m,2m+1} = 1+\eta$, $h_{2m+2,2m-1} = 1-\eta$, and all remaining elements fixed by antisymmetry~\cite{Mbeng2024}.
 We restrict to system sizes $N$ divisible by $4$, for which the ground state lies in the Neveu--Schwarz sector with antiperiodic fermionic boundary
 conditions $c_{N+1}=-c_1$, i.e., $\gamma_{2N+1}=-\gamma_1$ and $\gamma_{2N+2}=-\gamma_2$~\cite{Mbeng2024}.
 The allowed momenta are 
@@ -1426,6 +1427,11 @@ In the thermodynamic limit $N\to\infty$ with $\ell$ fixed, the reduced covarianc
 \end{split}
 \label{eq:block_toeplitz}
 \end{equation}
+The Gaussian-restricted non-local magic $M_2^{\mathrm{GNL}} = \sum_n \mathfrak{m}_2(\lambda_n^2)$ is therefore a spectral function of $\Gamma_A$ with symbol $g(k)$, providing a direct route to efficient numerical evaluation.
+For a given Hamiltonian and subsystem size $\ell$, we construct $\Gamma_A$ by evaluating the integral in Eq.~\eqref{eq:block_toeplitz}, exact in the thermodynamic limit $N\to\infty$, and compute the non-local magic via Eq.~\eqref{M-eq:analytic_NL} from the eigenvalues $\pm\lambda_n$ ($\lambda_n\in[0,1]$) of $i\Gamma_A$.
+This procedure reaches large subsystem sizes $\ell$ at classical computational cost $\mathcal{O}(\ell^3)$.
+
+In the scaling limit $N\gg \ell\gg 1$, the asymptotic behavior of spectral functions of Toeplitz matrices is controlled by two classical results: the \emph{strong Szeg\H{o} theorem}, applicable when the symbol is smooth, and the \emph{Fisher--Hartwig formula}, which governs the corrections arising from singularities in the symbol~\cite{Jin_2004,Its_2005}.
 
 The reduced density matrix of subsystem $A$ is a fermionic Gaussian state, and can be written as~\cite{Peschel2004}
 \begin{equation}
@@ -1441,7 +1447,7 @@ The covariance matrix $\Gamma_A$ and the single-particle entanglement Hamiltonia
 so that the eigenvalues of $i\Gamma_A$ are $\pm\lambda_n$ with $\lambda_n = \tanh\!\left(\frac{\varepsilon_n^{\mathrm{ent}}}{2}\right)$. 
 Here $\lambda_n = 1$ corresponds to a pure (unentangled) mode and $\lambda_n < 1$ to an entangled one.
 
-For the semi-infinite bipartition, the equally spaced spectrum of Eq.~\eqref{M-eq:peschel_spectrum} is obtained through the corner transfer matrix approach~\cite{Peschel2009,Eisler2017}, where $\varepsilon = \pi K(\kappa')/K(\kappa)$ is the level spacing, $K(x)$ denotes the complete elliptic integral of the first kind, $\kappa' = \sqrt{1-\kappa^2}$, and $\kappa$ is conditioned on the phase~\cite{Peschel2009}
+For the semi-infinite bipartition $A=\mathbb{Z}_+=\{1,2,\dots\}$, which approximates the scaling limit $N\gg\ell\gg1$, the equally spaced spectrum of Eq.~\eqref{M-eq:peschel_spectrum} is obtained through the corner transfer matrix approach~\cite{Peschel2009,Eisler2017}, where $\varepsilon = \pi K(\kappa')/K(\kappa)$ is the level spacing, $K(x)$ denotes the complete elliptic integral of the first kind, $\kappa' = \sqrt{1-\kappa^2}$, and $\kappa$ is conditioned on the phase~\cite{Peschel2009}
 \begin{equation}
     \kappa = \begin{cases}
         \displaystyle\frac{\eta}{\sqrt{\eta^2 + \mu^2 - 1}} & \mu > 1 \;,\\[8pt]
@@ -1455,10 +1461,11 @@ This leads to the exact expression for the off-critical phases
     M_2^{\mathrm{GNL},\mathbb{Z}_+} = \sum_{n=0}^{\infty} \mathfrak{m}_2\!\left[\tanh^2\left(\frac{\varepsilon_n^{\mathrm{ent}}}{2}\right)\right].
     \label{eq:NL_peschel}
 \end{equation}
+For a block of $\ell$ sites in the infinite chain, two separate boundaries contribute, so that Eq.~\eqref{M-eq:NL_peschel2} of the main text is twice Eq.~\eqref{eq:NL_peschel}. Since $\mathfrak{m}_2(x)\simeq(1-x)/\ln 2$ vanishes linearly as $x \to 1$, and $1-\lambda_n^2 \to 0$ exponentially for large $n$, the series converges rapidly: for $\mu$ away from criticality, only a few terms contribute, consistently with the Szeg\H{o} prediction of a finite $M_2^{\mathrm{GNL}}$. At the critical point $\mu_c=1$ ($\eta=1$), the correlation length diverges as $\xi\simeq |\mu-1|^{-1}$, and the spacing $\varepsilon \to 0$ since $\kappa \to 1$ and $K(\kappa) \to \infty$.
 
 \section{Quench dynamics: symbol and moments}
 \label{app:quench}
-In particular, the time-dependent block-Toeplitz symbol of $\Gamma_A(t)$ takes the form~\cite{Calabrese2005evolution}
+The time-dependent block-Toeplitz symbol of $\Gamma_A(t)$ takes the form~\cite{Calabrese2005evolution}
 \begin{equation}
     (\Gamma_A)_{mn}(t) = \int_0^{2\pi}\!\frac{dk}{2\pi}\,e^{ik(m-n)}\,g(k,t)\;,\label{eq:mustang}
 \end{equation}
@@ -1505,8 +1512,18 @@ where $v_k = d\varepsilon_k/dk$ is the group velocity.
 At $t=0$ the bracket equals one and all moments take the pure-state value $2\ell$, while the term proportional to $\min(1,2|v_k|t/\ell)$ interpolates ballistically towards  the stationary (GGE) moments $\frac{2\ell}{\pi}\int_0^\pi\cos^{2n}(\Delta\theta_k)\,dk$, capturing the propagation of quasiparticle pairs.
 Inserting Eq.~\eqref{eq:moments_asymptotic} into Eq.~\eqref{eq:circccc} and carrying out the contour integration yields the quasiparticle formula, Eq.~\eqref{M-eq:fagotti_mnl}.
 
-\section{Outlook}
+Only the time-independent part of $p$ survives, $p(k,\infty) = e^{-i\theta_k}\cos(\Delta\theta_k)$, while $q(k,\infty) = 0$.
+The weight $\mathfrak{m}_2(\sin^2\Delta\theta_k)$ in Eq.~\eqref{M-eq:fagotti_mnl} quantifies the Gaussian-restricted non-local magic carried by each entangled pair: it vanishes both when $\Delta\theta_k = 0$ (no quench, no entanglement production) and when $\Delta\theta_k = \pi/2$ (maximally entangled but stabilizer-like mode), and is maximal at intermediate values.
+The exact time evolution in Fig.~\ref{M-fig:dynamics}(a,b) of the main text is obtained by constructing the full block-Toeplitz $\Gamma_A(t)$ via Eq.~\eqref{eq:pq_symbol} and diagonalizing, for the quench $\mu_0 = \infty \to \mu = 1$ (panel (a)) and $\mu_0 = 2 \to \mu = 1$ (panel (b)) at subsystem sizes $\ell = 20, 40, 60, 100, 160$.
+
+\section{Summary of the applications and outlook}
 \label{app:outlook}
+We applied this framework across three key physical settings.
+For typical fermionic Gaussian states, we derived an exact Page-like curve via random matrix theory, a prediction independently confirmed by SYK$_2$ mid-spectrum eigenstates.
+At equilibrium, we characterized the Gaussian-restricted non-local magic of the XY spin chain ground state, obtaining exact results in both gapped and critical phases: a finite saturation value off criticality via corner transfer matrices, and logarithmic scaling at the critical point via the Fisher--Hartwig formula.
+Out of equilibrium, we established a quasiparticle picture for the spreading of Gaussian-restricted non-local magic after quantum quenches, finding linear growth up to a crossing time $t^\star= \ell/(2v_\mathrm{max})$  followed by saturation to a volume-law value.
+In contrast, random Gaussian circuits exhibit diffusive growth, with non-local magic scaling as $\sqrt{t}$ before saturating at the Haar-random value on a timescale $t\sim N^2$.
+
 The analytical tractability established here opens several natural directions for future investigation.
 
 \emph{Higher dimensional systems.}

@@ -700,9 +700,10 @@
   \BibitemOpen
   \href@noop {} {}\bibinfo {note} {See Supplemental Material at [URL will be
   inserted by publisher] for the full proof of Theorem~1, the variational
-  verification of Eqs.~(4) and~(5), the error analysis for the experimental
-  estimation, the generalization to R\'enyi index $\alpha>2$, and further
-  details on the numerical simulations, which includes
+  verification of Eqs.~(5) and~(7), the error analysis for the experimental
+  estimation, the generalization to R\'enyi index $\alpha>2$, details on the
+  numerical simulations, the rainbow-state example, details on the XY chain and
+  on the quench dynamics, and an extended outlook, which include
   Refs.~\cite{Hough2006,HornJohnson2012,Bapat1989,bhatia2013matrix,MR38136,sfeo}}\BibitemShut
   {NoStop}%
 \bibitem [{\citenamefont {Spee}\ \emph {et~al.}(2018)\citenamefont {Spee},
@@ -810,6 +811,13 @@
   {https://doi.org/10.1103/PhysRevLett.125.180604} {\bibfield  {journal}
   {\bibinfo  {journal} {Phys. Rev. Lett.}\ }\textbf {\bibinfo {volume} {125}},\
   \bibinfo {pages} {180604} (\bibinfo {year} {2020})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Simon}(2010)}]{simon2010szego}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {B.}~\bibnamefont
+  {Simon}},\ }\href@noop {} {\emph {\bibinfo {title} {Szego's Theorem and Its
+  Descendants: Spectral Theory for L2 Perturbations of Orthogonal
+  Polynomials}}}\ (\bibinfo  {publisher} {Princeton university press},\
+  \bibinfo {year} {2010})\BibitemShut {NoStop}%
 \bibitem [{\citenamefont {Jin}\ and\ \citenamefont {Korepin}(2004)}]{Jin_2004}%
   \BibitemOpen
   \bibfield  {author} {\bibinfo {author} {\bibfnamefont {B.-Q.}\ \bibnamefont
@@ -820,24 +828,6 @@
   {\bibinfo  {journal} {Journal of Statistical Physics}\ }\textbf {\bibinfo
   {volume} {116}},\ \bibinfo {pages} {79–95} (\bibinfo {year}
   {2004})}\BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Its}\ \emph {et~al.}(2005)\citenamefont {Its},
-  \citenamefont {Jin},\ and\ \citenamefont {Korepin}}]{Its_2005}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.~R.}\ \bibnamefont
-  {Its}}, \bibinfo {author} {\bibfnamefont {B.-Q.}\ \bibnamefont {Jin}},\ and\
-  \bibinfo {author} {\bibfnamefont {V.~E.}\ \bibnamefont {Korepin}},\
-  }\bibfield  {title} {\bibinfo {title} {Entanglement in thexyspin chain},\
-  }\href {https://doi.org/10.1088/0305-4470/38/13/011} {\bibfield  {journal}
-  {\bibinfo  {journal} {J. Phys. A Math. Gen.}\ }\textbf {\bibinfo {volume}
-  {38}},\ \bibinfo {pages} {2975–2990} (\bibinfo {year} {2005})}\BibitemShut
-  {NoStop}%
-\bibitem [{\citenamefont {Simon}(2010)}]{simon2010szego}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {B.}~\bibnamefont
-  {Simon}},\ }\href@noop {} {\emph {\bibinfo {title} {Szego's Theorem and Its
-  Descendants: Spectral Theory for L2 Perturbations of Orthogonal
-  Polynomials}}}\ (\bibinfo  {publisher} {Princeton university press},\
-  \bibinfo {year} {2010})\BibitemShut {NoStop}%
 \bibitem [{\citenamefont {Peschel}\ and\ \citenamefont
   {Eisler}(2009)}]{Peschel2009}%
   \BibitemOpen
@@ -871,6 +861,17 @@
 \bibitem [{zen()}]{zenodo}%
   \BibitemOpen
   \href@noop {} {\bibinfo {title} {Code and data for the paper}}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Its}\ \emph {et~al.}(2005)\citenamefont {Its},
+  \citenamefont {Jin},\ and\ \citenamefont {Korepin}}]{Its_2005}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.~R.}\ \bibnamefont
+  {Its}}, \bibinfo {author} {\bibfnamefont {B.-Q.}\ \bibnamefont {Jin}},\ and\
+  \bibinfo {author} {\bibfnamefont {V.~E.}\ \bibnamefont {Korepin}},\
+  }\bibfield  {title} {\bibinfo {title} {Entanglement in thexyspin chain},\
+  }\href {https://doi.org/10.1088/0305-4470/38/13/011} {\bibfield  {journal}
+  {\bibinfo  {journal} {J. Phys. A Math. Gen.}\ }\textbf {\bibinfo {volume}
+  {38}},\ \bibinfo {pages} {2975–2990} (\bibinfo {year} {2005})}\BibitemShut
   {NoStop}%
 \bibitem [{\citenamefont {Calabrese}\ and\ \citenamefont
   {Cardy}(2004)}]{Calabrese2004entanglement}%

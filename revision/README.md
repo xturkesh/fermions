@@ -27,6 +27,16 @@ La base è la versione sottomessa al giornale (terminologia GNL / "Gaussian-rest
 | `checks/small_N_check.py` | Fig. R1: campionamento Haar a N piccolo vs formula a N finito (peso corretto e stampato) |
 | `email_editor.md` | Mail all'editor (richiesta di un terzo round) |
 
+## Versione PRL (`prl/`) — dal testo PRX con tagli minimi
+
+| File | Contenuto |
+|---|---|
+| `prl/main.pdf` (`main.tex` + `endmatter.tex`) | Letter: testo PRX tenuto il più possibile, titoletti in grassetto inline; End Matter: osservabilità sperimentale, Page curve a N finito, fase ordinata, area law, analogia quench–entanglement, circuiti random |
+| `prl/supp.pdf` (`supp.tex`) | SM: S1–S4 = appendici PRX (forma canonica senza permutazioni), S5 SYK₂, S6 rainbow, S7 dettagli XY, S8 dettagli quench, S9 riassunto applicazioni + outlook |
+| `prl/response.pdf` | Lettera agli editor PRL + risposte ai referee (numerazione PRL) |
+| `prl/diff/diff_vs_prxq.pdf` | Diff rispetto alla versione PRX: rosso = tagliato, blu = aggiunto; il testo spostato è mostrato nella nuova posizione (`make_diff.py`) |
+| `QT10218_PRL_sources.zip`, `QT10218_PRL_pdfs.zip` | Sorgenti minimi con `compile.sh`; PDF (incluso il diff) |
+
 ## Modifiche di contenuto di questo round
 
 1. **Definizioni (Eq. 2–3) e Teorema 1 solo per i blocchi contigui** A={1,…,ℓ}, B={ℓ+1,…,N} (suggerimento del referee A): niente più T_π/π_AB né shift ciclico. Argomento aggiunto (End Matter "Local Gaussian orbit" + SM sotto Eq. S5): U_{O_A}⊗U_{O_B} ∝ U_{O_A⊕det(O_A)O_B}, quindi Eq. (3) = massimizzazione di ζ₂ sull'orbita (S5). Frase che dice che per bipartizioni non contigue l'identificazione fallisce (referee A).
