@@ -1,7 +1,7 @@
 \documentclass[prx,twocolumn,superscriptaddress,aps,10pt, frontmatterverbose, reprint,footinbib,longbibliography=true]{revtex4-2}
 %DIF LATEXDIFF DIFFERENCE FILE
 %DIF DEL ../submitted/main_submitted_clean.tex   Thu Oct 22 07:08:30 2026
-%DIF ADD main.tex                                Thu Oct 22 08:52:12 2026
+%DIF ADD main.tex                                Fri Nov  6 08:36:07 2026
 
 
 \usepackage{graphicx}
@@ -540,7 +540,7 @@ In Fig.~\ref{fig:Ising_model}(a), we validate Eq.~\eqref{eq:analytic_NL} by comp
 cf.~Appendix~\ref{app:variational}~\footnote{We nevertheless find that throughout the XY phase
 diagram, for the system sizes accessible to exact minimization, the agreement persists, see Ref.~\cite{zenodo}.}.
 
-In Fig.~\ref{fig:Ising_model}(b), we compare exact numerics for $N=10^6$ qubits and $\ell = 16,32,64,128$ with the asymptotic formula Eq.~\eqref{eq:NL_peschel2}, finding quantitative agreement. Notably, for $\mu<1$ the non-local magic is strongly suppressed, $M_2^{\mathrm{GNL}}$ being exponentially small in the level spacing $\varepsilon$ of the entanglement spectrum and vanishing exactly only in the GHZ limit $\mu\to0$. This is the ordered (ferromagnetic) phase, whose ground state approaches the GHZ state $\frac{1}{\sqrt{2}}(|0\rangle^{\otimes N}+|1\rangle^{\otimes N})$ as $\mu\to 0$. The suppression of non-local magic in this regime can be understood from the Peschel entanglement spectrum, Eq.~\eqref{eq:peschel_spectrum}: for $\mu<1$ and $\eta=1$, the single-particle entanglement energies are $\varepsilon_n^{\mathrm{ent}}=2n\varepsilon$. The $n=0$ mode has $\varepsilon_0=0$, yielding $\lambda_0=\tanh(0)=0$ (a maximally entangled, stabilizer-like Bell pair), while all $n\ge 1$ modes have $\lambda_n=\tanh(n\varepsilon)$ exponentially close to $1$ (nearly unentangled modes). Since $\mathfrak{m}_2(0)=\mathfrak{m}_2(1)=0$, every mode contributes an exponentially small amount of non-local magic. This is a striking example of a phase with nonzero entanglement entropy (area law) but negligible  non-local magic. In contrast, the entanglement entropy receives a finite area-law contribution from the $n=0$ maximally entangled mode.
+In Fig.~\ref{fig:Ising_model}(b), we compare exact numerics for $N=10^6$ qubits and $\ell = 16,32,64,128$ with the asymptotic formula Eq.~\eqref{eq:NL_peschel2}, finding quantitative agreement. Notably, for $\mu<1$ the non-local magic is strongly suppressed, $M_2^{\mathrm{GNL}}$ being exponentially small in the level spacing $\varepsilon$ of the entanglement spectrum and vanishing exactly only in the GHZ limit $\mu\to0$. This is the ordered (ferromagnetic) phase, whose ground state approaches the GHZ state \DIFaddbegin \DIFadd{$\frac{1}{\sqrt{2}}(|{+}\rangle^{\otimes N}+|{-}\rangle^{\otimes N})$, with $X|{\pm}\rangle=\pm|{\pm}\rangle$, }\DIFaddend as $\mu\to 0$. The suppression of non-local magic in this regime can be understood from the Peschel entanglement spectrum, Eq.~\eqref{eq:peschel_spectrum}: for $\mu<1$ and $\eta=1$, the single-particle entanglement energies are $\varepsilon_n^{\mathrm{ent}}=2n\varepsilon$. The $n=0$ mode has $\varepsilon_0=0$, yielding $\lambda_0=\tanh(0)=0$ (a maximally entangled, stabilizer-like Bell pair), while all $n\ge 1$ modes have $\lambda_n=\tanh(n\varepsilon)$ exponentially close to $1$ (nearly unentangled modes). Since $\mathfrak{m}_2(0)=\mathfrak{m}_2(1)=0$, every mode contributes an exponentially small amount of non-local magic. This is a striking example of a phase with nonzero entanglement entropy (area law) but negligible  non-local magic. In contrast, the entanglement entropy receives a finite area-law contribution from the $n=0$ maximally entangled mode.
 
 At the critical point $\mu_c=1$ ($\eta=1$), the gap closes and the correlation length diverges as $\xi\simeq |\mu-1|^{-1}$; the spacing $\varepsilon \to 0$ (since $\kappa \to 1$ and $K(\kappa) \to \infty$), so the series in Eq.~\eqref{eq:NL_peschel2} diverges.
 The Bogoliubov angle $\theta_k$ develops a jump discontinuity at $k = 0$, placing the problem squarely in the Fisher--Hartwig regime~\cite{Jin_2004}.
@@ -1814,7 +1814,7 @@ Focussing on the block with the mixed product,
 \DIFaddbegin \begin{equation}
 \DIFadd{\begin{split}
     &\lambda^2\|X_{01,01}\|_{\mathrm{HS}}^2+\mu^2\|X_{10,10}\|_{\mathrm{HS}}^2\\
-    &\qquad +2\chi\lambda\mu\,\mathrm{Re}\langle X_{01,01},X_{10,10}\rangle\\
+    &\qquad +2\chi\lambda\mu\,\mathrm{Re}\langle X_{01,01},X_{10,10}\rangle_{\mathrm{HS}}\\
     &\le(\lambda^2+\mu^2)\left(\|X_{01,01}\|_{\mathrm{HS}}^2+\|X_{10,10}\|_{\mathrm{HS}}^2\right),
 \end{split}}\end{equation}\DIFaddend 
 which holds because the right-hand side minus the  left-hand side is a complete square,
@@ -2034,10 +2034,10 @@ Since $\mathfrak{m}_2(\lambda^2) = -\log_2(1-\lambda^2+\lambda^4)$ is smooth on 
 \end{equation}
 is bounded, so $\mathfrak{m}_2$ is uniformly Lipschitz on $[0,1]$ with constant $L = \max_{\lambda \in [0,1]} \bigl|\frac{d}{d\lambda}\mathfrak{m}_2(\lambda^2)\bigr| = O(1)$.
 Combining with the Hoffman--Wielandt stability bound for eigenvalues of $i\Gamma_A$,
-\begin{equation}
-    |\delta M_2^{\mathrm{GNL}}| \lesssim L\,\sqrt{\ell}\,\|\delta\Gamma_A\|_F\;.
-\end{equation}
-A uniform entrywise error $\epsilon_\Gamma$ implies $\|\delta\Gamma_A\|_F = O(\ell \epsilon_\Gamma)$, giving $|\delta M_2^{\mathrm{GNL}}| = \mathcal{O}(\ell^{3/2}\epsilon_\Gamma)$.
+\DIFaddbegin \begin{equation}
+    \DIFadd{|\delta M_2^{\mathrm{GNL}}| \lesssim L\,\sqrt{\ell}\,\|\delta\Gamma_A\|_{\mathrm{HS}}\;.
+}\end{equation}\DIFaddend 
+A uniform entrywise error $\epsilon_\Gamma$ implies \DIFaddbegin \DIFadd{$\|\delta\Gamma_A\|_{\mathrm{HS}} = O(\ell \epsilon_\Gamma)$}\DIFaddend , giving $|\delta M_2^{\mathrm{GNL}}| = \mathcal{O}(\ell^{3/2}\epsilon_\Gamma)$.
 To estimate the non-local magic density $m_2^{\mathrm{GNL}} = M_2^{\mathrm{GNL}}/\ell$ with additive accuracy $\varepsilon$, one needs $\epsilon_\Gamma = \mathcal{O}(\varepsilon/\sqrt{\ell})$, yielding
 \begin{equation}
     N_{\mathrm{shots}} = O\!\left(\frac{\ell^3\log(\ell/\delta)}{\varepsilon^2}\right).

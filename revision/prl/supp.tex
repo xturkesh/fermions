@@ -99,7 +99,7 @@ urlcolor=teal]{hyperref}
 
 \maketitle
 
-\noindent In this Supplemental Material, equations, figures and sections labelled with the prefix ``S'' refer to this document, while the remaining ones refer to the main text. Section~\ref{app:proof} contains the full proof of Theorem~\ref{M-thm:global}; Sec.~\ref{app:variational} the variational verification of Eqs.~\eqref{M-eq:analytic_NL} and~\eqref{M-eq:analytic_NL_alpha}; Sec.~\ref{app:experimental} the error analysis for the experimental estimation of the GNL magic; Sec.~\ref{Sec:generaliz} the generalization of our results to R\'enyi index $\RENYI>2$; and Sec.~\ref{app:numerics} further details on the numerical simulations.
+\noindent In this Supplemental Material, equations, figures and sections labelled with the prefix ``S'' refer to this document, while the remaining ones refer to the main text. Section~\ref{app:proof} contains the full proof of Theorem~\ref{M-thm:global}; Sec.~\ref{app:variational} the variational verification of Eqs.~\eqref{M-eq:analytic_NL} and~\eqref{M-eq:analytic_NL_alpha}; Sec.~\ref{app:experimental} the error analysis for the experimental estimation of the GNL magic; Sec.~\ref{Sec:generaliz} the generalization of our results to R\'enyi index $\RENYI>2$; and Sec.~\ref{app:numerics} further details on the numerical simulations, including the analysis of random Gaussian circuits.
 
 \section{Proof of Theorem~\ref{M-thm:global}: An Odyssey %as Nolan intended -- <3
 }
@@ -1105,7 +1105,7 @@ Focussing on the block with the mixed product,
 \begin{equation}
 \begin{split}
     &\lambda^2\|X_{01,01}\|_{\mathrm{HS}}^2+\mu^2\|X_{10,10}\|_{\mathrm{HS}}^2\\
-    &\qquad +2\chi\lambda\mu\,\mathrm{Re}\langle X_{01,01},X_{10,10}\rangle\\
+    &\qquad +2\chi\lambda\mu\,\mathrm{Re}\langle X_{01,01},X_{10,10}\rangle_{\mathrm{HS}}\\
     &\le(\lambda^2+\mu^2)\left(\|X_{01,01}\|_{\mathrm{HS}}^2+\|X_{10,10}\|_{\mathrm{HS}}^2\right),
 \end{split}\end{equation}
 which holds because the right-hand side minus the  left-hand side is a complete square,
@@ -1332,9 +1332,9 @@ Since $\mathfrak{m}_2(\lambda^2) = -\log_2(1-\lambda^2+\lambda^4)$ is smooth on 
 is bounded, so $\mathfrak{m}_2$ is uniformly Lipschitz on $[0,1]$ with constant $L = \max_{\lambda \in [0,1]} \bigl|\frac{d}{d\lambda}\mathfrak{m}_2(\lambda^2)\bigr| = O(1)$.
 Combining with the Hoffman--Wielandt stability bound for eigenvalues of $i\Gamma_A$,
 \begin{equation}
-    |\delta M_2^{\mathrm{GNL}}| \lesssim L\,\sqrt{\ell}\,\|\delta\Gamma_A\|_F\;.
+    |\delta M_2^{\mathrm{GNL}}| \lesssim L\,\sqrt{\ell}\,\|\delta\Gamma_A\|_{\mathrm{HS}}\;.
 \end{equation}
-A uniform entrywise error $\epsilon_\Gamma$ implies $\|\delta\Gamma_A\|_F = O(\ell \epsilon_\Gamma)$, giving $|\delta M_2^{\mathrm{GNL}}| = \mathcal{O}(\ell^{3/2}\epsilon_\Gamma)$.
+A uniform entrywise error $\epsilon_\Gamma$ implies $\|\delta\Gamma_A\|_{\mathrm{HS}} = O(\ell \epsilon_\Gamma)$, giving $|\delta M_2^{\mathrm{GNL}}| = \mathcal{O}(\ell^{3/2}\epsilon_\Gamma)$.
 To estimate the non-local magic density $m_2^{\mathrm{GNL}} = M_2^{\mathrm{GNL}}/\ell$ with additive accuracy $\varepsilon$, one needs $\epsilon_\Gamma = \mathcal{O}(\varepsilon/\sqrt{\ell})$, yielding
 \begin{equation}
     N_{\mathrm{shots}} = O\!\left(\frac{\ell^3\log(\ell/\delta)}{\varepsilon^2}\right).
@@ -1382,10 +1382,6 @@ In Fig.~\ref{M-fig:typicality}(b), we plot the resulting non-local magic density
 
 \subsection{Random Gaussian circuits}
 \label{app:circuits}
-We consider brickwork circuits of nearest-neighbor Gaussian gates, each drawn from the Haar measure on $\mathrm{SO}(4)$, acting on $|\mathbf{0}\rangle$, with the half-chain bipartition $A=\{1,\dots,N/2\}$~\cite{tirrito2025magicphasetransitionsmonitored}.
-In contrast with the ballistic spreading of integrable quenches, operator spreading in such circuits is diffusive~\cite{dias2021diffusiveoperatorspreadingrandom,swann}. At early times the modes of $A$ are nearly unentangled, and $\mathfrak{m}_2(x) \simeq (1-x)/\ln 2$ for $x\to1$ gives $M_2^{\mathrm{GNL}}(t) \simeq [2\ell-\mathrm{Tr}(i\Gamma_A(t))^2]/(2\ln 2)=\|\Gamma_{AB}(t)\|_{\mathrm{HS}}^2/(2\ln 2)$, with $\Gamma_{AB}$ the off-diagonal block of $\Gamma$, governed by the diffusive spreading of two-point correlations across the cut~\cite{dias2021diffusiveoperatorspreadingrandom}, so that $M_2^{\mathrm{GNL}} \propto \sqrt{t}$ for $1 \ll t \ll N^2$.
-Figure~\ref{M-fig:dynamics}(d) of the main text shows an excellent data collapse of $\overline{M}_2^{\mathrm{GNL}}(t)/N$ as a function of $\sqrt{t}/N$, interpolating between $\sqrt{t}$ growth and saturation at the Page value $\overline{\mathsf{m}}_{2}^{\mathrm{GNL}}(1/2)$ on the diffusive timescale $t\sim N^2$.
-
 The circuit is composed of nearest-neighbor fermionic Gaussian unitaries arranged in a brick-wall geometry on $N$ sites.
 A single layer $O_{\mathrm{layer}} = O_{\mathrm{odd}}\,O_{\mathrm{even}}$ consists of an even and an odd half-step, namely $O_{\mathrm{even}} = \prod_{j=1}^{N/2} R_{2j-1,2j}$ and $O_{\mathrm{odd}} = \prod_{j=1}^{N/2-1} R_{2j,2j+1}$, where each $R_{j,j+1} \in \mathrm{SO}(4)$ is a random orthogonal matrix drawn independently from the Haar measure, acting on the four Majorana operators $(\gamma_{2j-1}, \gamma_{2j}, \gamma_{2j+1}, \gamma_{2j+2})$ of sites $j$ and $j+1$.
 The full circuit after $t$ layers is $O(t) = \prod_{s=1}^t O_{\mathrm{layer}}^{(s)} \in \mathrm{SO}(2N)$.
@@ -1393,6 +1389,11 @@ The initial state is the product state $|\mathbf{0}\rangle$ (vacuum of all fermi
 
 The time-evolved state remains Gaussian at all times, with covariance matrix $\Gamma(t) = O(t)\,\Gamma_0\,O(t)^T$.
 The Gaussian-restricted non-local magic is therefore entirely determined by the restricted covariance matrix $\Gamma_A(t)$ and its eigenvalues $\pm\lambda_j(t)$.
+
+We take the half-chain bipartition $A=\{1,\dots,N/2\}$, $\ell=N/2$~\cite{tirrito2025magicphasetransitionsmonitored}.
+In contrast with the ballistic spreading of integrable quenches, operator spreading in such circuits is diffusive~\cite{dias2021diffusiveoperatorspreadingrandom,swann}. At early times the modes of $A$ are nearly unentangled, and $\mathfrak{m}_2(x) \simeq (1-x)/\ln 2$ for $x\to1$ gives $M_2^{\mathrm{GNL}}(t) \simeq [2\ell-\mathrm{Tr}(i\Gamma_A(t))^2]/(2\ln 2)=\|\Gamma_{AB}(t)\|_{\mathrm{HS}}^2/(2\ln 2)$, with $\Gamma_{AB}$ the off-diagonal block of $\Gamma$, governed by the diffusive spreading of two-point correlations across the cut~\cite{dias2021diffusiveoperatorspreadingrandom}, so that $M_2^{\mathrm{GNL}} \propto \sqrt{t}$ for $1 \ll t \ll N^2$.
+Figure~\ref{M-fig:dynamics}(d) of the main text shows an excellent data collapse of $\overline{M}_2^{\mathrm{GNL}}(t)/N$ as a function of $\sqrt{t}/N$, interpolating between $\sqrt{t}$ growth and saturation at the Page value $\overline{\mathsf{m}}_{2}^{\mathrm{GNL}}(1/2)$ on the diffusive timescale $t\sim N^2$.
+
 
 
 \bibliography{ref_current}
