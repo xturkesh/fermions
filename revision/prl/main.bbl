@@ -6,7 +6,7 @@
 %Control: page (0) single
 %Control: year (1) truncated
 %Control: production of eprint (0) enabled
-\begin{thebibliography}{116}%
+\begin{thebibliography}{117}%
 \makeatletter
 \providecommand \@ifxundefined [1]{%
  \@ifx{#1\undefined}
@@ -790,6 +790,15 @@
   {Mehta}},\ }\href@noop {} {\emph {\bibinfo {title} {Random Matrices}}},\
   \bibinfo {edition} {3rd}\ ed.\ (\bibinfo  {publisher} {Academic Press},\
   \bibinfo {year} {2004})\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Livan}\ \emph {et~al.}(2018)\citenamefont {Livan},
+  \citenamefont {Novaes},\ and\ \citenamefont {Vivo}}]{Livan_2018}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {G.}~\bibnamefont
+  {Livan}}, \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {Novaes}},\ and\
+  \bibinfo {author} {\bibfnamefont {P.}~\bibnamefont {Vivo}},\ }\href
+  {https://doi.org/10.1007/978-3-319-70885-0} {\emph {\bibinfo {title}
+  {Introduction to Random Matrices}}}\ (\bibinfo  {publisher} {Springer},\
+  \bibinfo {year} {2018})\BibitemShut {NoStop}%
 \bibitem [{\citenamefont {Bianchi}\ \emph {et~al.}(2021)\citenamefont
   {Bianchi}, \citenamefont {Hackl},\ and\ \citenamefont
   {Kieburg}}]{PhysRevB.103.L241118}%
@@ -897,15 +906,6 @@
   \BibitemOpen
   \href@noop {} {\bibinfo {title} {Code and data for the paper}}\BibitemShut
   {NoStop}%
-\bibitem [{\citenamefont {Hastings}(2007)}]{Hastings_2007}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.~B.}\ \bibnamefont
-  {Hastings}},\ }\bibfield  {title} {\bibinfo {title} {An area law for
-  one-dimensional quantum systems},\ }\href
-  {https://doi.org/10.1088/1742-5468/2007/08/p08024} {\bibfield  {journal}
-  {\bibinfo  {journal} {Journal of Statistical Mechanics: Theory and
-  Experiment}\ }\textbf {\bibinfo {volume} {2007}},\ \bibinfo {pages}
-  {P08024–P08024} (\bibinfo {year} {2007})}\BibitemShut {NoStop}%
 \bibitem [{\citenamefont {Calabrese}\ and\ \citenamefont
   {Cardy}(2005)}]{Calabrese2005evolution}%
   \BibitemOpen
@@ -940,23 +940,6 @@
   {https://doi.org/10.1103/PhysRevA.78.010306} {\bibfield  {journal} {\bibinfo
   {journal} {Phys. Rev. A}\ }\textbf {\bibinfo {volume} {78}},\ \bibinfo
   {pages} {010306} (\bibinfo {year} {2008})}\BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Tirrito}\ \emph
-  {et~al.}(2025{\natexlab{b}})\citenamefont {Tirrito}, \citenamefont {Lumia},
-  \citenamefont {Paviglianiti}, \citenamefont {Lami}, \citenamefont {Silva},
-  \citenamefont {Turkeshi},\ and\ \citenamefont
-  {Collura}}]{tirrito2025magicphasetransitionsmonitored}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {E.}~\bibnamefont
-  {Tirrito}}, \bibinfo {author} {\bibfnamefont {L.}~\bibnamefont {Lumia}},
-  \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont {Paviglianiti}}, \bibinfo
-  {author} {\bibfnamefont {G.}~\bibnamefont {Lami}}, \bibinfo {author}
-  {\bibfnamefont {A.}~\bibnamefont {Silva}}, \bibinfo {author} {\bibfnamefont
-  {X.}~\bibnamefont {Turkeshi}},\ and\ \bibinfo {author} {\bibfnamefont
-  {M.}~\bibnamefont {Collura}},\ }\href {https://arxiv.org/abs/2507.07179}
-  {\bibinfo {title} {Magic phase transitions in monitored gaussian fermions}}
-  (\bibinfo {year} {2025}{\natexlab{b}}),\ \Eprint
-  {https://arxiv.org/abs/2507.07179} {arXiv:2507.07179 [quant-ph]} \BibitemShut
-  {NoStop}%
 \bibitem [{\citenamefont {Dias}\ \emph {et~al.}(2021)\citenamefont {Dias},
   \citenamefont {Haque}, \citenamefont {Ribeiro},\ and\ \citenamefont
   {McClarty}}]{dias2021diffusiveoperatorspreadingrandom}%
@@ -1375,4 +1358,30 @@
   {https://doi.org/10.1103/PhysRevA.106.042426} {\bibfield  {journal} {\bibinfo
    {journal} {Phys. Rev. A}\ }\textbf {\bibinfo {volume} {106}},\ \bibinfo
   {pages} {042426} (\bibinfo {year} {2022})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Tirrito}\ \emph
+  {et~al.}(2025{\natexlab{b}})\citenamefont {Tirrito}, \citenamefont {Lumia},
+  \citenamefont {Paviglianiti}, \citenamefont {Lami}, \citenamefont {Silva},
+  \citenamefont {Turkeshi},\ and\ \citenamefont
+  {Collura}}]{tirrito2025magicphasetransitionsmonitored}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {E.}~\bibnamefont
+  {Tirrito}}, \bibinfo {author} {\bibfnamefont {L.}~\bibnamefont {Lumia}},
+  \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont {Paviglianiti}}, \bibinfo
+  {author} {\bibfnamefont {G.}~\bibnamefont {Lami}}, \bibinfo {author}
+  {\bibfnamefont {A.}~\bibnamefont {Silva}}, \bibinfo {author} {\bibfnamefont
+  {X.}~\bibnamefont {Turkeshi}},\ and\ \bibinfo {author} {\bibfnamefont
+  {M.}~\bibnamefont {Collura}},\ }\href {https://arxiv.org/abs/2507.07179}
+  {\bibinfo {title} {Magic phase transitions in monitored gaussian fermions}}
+  (\bibinfo {year} {2025}{\natexlab{b}}),\ \Eprint
+  {https://arxiv.org/abs/2507.07179} {arXiv:2507.07179 [quant-ph]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Hastings}(2007)}]{Hastings_2007}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.~B.}\ \bibnamefont
+  {Hastings}},\ }\bibfield  {title} {\bibinfo {title} {An area law for
+  one-dimensional quantum systems},\ }\href
+  {https://doi.org/10.1088/1742-5468/2007/08/p08024} {\bibfield  {journal}
+  {\bibinfo  {journal} {Journal of Statistical Mechanics: Theory and
+  Experiment}\ }\textbf {\bibinfo {volume} {2007}},\ \bibinfo {pages}
+  {P08024–P08024} (\bibinfo {year} {2007})}\BibitemShut {NoStop}%
 \end{thebibliography}%

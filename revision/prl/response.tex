@@ -42,32 +42,29 @@
 %=====================================================================
 
 \noindent
-Dear Dr.\ Regula,\\
-\noindent Associate Editor\\
-\noindent \textit{PRX Quantum}\\
-
-\todo{Adapt the addressee and the journal if the Letter version is submitted elsewhere (e.g., Physical Review Letters).}
+Dear Editors,\\
+\noindent \textit{Physical Review Letters}\\
 
 \bigskip
 
 \noindent
-We thank you for handling our submission and the Referees for their careful reading of the revised manuscript and for their constructive comments.
+We submit our manuscript ``\textit{Non-Local Magic Resources for Fermionic Gaussian States}'', rewritten as a Letter, for publication in Physical Review Letters. The manuscript was previously reviewed by PRX~Quantum (QT10218); we enclose the reports of the second round and our point-by-point reply.
 
 \medskip
 \noindent
-Referee~B writes that the revised manuscript ``\textit{has been substantially strengthened}'', that the new Theorem~1 and its proof address their main concern, and that the new terminology ``\textit{makes the scope of the result considerably clearer}''. Their remaining point is a typographical error in the Jacobi weight of Eq.~(11), which we have corrected; the thermodynamic-limit results, including the Page-curve saturation value, are unchanged.
+Neither report questions the significance of our results. Referee~B writes that the revised manuscript ``\textit{has been substantially strengthened}'' and that the new Theorem~1 and its proof address their main concern from the first round. Referee~A writes that, as far as they can tell, the result proved in the Appendix is correct.
 
 \medskip
 \noindent
-Referee~A writes that, as far as they can tell, the result proved in the Appendix, i.e., that Eq.~(57) is the maximum of $\zeta_2$ on the orbit of Eq.~(50), is correct, and points out that its identification with the definition of Eq.~(5) requires the bipartition to be contiguous. \emph{We have adopted the fix suggested by the Referee}: the definitions and Theorem~1 now refer to the contiguous blocks $A=\{1,\dots,\ell\}$ and $B=\{\ell+1,\dots,N\}$, which covers all the applications of the manuscript, and we have added the corresponding argument to the proof. We have also adopted the simpler proof of Lemma~5 sketched by the Referee, and revised the Appendix following all their suggestions.
+\emph{The two remaining objections concern technical details that were already present in the first version of the manuscript and were not raised in the first round.} Referee~A points out that, for non-contiguous bipartitions, the definition of the non-local magic contains a qubit permutation that is not Gaussian; this definition, together with our closed formula for arbitrary bipartitions, was already in the first version, where the formula was supported numerically. Referee~B points out an extra factor $(1-x)^{-1/2}$ in the finite-size Jacobi weight, a typo from a change of variables which, as the Referee notes explicitly, was not raised in the first round either.
 
 \medskip
 \noindent
-Finally, we have restructured the manuscript in the format of a Letter: the main results are presented in the main text, the technical details in the End Matter, and the former Appendices, otherwise unchanged except for the revisions listed below, form the Supplemental Material.
+Both points have a simple solution, which leaves all the figures and applications of the manuscript unchanged. Following Referee~A's own suggestion, the definitions and Theorem~1 now refer to the contiguous blocks $A=\{1,\dots,\ell\}$ and $B=\{\ell+1,\dots,N\}$, the setting used in all the applications. The typo in the Jacobi weight has been corrected: our calculations were carried out directly on the eigenvalues of the sampled covariance matrices, and the thermodynamic-limit results are unchanged. The remaining comments of Referee~A concern the presentation of the proof; we have implemented all of them, including the Referee's shorter proof of Lemma~5, made the logic of the proof, already outlined in the manuscript, more explicit, and added a statement on the use of AI tools.
 
 \medskip
 \noindent
-We believe that the revised manuscript fully addresses the remaining concerns of both Referees.
+In the Letter, the main results are presented in the main text; the outline of the proof, the derivation of the Page curve, the area law and further technical details are given in the End Matter, and the full proof and the remaining material in the Supplemental Material. We believe that an exact, polynomial-time formula for the non-local magic of fermionic Gaussian states, and the Page curve, critical scaling and quasiparticle picture that follow from it, will be of broad interest to the readership of Physical Review Letters.
 
 \medskip
 \noindent
@@ -84,13 +81,16 @@ Beatrice Magni, on behalf of the Authors
 \medskip
 
 \begin{itemize}[leftmargin=*]
-\item \textbf{Contiguous bipartitions} (Referee~A, Point~1): the definitions of the non-local and Gaussian-restricted non-local magic [previous Eqs.~(4)--(5), now Eqs.~(2)--(3)] and Theorem~1 now refer to the contiguous blocks $A=\{1,\dots,\ell\}$ and $B=\{\ell+1,\dots,N\}$, so that no qubit permutation $T_{\pi_{AB}}$ appears. New paragraph in the End Matter (``Local Gaussian orbit'') and below Eq.~(S5) showing that, in this case, the minimization of Eq.~(3) is exactly the maximization of $\zeta_2$ over the local orthogonal orbit solved in the proof.
-\item \textbf{Jacobi weight} (Referee~B): typo corrected in the joint distribution of the $x_m$ and, consistently, in the parameters and normalization of the Jacobi polynomials [previous Eqs.~(11), (14), (15), now Eqs.~(12)--(14)].
-\item \textbf{Proof of Theorem~1} (Referee~A, Points~2--14): new paragraph explaining the logic of the proof at the beginning of Sec.~S1 (and a summary in the End Matter); new proof of Lemma~S5 following the Referee's suggestion; explicit derivation of Eq.~(S15) in Lemma~S1; justification of Eq.~(S16); corrected Eq.~(S75); simplified bound after Eq.~(S36); removed the previous Eq.~(148); notation $c_x^\dagger=\sum_jx_jc_j^\dagger$ and $\|\cdot\|_{\mathrm{HS}}$ in the proof of Theorem~S1; rephrased the passages indicated by the Referee; corrected typos.
-\item \textbf{Acknowledgments}: added a statement on the use of AI tools and thanked the Referees.
-\item \textbf{Further corrections}: early-time expansion of the GNL magic in random Gaussian circuits (expansion around $\lambda=1$, the circuits starting from a product state); time units of the quench formulas made explicit; the suppression of the GNL magic in the ordered phase is now stated, as originally intended, for the Ising chain; antiperiodic boundary condition written for the fermions, $c_{N+1}=-c_1$; caption of Fig.~3 ($\ell=20,\dots,160$).
-\item \textbf{Format}: Letter with End Matter and Supplemental Material. The table at the end of this reply maps the equation numbers quoted in the reports to the present ones. A marked-up version of the manuscript in the previous format, highlighting all changes of content, is also provided.
+\item Eqs.~(2)--(3) and Theorem~1: restricted to the contiguous blocks $A=\{1,\dots,\ell\}$, $B=\{\ell+1,\dots,N\}$; argument in the End Matter (``Local Gaussian orbit'') and below Eq.~(S5) (Referee~A, Point~1).
+\item Abstract, Introduction, Conclusions: ``contiguous'' specified accordingly (Referee~A, Point~1).
+\item End Matter, Eqs.~(11)--(13): typo in the Jacobi weight corrected (Referee~B).
+\item SM, Sec.~S1: logic of the proof made explicit; new proof of Lemma~S5; Points~2--14 (Referee~A).
+\item Minor corrections: boundary condition, time units of the quench, early-time expansion of the random circuits, caption of Fig.~3.
+\item Acknowledgments: statement on the use of AI tools.
+\item Letter format: proof outline, Page-curve derivation, area law and technical details in the End Matter; full proof, random circuits and former Appendices in the SM.
 \end{itemize}
+
+\noindent The correspondence between the equation numbers quoted in the reports and the present ones is given at the end of this reply.
 
 \newpage
 
@@ -113,7 +113,7 @@ Beatrice Magni, on behalf of the Authors
 \end{quote}
 
 \reply{
-We thank the Referee for the careful reading of the proof, for confirming that the result proved in the Appendix is correct, and for identifying the missing step between that result and Theorem~1. We agree with the Referee, and have fixed Theorem~1 as detailed in our reply to Point~1 below.
+The Referee considers the result proved in the Appendix correct. The objection concerns its identification with the definition of Eq.~(5) [now Eq.~(3)] for non-contiguous bipartitions, which we have removed by restricting the definitions and Theorem~1 to contiguous blocks, as the Referee suggests (Point~1).
 }
 
 \vspace{0.4cm}
@@ -125,8 +125,11 @@ We thank the Referee for the careful reading of the proof, for confirming that t
 \end{quote}
 
 \reply{
-\todo{Adapt this paragraph, and the statement in the Acknowledgments, to the actual use of AI tools.}
-We thank the Referee for this comment. We have added a statement on the use of AI tools in the Acknowledgments, and we have revised all the passages indicated by the Referee (Points~2--14 below). Moreover, we have added at the beginning of Sec.~S1 a paragraph explaining the logic of the proof, i.e., why each step is taken: $\zeta_2$ is a collision probability depending on two independent rotations and on all the minors of the matrix parametrizing the state; each step either removes one of these complications exactly, or bounds the functional by a simpler one which is tight at the canonical point, so that the canonical form, saturating every inequality of the chain, is the global maximizer. A shorter version of this discussion is now in the End Matter.
+AI tools were not used substantively in the previous version of the manuscript, and the proof was written and checked by the authors; for this reason no statement was included. We have now added one in the Acknowledgments: some support from AI tools was used in the writing and presentation. The Referee's impression concerns the style of some passages, not the result of the proof, which the Referee considers correct; we have rewritten the passages indicated (Points~5, 6, 9 and~12).
+
+\medskip
+\noindent
+Concerning the intuition, we respectfully note that the reason for the moves of the proof was already given in the manuscript. Since the optimization runs over local fermionic Gaussian unitaries, the proof is formulated in the fermionic language, and the natural candidate for the optimum is the BCS canonical form of Botero and Reznik, as stated in the Introduction (``\textit{the minimization over local Gaussian unitaries is solved exactly by the BCS canonical form}'') and below Theorem~1. All the subsequent steps serve to show that this form is the global maximizer of $\zeta_2$ on the orbit: the roadmap of Fig.~4 [now Fig.~S1] is precisely this ``why''. To make it more visible, we now state it explicitly in the End Matter and at the beginning of Sec.~S1 of the Supplemental Material, followed by a short summary of the role of each step.
 }
 
 \vspace{0.4cm}
@@ -141,11 +144,7 @@ We thank the Referee for this comment. We have added a statement on the use of A
 \end{quote}
 
 \reply{
-We thank the Referee for this important observation and for the explicit counterexample of Sec.~3 of the report, which we have verified. We agree, and we have adopted the second fix suggested by the Referee, which preserves the upper bound $M_2^{\NLl}\le M_2^{\FNL}$ on the unrestricted non-local magic. As suggested, both Theorem~1 and, for consistency, the definitions of the non-local and Gaussian-restricted non-local magic [previous Eqs.~(4)--(5), now Eqs.~(2)--(3)] now refer to the contiguous blocks $A=\{1,\dots,\ell\}$ and $B=\{\ell+1,\dots,N\}$, so that no qubit permutation $T_{\pi_{AB}}$ appears.
-
-\medskip
-\noindent
-The missing step of the proof is now given in the End Matter (``Local Gaussian orbit'') and below Eq.~(S5): for $A=\{1,\dots,\ell\}$, the Jordan--Wigner strings of the Majorana operators of $A$ do not leave $A$, while those of $B$ differ from the ones defined within $B$ only by the parity $P_A$ of $A$. Since $U_{O_A}P_AU_{O_A}^\dagger=\det(O_A)P_A$, the qubit unitary $U_{O_A}\otimes U_{O_B}$ coincides, up to a phase, with the Gaussian unitary of the whole chain associated with $O_A\oplus\det(O_A)\,O_B$; as $(O_A,O_B)\mapsto(O_A,\det(O_A)\,O_B)$ is a bijection, Eq.~(3) is exactly the maximization of $\zeta_2$ over the orbit of Eq.~(50) [now Eq.~(S5)]. We have also checked this numerically, by maximizing $\zeta_2$ at the qubit level over $U_{O_A}\otimes U_{O_B}$ for random Gaussian states. We have added a remark that the identification fails for non-contiguous bipartitions, as shown by the Referee's example. The restriction does not affect any of the applications of the manuscript: for Haar-random states and SYK$_2$ eigenstates the statistics of $\Gamma_A$ is invariant under mode permutations, while for the XY chain, the quenches, the random circuits and the variational checks we use contiguous blocks $A=\{1,\dots,\ell\}$ \todo{confirm for the random-circuit data of Fig.~3(d)}.
+We thank the Referee for the counterexample. The identification stated below Eq.~(50) requires contiguous blocks, and the counterexample uses a non-contiguous bipartition. We have adopted the second fix proposed by the Referee, which keeps the bound $M_2^{\NLl}\le M_2^{\FNL}$: the definitions, Eqs.~(2)--(3), and Theorem~1 now refer to $A=\{1,\dots,\ell\}$ and $B=\{\ell+1,\dots,N\}$. In the End Matter (``Local Gaussian orbit'') and below Eq.~(50) [now Eq.~(S5)] we now show that in this case $U_{O_A}\otimes U_{O_B}$ coincides, up to a phase, with the Gaussian unitary associated with $O_A\oplus\det(O_A)\,O_B$, so that Eq.~(3) is exactly the maximization over the orbit of Eq.~(S5); we also note that this fails for non-contiguous bipartitions. All the applications of the manuscript use contiguous blocks, or ensembles invariant under mode permutations, so no result changes.
 }
 
 \vspace{0.4cm}
@@ -158,7 +157,7 @@ The missing step of the proof is now given in the End Matter (``Local Gaussian o
 \end{quote}
 
 \reply{
-We thank the Referee. We have corrected the middle line of Eq.~(124) [now Eq.~(S75)]: the expectation value now acts on the whole product, and the independence of the rows is used only in the last step.
+We thank the Referee. Corrected [now Eq.~(S75)]: the independence of the rows is used only in the last step.
 }
 
 \vspace{0.4cm}
@@ -171,7 +170,7 @@ We thank the Referee. We have corrected the middle line of Eq.~(124) [now Eq.~(S
 \end{quote}
 
 \reply{
-We thank the Referee. We now state that Eq.~(60) [now Eq.~(S16)] follows from the principal-minor expansion $\det(\mathbb{I}+Y)=\sum_J\det Y_{J,J}$ applied to $Y=X^\dagger X$, combined with the Cauchy--Binet formula for each principal minor of $X^\dagger X$.
+Eq.~(60) [now Eq.~(S16)] follows from $\det(\mathbb{I}+Y)=\sum_J\det Y_{J,J}$ with $Y=X^\dagger X$, together with the Cauchy--Binet formula for each principal minor; this is now stated.
 }
 
 \vspace{0.4cm}
@@ -184,7 +183,7 @@ We thank the Referee. We now state that Eq.~(60) [now Eq.~(S16)] follows from th
 \end{quote}
 
 \reply{
-We thank the Referee. We now derive Eq.~(59) [now Eq.~(S15)] explicitly: writing $(-1)^{|S\cap I|}=\prod_{i\in I}(1-2\,\mathbf{1}_{i\in S})$, expanding the product, and using that the inclusion probabilities of the projection determinantal point process are the principal minors of the kernel, $\sum_{S\supseteq T}p_S=\det K_T$ (for which we added a reference), the principal-minor expansion gives $\widehat p(I)=\det(\mathbb{I}_{|I|}-2K_I)=(-i)^{|I|}\det\Gamma_I$. The expression ``generating function'' has been removed.
+Eq.~(59) [now Eq.~(S15)] is now derived explicitly, from the inclusion probabilities of the projection determinantal process, $\sum_{S\supseteq T}p_S=\det K_T$ (with a reference), and the principal-minor expansion. The phrase ``generating function'' has been removed.
 }
 
 \vspace{0.4cm}
@@ -197,7 +196,7 @@ We thank the Referee. We now derive Eq.~(59) [now Eq.~(S15)] explicitly: writing
 \end{quote}
 
 \reply{
-We thank the Referee. The sentence meant that the relevant object in Lemma~2 is the transpose overlap $\Sigma=Q^{\trans}Q$ (the adjoint overlap $Q^\dagger Q=\mathbb{I}$ being trivial), because in the application of Proposition~2 the reality of the covariance matrix translates into the complex orthogonality $Z^{\trans}Z=\mathbb{I}$ of the BCS matrix, which makes $\Sigma$ explicitly computable. We have replaced the sentence with this explanation.
+The relevant object in Lemma~S2 is the transpose overlap $Q^{\trans}Q$, the adjoint one being trivial, $Q^\dagger Q=\mathbb{I}$: in Proposition~S2 the reality of $\Gamma$ gives $Z^{\trans}Z=\mathbb{I}$, which makes $Q^{\trans}Q$ computable. The sentence has been replaced by this explanation.
 }
 
 \vspace{0.4cm}
@@ -210,7 +209,7 @@ We thank the Referee. The sentence meant that the relevant object in Lemma~2 is 
 \end{quote}
 
 \reply{
-The two ``chains'' were the two sequences of equalities for the two sides of Eq.~(108). This part of the proof has been replaced by the simpler proof suggested by the Referee, see Point~11.
+The two sequences of equalities for the two sides of Eq.~(108). This part has been replaced, see Point~11.
 }
 
 \vspace{0.4cm}
@@ -223,7 +222,7 @@ The two ``chains'' were the two sequences of equalities for the two sides of Eq.
 \end{quote}
 
 \reply{
-We agree, and we have simplified the argument as suggested: $0<\mathcal{R}\le\mathbb{I}$ gives $\|\mathcal{R}\|\le1$, hence $|e_1^\dagger\mathcal{R}u|\le\|u\|\le1$ (below Eq.~(S36)).
+Simplified as suggested (below Eq.~(S36)); the previous Eq.~(81) has been removed.
 }
 
 \vspace{0.4cm}
@@ -236,7 +235,7 @@ We agree, and we have simplified the argument as suggested: $0<\mathcal{R}\le\ma
 \end{quote}
 
 \reply{
-We agree, and we have removed Eq.~(148).
+Removed.
 }
 
 \vspace{0.4cm}
@@ -249,7 +248,7 @@ We agree, and we have removed Eq.~(148).
 \end{quote}
 
 \reply{
-We agree, and we have rephrased the sentence (beginning of Sec.~S1.5).
+Rephrased (beginning of Sec.~S1.5).
 }
 
 \vspace{0.4cm}
@@ -262,7 +261,7 @@ We agree, and we have rephrased the sentence (beginning of Sec.~S1.5).
 \end{quote}
 
 \reply{
-Corrected. We have also clarified the sentence, which refers to the invariance of the probabilities under a unitary change of column gauge.
+Corrected (above Eq.~(S87)).
 }
 
 \vspace{0.4cm}
@@ -275,7 +274,7 @@ Corrected. We have also clarified the sentence, which refers to the invariance o
 \end{quote}
 
 \reply{
-We thank the Referee for the elegant alternative proof, which we have checked and adopted in Lemma~S5 [Eqs.~(S64)--(S67)], acknowledging the Referees in the Acknowledgments. (In Eqs.~(20)--(24) of the report, $\det(I-H_SH_S^{\trans})$ should read $\det(I+H_SH_S^{\trans})$, and the sums run over $A\subseteq S$ and $B\subseteq S^c$; the conclusion is unchanged.) The sign-average identity previously established in the proof of Lemma~5 is now derived where it is used, in Proposition~S3.
+Readability is subjective, and we find the Referee's argument no easier to follow than ours. Since the Referee represents the readership, we have nevertheless followed the suggestion and adopted the Referee's argument, after correcting it: in Eqs.~(20)--(24) of the report, $\det(I-H_SH_S^{\trans})$ should read $\det(I+H_SH_S^{\trans})$, and the sums run over $A\subseteq S$ and $B\subseteq S^c$. The proof now consists of Eqs.~(S64)--(S67); the sign-average identity previously used there is derived in Proposition~S3, where it is needed.
 }
 
 \vspace{0.4cm}
@@ -288,7 +287,7 @@ We thank the Referee for the elegant alternative proof, which we have checked an
 \end{quote}
 
 \reply{
-We agree, and we have removed it.
+Removed.
 }
 
 \vspace{0.4cm}
@@ -301,7 +300,7 @@ We agree, and we have removed it.
 \end{quote}
 
 \reply{
-We agree, and we now use $\|\cdot\|_{\mathrm{HS}}$ throughout Sec.~S1.
+We now use $\|\cdot\|_{\mathrm{HS}}$ throughout.
 }
 
 \vspace{0.4cm}
@@ -314,7 +313,7 @@ We agree, and we now use $\|\cdot\|_{\mathrm{HS}}$ throughout Sec.~S1.
 \end{quote}
 
 \reply{
-We agree. We now denote the creation operator by $c_x^\dagger=\sum_jx_jc_j^\dagger$, and its adjoint by $c_x$, throughout the proof of Theorem~S1 [Eqs.~(S96)--(S104)].
+Changed to $c_x^\dagger=\sum_jx_jc_j^\dagger$ [Eq.~(S96)] throughout the proof of Theorem~S1.
 }
 
 \vspace{0.4cm}
@@ -329,7 +328,7 @@ We agree. We now denote the creation operator by $c_x^\dagger=\sum_jx_jc_j^\dagg
 \end{quote}
 
 \reply{
-We thank the Referee for these two sections, which we have used as described in our replies to Points~1 and~11.
+Used as described in our replies to Points~1 and~11.
 }
 
 
@@ -375,13 +374,7 @@ We thank the Referee for their positive assessment of the revised manuscript. Fo
 \end{quote}
 
 \reply{
-We thank the Referee for spotting this inconsistency. The additional factor is a typo: the correct weight is the one of Bianchi, Hackl and Kieburg, $x^{-1/2}(1-x)^{N-2\ell}$, which we now cite. Point by point:
-\begin{enumerate}
-\item It is a typographical error, which also propagated to the parameters of the Jacobi polynomials and to their normalization in Eqs.~(14)--(15). \todo{confirm that no figure used the finite-$N$ formula with the old weight.}
-\item We have corrected Eqs.~(11), (14) and (15) consistently [now Eqs.~(12)--(14)]: $p_n(x)=\mathrm{P}_n^{(-1/2,N-2\ell)}(1-2x)/\sqrt{h_n}$, with $h_n=\Gamma(n+\tfrac12)\Gamma(n+N-2\ell+1)/[(2n+N-2\ell+\tfrac12)\Gamma(n+1)\Gamma(n+N-2\ell+\tfrac12)]$.
-\item The analytical curve in Fig.~1(a) is the $N\to\infty$ result, Eq.~(18) [now Eq.~(6)], and the data are obtained from Haar-random $O\in\mathrm{O}(2N)$, $\Gamma=O\Gamma_0O^{\trans}$ \todo{confirm the sampling method}; the sentence on the comparison with the finite-$N$ expression has been corrected. As suggested, we checked the corrected finite-$N$ formula against direct sampling for $\ell=1,2$ and several $N\ge2\ell$, finding agreement within statistical errors.
-\item The thermodynamic-limit results, Eqs.~(16)--(18), including the half-partition value $2-\log_2(2+\sqrt3)$, are unchanged: an $O(1)$ shift of the exponents of the weight only affects the $O(1/N)$ corrections to $\overline{M}_2^{\FNL}/N$.
-\end{enumerate}
+We thank the Referee for spotting this typo. The additional factor was introduced in the change of variables to $x_m=\lambda_m^2$ and propagated to Eqs.~(14)--(15), which we have corrected consistently with the result of Bianchi, Hackl and Kieburg, now cited [Eqs.~(11)--(13), in the End Matter]. Our calculations used the eigenvalues $\lambda_m^2$ directly, so no result is affected, and the thermodynamic-limit results, Eqs.~(16)--(18) [now Eq.~(14)], are unchanged.
 }
 
 \newpage
@@ -404,9 +397,9 @@ previous & present & previous & present\\
 \hline
 Eqs.~(4), (5) & Eqs.~(2), (3) & Eq.~(57) & Eq.~(S13)\\
 Eqs.~(6), (7) & Eq.~(4), Theorem~1 & Eqs.~(59), (60) & Eqs.~(S15), (S16)\\
-Eq.~(11) & Eq.~(12) & Eqs.~(80), (81) & Eq.~(S36) and text below\\
-Eqs.~(14), (15) & Eqs.~(13), (14) & Eq.~(108), Lemma~5 & Eq.~(S63), Lemma~S5\\
-Eqs.~(16)--(18) & text above Eq.~(6), Eq.~(6) & Eqs.~(115), (116) & replaced by Eqs.~(S64)--(S67)\\
+Eq.~(11) & Eq.~(11) & Eqs.~(80), (81) & Eq.~(S36), removed\\
+Eqs.~(14), (15) & Eqs.~(12), (13) & Eq.~(108), Lemma~5 & Eq.~(S63), Lemma~S5\\
+Eqs.~(16)--(18) & text above Eq.~(14), Eq.~(14) & Eqs.~(115), (116) & replaced by Eqs.~(S64)--(S67)\\
 Eq.~(50) & Eq.~(S5) & Eq.~(124) & Eq.~(S75)\\
 Lemma~1 & Lemma~S1 & Eq.~(136) & Eq.~(S87)\\
 Theorems~2, 3 & Theorems~S1, S2 & Eqs.~(145), (147), (148) & Eqs.~(S96), (S98), removed\\

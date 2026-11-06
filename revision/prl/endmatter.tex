@@ -1,14 +1,9 @@
 \section*{End Matter}
 
-\appendix
-
-\section{Contiguous blocks and strategy of the proof of Theorem~\ref{thm:global}}
-\label{em:proof}
-
-\textit{Local Gaussian orbit.}---For $A=\{1,\dots,\ell\}$ and $B=\{\ell+1,\dots,N\}$, the JW strings of the Majorana operators of $A$ do not leave $A$, and those of $B$ differ from the ones defined within $B$ only by the parity $P_A=\prod_{m\in A}Z_m$ of $A$. Since $U_{O_A}P_AU_{O_A}^\dagger=\det(O_A)P_A$, the qubit unitary $U_{O_A}\otimes U_{O_B}$ acts on the Majorana operators of the chain as $O_A\oplus\det(O_A)\,O_B$, i.e., it coincides up to a phase with a Gaussian unitary of the chain in $\mathrm{O}(2\ell)\oplus\mathrm{O}(2(N-\ell))$. As $(O_A,O_B)\mapsto(O_A,\det(O_A)\,O_B)$ is a bijection, Eq.~\eqref{eq:defGNLmagic} amounts to maximizing $\zeta_2$ over the orbit $\Gamma\mapsto(O_A\oplus O_B)\Gamma(O_A\oplus O_B)^{\trans}$.
+\textbf{Local Gaussian orbit.}---For $A=\{1,\dots,\ell\}$ and $B=\{\ell+1,\dots,N\}$, the JW strings of the Majorana operators of $A$ do not leave $A$, and those of $B$ differ from the ones defined within $B$ only by the parity $P_A=\prod_{m\in A}Z_m$ of $A$. Since $U_{O_A}P_AU_{O_A}^\dagger=\det(O_A)P_A$, the qubit unitary $U_{O_A}\otimes U_{O_B}$ acts on the Majorana operators of the chain as $O_A\oplus\det(O_A)\,O_B$, i.e., it coincides up to a phase with a Gaussian unitary of the chain in $\mathrm{O}(2\ell)\oplus\mathrm{O}(2(N-\ell))$. As $(O_A,O_B)\mapsto(O_A,\det(O_A)\,O_B)$ is a bijection, Eq.~\eqref{eq:defGNLmagic} amounts to maximizing $\zeta_2$ over the orbit $\Gamma\mapsto(O_A\oplus O_B)\Gamma(O_A\oplus O_B)^{\trans}$.
 This is where contiguity enters: for non-contiguous bipartitions, the qubits of $A$ must be brought together by a permutation that does not preserve the Gaussian structure, and the identification fails.
 
-\textit{Strategy of the proof.}---On the local Gaussian orbit, $\zeta_2$ is the collision probability of a determinantal distribution which depends on two independent rotations and on \emph{all} minors of the matrix parametrizing the state, so that it is not evidently maximized at the canonical point. The proof (SM, Sec.~S1) is a chain of steps, each of which either removes one of these complications exactly, or bounds the functional by a simpler one that is tight at the canonical point.
+\textbf{Strategy of the proof.}---The idea is to work in the fermionic language: since the optimization runs over local Gaussian unitaries, the natural candidate for the optimum is the BCS canonical form, and the proof shows that it is the global maximizer of $\zeta_2$ on the orbit. On this orbit, $\zeta_2$ is the collision probability of a determinantal distribution which depends on two independent rotations and on \emph{all} minors of the matrix parametrizing the state, so that it is not evidently maximized at the canonical point. The proof (SM, Sec.~S1) is a chain of steps, each of which either removes one of these complications exactly, or bounds the functional by a simpler one that is tight at the canonical point.
 (1)~Wick's theorem turns $\zeta_2$ into the collision probability $d\sum_S p_S^2$ of the projection determinantal point process with kernel $K=(\mathbb{I}+i\Gamma)/2$~\cite{collura2026nonstabilizernessfermionicgaussianstates}.
 (2)~For any isometry $Q\in\mathbb{C}^{n\times k}$, the collision probability of the associated Slater determinant obeys $\mathcal{C}(Q)\le 2^{-k}\det(\mathbb{I}+\Sigma^\dagger\Sigma)$, with $\Sigma=Q^{\trans}Q$ the transpose overlap; this sharp bound is proved by induction on $n$.
 (3)~In the BCS parametrization, the dependence on the local rotations is packaged into $Z=O_AZ_0O_B^{\trans}$, with $Z_0=\bigoplus_j(\mathbb{I}_2+i\lambda_jJ)/\sqrt{1-\lambda_j^2}$ and $J=\bigl(\begin{smallmatrix}0&1\\-1&0\end{smallmatrix}\bigr)$, and $\zeta_2$ becomes, up to an orbit-invariant constant, the sum $\mathsf{F}(Z)=\sum_{|I|=|J|}|\det Z_{I,J}|^4$ of the fourth powers of the moduli of all minors of $Z$; a Cauchy--Schwarz argument reduces the two rotations to one, $O_A=O_B$.
@@ -18,10 +13,7 @@ This is where contiguity enters: for non-contiguous bipartitions, the qubits of 
 (7)~A determinant inequality for positive matrices of rank at most two, $[z_1\cdots z_n]\det(\sum_iz_iB_i)\le\prod_i\|B_i\|_{\mathrm{HS}}$, proved with fermionic creation operators, bounds $\mathsf{L}(U)$ through the diagonal of $U$, and hence by the orbit invariant $\det(\mathbb{I}+T^\dagger T)$, $T=(U+U^{\trans})/2$.
 (8)~The canonical form saturates every inequality of the chain, which proves Theorem~\ref{thm:global}; a continuity argument covers $\lambda_j=1$, and padding with ancillas removes the assumption $N=2\ell$.
 
-\section{Finite-size Page curve}
-\label{em:page}
-
-For Haar-random $O\in\mathrm{O}(2N)$ and $|A|=\ell\le N/2$, the joint distribution of $x_m=\lambda_m^2$ is~\cite{PhysRevB.103.L241118}
+\textbf{Page curve.}---For Haar-random $O\in\mathrm{O}(2N)$ and $|A|=\ell\le N/2$, the joint distribution of $x_m=\lambda_m^2$ is~\cite{PhysRevB.103.L241118}
 \begin{equation}
     \mathbb{P}(x_1,\dots,x_\ell) = \frac{1}{Z_\ell}\prod_{1\le i<j\le \ell} (x_i-x_j)^2 \prod_{m=1}^\ell \frac{(1-x_m)^{N-2\ell}}{\sqrt{x_m}}\;,
 \end{equation}
@@ -34,12 +26,13 @@ where $p_n(x) = \mathrm{P}_n^{(-1/2,N-2\ell)}(1-2x)/\sqrt{h_n}$ are orthonormal 
 \begin{equation}
     h_n=\frac{\Gamma(n+\frac12) \Gamma(n+N-2\ell+1)}{(2n+N-2\ell+\frac12) \Gamma(n+1)\Gamma(n+N-2\ell+\frac12)}\;.
 \end{equation}
-Equation~\eqref{eq:ziopino} gives the exact quenched average $\overline{M}_2^\mathrm{GNL}=\int_0^1 \mathfrak{m}_2(x) \varrho^{(\ell)}(x) dx$ at finite $N$, which we benchmarked against direct sampling of Haar-random $O\in\mathrm{O}(2N)$, finding agreement within statistical errors. For $\ell,N\to\infty$ at fixed $r=\ell/N$, $\varrho^{(\ell)}/N$ converges to the free Jacobi law $\varrho_r$, whose total mass is $r$, which yields Eq.~\eqref{eq:ziopin2}; $O(1)$ shifts of the exponents of $w(x)$ only affect $O(1/N)$ corrections to $\overline{M}_2^\mathrm{GNL}/N$.
+Equation~\eqref{eq:ziopino} gives the exact quenched average $\overline{M}_2^\mathrm{GNL}=\int_0^1 \mathfrak{m}_2(x) \varrho^{(\ell)}(x) dx$ at finite $N$, which we benchmarked against direct sampling of Haar-random $O\in\mathrm{O}(2N)$, finding agreement within statistical errors. For $\ell,N\to\infty$ at fixed $r=\ell/N\le1/2$, $\varrho^{(\ell)}/N$ converges to the free Jacobi law $\varrho_r(x) = \sqrt{(c-x)x}/[2\pi x(1-x)]$ on $[0,c]$, with $c=4r(1-r)$ and total mass $r$. Setting $x=c\sin^2\theta$,
+\begin{equation}
+\overline{\mathsf{m}}_2^\mathrm{GNL}(r)\simeq \frac{c}{\pi}\int_0^{\pi/2} \frac{\cos^2 \theta}{1-c\sin^2\theta}\, \mathfrak{m}_2(c\sin^2 \theta)\,d\theta\;,\label{eq:ziopin2}
+\end{equation}
+which gives $2-\log_2(2+\sqrt{3})$ at $r=1/2$ and, with $c\simeq 4r$, $r^2/\ln 2$ for $r\to0$.
 
-\section{XY chain and corner transfer matrices}
-\label{em:xy}
-
-After the JW mapping, Eq.~\eqref{eq:xy} takes the form of Eq.~\eqref{eq:ham} with $h_{2m-1,2m} = 2\mu$, $h_{2m,2m+1} = 1+\eta$, $h_{2m+2,2m-1} = 1-\eta$, the remaining entries being fixed by antisymmetry~\cite{Mbeng2024}. We take $N$ divisible by $4$, so that the ground state lies in the Neveu--Schwarz sector, $c_{N+1}=-c_1$ (i.e., $\gamma_{2N+1}=-\gamma_1$, $\gamma_{2N+2}=-\gamma_2$), with momenta $k= \pi(2n+1)/N$, $n = 0,\dots, N/2-1$. A Fourier transform followed by a Bogoliubov rotation at each $k$ diagonalizes $ih$, whose eigenvalues are $\pm2\varepsilon_k$, with Bogoliubov angle and dispersion
+\textbf{XY chain.}---After the JW mapping, Eq.~\eqref{eq:xy} takes the form of Eq.~\eqref{eq:ham} with $h_{2m-1,2m} = 2\mu$, $h_{2m,2m+1} = 1+\eta$, $h_{2m+2,2m-1} = 1-\eta$, the remaining entries being fixed by antisymmetry~\cite{Mbeng2024}. We take $N$ divisible by $4$, so that the ground state lies in the Neveu--Schwarz sector, $c_{N+1}=-c_1$ (i.e., $\gamma_{2N+1}=-\gamma_1$, $\gamma_{2N+2}=-\gamma_2$), with momenta $k= \pi(2n+1)/N$, $n = 0,\dots, N/2-1$. A Fourier transform followed by a Bogoliubov rotation at each $k$ diagonalizes $ih$, whose eigenvalues are $\pm2\varepsilon_k$, with Bogoliubov angle and dispersion
 \begin{equation}
 \begin{split}
     e^{i\theta_k} &= (\mu - \cos k+i\eta\sin k)/\varepsilon_k\;,\\
@@ -66,12 +59,9 @@ The reduced state is $\rho_A\propto\exp(-H_{\mathrm{ent}})$, with $H_{\mathrm{en
 \end{equation}
 At $\mu=1$ ($\eta=1$), $\kappa\to1$ and $\varepsilon\to0$, with correlation length $\xi\simeq|\mu-1|^{-1}$.
 
-\textit{Area law.}---With $\mathfrak{f}(x):=-x\log_2x-(1-x)\log_2(1-x)$, the Gaussian entanglement entropy is $S(A)=\sum_i\mathfrak{f}[(1+\lambda_i)/2]$. Since $\mathfrak{m}_\RENYI(x)=H_\RENYI\bigl(\tfrac12,\tfrac x2,\tfrac{1-x}2\bigr)-1$, with $H_\RENYI$ the R\'enyi entropy (in bits), which is non-increasing in $\RENYI$, we have $\mathfrak{m}_\RENYI(x)\le\mathfrak{m}_1(x)=\frac12\mathfrak{f}(x)$ for $\RENYI\ge1$. Together with $\frac12\mathfrak{f}(\lambda^2)\le 2\,\mathfrak{f}[(1+\lambda)/2]$ for $\lambda\in[0,1)$, this gives $M_{\RENYI}^{\mathrm{GNL}}\le 2S(A)$, rigorous at $\RENYI=2$ by Theorem~\ref{thm:global}. Hastings' theorem~\cite{Hastings_2007}, $S(A)\le C_{\mathrm{ent}}|\partial A|$ for unique gapped ground states of one-dimensional local Hamiltonians, then yields $M_{\RENYI}^{\mathrm{NL}}\le M_{\RENYI}^{\mathrm{GNL}}\le 2C_{\mathrm{ent}}|\partial A|$.
+\textbf{Area law.}---With $\mathfrak{f}(x):=-x\log_2x-(1-x)\log_2(1-x)$, the Gaussian entanglement entropy is $S(A)=\sum_i\mathfrak{f}[(1+\lambda_i)/2]$. Since $\mathfrak{m}_\RENYI(x)=H_\RENYI\bigl(\tfrac12,\tfrac x2,\tfrac{1-x}2\bigr)-1$, with $H_\RENYI$ the R\'enyi entropy (in bits), which is non-increasing in $\RENYI$, we have $\mathfrak{m}_\RENYI(x)\le\mathfrak{m}_1(x)=\frac12\mathfrak{f}(x)$ for $\RENYI\ge1$. Together with $\frac12\mathfrak{f}(\lambda^2)\le 2\,\mathfrak{f}[(1+\lambda)/2]$ for $\lambda\in[0,1)$, this gives $M_{\RENYI}^{\mathrm{GNL}}\le 2S(A)$, the Gaussian analog of the bound of Ref.~\cite{Cao_2025}, rigorous at $\RENYI=2$ by Theorem~\ref{thm:global}. Hastings' theorem~\cite{Hastings_2007}, $S(A)\le C_{\mathrm{ent}}|\partial A|$ for unique gapped ground states of one-dimensional local Hamiltonians, then yields $M_{\RENYI}^{\mathrm{NL}}\le M_{\RENYI}^{\mathrm{GNL}}\le 2C_{\mathrm{ent}}|\partial A|$.
 
-\section{Quench dynamics}
-\label{em:quench}
-
-After the quench $\mu_0\to\mu$ at $\eta=1$, with time measured in the units of Refs.~\cite{Calabrese2005evolution,Fagotti2008}, i.e., for the evolution generated by $H(\mu)/2$, $\Gamma_A(t)$ is block Toeplitz as in Eq.~\eqref{eq:block_toeplitz} (with $k\in[0,2\pi)$), with symbol~\cite{Calabrese2005evolution}
+\textbf{Quench dynamics.}---After the quench $\mu_0\to\mu$ at $\eta=1$, with time measured in the units of Refs.~\cite{Calabrese2005evolution,Fagotti2008}, i.e., for the evolution generated by $H(\mu)/2$, $\Gamma_A(t)$ is block Toeplitz as in Eq.~\eqref{eq:block_toeplitz} (with $k\in[0,2\pi)$), with symbol~\cite{Calabrese2005evolution}
 \begin{equation}
     g(k,t) = \begin{pmatrix} -q(k,t) & p(k,t) \\ -p(-k,t) & q(k,t) \end{pmatrix},
     \label{eq:symbol_t}
