@@ -99,7 +99,7 @@ urlcolor=teal]{hyperref}
 
 \maketitle
 
-\noindent In this Supplemental Material, equations, figures and sections labelled with the prefix ``S'' refer to this document, while the remaining ones refer to the main text. Section~\ref{app:proof} contains the full proof of Theorem~\ref{M-thm:global}; Sec.~\ref{app:variational} the variational verification of Eqs.~\eqref{M-eq:analytic_NL} and~\eqref{M-eq:analytic_NL_alpha}; Sec.~\ref{app:experimental} the error analysis for the experimental estimation of the GNL magic; Sec.~\ref{Sec:generaliz} the generalization of our results to R\'enyi index $\RENYI>2$; and Sec.~\ref{app:numerics} further details on the numerical simulations, including the analysis of random Gaussian circuits.
+\noindent In this Supplemental Material, equations, figures and sections labelled with the prefix ``S'' refer to this document, while the remaining ones refer to the main text. Section~\ref{app:proof} contains the full proof of Theorem~\ref{M-thm:global}; Sec.~\ref{app:variational} the variational verification of Eqs.~\eqref{M-eq:analytic_NL} and~\eqref{M-eq:analytic_NL_alpha}; Sec.~\ref{app:experimental} the error analysis for the experimental estimation of the GNL magic; Sec.~\ref{Sec:generaliz} the generalization of our results to R\'enyi index $\RENYI>2$; Sec.~\ref{app:numerics} further details on the numerical simulations; and Secs.~\ref{app:rainbow}--\ref{app:outlook} the illustrative example of the rainbow state, further details on the XY chain and on the quench dynamics, and an extended outlook.
 
 \section{Proof of Theorem~\ref{M-thm:global}: An Odyssey %as Nolan intended -- <3
 }
@@ -322,10 +322,10 @@ with $O_A\in\mathrm{O}(2\ell)$ and $O_B\in\mathrm{O}(2(N-\ell))$. For the contig
 Local Gaussian unitaries bring any pure fermionic Gaussian state into the canonical modewise form~\cite{BoteroReznik2004}
 \begin{equation}
      |\Psi_{\mathrm{can}}\rangle
-:= (T_{\sigma_{A}}\otimes T_{\sigma_{B}})\bigotimes_{i=1}^{\ell} |\mathrm{B}(\theta_i)\rangle\otimes |0\rangle^{\otimes (N-2\ell)}\;,
+:= \prod_{i=1}^{\ell}\bigl(\cos\theta_i+\sin\theta_i\,c_i^\dagger c_{\ell+i}^\dagger\bigr)|\mathbf{0}\rangle\;,
 \label{eq:can_form}
 \end{equation}
-where $|\mathrm{B}(\theta_i)\rangle=\cos\theta_i\,|00\rangle_i+\sin\theta_i\,|11\rangle_i$ and $T_{\sigma_X}$ are permutations acting separately on the qubits in $X\in \{A,B\}$.
+where $c_j^\dagger$ creates a fermion in mode $j$: the $i$th mode of $A$ and the $i$th mode of $B$ form the pair $\cos\theta_i\,|00\rangle+\sin\theta_i\,|11\rangle$, while the remaining $N-2\ell$ modes of $B$ are empty.
 For completeness, we recall the covariance version of this modewise normal form, cf.~\cite{BoteroReznik2004}, which also fixes the orientation conventions used below. 
 
 \begin{proposition}[Local covariance normal form]
@@ -1380,21 +1380,165 @@ The single-body Hamiltonian $ih$ is Hermitian with eigenvalues in $\pm\varepsilo
 The ground state fills the $N$ lowest-energy modes; to probe typicality, we construct mid-spectrum eigenstates $H|E_n\rangle=E_n|E_n\rangle$  by flipping a random subset of $N/4$ to $N/2$ modes from the ground-state configuration, replacing occupied negative-energy modes with their positive-energy partners. For each of $N_{\mathrm{dis}}=1000$ disorder realizations, we compute $M_2^{\mathrm{GNL}}$ from $\Gamma$ and average over 200 excited eigenstates $|E_n\rangle$ per realization, obtaining $\overline{M}_2^{\mathrm{GNL}}=\mathbb{E}_{h}\,\mathbb{E}_{n}[M_2^{\mathrm{GNL}}(|E_n\rangle)]$.
 In Fig.~\ref{M-fig:typicality}(b), we plot the resulting non-local magic density $\overline{\mathsf{m}}_2^\mathrm{GNL}$ versus $r=\ell/N$ for $N=40,80,160$.
 
-\subsection{Random Gaussian circuits}
-\label{app:circuits}
-The circuit is composed of nearest-neighbor fermionic Gaussian unitaries arranged in a brick-wall geometry on $N$ sites.
-A single layer $O_{\mathrm{layer}} = O_{\mathrm{odd}}\,O_{\mathrm{even}}$ consists of an even and an odd half-step, namely $O_{\mathrm{even}} = \prod_{j=1}^{N/2} R_{2j-1,2j}$ and $O_{\mathrm{odd}} = \prod_{j=1}^{N/2-1} R_{2j,2j+1}$, where each $R_{j,j+1} \in \mathrm{SO}(4)$ is a random orthogonal matrix drawn independently from the Haar measure, acting on the four Majorana operators $(\gamma_{2j-1}, \gamma_{2j}, \gamma_{2j+1}, \gamma_{2j+2})$ of sites $j$ and $j+1$.
-The full circuit after $t$ layers is $O(t) = \prod_{s=1}^t O_{\mathrm{layer}}^{(s)} \in \mathrm{SO}(2N)$.
-The initial state is the product state $|\mathbf{0}\rangle$ (vacuum of all fermionic modes), with covariance matrix $\Gamma_0$. 
 
-The time-evolved state remains Gaussian at all times, with covariance matrix $\Gamma(t) = O(t)\,\Gamma_0\,O(t)^T$.
-The Gaussian-restricted non-local magic is therefore entirely determined by the restricted covariance matrix $\Gamma_A(t)$ and its eigenvalues $\pm\lambda_j(t)$.
+\section{Simple example: entanglement without non-local magic}
+\label{app:rainbow}
+Consider $N$ qubits with $\ell = N/2$ and the rainbow state
+\begin{equation}
+    |\Psi_{\mathrm{rb}}\rangle = \bigotimes_{j=1}^{\ell} \frac{1}{\sqrt{2}}\bigl(|0_j 0_{\bar\jmath}\rangle + |1_j 1_{\bar\jmath}\rangle\bigr)\;,
+\end{equation}
+where $\bar\jmath = N+1-j$ is the mirror site in $B=\{\ell+1,\dots,N\}$, for the bipartition $A=\{1,\dots,\ell\}$. This is a fermionic Gaussian state: it is the ground state of a free-fermion hopping Hamiltonian with suitable long-range pairing. Each pair $(j,\bar\jmath)$ forms a maximally entangled Bell pair, so every eigenvalue of $i\Gamma_A$ vanishes, $\lambda_j = 0$, and the entanglement entropy is maximal: $S = \ell$ bits, a volume law. Yet, this state is a stabilizer state: it belongs to the Clifford orbit of the computational basis. Consequently its magic, and therefore its non-local magic, vanishes identically: $M_2^{\mathrm{NL}} = 0$.
 
-We take the half-chain bipartition $A=\{1,\dots,N/2\}$, $\ell=N/2$~\cite{tirrito2025magicphasetransitionsmonitored}.
-In contrast with the ballistic spreading of integrable quenches, operator spreading in such circuits is diffusive~\cite{dias2021diffusiveoperatorspreadingrandom,swann}. At early times the modes of $A$ are nearly unentangled, and $\mathfrak{m}_2(x) \simeq (1-x)/\ln 2$ for $x\to1$ gives $M_2^{\mathrm{GNL}}(t) \simeq [2\ell-\mathrm{Tr}(i\Gamma_A(t))^2]/(2\ln 2)=\|\Gamma_{AB}(t)\|_{\mathrm{HS}}^2/(2\ln 2)$, with $\Gamma_{AB}$ the off-diagonal block of $\Gamma$, governed by the diffusive spreading of two-point correlations across the cut~\cite{dias2021diffusiveoperatorspreadingrandom}, so that $M_2^{\mathrm{GNL}} \propto \sqrt{t}$ for $1 \ll t \ll N^2$.
-Figure~\ref{M-fig:dynamics}(d) of the main text shows an excellent data collapse of $\overline{M}_2^{\mathrm{GNL}}(t)/N$ as a function of $\sqrt{t}/N$, interpolating between $\sqrt{t}$ growth and saturation at the Page value $\overline{\mathsf{m}}_{2}^{\mathrm{GNL}}(1/2)$ on the diffusive timescale $t\sim N^2$.
+This result is transparent from our formula: $\mathfrak{m}_2(\lambda_j^2)$ vanishes both at $\lambda_j = 0$  (maximally entangled mode) and at $\lambda_j = 1$  (unentangled mode). Non-local magic requires modes at \emph{intermediate} entanglement, $0 < \lambda_j < 1$, where the bipartite correlations are neither trivial nor of the Bell-pair type.
+
+One might attempt to introduce magic into the rainbow state by applying local unitaries, e.g.\ a non-Clifford single-qubit rotation $R(\phi)$ on site $j\in A$. This produces a state $(R(\phi)\otimes \mathbb{I})|\mathrm{Bell}\rangle_{j\bar\jmath}$ that carries nonzero total magic. However, by construction, this magic is entirely \emph{local}: it can be removed by the inverse rotation $R(-\phi)\otimes \mathbb{I}$ acting on $A$ alone, and therefore does not contribute to $M_2^{\mathrm{NL}}$. The only way to create genuine non-local magic is to entangle the two qubits of each Bell pair in a non-stabilizer fashion, for instance, by applying a joint non-Clifford \emph{Gaussian} rotation $V_{j\bar\jmath}$~\cite{huang2026dismagickerunitarygatenonstabilizerness} that acts simultaneously on sites in $A$ and $B$, so that the state remains Gaussian and Theorem~\ref{M-thm:global} applies. Such a rotation shifts $\lambda_j$ away from $0$ and $1$, placing it in the interior of $[0,1]$ where $\mathfrak{m}_2(\lambda_j^2) > 0$. In other words, entanglement is necessary but not sufficient for non-local magic: a state can be maximally entangled yet carry zero nonstabilizerness across the bipartition.
+
+\section{Ground states of the XY model: details}
+\label{app:xy}
+Using the Jordan--Wigner transformation, Eq.~\eqref{M-eq:xy} is mapped to the quadratic Hamiltonian $H$of the form in Eq.~\eqref{M-eq:ham} with single-body matrix entries $h_{2m-1,2m} = 2\mu$, $h_{2m,2m+1} = 1+\eta$, $h_{2m+2,2m-1} = 1-\eta$, and all remaining elements fixed by antisymmetry~\cite{Mbeng2024}.
+We restrict to system sizes $N$ divisible by $4$, for which the ground state lies in the Neveu--Schwarz sector with antiperiodic fermionic boundary
+conditions $c_{N+1}=-c_1$, i.e., $\gamma_{2N+1}=-\gamma_1$ and $\gamma_{2N+2}=-\gamma_2$~\cite{Mbeng2024}.
+The allowed momenta are 
+$k=k(n)= \pi(2n+1)/N$ for $n = 0,\dots, N/2-1$, 
+spanning $(0,\pi)$ with $N/2$ equally spaced points; 
+in the thermodynamic limit $N\to\infty$, sums over $k(n)$ 
+become integrals over $[0,\pi]$.
+Then, the single-body Hamiltonian $ih$ is diagonalized by a Fourier transform to momentum space followed by a $2\times 2$ Bogoliubov rotation at each wave-vector $k$~\cite{Mbeng2024}.
+The Bogoliubov angle $\theta_k$ is defined through
+\begin{equation}
+    \cos\theta_k = \frac{\mu - \cos k}{\varepsilon_k}\;,\qquad \sin\theta_k = \frac{\eta\sin k}{\varepsilon_k}\;,
+    \label{eq:bogoliubov_angle}
+\end{equation}
+yielding the single-particle dispersion
+\begin{equation}
+    \varepsilon_k = \sqrt{(\mu-\cos k)^2 + \eta^2\sin^2 k}\;.
+    \label{eq:dispersion}
+\end{equation}
+In the diagonal basis, the Hamiltonian reads $H = i\sum_k \varepsilon_k\,\tilde\gamma_{2k-1}\tilde\gamma_{2k}$, i.e., the eigenvalues of $ih$ are $\pm2\varepsilon_k$, where $\tilde\gamma_m = \sum_n G_{mn}\gamma_n$ are the rotated Majorana operators.
+The ground state is the vacuum of all Bogoliubov modes, with covariance matrix $\Gamma = G\,\Gamma_0\, G^T$.
+
+In the thermodynamic limit $N\to\infty$ with $\ell$ fixed, the reduced covariance matrix $\Gamma_A$ is a $2\ell\times 2\ell$ block-Toeplitz matrix with $2\times 2$ blocks depending only on $m-n$,
+\begin{equation}
+\begin{split}
+    (\Gamma_A)_{mn} &= \int_{-\pi}^{\pi}\frac{dk}{2\pi}\,e^{ik(m-n)}\,g(k)\;,
+    \\
+    g(k) &= \begin{pmatrix} 0 & e^{i\theta_k} \\ -e^{-i\theta_k} & 0 \end{pmatrix}.
+\end{split}
+\label{eq:block_toeplitz}
+\end{equation}
+
+The reduced density matrix of subsystem $A$ is a fermionic Gaussian state, and can be written as~\cite{Peschel2004}
+\begin{equation}
+    \rho_A = \frac{\exp[{-H_{\mathrm{ent}}}]}{Z_{\mathrm{ent}}}\;, \quad H_{\mathrm{ent}} = \frac{i}{2}\sum_{n=1}^{\ell} \varepsilon_n^{\mathrm{ent}}\,\tilde\gamma_{2n-1}\tilde\gamma_{2n}\;,
+    \label{eq:rho_ent}
+\end{equation}
+where $H_{\mathrm{ent}}$ is the entanglement Hamiltonian, $Z_{\mathrm{ent}}=\mathrm{Tr}(\exp[{-H_{\mathrm{ent}}}])$ is the normalization and $\tilde\gamma_m$ are the Majorana operators that diagonalize $\rho_A$, and $\varepsilon_n^{\mathrm{ent}} \geq 0$ are the single-particle entanglement energies.
+The covariance matrix $\Gamma_A$ and the single-particle entanglement Hamiltonian $h_{\mathrm{ent}}$ implicitly defined in Eq.~\eqref{eq:rho_ent} are related by
+\begin{equation}
+    i\Gamma_A = \tanh\!\left(\frac{i\,h_{\mathrm{ent}}}{2}\right),
+    \label{eq:Gamma_tanh}
+\end{equation}
+so that the eigenvalues of $i\Gamma_A$ are $\pm\lambda_n$ with $\lambda_n = \tanh\!\left(\frac{\varepsilon_n^{\mathrm{ent}}}{2}\right)$. 
+Here $\lambda_n = 1$ corresponds to a pure (unentangled) mode and $\lambda_n < 1$ to an entangled one.
+
+For the semi-infinite bipartition, the equally spaced spectrum of Eq.~\eqref{M-eq:peschel_spectrum} is obtained through the corner transfer matrix approach~\cite{Peschel2009,Eisler2017}, where $\varepsilon = \pi K(\kappa')/K(\kappa)$ is the level spacing, $K(x)$ denotes the complete elliptic integral of the first kind, $\kappa' = \sqrt{1-\kappa^2}$, and $\kappa$ is conditioned on the phase~\cite{Peschel2009}
+\begin{equation}
+    \kappa = \begin{cases}
+        \displaystyle\frac{\eta}{\sqrt{\eta^2 + \mu^2 - 1}} & \mu > 1 \;,\\[8pt]
+        \displaystyle\frac{\sqrt{\eta^2 + \mu^2 - 1}}{\eta} & \mu < 1,\; \eta^2 + \mu^2 > 1\;,\\[8pt]
+        \displaystyle\sqrt{\frac{1 - \eta^2 - \mu^2}{1 - \mu^2}} & \mu < 1,\; \eta^2 + \mu^2 < 1\;.
+    \end{cases}
+    \label{eq:elliptic_modulus}
+\end{equation}
+This leads to the exact expression for the off-critical phases
+\begin{equation}
+    M_2^{\mathrm{GNL},\mathbb{Z}_+} = \sum_{n=0}^{\infty} \mathfrak{m}_2\!\left[\tanh^2\left(\frac{\varepsilon_n^{\mathrm{ent}}}{2}\right)\right].
+    \label{eq:NL_peschel}
+\end{equation}
+
+\section{Quench dynamics: symbol and moments}
+\label{app:quench}
+In particular, the time-dependent block-Toeplitz symbol of $\Gamma_A(t)$ takes the form~\cite{Calabrese2005evolution}
+\begin{equation}
+    (\Gamma_A)_{mn}(t) = \int_0^{2\pi}\!\frac{dk}{2\pi}\,e^{ik(m-n)}\,g(k,t)\;,\label{eq:mustang}
+\end{equation}
+with time-dependent symbol
+\begin{equation}
+    g(k,t) = \begin{pmatrix} -q(k,t) & p(k,t) \\ -p(-k,t) & q(k,t) \end{pmatrix},
+    \label{eq:symbol_t}
+\end{equation}
+where we defined the functions
+\begin{equation}
+\begin{split}
+    p(k,t) &= e^{-i\theta_k}\left[\cos(\Delta\theta_k) + i\sin(\Delta\theta_k)\cos (2\varepsilon_k t) \right], \\
+    q(k,t) &= i\,\sin(\Delta\theta_k)\,\sin (2\varepsilon_k t)\,.
+    \label{eq:pq_symbol}
+\end{split}
+\end{equation}
+Here $\varepsilon_k $ is the post-quench dispersion, $\theta_k$ is the post-quench Bogoliubov angle, and $\Delta\theta_k = \theta_k - \theta_k^{(0)}$ is the mismatch between the post-quench and pre-quench Bogoliubov angles, with
+\begin{equation}
+    \cos(\Delta\theta_k) = \frac{(\mu-\cos(k))(\mu_0-\cos (k))+\sin^2 (k)}{\varepsilon_k\,\varepsilon_k^{(0)}}\,.
+    \label{eq:cos_delta_theta}
+\end{equation}
+At $t=0$, $q(k,0) = 0$ and $p(k,0) = e^{-i\theta_k^{(0)}}$, recovering the ground-state symbol of $H(\mu_0)$.
+The diagonal component, $q(k,t)$, is generated dynamically by the quench and oscillates as $\sin(2\varepsilon_k t)$.
+
+The Gaussian-restricted non-local magic can be written as a contour integral over the characteristic polynomial $D_\ell(\lambda) = \det(\lambda \mathbb{I}_{2\ell} - i\Gamma_A)$,
+\begin{equation}
+    M_2^{\mathrm{GNL}} = \frac{1}{4\pi i}\oint_\mathcal{C}d\lambda\;\mathfrak{m}_2(\lambda^2)\;\frac{d}{d\lambda}\ln D_\ell(\lambda)\;,\label{eq:circccc}
+\end{equation}
+where $\mathcal{C}$ encircles all eigenvalues counterclockwise; the factor $1/2$ compensates the double counting of the $\pm\lambda_n$ pairs.
+Expanding $\ln D_\ell(\lambda)$ in powers of $\lambda^{-1}$ expresses $M_2^{\mathrm{GNL}}$ as a series in the even moments $\mathrm{Tr}(i\Gamma_A)^{2n}$.
+The $2\ell \times 2\ell$ matrix $i\Gamma_A$ has a block-Toeplitz structure inherited from the symbol $g(k,t)$.
+Exploiting this structure, one can show that its $2\ell$ eigenvalues coincide with those of two Hermitian matrices $W_\pm = \mathcal{H} \pm i\mathcal{T}$, where $\mathcal{T}_{jl} = \int \frac{dk}{2\pi}\,e^{-ik(j-l)}\,q(k,t)$ is Toeplitz and $\mathcal{H}_{jl} = \int \frac{dk}{2\pi}\,e^{-ik(j+l-\ell-1)}\,p(k,t)$ is Hankel. This enables the exact time dependence of $M_2^\mathrm{GNL}(t)$ following the strategy in Ref.~\cite{Fagotti2008}. 
+The moments $\mathrm{Tr}(i\Gamma_A)^{2n} = \mathrm{Tr}\,W_+^{2n} + \mathrm{Tr}\,W_-^{2n}$ are then computed by expanding the matrix products into $2n$-fold momentum integrals.
+As shown in Ref.~\cite{Fagotti2008}, these integrals can be evaluated exactly in the limit $\ell \gg 1$ via a multidimensional stationary phase approximation.
+This procedure leads to the asymptotic expression\begin{equation}
+\begin{split}
+   \!\!\! \mathrm{Tr}\,(i\Gamma_A)^{2n}&\simeq \frac{2\ell}{\pi}\int_0^\pi\!\!\!dk\Bigl[1-\bigl(1-\cos^{2n}(\Delta\theta_k)\bigr)\\
+   &\qquad\qquad\qquad\times\min\!\left(1, \frac{2|v_k|t}{\ell}\right)\Bigr],
+\end{split}
+\label{eq:moments_asymptotic}
+\end{equation}
+where $v_k = d\varepsilon_k/dk$ is the group velocity.
+
+At $t=0$ the bracket equals one and all moments take the pure-state value $2\ell$, while the term proportional to $\min(1,2|v_k|t/\ell)$ interpolates ballistically towards  the stationary (GGE) moments $\frac{2\ell}{\pi}\int_0^\pi\cos^{2n}(\Delta\theta_k)\,dk$, capturing the propagation of quasiparticle pairs.
+Inserting Eq.~\eqref{eq:moments_asymptotic} into Eq.~\eqref{eq:circccc} and carrying out the contour integration yields the quasiparticle formula, Eq.~\eqref{M-eq:fagotti_mnl}.
+
+\section{Outlook}
+\label{app:outlook}
+The analytical tractability established here opens several natural directions for future investigation.
+
+\emph{Higher dimensional systems.}
+While our results are formulated for contiguous bipartitions of one-dimensional chains, fermionic Gaussian states in higher dimensions $D>1$ offer a rich arena where entanglement and magic may exhibit qualitatively different behavior. In two and three dimensions, a richer structure tied to the geometry of the Fermi surface is expected, and the entanglement entropy obeys an area law with multiplicative logarithmic corrections $\mathcal{O}(\ell^{D-1}\ln\ell)$~\cite{swingle2010entanglement}. 
+Investigating how the scaling rate $\beta_\mathrm{GNL}$ emerges in such systems is a natural generalization.
 
 
+\emph{Conformal field theory and integrable systems.}
+A key question is to determine whether $\beta_{\mathrm{GNL}}$ captures universal features of the underlying conformal field theory, much as the central charge governs the scaling of entanglement entropy~\cite{Calabrese2004entanglement}.
+Responding to this question requires extending our analysis to interacting integrable Hamiltonians, where Bethe-ansatz methods provide access to the entanglement spectrum.
+On the dynamical side, it remains an open question whether the quasiparticle picture that successfully describes the spreading of entanglement after a quantum quench~\cite{Alba_2017,alba2019,Kudler_Flam_2021} can be adapted to account for the growth of non-local magic in these models.
+
+\emph{Disordered systems.}
+Our formula provides a natural framework to study non-local magic in the presence of quenched disorder. 
+For example, in Anderson localization models~\cite{evers,sierant2020}, we expect deeply localized eigenstates to have a trivial structure, for which the Gaussian-restricted non-local magic density $\mathfrak{m}_\RENYI(x)$ vanishes. 
+Similarly, free fermionic models of strongly disordered systems~\cite{IGLOI_2005,Monthus_2018,ruggiero2022}, where rare Griffiths regions and anomalous entanglement scaling emerge, are another avenue of further study.
+
+\emph{Topological systems.}
+One and two-dimensional topological phases, such as the Kitaev chain and model~\cite{Kitaev2001chain,Kitaev_2006}, host boundary modes whose non-local magic content is expected to reflect the topological invariant.
+In such systems, the interplay of non-local magic and quantum coherent errors in fermionic systems is another fascinating direction to pursue~\cite{beri,gskb-t5ql}.
+
+\emph{Interplay with symmetry.}
+When the system possesses a continuous symmetry, such as $\mathcal{U}(1)$ charge conservation, the covariance matrix acquires a block structure that could enable a symmetry-resolved decomposition of $M_2^{\mathrm{GNL}}$ into contributions from different charge sectors~\cite{Goldstein}.
+This connects to the broader program of symmetry-resolved entanglement~\cite{Bianchi_2022}, coherence~\cite{aditya2026coherencedynamicsquantummanybody} and stabilizer entropies, and may reveal sector-dependent magic resources~\cite{iannotti2026nonstabilizernessu1symmetrychaotic, cepollaro2025stabilizerentropysubspaces, Esposito_2024}.
+An intriguing related question is whether Gaussian-restricted non-local magic exhibits quantum Mpemba-like effects~\cite{Ares_2023,Ares_2025,aditya2025mpembaeffectsquantumcomplexity}, where symmetry-broken initial conditions lead to anomalously fast relaxation of specific magic sectors.
+
+\emph{Monitored systems and non-Hermitian dynamics.}
+Hybrid systems combining unitary evolution with local measurements give rise to measurement-induced phase transitions in entanglement~\cite{FisherRandom2023,Li_2025,oshima}.
+For free-fermionic setups, the dynamics remain within the Gaussian manifold, and our formula applies at each quantum trajectory.
+Whether Gaussian-restricted non-local magic exhibits its own measurement-induced transition, and how it relates to the entanglement transition, is an open question.
+Similarly, non-Hermitian free fermionic Hamiltonians~\cite{Ashida_2020,kawabata2026nonhermitiandisorderedsystems} generate effective Gaussian dynamics with complex spectra.
+Our framework makes amenable to analytic treatment the behavior of Gaussian-restricted non-local magic in these settings~\cite{schirooooo,gallo,granet,lapierre2025entanglementtransitionsstructuredrandom}.
 
 \bibliography{ref_current}
 

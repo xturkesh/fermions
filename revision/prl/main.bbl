@@ -6,7 +6,7 @@
 %Control: page (0) single
 %Control: year (1) truncated
 %Control: production of eprint (0) enabled
-\begin{thebibliography}{117}%
+\begin{thebibliography}{85}%
 \makeatletter
 \providecommand \@ifxundefined [1]{%
  \@ifx{#1\undefined}
@@ -181,9 +181,8 @@
   {https://doi.org/10.1103/PhysRevA.110.L040403} {\bibfield  {journal}
   {\bibinfo  {journal} {Phys. Rev. A}\ }\textbf {\bibinfo {volume} {110}},\
   \bibinfo {pages} {L040403} (\bibinfo {year} {2024})}\BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Huang}\ \emph
-  {et~al.}(2026{\natexlab{a}})\citenamefont {Huang}, \citenamefont {Li},
-  \citenamefont {Lee},\ and\ \citenamefont
+\bibitem [{\citenamefont {Huang}\ \emph {et~al.}(2026)\citenamefont {Huang},
+  \citenamefont {Li}, \citenamefont {Lee},\ and\ \citenamefont
   {Zhong}}]{huang2026fastexactapproachstabilizer}%
   \BibitemOpen
   \bibfield  {author} {\bibinfo {author} {\bibfnamefont {X.}~\bibnamefont
@@ -192,9 +191,8 @@
   {author} {\bibfnamefont {J.-X.}\ \bibnamefont {Zhong}},\ }\href
   {https://arxiv.org/abs/2512.24685} {\bibinfo {title} {A fast and exact
   approach for stabilizer r\'enyi entropy via the xor-fwht algorithm}}
-  (\bibinfo {year} {2026}{\natexlab{a}}),\ \Eprint
-  {https://arxiv.org/abs/2512.24685} {arXiv:2512.24685 [quant-ph]} \BibitemShut
-  {NoStop}%
+  (\bibinfo {year} {2026}),\ \Eprint {https://arxiv.org/abs/2512.24685}
+  {arXiv:2512.24685 [quant-ph]} \BibitemShut {NoStop}%
 \bibitem [{\citenamefont {Xiao}\ and\ \citenamefont
   {Ryu}(2026)}]{xiao2026exponentiallyacceleratedsamplingpauli}%
   \BibitemOpen
@@ -226,9 +224,9 @@
   {\bibfield  {journal} {\bibinfo  {journal} {Quantum}\ }\textbf {\bibinfo
   {volume} {10}},\ \bibinfo {pages} {2069} (\bibinfo {year}
   {2026})}\BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Iannotti}\ \emph
-  {et~al.}(2026{\natexlab{a}})\citenamefont {Iannotti}, \citenamefont
-  {Campos~Venuti},\ and\ \citenamefont {Hamma}}]{Iannotti_2026}%
+\bibitem [{\citenamefont {Iannotti}\ \emph {et~al.}(2026)\citenamefont
+  {Iannotti}, \citenamefont {Campos~Venuti},\ and\ \citenamefont
+  {Hamma}}]{Iannotti_2026}%
   \BibitemOpen
   \bibfield  {author} {\bibinfo {author} {\bibfnamefont {D.}~\bibnamefont
   {Iannotti}}, \bibinfo {author} {\bibfnamefont {L.}~\bibnamefont
@@ -238,7 +236,7 @@
   {https://doi.org/10.1088/1751-8121/ae3cd6} {\bibfield  {journal} {\bibinfo
   {journal} {Journal of Physics A: Mathematical and Theoretical}\ }\textbf
   {\bibinfo {volume} {59}},\ \bibinfo {pages} {075301} (\bibinfo {year}
-  {2026}{\natexlab{a}})}\BibitemShut {NoStop}%
+  {2026})}\BibitemShut {NoStop}%
 \bibitem [{\citenamefont {Cusumano}\ \emph {et~al.}(2025)\citenamefont
   {Cusumano}, \citenamefont {Venuti}, \citenamefont {Cepollaro}, \citenamefont
   {Esposito}, \citenamefont {Iannotti}, \citenamefont {Jasser}, \citenamefont
@@ -683,19 +681,14 @@
   {https://doi.org/10.22331/q-2023-08-28-1092} {\bibfield  {journal} {\bibinfo
   {journal} {{Quantum}}\ }\textbf {\bibinfo {volume} {7}},\ \bibinfo {pages}
   {1092} (\bibinfo {year} {2023}{\natexlab{b}})}\BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Korbany}\ \emph {et~al.}(2025)\citenamefont
-  {Korbany}, \citenamefont {Gullans},\ and\ \citenamefont
-  {Piroli}}]{Korbany2025}%
+\bibitem [{SM()}]{SM}%
   \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {D.~A.}\ \bibnamefont
-  {Korbany}}, \bibinfo {author} {\bibfnamefont {M.~J.}\ \bibnamefont
-  {Gullans}},\ and\ \bibinfo {author} {\bibfnamefont {L.}~\bibnamefont
-  {Piroli}},\ }\bibfield  {title} {\bibinfo {title} {Long-range
-  nonstabilizerness and phases of matter},\ }\href
-  {https://doi.org/10.1103/1hlj-h6t9} {\bibfield  {journal} {\bibinfo
-  {journal} {Physical Review Letters}\ }\textbf {\bibinfo {volume} {135}},\
-  \bibinfo {pages} {160404} (\bibinfo {year} {2025})},\ \Eprint
-  {https://arxiv.org/abs/2502.19504} {arXiv:2502.19504 [quant-ph]} \BibitemShut
+  \href@noop {} {}\bibinfo {note} {See Supplemental Material at [URL will be
+  inserted by publisher] for the full proof of Theorem~1, the variational
+  verification of Eqs.~(4) and~(5), the error analysis for the experimental
+  estimation, the generalization to R\'enyi index $\alpha>2$, and further
+  details on the numerical simulations, which includes
+  Refs.~\cite{Hough2006,HornJohnson2012,Bapat1989,bhatia2013matrix,MR38136,sfeo}}\BibitemShut
   {NoStop}%
 \bibitem [{\citenamefont {Spee}\ \emph {et~al.}(2018)\citenamefont {Spee},
   \citenamefont {Schwaiger}, \citenamefont {Giedke},\ and\ \citenamefont
@@ -739,51 +732,6 @@
   preparation, approximation, and classical simulation}} (\bibinfo {year}
   {2026}),\ \Eprint {https://arxiv.org/abs/2603.05675} {arXiv:2603.05675
   [quant-ph]} \BibitemShut {NoStop}%
-\bibitem [{SM()}]{SM}%
-  \BibitemOpen
-  \href@noop {} {}\bibinfo {note} {See Supplemental Material at [URL will be
-  inserted by publisher] for the full proof of Theorem~1, the variational
-  verification of Eqs.~(4) and~(5), the error analysis for the experimental
-  estimation, the generalization to R\'enyi index $\alpha>2$, and further
-  details on the numerical simulations, which includes
-  Refs.~\cite{Hough2006,HornJohnson2012,Bapat1989,bhatia2013matrix,MR38136,sfeo}}\BibitemShut
-  {NoStop}%
-\bibitem [{\citenamefont {Huang}\ \emph
-  {et~al.}(2026{\natexlab{b}})\citenamefont {Huang}, \citenamefont {Lv},
-  \citenamefont {Qian},\ and\ \citenamefont
-  {Qin}}]{huang2026dismagickerunitarygatenonstabilizerness}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.}~\bibnamefont
-  {Huang}}, \bibinfo {author} {\bibfnamefont {R.}~\bibnamefont {Lv}}, \bibinfo
-  {author} {\bibfnamefont {X.}~\bibnamefont {Qian}},\ and\ \bibinfo {author}
-  {\bibfnamefont {M.}~\bibnamefont {Qin}},\ }\href
-  {https://arxiv.org/abs/2604.04046} {\bibinfo {title} {Dismagicker: Unitary
-  gate for non-stabilizerness reduction}} (\bibinfo {year}
-  {2026}{\natexlab{b}}),\ \Eprint {https://arxiv.org/abs/2604.04046}
-  {arXiv:2604.04046 [quant-ph]} \BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Ahmad}\ \emph {et~al.}(2025)\citenamefont {Ahmad},
-  \citenamefont {Esposito}, \citenamefont {Stasino}, \citenamefont {Odavic},
-  \citenamefont {Cosenza}, \citenamefont {Sarno}, \citenamefont {Mastrovito},
-  \citenamefont {Viscardi}, \citenamefont {Cusumano}, \citenamefont {Tafuri},
-  \citenamefont {Massarotti},\ and\ \citenamefont
-  {Hamma}}]{ahmad2025experimentaldemonstrationnonlocalmagic}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {H.~G.}\ \bibnamefont
-  {Ahmad}}, \bibinfo {author} {\bibfnamefont {G.}~\bibnamefont {Esposito}},
-  \bibinfo {author} {\bibfnamefont {V.}~\bibnamefont {Stasino}}, \bibinfo
-  {author} {\bibfnamefont {J.}~\bibnamefont {Odavic}}, \bibinfo {author}
-  {\bibfnamefont {C.}~\bibnamefont {Cosenza}}, \bibinfo {author} {\bibfnamefont
-  {A.}~\bibnamefont {Sarno}}, \bibinfo {author} {\bibfnamefont
-  {P.}~\bibnamefont {Mastrovito}}, \bibinfo {author} {\bibfnamefont
-  {M.}~\bibnamefont {Viscardi}}, \bibinfo {author} {\bibfnamefont
-  {S.}~\bibnamefont {Cusumano}}, \bibinfo {author} {\bibfnamefont
-  {F.}~\bibnamefont {Tafuri}}, \bibinfo {author} {\bibfnamefont
-  {D.}~\bibnamefont {Massarotti}},\ and\ \bibinfo {author} {\bibfnamefont
-  {A.}~\bibnamefont {Hamma}},\ }\href {https://arxiv.org/abs/2511.15576}
-  {\bibinfo {title} {Experimental demonstration of non-local magic in a
-  superconducting quantum processor}} (\bibinfo {year} {2025}),\ \Eprint
-  {https://arxiv.org/abs/2511.15576} {arXiv:2511.15576 [quant-ph]} \BibitemShut
-  {NoStop}%
 \bibitem [{\citenamefont {Mehta}(2004)}]{Mehta2004}%
   \BibitemOpen
   \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.~L.}\ \bibnamefont
@@ -799,6 +747,19 @@
   {https://doi.org/10.1007/978-3-319-70885-0} {\emph {\bibinfo {title}
   {Introduction to Random Matrices}}}\ (\bibinfo  {publisher} {Springer},\
   \bibinfo {year} {2018})\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Vidmar}\ \emph {et~al.}(2017)\citenamefont {Vidmar},
+  \citenamefont {Hackl}, \citenamefont {Bianchi},\ and\ \citenamefont
+  {Rigol}}]{vidmar2017entanglement}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {L.}~\bibnamefont
+  {Vidmar}}, \bibinfo {author} {\bibfnamefont {L.}~\bibnamefont {Hackl}},
+  \bibinfo {author} {\bibfnamefont {E.}~\bibnamefont {Bianchi}},\ and\ \bibinfo
+  {author} {\bibfnamefont {M.}~\bibnamefont {Rigol}},\ }\bibfield  {title}
+  {\bibinfo {title} {Entanglement entropy of eigenstates of quadratic fermionic
+  hamiltonians},\ }\href {https://doi.org/10.1103/PhysRevLett.119.020601}
+  {\bibfield  {journal} {\bibinfo  {journal} {Phys. Rev. Lett.}\ }\textbf
+  {\bibinfo {volume} {119}},\ \bibinfo {pages} {020601} (\bibinfo {year}
+  {2017})}\BibitemShut {NoStop}%
 \bibitem [{\citenamefont {Bianchi}\ \emph {et~al.}(2021)\citenamefont
   {Bianchi}, \citenamefont {Hackl},\ and\ \citenamefont
   {Kieburg}}]{PhysRevB.103.L241118}%
@@ -834,6 +795,13 @@
   {https://doi.org/10.1103/PhysRevLett.125.180604} {\bibfield  {journal}
   {\bibinfo  {journal} {Phys. Rev. Lett.}\ }\textbf {\bibinfo {volume} {125}},\
   \bibinfo {pages} {180604} (\bibinfo {year} {2020})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Simon}(2010)}]{simon2010szego}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {B.}~\bibnamefont
+  {Simon}},\ }\href@noop {} {\emph {\bibinfo {title} {Szego's Theorem and Its
+  Descendants: Spectral Theory for L2 Perturbations of Orthogonal
+  Polynomials}}}\ (\bibinfo  {publisher} {Princeton university press},\
+  \bibinfo {year} {2010})\BibitemShut {NoStop}%
 \bibitem [{\citenamefont {Jin}\ and\ \citenamefont {Korepin}(2004)}]{Jin_2004}%
   \BibitemOpen
   \bibfield  {author} {\bibinfo {author} {\bibfnamefont {B.-Q.}\ \bibnamefont
@@ -844,24 +812,6 @@
   {\bibinfo  {journal} {Journal of Statistical Physics}\ }\textbf {\bibinfo
   {volume} {116}},\ \bibinfo {pages} {79–95} (\bibinfo {year}
   {2004})}\BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Its}\ \emph {et~al.}(2005)\citenamefont {Its},
-  \citenamefont {Jin},\ and\ \citenamefont {Korepin}}]{Its_2005}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.~R.}\ \bibnamefont
-  {Its}}, \bibinfo {author} {\bibfnamefont {B.-Q.}\ \bibnamefont {Jin}},\ and\
-  \bibinfo {author} {\bibfnamefont {V.~E.}\ \bibnamefont {Korepin}},\
-  }\bibfield  {title} {\bibinfo {title} {Entanglement in thexyspin chain},\
-  }\href {https://doi.org/10.1088/0305-4470/38/13/011} {\bibfield  {journal}
-  {\bibinfo  {journal} {J. Phys. A Math. Gen.}\ }\textbf {\bibinfo {volume}
-  {38}},\ \bibinfo {pages} {2975–2990} (\bibinfo {year} {2005})}\BibitemShut
-  {NoStop}%
-\bibitem [{\citenamefont {Simon}(2010)}]{simon2010szego}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {B.}~\bibnamefont
-  {Simon}},\ }\href@noop {} {\emph {\bibinfo {title} {Szego's Theorem and Its
-  Descendants: Spectral Theory for L2 Perturbations of Orthogonal
-  Polynomials}}}\ (\bibinfo  {publisher} {Princeton university press},\
-  \bibinfo {year} {2010})\BibitemShut {NoStop}%
 \bibitem [{\citenamefont {Peschel}\ and\ \citenamefont
   {Eisler}(2009)}]{Peschel2009}%
   \BibitemOpen
@@ -892,6 +842,21 @@
   {\bibinfo  {journal} {J. Stat. Mech. Theor. Exp.}\ }\textbf {\bibinfo
   {volume} {2004}},\ \bibinfo {pages} {P12005} (\bibinfo {year}
   {2004})}\BibitemShut {NoStop}%
+\bibitem [{zen()}]{zenodo}%
+  \BibitemOpen
+  \href@noop {} {\bibinfo {title} {Code and data for the paper}}\BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Its}\ \emph {et~al.}(2005)\citenamefont {Its},
+  \citenamefont {Jin},\ and\ \citenamefont {Korepin}}]{Its_2005}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.~R.}\ \bibnamefont
+  {Its}}, \bibinfo {author} {\bibfnamefont {B.-Q.}\ \bibnamefont {Jin}},\ and\
+  \bibinfo {author} {\bibfnamefont {V.~E.}\ \bibnamefont {Korepin}},\
+  }\bibfield  {title} {\bibinfo {title} {Entanglement in thexyspin chain},\
+  }\href {https://doi.org/10.1088/0305-4470/38/13/011} {\bibfield  {journal}
+  {\bibinfo  {journal} {J. Phys. A Math. Gen.}\ }\textbf {\bibinfo {volume}
+  {38}},\ \bibinfo {pages} {2975–2990} (\bibinfo {year} {2005})}\BibitemShut
+  {NoStop}%
 \bibitem [{\citenamefont {Calabrese}\ and\ \citenamefont
   {Cardy}(2004)}]{Calabrese2004entanglement}%
   \BibitemOpen
@@ -902,19 +867,6 @@
   {https://doi.org/10.1088/1742-5468/2004/06/P06002} {\bibfield  {journal}
   {\bibinfo  {journal} {J. Stat. Mech. Theor. Exp.}\ ,\ \bibinfo {pages}
   {P06002}} (\bibinfo {year} {2004})}\BibitemShut {NoStop}%
-\bibitem [{zen()}]{zenodo}%
-  \BibitemOpen
-  \href@noop {} {\bibinfo {title} {Code and data for the paper}}\BibitemShut
-  {NoStop}%
-\bibitem [{\citenamefont {Hastings}(2007)}]{Hastings_2007}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.~B.}\ \bibnamefont
-  {Hastings}},\ }\bibfield  {title} {\bibinfo {title} {An area law for
-  one-dimensional quantum systems},\ }\href
-  {https://doi.org/10.1088/1742-5468/2007/08/p08024} {\bibfield  {journal}
-  {\bibinfo  {journal} {Journal of Statistical Mechanics: Theory and
-  Experiment}\ }\textbf {\bibinfo {volume} {2007}},\ \bibinfo {pages}
-  {P08024–P08024} (\bibinfo {year} {2007})}\BibitemShut {NoStop}%
 \bibitem [{\citenamefont {Calabrese}\ and\ \citenamefont
   {Cardy}(2005)}]{Calabrese2005evolution}%
   \BibitemOpen
@@ -925,19 +877,6 @@
   {https://doi.org/10.1088/1742-5468/2005/04/P04010} {\bibfield  {journal}
   {\bibinfo  {journal} {J. Stat. Mech. Theor. Exp.}\ ,\ \bibinfo {pages}
   {P04010}} (\bibinfo {year} {2005})}\BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Vidmar}\ \emph {et~al.}(2017)\citenamefont {Vidmar},
-  \citenamefont {Hackl}, \citenamefont {Bianchi},\ and\ \citenamefont
-  {Rigol}}]{vidmar2017entanglement}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {L.}~\bibnamefont
-  {Vidmar}}, \bibinfo {author} {\bibfnamefont {L.}~\bibnamefont {Hackl}},
-  \bibinfo {author} {\bibfnamefont {E.}~\bibnamefont {Bianchi}},\ and\ \bibinfo
-  {author} {\bibfnamefont {M.}~\bibnamefont {Rigol}},\ }\bibfield  {title}
-  {\bibinfo {title} {Entanglement entropy of eigenstates of quadratic fermionic
-  hamiltonians},\ }\href {https://doi.org/10.1103/PhysRevLett.119.020601}
-  {\bibfield  {journal} {\bibinfo  {journal} {Phys. Rev. Lett.}\ }\textbf
-  {\bibinfo {volume} {119}},\ \bibinfo {pages} {020601} (\bibinfo {year}
-  {2017})}\BibitemShut {NoStop}%
 \bibitem [{\citenamefont {Fagotti}\ and\ \citenamefont
   {Calabrese}(2008)}]{Fagotti2008}%
   \BibitemOpen
@@ -949,23 +888,6 @@
   {https://doi.org/10.1103/PhysRevA.78.010306} {\bibfield  {journal} {\bibinfo
   {journal} {Phys. Rev. A}\ }\textbf {\bibinfo {volume} {78}},\ \bibinfo
   {pages} {010306} (\bibinfo {year} {2008})}\BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Tirrito}\ \emph
-  {et~al.}(2025{\natexlab{b}})\citenamefont {Tirrito}, \citenamefont {Lumia},
-  \citenamefont {Paviglianiti}, \citenamefont {Lami}, \citenamefont {Silva},
-  \citenamefont {Turkeshi},\ and\ \citenamefont
-  {Collura}}]{tirrito2025magicphasetransitionsmonitored}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {E.}~\bibnamefont
-  {Tirrito}}, \bibinfo {author} {\bibfnamefont {L.}~\bibnamefont {Lumia}},
-  \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont {Paviglianiti}}, \bibinfo
-  {author} {\bibfnamefont {G.}~\bibnamefont {Lami}}, \bibinfo {author}
-  {\bibfnamefont {A.}~\bibnamefont {Silva}}, \bibinfo {author} {\bibfnamefont
-  {X.}~\bibnamefont {Turkeshi}},\ and\ \bibinfo {author} {\bibfnamefont
-  {M.}~\bibnamefont {Collura}},\ }\href {https://arxiv.org/abs/2507.07179}
-  {\bibinfo {title} {Magic phase transitions in monitored gaussian fermions}}
-  (\bibinfo {year} {2025}{\natexlab{b}}),\ \Eprint
-  {https://arxiv.org/abs/2507.07179} {arXiv:2507.07179 [quant-ph]} \BibitemShut
-  {NoStop}%
 \bibitem [{\citenamefont {Dias}\ \emph {et~al.}(2021)\citenamefont {Dias},
   \citenamefont {Haque}, \citenamefont {Ribeiro},\ and\ \citenamefont
   {McClarty}}]{dias2021diffusiveoperatorspreadingrandom}%
@@ -989,334 +911,6 @@
   {\bibfield  {journal} {\bibinfo  {journal} {Phys. Rev. B}\ }\textbf {\bibinfo
   {volume} {112}},\ \bibinfo {pages} {064301} (\bibinfo {year}
   {2025})}\BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Swingle}(2010)}]{swingle2010entanglement}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {B.}~\bibnamefont
-  {Swingle}},\ }\bibfield  {title} {\bibinfo {title} {Entanglement entropy and
-  the fermi surface},\ }\href {https://doi.org/10.1103/PhysRevLett.105.050502}
-  {\bibfield  {journal} {\bibinfo  {journal} {Phys. Rev. Lett.}\ }\textbf
-  {\bibinfo {volume} {105}},\ \bibinfo {pages} {050502} (\bibinfo {year}
-  {2010})}\BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Alba}\ and\ \citenamefont
-  {Calabrese}(2017)}]{Alba_2017}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {V.}~\bibnamefont
-  {Alba}}\ and\ \bibinfo {author} {\bibfnamefont {P.}~\bibnamefont
-  {Calabrese}},\ }\bibfield  {title} {\bibinfo {title} {Entanglement and
-  thermodynamics after a quantum quench in integrable systems},\ }\href
-  {https://doi.org/10.1073/pnas.1703516114} {\bibfield  {journal} {\bibinfo
-  {journal} {Proceedings of the National Academy of Sciences}\ }\textbf
-  {\bibinfo {volume} {114}},\ \bibinfo {pages} {7947–7951} (\bibinfo {year}
-  {2017})}\BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Alba}\ and\ \citenamefont
-  {Calabrese}(2019)}]{alba2019}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {V.}~\bibnamefont
-  {Alba}}\ and\ \bibinfo {author} {\bibfnamefont {P.}~\bibnamefont
-  {Calabrese}},\ }\bibfield  {title} {\bibinfo {title} {Quantum information
-  scrambling after a quantum quench},\ }\href
-  {https://doi.org/10.1103/PhysRevB.100.115150} {\bibfield  {journal} {\bibinfo
-   {journal} {Phys. Rev. B}\ }\textbf {\bibinfo {volume} {100}},\ \bibinfo
-  {pages} {115150} (\bibinfo {year} {2019})}\BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Kudler-Flam}\ \emph {et~al.}(2021)\citenamefont
-  {Kudler-Flam}, \citenamefont {Kusuki},\ and\ \citenamefont
-  {Ryu}}]{Kudler_Flam_2021}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.}~\bibnamefont
-  {Kudler-Flam}}, \bibinfo {author} {\bibfnamefont {Y.}~\bibnamefont
-  {Kusuki}},\ and\ \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont {Ryu}},\
-  }\bibfield  {title} {\bibinfo {title} {The quasi-particle picture and its
-  breakdown after local quenches: mutual information, negativity, and reflected
-  entropy},\ }\href {https://doi.org/10.1007/jhep03(2021)146} {\bibfield
-  {journal} {\bibinfo  {journal} {J. High Energ. Phys.}\ }\textbf {\bibinfo
-  {volume} {2021}}\bibinfo  {number} { (3)},\ \bibinfo {pages}
-  {146}}\BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Evers}\ and\ \citenamefont {Mirlin}(2008)}]{evers}%
-  \BibitemOpen
-\bibfield  {number} {  }\bibfield  {author} {\bibinfo {author} {\bibfnamefont
-  {F.}~\bibnamefont {Evers}}\ and\ \bibinfo {author} {\bibfnamefont {A.~D.}\
-  \bibnamefont {Mirlin}},\ }\bibfield  {title} {\bibinfo {title} {Anderson
-  transitions},\ }\href {https://doi.org/10.1103/RevModPhys.80.1355} {\bibfield
-   {journal} {\bibinfo  {journal} {Rev. Mod. Phys.}\ }\textbf {\bibinfo
-  {volume} {80}},\ \bibinfo {pages} {1355} (\bibinfo {year}
-  {2008})}\BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Sierant}\ \emph {et~al.}(2020)\citenamefont
-  {Sierant}, \citenamefont {Delande},\ and\ \citenamefont
-  {Zakrzewski}}]{sierant2020}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {P.}~\bibnamefont
-  {Sierant}}, \bibinfo {author} {\bibfnamefont {D.}~\bibnamefont {Delande}},\
-  and\ \bibinfo {author} {\bibfnamefont {J.}~\bibnamefont {Zakrzewski}},\
-  }\bibfield  {title} {\bibinfo {title} {Thouless time analysis of anderson and
-  many-body localization transitions},\ }\href
-  {https://doi.org/10.1103/PhysRevLett.124.186601} {\bibfield  {journal}
-  {\bibinfo  {journal} {Phys. Rev. Lett.}\ }\textbf {\bibinfo {volume} {124}},\
-  \bibinfo {pages} {186601} (\bibinfo {year} {2020})}\BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Igloi}\ and\ \citenamefont
-  {Monthus}(2005)}]{IGLOI_2005}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {F.}~\bibnamefont
-  {Igloi}}\ and\ \bibinfo {author} {\bibfnamefont {C.}~\bibnamefont
-  {Monthus}},\ }\bibfield  {title} {\bibinfo {title} {Strong disorder rg
-  approach of random systems},\ }\href
-  {https://doi.org/10.1016/j.physrep.2005.02.006} {\bibfield  {journal}
-  {\bibinfo  {journal} {Physics Reports}\ }\textbf {\bibinfo {volume} {412}},\
-  \bibinfo {pages} {277–431} (\bibinfo {year} {2005})}\BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Monthus}(2018)}]{Monthus_2018}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {C.}~\bibnamefont
-  {Monthus}},\ }\bibfield  {title} {\bibinfo {title} {Strong disorder
-  real-space renormalization for the many-body-localized phase of random
-  majorana models},\ }\href {https://doi.org/10.1088/1751-8121/aaad14}
-  {\bibfield  {journal} {\bibinfo  {journal} {J. Phys. A Math. Theor.}\
-  }\textbf {\bibinfo {volume} {51}},\ \bibinfo {pages} {115304} (\bibinfo
-  {year} {2018})}\BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Ruggiero}\ and\ \citenamefont
-  {Turkeshi}(2022)}]{ruggiero2022}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {P.}~\bibnamefont
-  {Ruggiero}}\ and\ \bibinfo {author} {\bibfnamefont {X.}~\bibnamefont
-  {Turkeshi}},\ }\bibfield  {title} {\bibinfo {title} {Quantum information
-  spreading in random spin chains},\ }\href
-  {https://doi.org/10.1103/PhysRevB.106.134205} {\bibfield  {journal} {\bibinfo
-   {journal} {Phys. Rev. B}\ }\textbf {\bibinfo {volume} {106}},\ \bibinfo
-  {pages} {134205} (\bibinfo {year} {2022})}\BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Kitaev}(2001)}]{Kitaev2001chain}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.~Y.}\ \bibnamefont
-  {Kitaev}},\ }\bibfield  {title} {\bibinfo {title} {Unpaired {M}ajorana
-  fermions in quantum wires},\ }\href
-  {https://doi.org/10.1070/1063-7869/44/10S/S29} {\bibfield  {journal}
-  {\bibinfo  {journal} {Physics-Uspekhi}\ }\textbf {\bibinfo {volume} {44}},\
-  \bibinfo {pages} {131} (\bibinfo {year} {2001})}\BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Kitaev}(2006)}]{Kitaev_2006}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {A.}~\bibnamefont
-  {Kitaev}},\ }\bibfield  {title} {\bibinfo {title} {Anyons in an exactly
-  solved model and beyond},\ }\href {https://doi.org/10.1016/j.aop.2005.10.005}
-  {\bibfield  {journal} {\bibinfo  {journal} {Ann. Phys.}\ }\textbf {\bibinfo
-  {volume} {321}},\ \bibinfo {pages} {2–111} (\bibinfo {year}
-  {2006})}\BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Venn}\ \emph {et~al.}(2023)\citenamefont {Venn},
-  \citenamefont {Behrends},\ and\ \citenamefont {B\'eri}}]{beri}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {F.}~\bibnamefont
-  {Venn}}, \bibinfo {author} {\bibfnamefont {J.}~\bibnamefont {Behrends}},\
-  and\ \bibinfo {author} {\bibfnamefont {B.}~\bibnamefont {B\'eri}},\
-  }\bibfield  {title} {\bibinfo {title} {Coherent-error threshold for surface
-  codes from majorana delocalization},\ }\href
-  {https://doi.org/10.1103/PhysRevLett.131.060603} {\bibfield  {journal}
-  {\bibinfo  {journal} {Phys. Rev. Lett.}\ }\textbf {\bibinfo {volume} {131}},\
-  \bibinfo {pages} {060603} (\bibinfo {year} {2023})}\BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Behrends}\ and\ \citenamefont
-  {B\'eri}(2025)}]{gskb-t5ql}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {J.}~\bibnamefont
-  {Behrends}}\ and\ \bibinfo {author} {\bibfnamefont {B.}~\bibnamefont
-  {B\'eri}},\ }\bibfield  {title} {\bibinfo {title} {Statistical mechanical
-  mapping and maximum-likelihood thresholds for the surface code under generic
-  single-qubit coherent errors},\ }\href {https://doi.org/10.1103/gskb-t5ql}
-  {\bibfield  {journal} {\bibinfo  {journal} {PRX Quantum}\ }\textbf {\bibinfo
-  {volume} {6}},\ \bibinfo {pages} {040305} (\bibinfo {year}
-  {2025})}\BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Goldstein}\ and\ \citenamefont
-  {Sela}(2018)}]{Goldstein}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
-  {Goldstein}}\ and\ \bibinfo {author} {\bibfnamefont {E.}~\bibnamefont
-  {Sela}},\ }\bibfield  {title} {\bibinfo {title} {Symmetry-resolved
-  entanglement in many-body systems},\ }\href
-  {https://doi.org/10.1103/PhysRevLett.120.200602} {\bibfield  {journal}
-  {\bibinfo  {journal} {Phys. Rev. Lett.}\ }\textbf {\bibinfo {volume} {120}},\
-  \bibinfo {pages} {200602} (\bibinfo {year} {2018})}\BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Bianchi}\ \emph {et~al.}(2022)\citenamefont
-  {Bianchi}, \citenamefont {Hackl}, \citenamefont {Kieburg}, \citenamefont
-  {Rigol},\ and\ \citenamefont {Vidmar}}]{Bianchi_2022}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {E.}~\bibnamefont
-  {Bianchi}}, \bibinfo {author} {\bibfnamefont {L.}~\bibnamefont {Hackl}},
-  \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {Kieburg}}, \bibinfo
-  {author} {\bibfnamefont {M.}~\bibnamefont {Rigol}},\ and\ \bibinfo {author}
-  {\bibfnamefont {L.}~\bibnamefont {Vidmar}},\ }\bibfield  {title} {\bibinfo
-  {title} {Volume-law entanglement entropy of typical pure quantum states},\
-  }\bibfield  {journal} {\bibinfo  {journal} {PRX Quantum}\ }\textbf {\bibinfo
-  {volume} {3}},\ \href {https://doi.org/10.1103/prxquantum.3.030201}
-  {10.1103/prxquantum.3.030201} (\bibinfo {year} {2022})\BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Aditya}\ \emph {et~al.}(2026)\citenamefont {Aditya},
-  \citenamefont {Tirrito}, \citenamefont {Sierant},\ and\ \citenamefont
-  {Turkeshi}}]{aditya2026coherencedynamicsquantummanybody}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {S.}~\bibnamefont
-  {Aditya}}, \bibinfo {author} {\bibfnamefont {E.}~\bibnamefont {Tirrito}},
-  \bibinfo {author} {\bibfnamefont {P.}~\bibnamefont {Sierant}},\ and\ \bibinfo
-  {author} {\bibfnamefont {X.}~\bibnamefont {Turkeshi}},\ }\href
-  {https://arxiv.org/abs/2604.23192} {\bibinfo {title} {Coherence dynamics in
-  quantum many-body systems with conservation laws}} (\bibinfo {year} {2026}),\
-  \Eprint {https://arxiv.org/abs/2604.23192} {arXiv:2604.23192 [quant-ph]}
-  \BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Iannotti}\ \emph
-  {et~al.}(2026{\natexlab{b}})\citenamefont {Iannotti}, \citenamefont
-  {Russotto}, \citenamefont {Jasser}, \citenamefont {Odavi\'c},\ and\
-  \citenamefont {Hamma}}]{iannotti2026nonstabilizernessu1symmetrychaotic}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {D.}~\bibnamefont
-  {Iannotti}}, \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont {Russotto}},
-  \bibinfo {author} {\bibfnamefont {B.}~\bibnamefont {Jasser}}, \bibinfo
-  {author} {\bibfnamefont {J.}~\bibnamefont {Odavi\'c}},\ and\ \bibinfo
-  {author} {\bibfnamefont {A.}~\bibnamefont {Hamma}},\ }\href
-  {https://arxiv.org/abs/2603.28870} {\bibinfo {title} {Non-stabilizerness and
-  u(1) symmetry in chaotic many-body quantum systems}} (\bibinfo {year}
-  {2026}{\natexlab{b}}),\ \Eprint {https://arxiv.org/abs/2603.28870}
-  {arXiv:2603.28870 [quant-ph]} \BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Cepollaro}\ \emph {et~al.}(2025)\citenamefont
-  {Cepollaro}, \citenamefont {Cuffaro}, \citenamefont {Weiss}, \citenamefont
-  {Cusumano}, \citenamefont {Hamma},\ and\ \citenamefont
-  {Lloyd}}]{cepollaro2025stabilizerentropysubspaces}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {S.}~\bibnamefont
-  {Cepollaro}}, \bibinfo {author} {\bibfnamefont {G.}~\bibnamefont {Cuffaro}},
-  \bibinfo {author} {\bibfnamefont {M.~B.}\ \bibnamefont {Weiss}}, \bibinfo
-  {author} {\bibfnamefont {S.}~\bibnamefont {Cusumano}}, \bibinfo {author}
-  {\bibfnamefont {A.}~\bibnamefont {Hamma}},\ and\ \bibinfo {author}
-  {\bibfnamefont {S.}~\bibnamefont {Lloyd}},\ }\href
-  {https://arxiv.org/abs/2512.23013} {\bibinfo {title} {Stabilizer entropy of
-  subspaces}} (\bibinfo {year} {2025}),\ \Eprint
-  {https://arxiv.org/abs/2512.23013} {arXiv:2512.23013 [quant-ph]} \BibitemShut
-  {NoStop}%
-\bibitem [{\citenamefont {Esposito}\ \emph {et~al.}(2024)\citenamefont
-  {Esposito}, \citenamefont {Cepollaro}, \citenamefont {Cappiello},\ and\
-  \citenamefont {Hamma}}]{Esposito_2024}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {G.}~\bibnamefont
-  {Esposito}}, \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont {Cepollaro}},
-  \bibinfo {author} {\bibfnamefont {L.}~\bibnamefont {Cappiello}},\ and\
-  \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont {Hamma}},\ }\bibfield
-  {title} {\bibinfo {title} {Magic of discrete lattice gauge theories},\
-  }\bibfield  {journal} {\bibinfo  {journal} {International Journal of
-  Geometric Methods in Modern Physics}\ }\textbf {\bibinfo {volume} {22}},\
-  \href {https://doi.org/10.1142/s0219887825500033} {10.1142/s0219887825500033}
-  (\bibinfo {year} {2024})\BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Ares}\ \emph {et~al.}(2023)\citenamefont {Ares},
-  \citenamefont {Murciano},\ and\ \citenamefont {Calabrese}}]{Ares_2023}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {F.}~\bibnamefont
-  {Ares}}, \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont {Murciano}},\
-  and\ \bibinfo {author} {\bibfnamefont {P.}~\bibnamefont {Calabrese}},\
-  }\bibfield  {title} {\bibinfo {title} {Entanglement asymmetry as a probe of
-  symmetry breaking},\ }\href {https://doi.org/10.1038/s41467-023-37747-8}
-  {\bibfield  {journal} {\bibinfo  {journal} {Nat. Commun.}\ }\textbf {\bibinfo
-  {volume} {14}},\ \bibinfo {pages} {2036} (\bibinfo {year}
-  {2023})}\BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Ares}\ \emph {et~al.}(2025)\citenamefont {Ares},
-  \citenamefont {Calabrese},\ and\ \citenamefont {Murciano}}]{Ares_2025}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {F.}~\bibnamefont
-  {Ares}}, \bibinfo {author} {\bibfnamefont {P.}~\bibnamefont {Calabrese}},\
-  and\ \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont {Murciano}},\
-  }\bibfield  {title} {\bibinfo {title} {The quantum mpemba effects},\ }\href
-  {https://doi.org/10.1038/s42254-025-00838-0} {\bibfield  {journal} {\bibinfo
-  {journal} {Nat. Rev. Phys.}\ }\textbf {\bibinfo {volume} {7}},\ \bibinfo
-  {pages} {451–460} (\bibinfo {year} {2025})}\BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Fisher}\ \emph {et~al.}(2023)\citenamefont {Fisher},
-  \citenamefont {Khemani}, \citenamefont {Nahum},\ and\ \citenamefont
-  {Vijay}}]{FisherRandom2023}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.~P.~A.}\
-  \bibnamefont {Fisher}}, \bibinfo {author} {\bibfnamefont {V.}~\bibnamefont
-  {Khemani}}, \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont {Nahum}},\
-  and\ \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont {Vijay}},\ }\bibfield
-   {title} {\bibinfo {title} {Random quantum circuits},\ }\href
-  {https://doi.org/10.1146/annurev-conmatphys-031720-030658} {\bibfield
-  {journal} {\bibinfo  {journal} {Annu. Rev. Condens. Matter Phys.}\ }\textbf
-  {\bibinfo {volume} {14}},\ \bibinfo {pages} {335} (\bibinfo {year}
-  {2023})}\BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Li}\ \emph {et~al.}(2025)\citenamefont {Li},
-  \citenamefont {Zhong},\ and\ \citenamefont {Yu}}]{Li_2025}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {H.-Z.}\ \bibnamefont
-  {Li}}, \bibinfo {author} {\bibfnamefont {J.-X.}\ \bibnamefont {Zhong}},\ and\
-  \bibinfo {author} {\bibfnamefont {X.-J.}\ \bibnamefont {Yu}},\ }\bibfield
-  {title} {\bibinfo {title} {Measurement-induced entanglement phase transition
-  in free fermion systems},\ }\href {https://doi.org/10.1088/1361-648x/ade7e5}
-  {\bibfield  {journal} {\bibinfo  {journal} {Journal of Physics: Condensed
-  Matter}\ }\textbf {\bibinfo {volume} {37}},\ \bibinfo {pages} {273002}
-  (\bibinfo {year} {2025})}\BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Oshima}\ \emph {et~al.}(2025)\citenamefont {Oshima},
-  \citenamefont {Mochizuki}, \citenamefont {Hamazaki},\ and\ \citenamefont
-  {Fuji}}]{oshima}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {H.}~\bibnamefont
-  {Oshima}}, \bibinfo {author} {\bibfnamefont {K.}~\bibnamefont {Mochizuki}},
-  \bibinfo {author} {\bibfnamefont {R.}~\bibnamefont {Hamazaki}},\ and\
-  \bibinfo {author} {\bibfnamefont {Y.}~\bibnamefont {Fuji}},\ }\bibfield
-  {title} {\bibinfo {title} {Topology and spectrum in measurement-induced phase
-  transitions},\ }\href {https://doi.org/10.1103/PhysRevLett.134.240401}
-  {\bibfield  {journal} {\bibinfo  {journal} {Phys. Rev. Lett.}\ }\textbf
-  {\bibinfo {volume} {134}},\ \bibinfo {pages} {240401} (\bibinfo {year}
-  {2025})}\BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Ashida}\ \emph {et~al.}(2020)\citenamefont {Ashida},
-  \citenamefont {Gong},\ and\ \citenamefont {Ueda}}]{Ashida_2020}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {Y.}~\bibnamefont
-  {Ashida}}, \bibinfo {author} {\bibfnamefont {Z.}~\bibnamefont {Gong}},\ and\
-  \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {Ueda}},\ }\bibfield
-  {title} {\bibinfo {title} {Non-hermitian physics},\ }\href
-  {https://doi.org/10.1080/00018732.2021.1876991} {\bibfield  {journal}
-  {\bibinfo  {journal} {Advances in Physics}\ }\textbf {\bibinfo {volume}
-  {69}},\ \bibinfo {pages} {249–435} (\bibinfo {year} {2020})}\BibitemShut
-  {NoStop}%
-\bibitem [{\citenamefont {Kawabata}\ and\ \citenamefont
-  {Ryu}(2026)}]{kawabata2026nonhermitiandisorderedsystems}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {K.}~\bibnamefont
-  {Kawabata}}\ and\ \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont {Ryu}},\
-  }\href {https://arxiv.org/abs/2603.20393} {\bibinfo {title} {Non-hermitian
-  disordered systems}} (\bibinfo {year} {2026}),\ \Eprint
-  {https://arxiv.org/abs/2603.20393} {arXiv:2603.20393 [cond-mat.mes-hall]}
-  \BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Turkeshi}\ and\ \citenamefont
-  {Schir\'o}(2023)}]{schirooooo}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {X.}~\bibnamefont
-  {Turkeshi}}\ and\ \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont
-  {Schir\'o}},\ }\bibfield  {title} {\bibinfo {title} {Entanglement and
-  correlation spreading in non-hermitian spin chains},\ }\href
-  {https://doi.org/10.1103/PhysRevB.107.L020403} {\bibfield  {journal}
-  {\bibinfo  {journal} {Phys. Rev. B}\ }\textbf {\bibinfo {volume} {107}},\
-  \bibinfo {pages} {L020403} (\bibinfo {year} {2023})}\BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Gal}\ \emph {et~al.}(2023)\citenamefont {Gal},
-  \citenamefont {Turkeshi},\ and\ \citenamefont {Schirò}}]{gallo}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {Y.~L.}\ \bibnamefont
-  {Gal}}, \bibinfo {author} {\bibfnamefont {X.}~\bibnamefont {Turkeshi}},\ and\
-  \bibinfo {author} {\bibfnamefont {M.}~\bibnamefont {Schirò}},\ }\bibfield
-  {title} {\bibinfo {title} {{Volume-to-area law entanglement transition in a
-  non-Hermitian free fermionic chain}},\ }\href
-  {https://doi.org/10.21468/SciPostPhys.14.5.138} {\bibfield  {journal}
-  {\bibinfo  {journal} {SciPost Phys.}\ }\textbf {\bibinfo {volume} {14}},\
-  \bibinfo {pages} {138} (\bibinfo {year} {2023})}\BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Granet}\ \emph {et~al.}(2023)\citenamefont {Granet},
-  \citenamefont {Zhang},\ and\ \citenamefont {Dreyer}}]{granet}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {E.}~\bibnamefont
-  {Granet}}, \bibinfo {author} {\bibfnamefont {C.}~\bibnamefont {Zhang}},\ and\
-  \bibinfo {author} {\bibfnamefont {H.}~\bibnamefont {Dreyer}},\ }\bibfield
-  {title} {\bibinfo {title} {Volume-law to area-law entanglement transition in
-  a nonunitary periodic gaussian circuit},\ }\href
-  {https://doi.org/10.1103/PhysRevLett.130.230401} {\bibfield  {journal}
-  {\bibinfo  {journal} {Phys. Rev. Lett.}\ }\textbf {\bibinfo {volume} {130}},\
-  \bibinfo {pages} {230401} (\bibinfo {year} {2023})}\BibitemShut {NoStop}%
-\bibitem [{\citenamefont {Lapierre}\ \emph {et~al.}(2025)\citenamefont
-  {Lapierre}, \citenamefont {Mo},\ and\ \citenamefont
-  {Ryu}}]{lapierre2025entanglementtransitionsstructuredrandom}%
-  \BibitemOpen
-  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {B.}~\bibnamefont
-  {Lapierre}}, \bibinfo {author} {\bibfnamefont {L.-H.}\ \bibnamefont {Mo}},\
-  and\ \bibinfo {author} {\bibfnamefont {S.}~\bibnamefont {Ryu}},\ }\href
-  {https://arxiv.org/abs/2507.03768} {\bibinfo {title} {Entanglement
-  transitions in structured and random nonunitary gaussian circuits}} (\bibinfo
-  {year} {2025}),\ \Eprint {https://arxiv.org/abs/2507.03768} {arXiv:2507.03768
-  [quant-ph]} \BibitemShut {NoStop}%
 \bibitem [{\citenamefont {Collura}\ \emph
   {et~al.}(2026{\natexlab{b}})\citenamefont {Collura}, \citenamefont {Béri},\
   and\ \citenamefont
@@ -1384,4 +978,53 @@
   {https://doi.org/10.1103/PhysRevA.106.042426} {\bibfield  {journal} {\bibinfo
    {journal} {Phys. Rev. A}\ }\textbf {\bibinfo {volume} {106}},\ \bibinfo
   {pages} {042426} (\bibinfo {year} {2022})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Ahmad}\ \emph {et~al.}(2025)\citenamefont {Ahmad},
+  \citenamefont {Esposito}, \citenamefont {Stasino}, \citenamefont {Odavic},
+  \citenamefont {Cosenza}, \citenamefont {Sarno}, \citenamefont {Mastrovito},
+  \citenamefont {Viscardi}, \citenamefont {Cusumano}, \citenamefont {Tafuri},
+  \citenamefont {Massarotti},\ and\ \citenamefont
+  {Hamma}}]{ahmad2025experimentaldemonstrationnonlocalmagic}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {H.~G.}\ \bibnamefont
+  {Ahmad}}, \bibinfo {author} {\bibfnamefont {G.}~\bibnamefont {Esposito}},
+  \bibinfo {author} {\bibfnamefont {V.}~\bibnamefont {Stasino}}, \bibinfo
+  {author} {\bibfnamefont {J.}~\bibnamefont {Odavic}}, \bibinfo {author}
+  {\bibfnamefont {C.}~\bibnamefont {Cosenza}}, \bibinfo {author} {\bibfnamefont
+  {A.}~\bibnamefont {Sarno}}, \bibinfo {author} {\bibfnamefont
+  {P.}~\bibnamefont {Mastrovito}}, \bibinfo {author} {\bibfnamefont
+  {M.}~\bibnamefont {Viscardi}}, \bibinfo {author} {\bibfnamefont
+  {S.}~\bibnamefont {Cusumano}}, \bibinfo {author} {\bibfnamefont
+  {F.}~\bibnamefont {Tafuri}}, \bibinfo {author} {\bibfnamefont
+  {D.}~\bibnamefont {Massarotti}},\ and\ \bibinfo {author} {\bibfnamefont
+  {A.}~\bibnamefont {Hamma}},\ }\href {https://arxiv.org/abs/2511.15576}
+  {\bibinfo {title} {Experimental demonstration of non-local magic in a
+  superconducting quantum processor}} (\bibinfo {year} {2025}),\ \Eprint
+  {https://arxiv.org/abs/2511.15576} {arXiv:2511.15576 [quant-ph]} \BibitemShut
+  {NoStop}%
+\bibitem [{\citenamefont {Hastings}(2007)}]{Hastings_2007}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {M.~B.}\ \bibnamefont
+  {Hastings}},\ }\bibfield  {title} {\bibinfo {title} {An area law for
+  one-dimensional quantum systems},\ }\href
+  {https://doi.org/10.1088/1742-5468/2007/08/p08024} {\bibfield  {journal}
+  {\bibinfo  {journal} {Journal of Statistical Mechanics: Theory and
+  Experiment}\ }\textbf {\bibinfo {volume} {2007}},\ \bibinfo {pages}
+  {P08024–P08024} (\bibinfo {year} {2007})}\BibitemShut {NoStop}%
+\bibitem [{\citenamefont {Tirrito}\ \emph
+  {et~al.}(2025{\natexlab{b}})\citenamefont {Tirrito}, \citenamefont {Lumia},
+  \citenamefont {Paviglianiti}, \citenamefont {Lami}, \citenamefont {Silva},
+  \citenamefont {Turkeshi},\ and\ \citenamefont
+  {Collura}}]{tirrito2025magicphasetransitionsmonitored}%
+  \BibitemOpen
+  \bibfield  {author} {\bibinfo {author} {\bibfnamefont {E.}~\bibnamefont
+  {Tirrito}}, \bibinfo {author} {\bibfnamefont {L.}~\bibnamefont {Lumia}},
+  \bibinfo {author} {\bibfnamefont {A.}~\bibnamefont {Paviglianiti}}, \bibinfo
+  {author} {\bibfnamefont {G.}~\bibnamefont {Lami}}, \bibinfo {author}
+  {\bibfnamefont {A.}~\bibnamefont {Silva}}, \bibinfo {author} {\bibfnamefont
+  {X.}~\bibnamefont {Turkeshi}},\ and\ \bibinfo {author} {\bibfnamefont
+  {M.}~\bibnamefont {Collura}},\ }\href {https://arxiv.org/abs/2507.07179}
+  {\bibinfo {title} {Magic phase transitions in monitored gaussian fermions}}
+  (\bibinfo {year} {2025}{\natexlab{b}}),\ \Eprint
+  {https://arxiv.org/abs/2507.07179} {arXiv:2507.07179 [quant-ph]} \BibitemShut
+  {NoStop}%
 \end{thebibliography}%

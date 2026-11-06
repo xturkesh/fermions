@@ -64,7 +64,7 @@ Both points have a simple solution, which leaves all the figures and application
 
 \medskip
 \noindent
-In the Letter, the main results are presented in the main text; the outline of the proof, the derivation of the Page curve, the area law and further technical details are given in the End Matter, and the full proof and the remaining material in the Supplemental Material. We believe that an exact, polynomial-time formula for the Gaussian-restricted non-local magic of fermionic Gaussian states, which upper-bounds the full non-local magic, and the Page curve, critical scaling and quasiparticle picture that follow from it, will be of broad interest to the readership of Physical Review Letters.
+In the Letter, we have kept the text of the previous version as far as possible: the main results are presented in the main text; the derivation of the finite-size Page curve, the area law, the random circuits and a few technical points are given in the End Matter, and the full proof, the former Appendices and further details in the Supplemental Material. We believe that an exact, polynomial-time formula for the Gaussian-restricted non-local magic of fermionic Gaussian states, which upper-bounds the full non-local magic, and the Page curve, critical scaling and quasiparticle picture that follow from it, will be of broad interest to the readership of Physical Review Letters.
 
 \medskip
 \noindent
@@ -81,13 +81,13 @@ Beatrice Magni, on behalf of the Authors
 \medskip
 
 \begin{itemize}[leftmargin=*]
-\item Eqs.~(2)--(3) and Theorem~1: restricted to the contiguous blocks $A=\{1,\dots,\ell\}$, $B=\{\ell+1,\dots,N\}$; argument in the End Matter (``Local Gaussian orbit'') and below Eq.~(S5) (Referee~A, Point~1).
-\item Abstract, Introduction, End Matter (area law), Conclusions: ``contiguous'' specified accordingly (Referee~A, Point~1).
-\item End Matter, Eqs.~(11)--(13): typo in the Jacobi weight corrected (Referee~B).
+\item Eqs.~(3)--(4) and Theorem~1: restricted to the contiguous blocks $A=\{1,\dots,\ell\}$, $B=\{\ell+1,\dots,N\}$, with no qubit permutations, also in the canonical form, Eq.~(2); argument below Eq.~(S5) (Referee~A, Point~1).
+\item Abstract, Introduction, End Matter (area law), outlook (SM, Sec.~S9): ``contiguous'' specified accordingly (Referee~A, Point~1).
+\item End Matter, Eqs.~(15), (18), (19): typo in the Jacobi weight corrected (Referee~B).
 \item SM, Sec.~S1: logic of the proof made explicit; new proof of Lemma~S5; Points~2--14 (Referee~A).
-\item Minor corrections: GHZ state of the ordered phase (main text); boundary condition and time units of the quench (End Matter); early-time expansion of the random circuits (SM, Sec.~S5.2); caption of Fig.~3.
+\item Minor corrections: time units of the quench (main text); GHZ state of the ordered phase and early-time expansion of the random circuits (End Matter); boundary condition of the XY chain (SM, Sec.~S7); caption of Fig.~3.
 \item Acknowledgments: statement on the use of AI tools.
-\item Letter format: proof outline, Page-curve derivation, area law and technical details in the End Matter; full proof, random circuits and former Appendices in the SM.
+\item Letter format: the text of the previous version is kept as far as possible; finite-size Page curve, experimental observability, ordered phase, area law, quench--entanglement analogy and random circuits in the End Matter; full proof, former Appendices, rainbow example, details on the XY chain and on the quench, and the extended outlook in the SM.
 \end{itemize}
 
 \noindent The correspondence between the equation numbers quoted in the reports and the present ones is given at the end of this reply.
@@ -113,7 +113,7 @@ Beatrice Magni, on behalf of the Authors
 \end{quote}
 
 \reply{
-The Referee considers the result proved in the Appendix correct. The objection concerns its identification with the definition of Eq.~(5) [now Eq.~(3)] for non-contiguous bipartitions, which we have removed by restricting the definitions and Theorem~1 to contiguous blocks, as the Referee suggests (Point~1).
+The Referee considers the result proved in the Appendix correct. The objection concerns its identification with the definition of Eq.~(5) [now Eq.~(4)] for non-contiguous bipartitions, which we have removed by restricting the definitions and Theorem~1 to contiguous blocks, as the Referee suggests (Point~1).
 }
 
 \vspace{0.4cm}
@@ -129,7 +129,7 @@ AI tools were not used substantively in the previous version of the manuscript, 
 
 \medskip
 \noindent
-Concerning the intuition, we respectfully note that the reason for the moves of the proof was already given in the manuscript. Since the optimization runs over local fermionic Gaussian unitaries, the proof is formulated in the fermionic language, and the natural candidate for the optimum is the BCS canonical form of Botero and Reznik, as stated in the Introduction (``\textit{the minimization over local Gaussian unitaries is solved exactly by the BCS canonical form}'') and below Theorem~1. All the subsequent steps serve to show that this form is the global maximizer of $\zeta_2$ on the orbit: the roadmap of Fig.~4 [now Fig.~S1] is precisely this ``why''. To make it more visible, we now state it explicitly in the End Matter and at the beginning of Sec.~S1 of the Supplemental Material, followed by a short summary of the role of each step.
+Concerning the intuition, we respectfully note that the reason for the moves of the proof was already given in the manuscript. Since the optimization runs over local fermionic Gaussian unitaries, the proof is formulated in the fermionic language, and the natural candidate for the optimum is the BCS canonical form of Botero and Reznik, as stated in the Introduction (``\textit{the minimization over local Gaussian unitaries is solved exactly by the BCS canonical form}'') and below Theorem~1. All the subsequent steps serve to show that this form is the global maximizer of $\zeta_2$ on the orbit: the roadmap of Fig.~4 [now Fig.~S1] is precisely this ``why''. To make it more visible, we now state it explicitly at the beginning of Sec.~S1 of the Supplemental Material, followed by a short summary of the role of each step.
 }
 
 \vspace{0.4cm}
@@ -144,7 +144,7 @@ Concerning the intuition, we respectfully note that the reason for the moves of 
 \end{quote}
 
 \reply{
-We thank the Referee for the counterexample. The identification stated below Eq.~(50) requires contiguous blocks, and the counterexample uses a non-contiguous bipartition. We have adopted the second fix proposed by the Referee, which keeps the bound $M_2^{\NLl}\le M_2^{\FNL}$: the definitions, Eqs.~(2)--(3), and Theorem~1 now refer to $A=\{1,\dots,\ell\}$ and $B=\{\ell+1,\dots,N\}$. In the End Matter (``Local Gaussian orbit'') and below Eq.~(50) [now Eq.~(S5)] we now show that in this case $U_{O_A}\otimes U_{O_B}$ coincides, up to a phase, with the Gaussian unitary associated with $O_A\oplus\det(O_A)\,O_B$, so that Eq.~(3) is exactly the maximization over the orbit of Eq.~(S5); we also note that this fails for non-contiguous bipartitions. All the applications of the manuscript use contiguous blocks, or ensembles invariant under mode permutations, so no result changes.
+We thank the Referee for the counterexample. The identification stated below Eq.~(50) requires contiguous blocks, and the counterexample uses a non-contiguous bipartition. We have adopted the second fix proposed by the Referee, which keeps the bound $M_2^{\NLl}\le M_2^{\FNL}$: the definitions, Eqs.~(3)--(4), and Theorem~1 now refer to $A=\{1,\dots,\ell\}$ and $B=\{\ell+1,\dots,N\}$. Below Eq.~(50) [now Eq.~(S5)] we now show that in this case $U_{O_A}\otimes U_{O_B}$ coincides, up to a phase, with the Gaussian unitary associated with $O_A\oplus\det(O_A)\,O_B$, so that Eq.~(4) is exactly the maximization over the orbit of Eq.~(S5); we also note that this fails for non-contiguous bipartitions. All the applications of the manuscript use contiguous blocks, or ensembles invariant under mode permutations, so no result changes.
 }
 
 \vspace{0.4cm}
@@ -374,7 +374,7 @@ We thank the Referee for their positive assessment of the revised manuscript. Fo
 \end{quote}
 
 \reply{
-We thank the Referee for spotting this typo. The additional factor was introduced in the change of variables to $x_m=\lambda_m^2$ and propagated to Eqs.~(14)--(15), which we have corrected consistently with the result of Bianchi, Hackl and Kieburg, now cited [Eqs.~(11)--(13), in the End Matter]. Our calculations used the eigenvalues $\lambda_m^2$ directly, so no result is affected, and the thermodynamic-limit results, Eqs.~(16)--(18) [now Eq.~(14) and the text around it, in the End Matter], are unchanged.
+We thank the Referee for spotting this typo. The additional factor was introduced in the change of variables to $x_m=\lambda_m^2$ and propagated to Eqs.~(14)--(15), which we have corrected consistently with the result of Bianchi, Hackl and Kieburg, now cited [Eqs.~(15), (18), (19), in the End Matter]. Our calculations used the eigenvalues $\lambda_m^2$ directly, so no result is affected, and the thermodynamic-limit results, Eqs.~(16)--(18) [now Eqs.~(20)--(21) in the End Matter and Eq.~(8)], are unchanged.
 }
 
 \newpage
@@ -395,11 +395,11 @@ We thank the Referee for spotting this typo. The additional factor was introduce
 \hline
 previous & present & previous & present\\
 \hline
-Eqs.~(4), (5) & Eqs.~(2), (3) & Eq.~(57) & Eq.~(S13)\\
-Eqs.~(6), (7) & Eq.~(4), Theorem~1 & Eqs.~(59), (60) & Eqs.~(S15), (S16)\\
-Eq.~(11) & Eq.~(11) & Eqs.~(80), (81) & Eq.~(S36), removed\\
-Eqs.~(14), (15) & Eqs.~(12), (13) & Eq.~(108), Lemma~5 & Eq.~(S63), Lemma~S5\\
-Eqs.~(16)--(18) & text above Eq.~(14), Eq.~(14) & Eqs.~(115), (116) & replaced by Eqs.~(S64)--(S67)\\
+Eqs.~(4), (5) & Eqs.~(3), (4) & Eq.~(57) & Eq.~(S13)\\
+Eqs.~(6), (7) & Eqs.~(5), (6), Theorem~1 & Eqs.~(59), (60) & Eqs.~(S15), (S16)\\
+Eq.~(11) & Eq.~(15) & Eqs.~(80), (81) & Eq.~(S36), removed\\
+Eqs.~(14), (15) & Eqs.~(18), (19) & Eq.~(108), Lemma~5 & Eq.~(S63), Lemma~S5\\
+Eqs.~(16)--(18) & Eqs.~(20), (21), (8) & Eqs.~(115), (116) & replaced by Eqs.~(S64)--(S67)\\
 Eq.~(50) & Eq.~(S5) & Eq.~(124) & Eq.~(S75)\\
 Lemma~1 & Lemma~S1 & Eq.~(136) & Eq.~(S87)\\
 Theorems~2, 3 & Theorems~S1, S2 & Eqs.~(145), (147), (148) & Eqs.~(S96), (S98), removed\\
