@@ -1,0 +1,134 @@
+% ---------------------------------------------------------------------------
+% Appendix: Formal verification in Lean
+% ---------------------------------------------------------------------------
+\section{Formal verification in Lean}\label{app:lean}
+
+The finite-volume results of this paper are formalized in the proof assistant Lean~4 with the
+Mathlib library (both at version 4.36.0), in the directory \texttt{lean/} of the repository that
+accompanies the paper.  This appendix describes what the formalization contains, what it assumes,
+and where it deviates from the text.
+
+\paragraph{Objects.}  Everything is finite dimensional and defined from scratch:
+\begin{itemize}
+\item the Fock space of $N$ Jordan--Wigner fermions and the link spins, written in the $\sigma^x$
+basis of the links;
+\item the Hamiltonian~\eqref{eq:H}, the Gauss operators~\eqref{eq:gauss} and the boundary link, together
+with the open chain, the ring, and the two-dimensional model on arbitrary finite graphs;
+\item the dynamics, as matrix exponentials;
+\item the eigenbases of the one-body operators, from Mathlib's spectral theorem;
+\item the Shannon and von Neumann entropies.
+\end{itemize}
+Probabilities over the charges are uniform averages over $\{\pm1\}^N$.
+
+\paragraph{Checking.}  The whole library compiles without \texttt{sorry}.  Every theorem listed below
+depends only on Lean's three standard axioms (\texttt{propext}, \texttt{Classical.choice},
+\texttt{Quot.sound}), as reported by \texttt{\#print axioms}.
+
+\paragraph{The localization input.}  The theorems of \cref{sec:main} take Hypothesis~\ref{hyp:EC} as
+an explicit argument (\texttt{EC J h F}).  In addition, the proof of \cref{thm:EC}(i) is formalized
+(\texttt{ec\_of\_ldt}): Hypothesis~\ref{hyp:EC} follows from a hypothesis \texttt{LDT}.  This
+hypothesis consists of two parts:
+\begin{itemize}
+\item the uniform large-deviation estimate \eqref{eq:LDTvec}, in vector form, for products of
+i.i.d.\ Bernoulli transfer matrices;
+\item a lower bound $\gamma_\lambda\ge\gamma_*>0$ on $\Ilam$.
+\end{itemize}
+Both are published theorems (\cref{prop:nocritical,prop:LDT}).  Their proofs, Furstenberg's theory
+of products of random matrices, are not formalized.  The hypotheses of Furstenberg's theorem
+(\cref{prop:nocritical}(i),(ii),(iv)) are formalized.  Consequently \cref{thm:transport},
+\cref{thm:numberentropy}, \cref{thm:imbalance} and \cref{thm:arealaw}(a),(b) are Lean theorems whose
+only external input is this literature result (\texttt{lgt\_transport\_of\_ldt},
+\texttt{lgt\_numberEntropy\_of\_ldt}, \texttt{lgtImbalance\_lower\_of\_ldt}, \texttt{lgt\_areaLaw\_of\_ldt}).
+
+\paragraph{Correspondence.}  Lean names, followed by their files:
+\begin{itemize}[leftmargin=1.5em,itemsep=1pt]
+\item \cref{thm:duality,lem:gauss,cor:sector}: \texttt{duality}, \texttt{gauss\_dual},
+\texttt{numOp\_dual}, \texttt{sector\_average} (\texttt{Duality}, \texttt{Sector}).
+\item \cref{lem:productlaw}: \texttt{sector\_average\_prod\_fock}, \texttt{sector\_average\_zprod}
+(\texttt{ProductLaw}).
+\item \cref{prop:variants}: \texttt{sector\_average\_open} (open chain); \texttt{ring\_duality},
+\texttt{gaussRing\_dual\_zero}, \texttt{wilson\_dual}, \texttt{Hring\_ringVec},
+\texttt{sector\_average\_ring} (ring) (\texttt{Variants}, \texttt{Ring}).
+\item \cref{lem:pinching}, together with concavity and the mixing bound of the von Neumann entropy:
+\texttt{vonNeumann\_le\_pinching}, \texttt{vonNeumann\_pinching\_le}, \texttt{vonNeumann\_concave},
+\texttt{vonNeumann\_mix\_le} (\texttt{VNEntropy}).
+\item \cref{lem:cutlocal}(b),(c),(d): \texttt{cutlocal\_defect}, \texttt{vonNeumann\_rdmLGT\_xprod},
+\texttt{exProd\_U\_entropy}, \texttt{exProd\_Udag\_entropy} (\texttt{Entropies}, \texttt{CutLocal},
+\texttt{CutLocalExamples}).
+\item \cref{lem:consequences,hyp:EC}: \texttt{norm\_evo\_le\_corrQ}, \texttt{EC} (\texttt{OneBody}).
+\item \cref{thm:EC}(i) with \cref{lem:green,lem:entry,lem:badset,lem:double}: \texttt{ec\_of\_ldt},
+\texttt{poisson}, \texttt{box\_right}, \texttt{box\_left}, \texttt{entry\_ldt},
+\texttt{exists\_resEnd}, \texttt{single\_box}, \texttt{two\_box} (\texttt{Transfer}, \texttt{Resonance},
+\texttt{LDTEntry}, \texttt{ECProof}).
+\item \cref{prop:nocritical}(i),(ii),(iv): \texttt{unipotent\_pow\_unbounded},
+\texttt{no\_finite\_invariant\_lines}, \texttt{transferT\_commutator} (\texttt{Furstenberg}).
+\item \cref{thm:transport}: \texttt{lgt\_transport}; \cref{prop:LR}: \texttt{avg\_norm\_comm\_le};
+\cref{lem:duhamel}: \texttt{avg\_colNorm\_evo\_sub\_le} (\texttt{Main}, \texttt{LiebRobinson},
+\texttt{Duhamel}).
+\item \cref{thm:imbalance}: \texttt{lgtImbalance\_timeAvg}, \texttt{lgtImbalance\_lower}
+(\texttt{Imbalance}, \texttt{Main}).
+\item \cref{lem:intentropy,thm:numberentropy}: \texttt{massey}, \texttt{lgt\_numberEntropy}
+(\texttt{Entropy}, \texttt{Main}).
+\item \cref{thm:arealaw}: \texttt{lgt\_areaLaw}, \texttt{lgt\_areaLaw\_full} (\texttt{AreaLaw},
+\texttt{CutLocal}).
+\item \cref{prop:entropies}: (a) \texttt{lgt\_duality\_defect}; (b) \texttt{mixRdm\_eq\_marginal},
+\texttt{condEntropy\_le\_mix}, \texttt{mix\_le\_cond\_add}, \texttt{mix\_le\_log},
+\texttt{sectorLawEntropy\_le}, \texttt{sectorLawEntropy\_zero}; (c) \texttt{lgtNumDist\_eq\_avg},
+\texttt{lgt\_numberEntropy\_le\_full}, \texttt{numberEntropy\_le\_mix}, \texttt{numberEntropy\_le\_bare},
+\texttt{avg\_sector\_shannon\_le\_cond}, \texttt{numberEntropy\_le\_avg\_add}; (d)
+\texttt{correlator\_eq\_ensemble} (\texttt{Entropies}, \texttt{Taxonomy}, \texttt{Ensemble}).
+\item \cref{prop:dimerlaw,lem:dimercritical}, \cref{prop:dimerimbalance}(i),(ii):
+\texttt{sector\_average\_dimer}, \texttt{jsbs\_condition}, \texttt{dimerImbalance\_timeAvg}
+(\texttt{Dimer}, \texttt{DimerCritical}, \texttt{DimerImbalance}).
+\item \cref{lem:2dgauge}, \cref{thm:2dmap}(a), on arbitrary finite graphs:
+\texttt{flux\_eq\_iff\_gauge}, \texttt{card\_gaugeOrbit}, \texttt{card\_fluxClasses},
+\texttt{wilsonLoop\_comm\_ham}, \texttt{gaussOp\_prod} (\texttt{GraphFlux}, \texttt{GraphWilson}).
+\item \cref{prop:2dlaws}: (a) \texttt{sector\_average\_flux} (and \texttt{sector\_average\_matter}
+for $s=+$); (b) \texttt{sector\_average\_xpol}, \texttt{xpol\_summand\_gauge}; (c)(i),(ii)
+\texttt{checkerboard\_sq}, \texttt{checkerboard\_gap}, \texttt{checkerboard\_edge\_iff}
+(\texttt{Graph}, \texttt{GraphFlux}, \texttt{TwoD}).
+\item \cref{prop:nocompact}: \texttt{no\_compact\_eigenvector} (\texttt{TwoD}).
+\item \cref{prop:cluster}: \texttt{hqs0\_cluster}, \texttt{cluster\_bound}, \texttt{cluster\_leak},
+\texttt{cluster\_avg} (\texttt{Cluster}).
+\item \cref{prop:gausscap}: \texttt{countInt\_gauss}, \texttt{qlm\_numberEntropy\_le},
+\texttt{qlm\_numberEntropy\_le\_super}, \texttt{qlm\_sector\_preserved}, \texttt{bgEntropy\_invariant}
+(\texttt{QLM}, \texttt{QLMSuper}).
+\item \cref{prop:wilson}: \texttt{wField\_eq\_count}, \texttt{wilson\_field\_bound},
+\texttt{wilson\_numberEntropy\_avg}, \texttt{wilson\_numberEntropy\_most},
+\texttt{wilson\_numberEntropy\_each} (\texttt{Wilson}).
+\item \cref{rem:randomwalk}: \texttt{Hstd\_dual\_oneP}, \texttt{partialSum\_bijective}
+(\texttt{RandomWalk}).
+\end{itemize}
+
+\paragraph{Deviations.}  Sites and links are indexed from $0$.  The constants of
+\cref{thm:numberentropy}, \cref{thm:arealaw} and \cref{thm:EC} appear as existential quantifiers, with
+values depending only on $J$, $h$ and the profile $F$ (resp.\ on $|\lambda|$).  The Lean area law
+has the constant $2$ in place of $2\ln2$.  Three proofs take a different route from the text.
+\begin{itemize}
+\item \Cref{lem:green} is replaced by the Poisson identity
+$\det(E-A_B)\,\varphi(x)=\det(E-A_{[x+1,b]})\,\varphi(a-1)+\det(E-A_{[a,x-1]})\,\varphi(b+1)$, valid
+for every solution of the eigenvalue equation on $B=[a,b]$ (a Wronskian argument).
+\item \Cref{lem:entry} uses only the vector form \eqref{eq:LDTvec} of the large-deviation estimate:
+the norm of the product is bounded through its action on two basis vectors.
+\item In \cref{prop:cluster}(b) the generator $S$ is obtained from the anticommutator equation
+$\Gamma h^0S+S\Gamma h^0=\Gamma h^1$ with $\Gamma=\operatorname{sgn}(h)\diag(q)$, so that
+$[h^0,S]=h^1$ and $\norm S\le\norm{h^1}/g$, using $\Gamma h^0\ge g/2$.  The mean value inequality
+for $u\mapsto\e^{\ii uh}(\one-S)\e^{-\ii uh^0}$ then gives
+$\norm{\e^{-\ii th}-\e^{-\ii th^0}}\le2\norm S+\abs t\norm{h^1}\norm S$, i.e.\ \eqref{eq:clusterbound}
+with $16$ in place of $48$.
+\end{itemize}
+
+\paragraph{Not formalized.}  The following are not formalized:
+\begin{itemize}
+\item the literature results entering as inputs: the large-deviation estimate together with the
+positivity and continuity of the Lyapunov exponent, \cref{prop:nocritical}(iii), \cref{prop:Zline},
+the transport bounds of \cite{JSBS2003} behind \cref{thm:dimer}, and the percolation estimate of
+\cite{LiL2022}, which enters \texttt{cluster\_avg} as the probability that the cluster leaves the
+region;
+\item the infinite-volume statements: \cref{thm:infvol}, \cref{cor:ECinfvol}, \cref{thm:EC}(ii) and
+\cref{prop:dimerimbalance}(iii);
+\item in two dimensions, the joint-eigenspace form of \cref{thm:2dmap}(b)--(d) and
+\cref{prop:2dlaws}(c)(iii),(iv);
+\item the identity in \cref{prop:entropies}(c), of which only the inequalities are formalized;
+\item remarks, conjectures and numerics.
+\end{itemize}
