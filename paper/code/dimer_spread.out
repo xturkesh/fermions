@@ -1,3 +1,15 @@
 # single dressed fermion, sector-averaged <(X-x0)^2>_t; J=1; S=64 sectors per case; x0 odd (left site of a dimer)
 # one-body dynamics on Z by Chebyshev propagation on an adaptive window (no boundary)
 # validation (dimer, lambda=0.5, N=2001 chain): Chebyshev vs eigendecomposition, max rel. error of m2(t) at t=1,10,100,400: 2.7e-15;  quadrature vs exact M_2(T), T=1,3,10,30: 8.8e-05 8.8e-05 8.8e-05 1.1e-05
+dimer h/J=0.25 (lambda=0.5): <X^2>_t at t=10,1e2,1e3,1e4: 128.3+-2  5289+-47  1.767e+05+-1.2e+03  5.599e+06+-2e+04   [max |norm-1| = 1.5e-12, max window = 36615 sites, 786s]
+      slope of log<X^2> vs log t on [10,1e2],[1e2,1e3],[1e3,1e4]: 1.615 1.524 1.501
+      M_2(T) (sector average) at T=1,10,1e2,1e3: 3.559  188.8  7161  2.347e+05;  min over sectors of M_2(T)/T: 3.239  15.94  61.83  214.3
+dimer h/J=0.75 (lambda=1.5): <X^2>_t at t=10,1e2,1e3,1e4: 19.44+-2.2  42.96+-3.4  50.46+-4.5  53.95+-4.7   [max |norm-1| = 2.6e-12, max window = 1098 sites, 74s]
+      slope of log<X^2> vs log t on [10,1e2],[1e2,1e3],[1e3,1e4]: 0.344 0.070 0.029
+      M_2(T) (sector average) at T=1,10,1e2,1e3: 2.215  16.45  36.83  48.61;  min over sectors of M_2(T)/T: 1.086  0.3905  0.05  0.005107
+iid   h/J=0.25 (lambda=0.5): <X^2>_t at t=10,1e2,1e3,1e4: 90.87+-1.6  565+-21  809.2+-35  863.9+-40   [max |norm-1| = 1.4e-12, max window = 4348 sites, 137s]
+      slope of log<X^2> vs log t on [10,1e2],[1e2,1e3],[1e3,1e4]: 0.794 0.156 0.028
+      M_2(T) (sector average) at T=1,10,1e2,1e3: 3.249  90.14  448.7  743.7;  min over sectors of M_2(T)/T: 2.936  6.553  2.891  0.4205
+iid   h/J=0.75 (lambda=1.5): <X^2>_t at t=10,1e2,1e3,1e4: 11.04+-0.94  24.12+-3.6  23.05+-3.4  27.49+-4.2   [max |norm-1| = 2.7e-12, max window = 474 sites, 52s]
+      slope of log<X^2> vs log t on [10,1e2],[1e2,1e3],[1e3,1e4]: 0.339 -0.020 0.076
+      M_2(T) (sector average) at T=1,10,1e2,1e3: 1.578  9.328  20.32  23.73;  min over sectors of M_2(T)/T: 0.7972  0.3101  0.03599  0.0037

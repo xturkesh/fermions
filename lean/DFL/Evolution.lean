@@ -25,31 +25,126 @@ def evo (A : Matrix ι ι ℝ) (t : ℝ) : Matrix ι ι ℂ :=
 /-- The expectation `⟨v, M v⟩ = ∑_{a,b} conj(v a) M a b v b`. -/
 def expect (M : Matrix ι ι ℂ) (v : ι → ℂ) : ℂ := star v ⬝ᵥ (M *ᵥ v)
 
+omit [Fintype ι] [DecidableEq ι] in
+/-- The conjugate transpose of a complexified real matrix is the complexified transpose. -/
+theorem cplx_conjTranspose (A : Matrix ι ι ℝ) : (cplx A)ᴴ = cplx Aᵀ := by
+  ext i j
+  simp [cplx, conjTranspose_apply]
+
+omit [Fintype ι] [DecidableEq ι] in
+/-- The generator `-itA` of `evo` is skew-Hermitian for symmetric `A`. -/
+theorem gen_conjTranspose (A : Matrix ι ι ℝ) (hA : A.IsSymm) (t : ℝ) :
+    ((-(t : ℂ) * Complex.I) • cplx A)ᴴ = -((-(t : ℂ) * Complex.I) • cplx A) := by
+  rw [conjTranspose_smul, cplx_conjTranspose, hA.eq, ← neg_smul]
+  congr 1
+  simp
+
 /-- `e^{-itA}` is unitary when `A` is symmetric. -/
 theorem evo_unitary (A : Matrix ι ι ℝ) (hA : A.IsSymm) (t : ℝ) :
     (evo A t)ᴴ * evo A t = 1 := by
-  sorry
+  unfold evo
+  rw [← Matrix.exp_conjTranspose, gen_conjTranspose A hA t,
+    ← Matrix.exp_add_of_commute _ _ (Commute.refl ((-(t : ℂ) * Complex.I) • cplx A)).neg_left,
+    neg_add_cancel, exp_zero]
 
 /-- `e^{-itA}` is unitary when `A` is symmetric (other order). -/
 theorem evo_unitary' (A : Matrix ι ι ℝ) (hA : A.IsSymm) (t : ℝ) :
     evo A t * (evo A t)ᴴ = 1 := by
-  sorry
+  unfold evo
+  rw [← Matrix.exp_conjTranspose, gen_conjTranspose A hA t,
+    ← Matrix.exp_add_of_commute _ _ (Commute.refl ((-(t : ℂ) * Complex.I) • cplx A)).neg_right,
+    add_neg_cancel, exp_zero]
+
+/-- The exponential of a scalar matrix is a scalar matrix. -/
+theorem exp_smul_one (d : ℂ) : exp (d • (1 : Matrix ι ι ℂ)) = exp d • (1 : Matrix ι ι ℂ) := by
+  rw [smul_one_eq_diagonal, smul_one_eq_diagonal, Matrix.exp_diagonal]
+  congr 1
+  ext i
+  exact Pi.coe_exp _ i
+
+omit [DecidableEq ι] in
+/-- Multiplying the state by a scalar `z` multiplies expectations by `|z|²`. -/
+theorem expect_smul (M : Matrix ι ι ℂ) (z : ℂ) (v : ι → ℂ) :
+    expect M (z • v) = (star z * z) * expect M v := by
+  unfold expect
+  rw [mulVec_smul, star_smul, smul_dotProduct, dotProduct_smul, smul_eq_mul, smul_eq_mul]
+  ring
+
+/-- A phase `e^{iθ}` has modulus one. -/
+theorem star_exp_mul_exp (θ : ℝ) :
+    star (exp ((θ : ℂ) * Complex.I)) * exp ((θ : ℂ) * Complex.I) = 1 := by
+  rw [← Complex.exp_eq_exp_ℂ]
+  have h1 : star (Complex.exp ((θ : ℂ) * Complex.I)) = Complex.exp (-((θ : ℂ) * Complex.I)) := by
+    rw [Complex.star_def, ← Complex.exp_conj]
+    congr 1
+    simp
+  rw [h1, ← Complex.exp_add, neg_add_cancel, Complex.exp_zero]
 
 /-- A real constant shift of the generator only changes the evolved state by a global phase,
 which drops out of all expectations. -/
 theorem expect_evo_sub_smul_one (A : Matrix ι ι ℝ) (c : ℝ) (M : Matrix ι ι ℂ) (v : ι → ℂ)
     (t : ℝ) :
     expect M (evo (A - c • (1 : Matrix ι ι ℝ)) t *ᵥ v) = expect M (evo A t *ᵥ v) := by
-  sorry
+  have hc : cplx (A - c • (1 : Matrix ι ι ℝ)) = cplx A + (-(c : ℂ)) • (1 : Matrix ι ι ℂ) := by
+    ext i j
+    by_cases h : i = j
+    · subst h; simp [cplx, sub_eq_add_neg]
+    · simp [cplx, one_apply_ne h]
+  have hevo : evo (A - c • (1 : Matrix ι ι ℝ)) t =
+      exp (((t * c : ℝ) : ℂ) * Complex.I) • evo A t := by
+    unfold evo
+    rw [hc, smul_add, smul_smul, Matrix.exp_add_of_commute _ _ ?_]
+    · rw [exp_smul_one, mul_smul_one]
+      congr 2
+      push_cast
+      ring
+    · exact (Commute.one_right _).smul_right _
+  rw [hevo, smul_mulVec, expect_smul, star_exp_mul_exp, one_mul]
+
+/-- The matrix exponential commutes with relabelling the basis by a bijection. -/
+theorem exp_submatrix_equiv {κ : Type*} [Fintype κ] [DecidableEq κ] (X : Matrix ι ι ℂ)
+    (e : κ ≃ ι) : (exp X).submatrix e e = exp (X.submatrix e e) := by
+  let g := Matrix.reindexAlgEquiv ℚ ℂ e.symm
+  have key : ∀ M : Matrix ι ι ℂ, M.submatrix e e = g M := fun M => rfl
+  have hg : Continuous g := continuous_id.matrix_submatrix e e
+  have hg' : Continuous (fun M : Matrix κ κ ℂ => M.submatrix e.symm e.symm) :=
+    continuous_id.matrix_submatrix e.symm e.symm
+  have hleft : Function.LeftInverse (fun M : Matrix κ κ ℂ => M.submatrix e.symm e.symm) g := by
+    intro M
+    ext i j
+    simp [g]
+  rw [key, key]
+  simp_rw [exp_eq_tsum_rat]
+  rw [Function.LeftInverse.map_tsum _ hg hg' hleft]
+  simp [map_smul, map_pow]
 
 /-- Evolution commutes with relabelling the basis by a bijection. -/
 theorem evo_submatrix {κ : Type*} [Fintype κ] [DecidableEq κ] (A : Matrix ι ι ℝ) (e : κ ≃ ι)
     (t : ℝ) : (evo A t).submatrix e e = evo (A.submatrix e e) t := by
-  sorry
+  unfold evo
+  rw [exp_submatrix_equiv, submatrix_smul]
+  rfl
+
+omit [Fintype ι] [DecidableEq ι] in
+/-- The complexification of a block-diagonal matrix is block diagonal. -/
+theorem cplx_blockDiagonal {o : Type*} [Fintype o] [DecidableEq o] (B : o → Matrix ι ι ℝ) :
+    cplx (blockDiagonal B) = blockDiagonal (fun i => cplx (B i)) := by
+  unfold cplx
+  rw [blockDiagonal_map]
+  simp
+
+/-- The exponential in a finite product of matrix algebras is computed componentwise. -/
+theorem pi_exp_apply {o : Type*} [Fintype o] (v : o → Matrix ι ι ℂ) (i : o) :
+    exp v i = exp (v i) := by
+  open scoped Matrix.Norms.Operator in exact Pi.coe_exp v i
 
 /-- Evolution of a block-diagonal generator is block diagonal. -/
 theorem evo_blockDiagonal {o : Type*} [Fintype o] [DecidableEq o] (B : o → Matrix ι ι ℝ)
     (t : ℝ) : evo (blockDiagonal B) t = blockDiagonal (fun i => evo (B i) t) := by
-  sorry
+  unfold evo
+  rw [cplx_blockDiagonal, ← blockDiagonal_smul, Matrix.exp_blockDiagonal]
+  congr 1
+  ext i : 1
+  exact pi_exp_apply _ i
 
 end DFL

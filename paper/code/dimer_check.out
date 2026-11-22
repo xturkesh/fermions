@@ -1,16 +1,36 @@
-=== Part D: deterministic lower bound M_2(T) >= c T (finite chain, x in the middle) ===
-  D0: Plancherel identity, N=40, T=7.0: exact eigen-formula 49.07755852, resolvent quadrature 49.07755852
-  lambda=0.25: explicit constant c_(lambda,2) = 2.378e-08;  ratio M_2(T)/T for T = [1, 3, 10, 30, 100, 250]:
-      clean (+)             : 4.000e+00 1.200e+01 4.000e+01 1.152e+02 1.598e+02 9.563e+01   (min ratio / c = 1.7e+08)
-      alternating dimers    : 3.767e+00 1.012e+01 3.100e+01 8.740e+01 1.295e+02 8.620e+01   (min ratio / c = 1.6e+08)
-      period-6 (++,++,--)   : 3.866e+00 1.049e+01 3.074e+01 8.497e+01 1.250e+02 8.138e+01   (min ratio / c = 1.6e+08)
-      random 0              : 3.792e+00 1.047e+01 2.879e+01 6.444e+01 7.197e+01 3.991e+01   (min ratio / c = 1.6e+08)
-      random 1              : 3.806e+00 1.048e+01 2.949e+01 6.481e+01 7.072e+01 4.005e+01   (min ratio / c = 1.6e+08)
-      random 2              : 3.907e+00 1.100e+01 2.965e+01 6.412e+01 6.897e+01 3.760e+01   (min ratio / c = 1.6e+08)
-  lambda=0.5: explicit constant c_(lambda,2) = 1.478e-10;  ratio M_2(T)/T for T = [1, 3, 10, 30, 100, 250]:
-      clean (+)             : 4.000e+00 1.200e+01 4.000e+01 1.152e+02 1.598e+02 9.563e+01   (min ratio / c = 2.7e+10)
-      alternating dimers    : 3.212e+00 7.329e+00 2.120e+01 6.079e+01 1.019e+02 7.585e+01   (min ratio / c = 2.2e+10)
-      period-6 (++,++,--)   : 3.516e+00 7.860e+00 2.096e+01 5.846e+01 9.994e+01 7.105e+01   (min ratio / c = 2.4e+10)
-      random 0              : 3.631e+00 8.047e+00 1.872e+01 3.772e+01 4.098e+01 2.286e+01   (min ratio / c = 2.5e+10)
-      random 1              : 3.795e+00 8.869e+00 1.758e+01 3.273e+01 3.659e+01 2.064e+01   (min ratio / c = 2.6e+10)
-      random 2              : 3.530e+00 8.717e+00 2.107e+01 4.237e+01 4.740e+01 2.762e+01   (min ratio / c = 2.4e+10)
+=== Part A: ED of the LGT for dimer product states ===
+N=2: A1 max|weight - 2^-M 1[dimer]| = 1.1e-16 (physical P_q);  max|U^+Psi - 2^(-M/2) sum_eta |n,q(eta)>| = 2.2e-16;  A4 max|G_(2k-1)G_(2k)Psi - Psi| = 0.0e+00
+N=2: A2 max over all n of |ct^+_(s1)...ct^+_(sm) Psi^dim(0) - Psi^dim(n)| = 0.0e+00
+N=2: A3 max|weight - 2^-M 1[q_(2k)=d_k q_(2k-1)]| over 6 (n,xi) = 1.1e-16;  CDW with all even links |+>: d = [-1] (anti-dimers)
+N=4: A1 max|weight - 2^-M 1[dimer]| = 1.1e-16 (physical P_q);  max|U^+Psi - 2^(-M/2) sum_eta |n,q(eta)>| = 2.8e-16;  A4 max|G_(2k-1)G_(2k)Psi - Psi| = 0.0e+00
+N=4: A2 max over all n of |ct^+_(s1)...ct^+_(sm) Psi^dim(0) - Psi^dim(n)| = 0.0e+00
+N=4: A3 max|weight - 2^-M 1[q_(2k)=d_k q_(2k-1)]| over 6 (n,xi) = 1.1e-16;  CDW with all even links |+>: d = [-1, -1] (anti-dimers)
+N=6: A1 max|weight - 2^-M 1[dimer]| = 5.6e-17 (physical P_q);  max|U^+Psi - 2^(-M/2) sum_eta |n,q(eta)>| = 2.8e-16;  A4 max|G_(2k-1)G_(2k)Psi - Psi| = 0.0e+00
+N=6: A2 max over all n of |ct^+_(s1)...ct^+_(sm) Psi^dim(0) - Psi^dim(n)| = 0.0e+00
+N=6: A3 max|weight - 2^-M 1[q_(2k)=d_k q_(2k-1)]| over 6 (n,xi) = 5.6e-17;  CDW with all even links |+>: d = [-1, -1, -1] (anti-dimers)
+--- A5: dynamics, full ED of the LGT vs dimer-law average of one-body formulas ---
+N=4, h/J=0.25: single@2: dimer-law err = 2.4e-15, iid-law control err = 0.26;  CDW: dimer-law err = 3.8e-15, iid-law control err = 0.14
+N=4, h/J=0.75: single@2: dimer-law err = 9.3e-15, iid-law control err = 0.24;  CDW: dimer-law err = 9.3e-15, iid-law control err = 0.31
+N=6, h/J=0.25: single@3: dimer-law err = 2.2e-15, iid-law control err = 0.14;  CDW: dimer-law err = 3.7e-14, iid-law control err = 0.13
+N=6, h/J=0.75: single@3: dimer-law err = 1.3e-14, iid-law control err = 0.18;  CDW: dimer-law err = 6.9e-15, iid-law control err = 0.29
+=== Part B: transfer matrices of the dimer model (JSBS conventions, t = 1) ===
+  lambda=0.1000: critical=True, tr T_-=-1.9600, [T+,T-]=0e+00, |<e^(2i eta)>| = 0.9800 / 0.9800 (formula |1-2l^2| = 0.9800), |<e^(4i eta)> - 1| = 3.90e-01, kappa(M) = 1.1055 (formula 1.1055)
+  lambda=0.2500: critical=True, tr T_-=-1.7500, [T+,T-]=0e+00, |<e^(2i eta)>| = 0.8750 / 0.8750 (formula |1-2l^2| = 0.8750), |<e^(4i eta)> - 1| = 8.47e-01, kappa(M) = 1.2910 (formula 1.2910)
+  lambda=0.3000: critical=True, tr T_-=-1.6400, [T+,T-]=0e+00, |<e^(2i eta)>| = 0.8200 / 0.8200 (formula |1-2l^2| = 0.8200), |<e^(4i eta)> - 1| = 9.39e-01, kappa(M) = 1.3628 (formula 1.3628)
+  lambda=0.5000: critical=True, tr T_-=-1.0000, [T+,T-]=0e+00, |<e^(2i eta)>| = 0.5000 / 0.5000 (formula |1-2l^2| = 0.5000), |<e^(4i eta)> - 1| = 8.66e-01, kappa(M) = 1.7321 (formula 1.7321)
+  lambda=0.7071: critical=True, tr T_-=-0.0000, [T+,T-]=0e+00, |<e^(2i eta)>| = 0.0000 / 0.0000 (formula |1-2l^2| = 0.0000), |<e^(4i eta)> - 1| = 9.16e-16, kappa(M) = 2.4142 (formula 2.4142)
+  lambda=0.8000: critical=True, tr T_-=+0.5600, [T+,T-]=0e+00, |<e^(2i eta)>| = 0.2800 / 0.2800 (formula |1-2l^2| = 0.2800), |<e^(4i eta)> - 1| = 5.38e-01, kappa(M) = 3.0000 (formula 3.0000)
+  lambda=0.9500: critical=True, tr T_-=+1.6100, [T+,T-]=0e+00, |<e^(2i eta)>| = 0.8050 / 0.8050 (formula |1-2l^2| = 0.8050), |<e^(4i eta)> - 1| = 9.55e-01, kappa(M) = 6.2450 (formula 6.2450)
+  lambda=0.9990: critical=True, tr T_-=+1.9920, [T+,T-]=0e+00, |<e^(2i eta)>| = 0.9960 / 0.9960 (formula |1-2l^2| = 0.9960), |<e^(4i eta)> - 1| = 1.78e-01, kappa(M) = 44.7102 (formula 44.7102)
+  lambda=1.0000: critical=False, tr T_-=+2.0000 (parabolic)
+  lambda=1.2000: critical=False, tr T_-=+3.7600 (hyperbolic)
+  lambda=1.4142: critical=False, tr T_-=+6.0000 (hyperbolic)
+  lambda=2.0000: critical=False, tr T_-=+14.0000 (hyperbolic)
+  lambda=3.0000: critical=False, tr T_-=+34.0000 (hyperbolic)
+  max error of M A(-2l) M^-1 = R_theta, M T_- M^-1 = R_2theta, M T_+ M^-1 = R_pi: 3.1e-15
+  B1: min over E (|E -+ lambda| >= 1e-3) of |[T+,T-]| / |ab(a-b)| = 1.000000 (exact value 1)
+  B1 (anti-dimer law): min over lambda in {0.3,0.7,1.5}, E in [-4,4] of max|[T_(l,-l), T_(-l,l)]| = 5.284e-02 (> 0)
+  B2: max over 120 random (config, alignment, z, m, n) of ||T^z(n,m)|| / (K1 e^(K2|z-l|(n-m))) = 0.1594 (must be <= 1)
+=== Part C: imbalance identity for dimer configurations ===
+  C1: max |(l^2 - E_a^2) a_a - (phi_a(N)^2 - phi_a(1)^2)| over 100 configurations, N=200: 3.5e-14
+  C0: matrix identity (A(w)^2)^T B_E A(w)^2 - B_E = w(w+2E) S(w), 2000 random (w,E): max rel. error 8.4e-16

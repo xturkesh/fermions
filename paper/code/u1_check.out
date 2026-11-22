@@ -1,0 +1,49 @@
+====================================================================================================
+A. Quantum link models: Gauss-law caps on the number entropy (Prop. prop:gausscap)
+====================================================================================================
+S=0.5 Q=0 A=[1,5]: sector dim=89, identity err=0e+00, #values of N_A=2 (cap 2), S_N(random state)=0.567, S_N(equal-weight superposition)=0.693 <= ln cap=0.693
+S=0.5 Q=0 A=[4,7]: sector dim=89, identity err=0e+00, #values of N_A=3 (cap 3), S_N(random state)=0.877, S_N(equal-weight superposition)=1.099 <= ln cap=1.099
+S=0.5 Q=random A=[1,5]: sector dim=22, identity err=0e+00, #values of N_A=2 (cap 2), S_N(random state)=0.207, S_N(equal-weight superposition)=0.693 <= ln cap=0.693
+S=0.5 Q=random A=[4,7]: sector dim=22, identity err=0e+00, #values of N_A=2 (cap 3), S_N(random state)=0.629, S_N(equal-weight superposition)=0.693 <= ln cap=1.099
+S=1.0 Q=0 A=[1,5]: sector dim=441, identity err=0e+00, #values of N_A=3 (cap 3), S_N(random state)=0.955, S_N(equal-weight superposition)=1.099 <= ln cap=1.099
+S=1.0 Q=0 A=[4,7]: sector dim=441, identity err=0e+00, #values of N_A=5 (cap 5), S_N(random state)=1.165, S_N(equal-weight superposition)=1.609 <= ln cap=1.609
+S=1.0 Q=random A=[1,5]: sector dim=11, identity err=0e+00, #values of N_A=2 (cap 3), S_N(random state)=0.659, S_N(equal-weight superposition)=0.693 <= ln cap=1.099
+S=1.0 Q=random A=[4,7]: sector dim=11, identity err=0e+00, #values of N_A=2 (cap 5), S_N(random state)=0.263, S_N(equal-weight superposition)=0.693 <= ln cap=1.609
+S=1.0 Q=random A=[1,5]: sector dim=11, identity err=0e+00, #values of N_A=2 (cap 3), S_N(random state)=0.693, S_N(equal-weight superposition)=0.693 <= ln cap=1.099
+S=1.0 Q=random A=[4,7]: sector dim=11, identity err=0e+00, #values of N_A=2 (cap 5), S_N(random state)=0.465, S_N(equal-weight superposition)=0.693 <= ln cap=1.609
+S=1.5 Q=0 A=[1,5]: sector dim=680, identity err=0e+00, #values of N_A=4 (cap 4), S_N(random state)=1.177, S_N(equal-weight superposition)=1.386 <= ln cap=1.386
+S=1.5 Q=0 A=[4,7]: sector dim=680, identity err=0e+00, #values of N_A=5 (cap 7), S_N(random state)=1.271, S_N(equal-weight superposition)=1.609 <= ln cap=1.946
+S=1.5 Q=random A=[1,5]: sector dim=125, identity err=0e+00, #values of N_A=3 (cap 4), S_N(random state)=0.745, S_N(equal-weight superposition)=1.099 <= ln cap=1.386
+S=1.5 Q=random A=[4,7]: sector dim=125, identity err=0e+00, #values of N_A=4 (cap 7), S_N(random state)=1.021, S_N(equal-weight superposition)=1.386 <= ln cap=1.946
+S=1.5 Q=random A=[1,5]: sector dim=304, identity err=0e+00, #values of N_A=3 (cap 4), S_N(random state)=0.964, S_N(equal-weight superposition)=1.099 <= ln cap=1.386
+S=1.5 Q=random A=[4,7]: sector dim=304, identity err=0e+00, #values of N_A=4 (cap 7), S_N(random state)=1.097, S_N(equal-weight superposition)=1.386 <= ln cap=1.946
+Dynamics (S=1, L=10, Q=0, e0=0, random on-site potential and n n interaction, Fock initial state):
+   A=[1,5]: sup_t S_N(t) = 0.965 <= ln(3) = 1.099
+   A=[4,7]: sup_t S_N(t) = 1.110 <= ln(5) = 1.609
+[time 1.7s]
+
+A'. Superposition over background-charge sectors (bare-vacuum fermions, links in equal superposition)
+S=0.5 A=[1,4]: 256 sectors; H(sum_A Q)=0.693; S_N(t) for t=[0.0, 1.0, 3.0, 10.0, 30.0, 100.0]: -0.000 0.660 0.557 0.665 0.573 0.553  <= ln(2) + H(sum_A Q) = 1.386
+S=0.5 A=[3,6]: 256 sectors; H(sum_A Q)=1.040; S_N(t) for t=[0.0, 1.0, 3.0, 10.0, 30.0, 100.0]: -0.000 1.011 0.852 0.968 0.858 0.828  <= ln(3) + H(sum_A Q) = 2.138
+S=1.0 A=[1,3]: 729 sectors; H(sum_A Q)=1.099; S_N(t) for t=[0.0, 1.0, 3.0, 10.0, 30.0, 100.0]: 0.000 0.693 0.855 0.737 0.772 0.721  <= ln(3) + H(sum_A Q) = 2.197
+S=1.0 A=[2,5]: 729 sectors; H(sum_A Q)=1.523; S_N(t) for t=[0.0, 1.0, 3.0, 10.0, 30.0, 100.0]: 0.000 1.017 0.889 0.932 0.953 0.835  <= ln(5) + H(sum_A Q) = 3.132
+[time 2.9s]
+
+====================================================================================================
+B. Wilson links (lattice Schwinger model, gauge field integrated out in the sector Q=0, e0=0)
+====================================================================================================
+w=1.0 m=0.0 g^2=0.25: |S_N([1,l]) - H(E_l)| <= 0.0e+00; sup_t (1/L)sum_l <E_l^2>_t = 0.777 <= 8.000; sup_t (1/L)sum_l S_N([1,l])(t) = 1.055 <= 2.464 (largest single cut 1.403)
+w=1.0 m=0.5 g^2=0.5: |S_N([1,l]) - H(E_l)| <= 0.0e+00; sup_t (1/L)sum_l <E_l^2>_t = 0.523 <= 5.000; sup_t (1/L)sum_l S_N([1,l])(t) = 0.946 <= 2.232 (largest single cut 1.186)
+w=1.0 m=0.0 g^2=2.0: |S_N([1,l]) - H(E_l)| <= 0.0e+00; sup_t (1/L)sum_l <E_l^2>_t = 0.367 <= 1.000; sup_t (1/L)sum_l S_N([1,l])(t) = 0.756 <= 1.459 (largest single cut 0.863)
+[time 48.4s]
+
+====================================================================================================
+C. Standard Z2 LGT (single-link electric term, boundary link): random-walk potential (Remark rem:randomwalk)
+====================================================================================================
+N=3: one-fermion sector, 8 charge sectors, max|dE| (sector by sector) = 2.66e-15
+N=4: one-fermion sector, 16 charge sectors, max|dE| (sector by sector) = 3.11e-15
+N=5: one-fermion sector, 32 charge sectors, max|dE| (sector by sector) = 3.55e-15
+N=5, sector q=(1, 1, 1, 1, 1): 2-fermion spectrum vs rank-alternating formula: max|dE| = 1.7e-15; vs best free-fermion guess e1_a+e1_b-e0: max|dE| = 6.925 (nonzero => not free)
+N=5, sector q=(1, -1, -1, 1, -1): 2-fermion spectrum vs rank-alternating formula: max|dE| = 5.3e-15; vs best free-fermion guess e1_a+e1_b-e0: max|dE| = 0.974 (nonzero => not free)
+[time 55.1s]
+Eigenfunction correlator E Q(x0,x0+d) (N=600, x0=300, 200 samples):

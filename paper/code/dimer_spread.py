@@ -17,7 +17,8 @@ Outputs
   - the exponential time average M_2(T) = int_0^infty (dt/T) e^{-t/T} <(X-x0)^2>_t (the quantity of Thm thm:dimer),
     per sector and averaged, for T in [1, 1e3] (trapezoidal rule on the time grid; validated below against the
     exact eigenfunction formula on a finite chain);
-  - figs/dimer.pdf, code/dimer_spread.out, code/dimer_spread_data.npz.
+  - figs/dimer.pdf, code/dimer_spread.out, code/dimer_spread_data.npz (mean/s.e. of <X^2>_t and
+    M_2(T) per sector: everything the figure needs).
 Usage: python3 dimer_spread.py          (compute + plot)
        python3 dimer_spread.py --plot   (plot from dimer_spread_data.npz)
 """
@@ -194,9 +195,18 @@ def compute():
             kT = [np.argmin(np.abs(TAVG - T)) for T in [1, 10, 100, 1000]]
             pr(f'      M_2(T) (sector average) at T=1,10,1e2,1e3: ' + '  '.join(f'{MT.mean(1)[k]:.4g}' for k in kT) +
                ';  min over sectors of M_2(T)/T: ' + '  '.join(f'{(MT[k] / TAVG[k]).min():.4g}' for k in kT))
-    np.savez_compressed(DATA, TGRID=TGRID, TAVG=TAVG,
-                        **{f'm2_{law}_{h}': res[(law, h)] for law in LAWS for h in HS})
+    save_summary(res)
     out.close()
+
+
+def save_summary(res):
+    """Store what the figure needs: mean and standard error of <X^2>_t, and M_2(T) per sector."""
+    d = dict(TGRID=TGRID, TAVG=TAVG)
+    for (law, h), m2 in res.items():
+        d[f'mean_{law}_{h}'] = m2.mean(1)
+        d[f'se_{law}_{h}'] = m2.std(1, ddof=1) / np.sqrt(m2.shape[1])
+        d[f'MT_{law}_{h}'] = time_average(m2, TAVG)
+    np.savez_compressed(DATA, **d)
 
 
 def plot():
@@ -215,13 +225,11 @@ def plot():
     ax = axs[0]
     sel = tg > 0
     t = tg[sel]
-    ax.loglog(t, 2 * J ** 2 * t ** 2, '-', color=ref_c, lw=0.8)
-    ax.text(0.9e1, 2 * 0.9e1 ** 2 * 1.8, r'$2J^2t^2$ (sector $q\equiv1$)', color=ink2, fontsize=7, rotation=0)
+    ax.loglog(t, 2 * J ** 2 * t ** 2, '-', color=ref_c, lw=0.8, label=r'clean sector $q\equiv1$: $2J^2t^2$')
     for law in ['dimer', 'iid']:
         for h in HS:
-            m2 = d[f'm2_{law}_{h}'][sel]
-            mean = m2.mean(1)
-            se = m2.std(1, ddof=1) / np.sqrt(m2.shape[1])
+            mean = d[f'mean_{law}_{h}'][sel]
+            se = d[f'se_{law}_{h}'][sel]
             ax.loglog(t, mean, ls[h], color=col[law], lw=1.6,
                       label=('dimer law' if law == 'dimer' else 'i.i.d. law') + fr', $h={h:g}J$')
             ax.fill_between(t, np.maximum(mean - 2 * se, 1e-6), mean + 2 * se, color=col[law], alpha=0.15, lw=0)
@@ -238,13 +246,9 @@ def plot():
 
     ax = axs[1]
     for law, h in [('dimer', 0.25), ('iid', 0.25), ('dimer', 0.75)]:
-        m2 = d[f'm2_{law}_{h}']
-        MT = np.zeros((len(Ts), m2.shape[1]))
-        for i, T in enumerate(Ts):
-            w = np.exp(-tg / T) / T
-            MT[i] = np.trapezoid(w[:, None] * m2, tg, axis=0)
+        MT = d[f'MT_{law}_{h}']
         if law == 'dimer' and h == 0.25:
-            for s in range(m2.shape[1]):
+            for s in range(MT.shape[1]):
                 ax.loglog(Ts, MT[:, s] / Ts, '-', color=col[law], lw=0.4, alpha=0.35)
         ax.loglog(Ts, MT.mean(1) / Ts, ls[h], color=col[law], lw=1.8,
                   label=('dimer law' if law == 'dimer' else 'i.i.d. law') + fr', $h={h:g}J$' +
