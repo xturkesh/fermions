@@ -1,0 +1,3 @@
+# single dressed fermion, sector-averaged <(X-x0)^2>_t; J=1; S=64 sectors per case; x0 odd (left site of a dimer)
+# one-body dynamics on Z by Chebyshev propagation on an adaptive window (no boundary)
+# validation (dimer, lambda=0.5, N=2001 chain): Chebyshev vs eigendecomposition, max rel. error of m2(t) at t=1,10,100,400: 2.7e-15;  quadrature vs exact M_2(T), T=1,3,10,30: 8.8e-05 8.8e-05 8.8e-05 1.1e-05

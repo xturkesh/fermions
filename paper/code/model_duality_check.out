@@ -46,3 +46,10 @@ N=6: z-product (general psi): 1.5e-17, general product, Fock: 1.1e-16, sigma^x p
 q=(1..1), N even 2..200: max_alpha |<phi_a, Gamma phi_a>| = 2.2e-14;  |<X^2>_t/(2J^2t^2) - 1| (N=1201, t<=100) = 2.2e-15
 q=(1..1): max_N |Q^[1,N](1,N) - 1| (N=2..300) = 1.2e-15
 === (9) duality defect along the dynamics, |up..up>_z x CDW, N=6, l=3, h=1 ===
+   t=  0.0: S_A(Psi)=-0.0000, S_A'(U^+Psi)=0.0000, |diff|=0.0000
+   t=  0.5: S_A(Psi)=0.9270, S_A'(U^+Psi)=0.4756, |diff|=0.4514
+   t=  1.0: S_A(Psi)=1.4457, S_A'(U^+Psi)=0.9749, |diff|=0.4709
+   t=  2.0: S_A(Psi)=2.2652, S_A'(U^+Psi)=1.7693, |diff|=0.4959
+   t=  5.0: S_A(Psi)=2.8284, S_A'(U^+Psi)=2.4243, |diff|=0.4041
+   t= 10.0: S_A(Psi)=2.6844, S_A'(U^+Psi)=2.3509, |diff|=0.3335
+   t= 50.0: S_A(Psi)=3.0530, S_A'(U^+Psi)=2.9617, |diff|=0.0913

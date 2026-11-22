@@ -58,7 +58,8 @@ Hermitian matrix $k$ on $\ell^2(\Lambda)$ is
 and we write $Q^\Lambda:=Q_{A_\Lambda}$ and $Q^{[1,N]}_q:=Q_{\hq}$.
 
 \begin{lemma}[Normalization]\label{lem:normalization}
-Let $U:=\diag((-1)^x)_{x=1}^N$ and $\lambda=2h/J$.  Then $U\hq U^{-1}=J\,A_{[1,N]}$.  Consequently
+Let $\lambda=2h/J$ and let $U$ be the diagonal matrix with entries $(-1)^x$, $x=1,\dots,N$.  Then
+$U\hq U^{-1}=J\,A_{[1,N]}$.  Consequently
 $Q^{[1,N]}_q(x,y)=Q^{[1,N]}(x,y)$ for all $x,y$ and every $q$.  Moreover, the joint law of
 $(Q^\Lambda(x,y))_{x,y\in\Lambda}$ is the same for $\lambda$ and $-\lambda$.
 \end{lemma}
@@ -111,16 +112,18 @@ projection $P=\one_S(k)$, e.g.\ the Fermi projections $\one_{(-\infty,\mu]}(k)$.
 \item \emph{(Time-averaged transition probability.)} The limit
 $R(x,y):=\lim_{T\to\infty}T^{-1}\int_0^T|(e^{-itk})_{xy}|^2\,dt$ exists and
 \begin{equation}\label{eq:Rdef}
-  R(x,y)=\sum_\alpha\varphi_\alpha(x)^2\varphi_\alpha(y)^2,\qquad R(x,y)=R(y,x),\qquad \sum_{y\in\Lambda}R(x,y)=1,\qquad R(x,y)\le Q(x,y).
+  R(x,y)=\sum_\alpha\varphi_\alpha(x)^2\varphi_\alpha(y)^2 ;
 \end{equation}
+moreover $R(x,y)=R(y,x)$, $\sum_{y\in\Lambda}R(x,y)=1$ and $R(x,y)\le Q(x,y)$.
 \item \emph{(Annealed consequences.)} Assume Hypothesis~\ref{hyp:EC}, let $U_q(t):=e^{-it\hq}$ and let
 $R_q$ be the quantity \eqref{eq:Rdef} for $k=\hq$.  Then for all $N\ge1$ and $x,y,z,x',y'\in[1,N]$:
+(writing $Q=Q^{[1,N]}_q$)
 \begin{align}
   &\E\sup_{t\in\R}|U_q(t)_{xy}|\le F(|x-y|),\qquad \E R_q(x,y)\le F(|x-y|),\qquad
-   \E\,Q^{[1,N]}_q(x,y)^{1/2}\le F(|x-y|)^{1/2},\label{eq:cons1}\\
-  &\E\sup_{t\in\R}|U_q(t)_{xz}|\,|U_q(t)_{yz}|\le\E\bigl[Q^{[1,N]}_q(x,z)\,Q^{[1,N]}_q(y,z)\bigr]\le F\bigl(\max\{|x-z|,|y-z|\}\bigr),\label{eq:cons2}\\
-  &\E\bigl[Q^{[1,N]}_q(x,y)\,Q^{[1,N]}_q(x',y')\bigr]\le\bigl(F(|x-y|)\,F(|x'-y'|)\bigr)^{1/2},\label{eq:cons3}\\
-  &\E\sup_{t\in\R}\sum_{x=1}^N(|x-y|+1)^p\,|U_q(t)_{xy}|^2\le\E\sum_{x=1}^N(|x-y|+1)^p\,Q^{[1,N]}_q(x,y)\le2M_p(F)\quad(0\le p\le2).\label{eq:cons4}
+   \E\,Q(x,y)^{1/2}\le F(|x-y|)^{1/2},\label{eq:cons1}\\
+  &\E\sup_{t\in\R}|U_q(t)_{xz}|\,|U_q(t)_{yz}|\le\E\bigl[Q(x,z)\,Q(y,z)\bigr]\le F\bigl(\max\{|x-z|,|y-z|\}\bigr),\label{eq:cons2}\\
+  &\E\bigl[Q(x,y)\,Q(x',y')\bigr]\le\bigl(F(|x-y|)\,F(|x'-y'|)\bigr)^{1/2},\label{eq:cons3}\\
+  &\E\sup_{t\in\R}\sum_{x=1}^N(|x-y|+1)^p\,|U_q(t)_{xy}|^2\le\E\sum_{x=1}^N(|x-y|+1)^p\,Q(x,y)\le2M_p(F)\quad(0\le p\le2).\label{eq:cons4}
 \end{align}
 \end{enumerate}
 \end{lemma}
@@ -296,8 +299,11 @@ All results below apply to our model by \cref{lem:hypcheck}.
 \begin{enumerate}[label=(\arabic*)]
 \item \emph{Quenched bounds over all finite intervals.}  \cite[Thm.~2]{MaceraSodin2022} states the
 following for every compact $I\subset\R$.  Let $Q_I^{\Lambda}$ be the correlator \eqref{eq:Qdef} with $f$
-supported in $I$, and $Q_I(x,y):=\sup_{a\le x,y\le b}Q^{[a,b]}_I(x,y)$.  Then
-$\Prob\{\limsup_{x\to\pm\infty}|x|^{-1}\log Q_I(x,y)\le-\inf_{E\in I}\gamma(E)\}=1$.  This is an
+supported in $I$, and let $Q_I(x,y):=\sup_{a\le x,y\le b}Q^{[a,b]}_I(x,y)$.  Then
+\[
+  \Prob\Bigl\{\limsup_{x\to\pm\infty}|x|^{-1}\log Q_I(x,y)\le-\inf_{E\in I}\gamma(E)\Bigr\}=1 .
+\]
+This is an
 almost-sure statement: the distance beyond which the decay sets in is random.  The proof
 \cite[Sect.~2.5]{MaceraSodin2022} works on the event of \cite[Prop.~2.1]{MaceraSodin2022},
 \[
@@ -320,9 +326,11 @@ exponentially decaying eigenfunctions for the half-line operator with an arbitra
 Dirichlet) boundary condition.  \cite[Rem.~4.1(2)]{MaceraSodin2022} states that dynamical localization
 can also be proved there, without details.  \cite[Rem.~4.1(3)]{MaceraSodin2022} cites
 \cite{GorodetskiKleptsyn2021} for the case $W=1$ with Dirichlet boundary conditions.
-\item \emph{Almost-sure dynamical localization on $\Z$.}  \cite[Thm.~6.4]{Bucaj2019} gives
-$\sup_t|\langle\delta_n,e^{-itH_\omega}\delta_m\rangle|\le\tilde C_{\omega}e^{\epsilon|m|}e^{-\beta|n-m|}$ for a.e.\
-$\omega$ and $0<\beta<\inf\gamma$; \cite[Sect.~6]{JZ2019} proves a bound of the same form.  The random
+\item \emph{Almost-sure dynamical localization on $\Z$.}  \cite[Thm.~6.4]{Bucaj2019} gives, for a.e.\
+$\omega$ and $0<\beta<\inf\gamma$,
+\[
+  \sup_t|\langle\delta_n,e^{-itH_\omega}\delta_m\rangle|\le\tilde C_{\omega}e^{\epsilon|m|}e^{-\beta|n-m|} ;
+\] \cite[Sect.~6]{JZ2019} proves a bound of the same form.  The random
 constant and the factor $e^{\epsilon|m|}$ prevent a direct annealed bound that is uniform in position.
 Spectral localization for Bernoulli potentials on $\Z$ goes back to \cite{CKM1987}.
 \end{enumerate}
@@ -358,7 +366,7 @@ $\ell^2(X)$, with the Dirichlet condition $\psi(0)=0$ if $X=\N$.  Let
 $Q^X(x,y):=\sup\{|f(A_X)_{xy}|:f\text{ Borel},|f|\le1\}$, and let $\Lambda_L:=[1,L]$ if $X=\N$ and
 $\Lambda_L:=[-L,L]$ if $X=\Z$.  Then for all $x,y\in X$
 \begin{equation}\label{eq:ECinf}
-  Q^X(x,y)\le\liminf_{L\to\infty}Q^{\Lambda_L}(x,y)\quad\text{pointwise},\qquad\text{hence}\qquad
+  Q^X(x,y)\le\liminf_{L\to\infty}Q^{\Lambda_L}(x,y)\ \ \text{pointwise, hence}\ \
   \E\,Q^X(x,y)\le\liminf_{L\to\infty}\E\,Q^{\Lambda_L}(x,y)\le Ce^{-\eta|x-y|},
 \end{equation}
 with $C,\eta$ from Theorem~\ref{thm:EC}.  In particular
@@ -409,10 +417,10 @@ $\det(E-A_{[a,z]})=(E-v_z)\det(E-A_{[a,z-1]})-\det(E-A_{[a,z-2]})$; the off-diag
 the convention for $z=a$ is $\det(E-A_{[a,a-2]}):=0$.  This is \eqref{eq:rec} rewritten as
 $u(z+1)=(E-v_z)u(z)-u(z-1)$, with the same initial values.  The formula for $u_+$ follows by reflection.
 Using \eqref{eq:rec} for $u_-$ and $u_+$ at the site $z$,
-\[
-  \Wr(z)-\Wr(z-1)=u_+(z)\bigl(u_-(z+1)+u_-(z-1)\bigr)-u_-(z)\bigl(u_+(z+1)+u_+(z-1)\bigr)
-  =u_+(z)(E-v_z)u_-(z)-u_-(z)(E-v_z)u_+(z)=0
-\]
+\begin{align*}
+  \Wr(z)-\Wr(z-1)&=u_+(z)\bigl(u_-(z+1)+u_-(z-1)\bigr)-u_-(z)\bigl(u_+(z+1)+u_+(z-1)\bigr)\\
+  &=u_+(z)(E-v_z)u_-(z)-u_-(z)(E-v_z)u_+(z)=0
+\end{align*}
 for $z\in[a,b]$.  Finally $\Wr(b)=u_-(b+1)=\det(E-A_B)$.
 
 (b) Fix $z'\in B$ and set $g(z):=-u_-(z)u_+(z')/\Wr$ for $a-1\le z\le z'$ and $g(z):=-u_-(z')u_+(z)/\Wr$ for
@@ -534,11 +542,11 @@ $x<y$ in $\Lambda$, $d:=y-x$, and $n:=\lfloor(d-1)/2\rfloor$; assume $n\ge m_0$.
 and let $\Bad_x,\Bad_y$ and $\mathcal Z_x,\mathcal Z_y$ be the corresponding resonant sets and endpoint sets
 (\cref{lem:badset}).  Then $B_x\cap B_y=\emptyset$; the elements of $\Ends_x$ and $\Ends_y$ are ends of
 $B_x$, resp.\ $B_y$, at distance $n$; and
-\begin{equation}\label{eq:double}
+\begin{gather}
   \sup_{E\in\Ilam}\Prob\{E\in\Bad_x\}\le2C_1e^{-c_1n},\qquad
-  \sup_{E\in\Ilam}\Prob\{E\in\Bad_y\}\le2C_1e^{-c_1n},\qquad
-  \Prob\{\Bad_x\cap\Bad_y\neq\emptyset\}\le4(8n+6)\,C_1e^{-c_1n}.
-\end{equation}
+  \sup_{E\in\Ilam}\Prob\{E\in\Bad_y\}\le2C_1e^{-c_1n},\label{eq:single}\\
+  \Prob\{\Bad_x\cap\Bad_y\neq\emptyset\}\le4(8n+6)\,C_1e^{-c_1n}.\label{eq:double}
+\end{gather}
 \end{lemma}
 
 \begin{proof}
@@ -560,7 +568,7 @@ values) and applying \cref{lem:entry} with $\kappa=\gstar/2$:
 \]
 The end $e=a=x-n$ (when it is in $\Ends_x$) is handled in the same way.  Use \cref{lem:green}(d) with
 $M'=T_{x-1}\cdots T_{x-n}$, again $n$ matrices, and $w'$ a function of $(q_z)_{x\le z\le b}$.  A union bound
-over $e\in\Ends_x$ gives the first estimate in \eqref{eq:double}; the second is identical.
+over $e\in\Ends_x$ gives the first estimate in \eqref{eq:single}; the second is identical.
 
 \emph{Two boxes.}  Suppose $E\in\Bad_x\cap\Bad_y$, and let $K_x=[s_x,t_x]$ and $K_y=[s_y,t_y]$ be the
 components of $\Bad_x$ and $\Bad_y$ that contain $E$.  If $s_x\ge s_y$, then $s_x\in[s_y,E]\subset\Bad_y$, so
@@ -571,8 +579,7 @@ $B_x\cap B_y=\emptyset$.  Hence
   \Prob\{\mathcal Z_x\cap\Bad_y\ne\emptyset\}\le\sum_\xi\Prob\{q|_{B_x}=\xi\}\sum_{E\in\mathcal Z_x(\xi)}\Prob\{E\in\Bad_y\}
   \le(8n+6)\cdot2C_1e^{-c_1n},
 \]
-and symmetrically for $\Prob\{\mathcal Z_y\cap\Bad_x\neq\emptyset\}$.  Adding the two bounds gives the third
-estimate in \eqref{eq:double}.
+and symmetrically for $\Prob\{\mathcal Z_y\cap\Bad_x\neq\emptyset\}$.  Adding the two bounds gives \eqref{eq:double}.
 \end{proof}
 
 \subsubsection{Proof of Theorem~\ref{thm:EC} and Corollary~\ref{cor:ECinfvol}}
@@ -580,8 +587,8 @@ estimate in \eqref{eq:double}.
 \begin{proof}[Proof of Theorem~\ref{thm:EC}]
 Fix $\Lambda$ and $x,y\in\Lambda$.  Since $Q^\Lambda$ is symmetric and $Q^\Lambda(x,x)=1$
 (\cref{lem:consequences}(a)), we may assume $x<y$; put $d=y-x$ and $n=\lfloor(d-1)/2\rfloor$.  If $n<m_0$
-we use $Q^\Lambda\le1$.  Let $n\ge m_0$, and let $B_x,B_y,\Ends_x,\Ends_y,\Bad_x,\Bad_y$ be as in
-\cref{lem:double}.
+we use $Q^\Lambda\le1$.  Let $n\ge m_0$, and let $B_x$, $B_y$, $\Ends_x$, $\Ends_y$, $\Bad_x$, $\Bad_y$ be
+as in \cref{lem:double}.
 
 \emph{Deterministic step.}  Let $(E_\alpha,\varphi_\alpha)$ be a real orthonormal eigenbasis of $A_\Lambda$; then
 $E_\alpha\in\Ilam$.  Extend $\varphi_\alpha$ by $0$ outside $\Lambda$.  For $B=[a,b]\subset\Lambda$ and $z\in B$,
@@ -599,11 +606,16 @@ $e^{\rm out}\in\Lambda$ for the outer neighbour of $e$, we get
 \]
 and likewise $|\varphi_\alpha(y)|\le e^{-\kappa n}\sum_{e\in\Ends_y}|\varphi_\alpha(e^{\rm out})|$ for $E_\alpha\notin\Bad_y$.
 On the event $\Omega_{xy}:=\{\Bad_x\cap\Bad_y=\emptyset\}$ every $E_\alpha$ lies outside $\Bad_x$ or outside
-$\Bad_y$.  Hence, by \eqref{eq:Qsum} and
-$\sum_\alpha|\varphi_\alpha(u)||\varphi_\alpha(v)|\le(\sum_\alpha\varphi_\alpha(u)^2)^{1/2}(\sum_\alpha\varphi_\alpha(v)^2)^{1/2}=1$,
+$\Bad_y$.  We use \eqref{eq:Qsum} and the Cauchy--Schwarz bound
+\[
+  \textstyle\sum_\alpha|\varphi_\alpha(u)||\varphi_\alpha(v)|\le(\sum_\alpha\varphi_\alpha(u)^2)^{1/2}(\sum_\alpha\varphi_\alpha(v)^2)^{1/2}=1 .
+\]
+They give, on $\Omega_{xy}$,
 \begin{equation}\label{eq:Qgood}
-  Q^\Lambda(x,y)\le\sum_{\alpha:E_\alpha\notin\Bad_x}|\varphi_\alpha(x)||\varphi_\alpha(y)|+\sum_{\alpha:E_\alpha\notin\Bad_y}|\varphi_\alpha(x)||\varphi_\alpha(y)|
-  \le e^{-\kappa n}\Bigl(\sum_{e\in\Ends_x}1+\sum_{e\in\Ends_y}1\Bigr)\le4e^{-\kappa n}\quad\text{on }\Omega_{xy}.
+\begin{split}
+  Q^\Lambda(x,y)&\le\sum_{\alpha:E_\alpha\notin\Bad_x}|\varphi_\alpha(x)||\varphi_\alpha(y)|+\sum_{\alpha:E_\alpha\notin\Bad_y}|\varphi_\alpha(x)||\varphi_\alpha(y)|\\
+  &\le e^{-\kappa n}\bigl(\#\Ends_x+\#\Ends_y\bigr)\le4e^{-\kappa n}.
+\end{split}
 \end{equation}
 
 \emph{Probabilistic step.}  Since $Q^\Lambda\le1$, \eqref{eq:Qgood} and \cref{lem:double} give
@@ -631,8 +643,8 @@ $C:=\max\{(4+4C_1K)e^{c},e^{\eta(2m_0+1)}\}$.  For $d\ge2m_0+1$ we have $n\ge m_
 \eqref{eq:ECmain}, \eqref{eq:ECsup} follow.  For $d\le2m_0$, $Ce^{-\eta d}\ge e^{\eta}\ge1\ge Q^\Lambda$.  The
 constants depend only on $\gstar(\lambda)$ and on $C_1,c_1,m_0$, i.e.\ only on $|\lambda|$.
 
-\emph{Hypothesis~\ref{hyp:EC}.}  By \cref{lem:normalization}, $\E_qQ^{[1,N]}_q(x,y)=\E\,Q^{[1,N]}(x,y)$.  The
-function $F(d)=\min\{1,Ce^{-\eta d}\}$ is non-increasing with values in $[0,1]$, and the bounds on
+\emph{Hypothesis~\ref{hyp:EC}.}  By \cref{lem:normalization},
+$\E_qQ^{[1,N]}_q(x,y)=\E\,Q^{[1,N]}(x,y)$.  The function $F(d)=\min\{1,Ce^{-\eta d}\}$ is non-increasing with values in $[0,1]$, and the bounds on
 $M_p(F)$, $M'_p(F)$ are immediate.
 \end{proof}
 
@@ -647,8 +659,12 @@ $f(\tilde A_L)_{xy}=f(A_{\Lambda_L})_{xy}$.  So for $f\in C(\Ilam)$ with $|f|\le
   |f(A_X)_{xy}|=\lim_{L\to\infty}|f(A_{\Lambda_L})_{xy}|\le\liminf_{L\to\infty}Q^{\Lambda_L}(x,y).
 \]
 Let $\mu_{xy}:=\langle\delta_x,\one_{(\cdot)}(A_X)\delta_y\rangle$, a finite signed Borel measure supported in
-$\Ilam$.  Then $Q^X(x,y)=\sup_{|f|\le1\ \rm Borel}|\int f\,d\mu_{xy}|=|\mu_{xy}|(\Ilam)$, and by the Riesz
-representation theorem this equals $\sup\{|\int f\,d\mu_{xy}|:f\in C(\Ilam),|f|\le1\}$.  This proves the
+$\Ilam$.  Then
+\[
+  Q^X(x,y)=\sup_{|f|\le1\ \rm Borel}\Bigl|\int f\,d\mu_{xy}\Bigr|=|\mu_{xy}|(\Ilam)
+  =\sup\Bigl\{\Bigl|\int f\,d\mu_{xy}\Bigr|:f\in C(\Ilam),|f|\le1\Bigr\},
+\]
+where the last equality is the Riesz representation theorem.  This proves the
 pointwise bound in \eqref{eq:ECinf}.  Fatou's lemma and \eqref{eq:ECmain} give the rest.  The propagator
 bound follows with $f(E)=e^{-itE}$.  For $X=\Z$, \eqref{eq:ECinf} shows $\gamma^\E\ge\eta$ in
 \eqref{eq:GeZhao}.
@@ -730,19 +746,24 @@ $\lambda^{-2}$.  We do not use or prove this.
 \includegraphics[width=\textwidth]{figs/correlator.pdf}
 \caption{Sector-averaged eigenfunction correlator $\E_qQ^{[1,N]}_q(x,x+d)$ of
 $\hq/J=-\Delta_N+\lambda\diag(q)$, over $4000$ i.i.d.\ samples of $q$ for each $(\lambda,N)$.  (a)
-Boundary pairs $x=1$ (solid) and bulk pairs $x=N/2$ (dashed) at $N=400$ for $\lambda=1,2,4$: the
-boundary and bulk curves are nearly indistinguishable, as Theorem~\ref{thm:EC} predicts.  (b) Boundary
-pairs at $\lambda=2$ for $N=100,200,400$, with the bulk curve at $N=400$ (grey) and bands of $\pm2$
-standard errors: the boundary correlator is independent of $N$.  Code:
+Boundary pairs $x=1$ (solid) and bulk pairs $x=N/2$ (dashed) at $N=400$ for $\lambda=1,2,4$.  The
+boundary and bulk curves decay at the same rate, as Theorem~\ref{thm:EC} predicts.  (b) Boundary pairs
+at $\lambda=2$ for $N=100,200,400$, with the bulk curve at $N=400$ (grey) and bands of $\pm2$ standard
+errors: the boundary correlator does not depend on $N$.  Code:
 \texttt{code/onebody\_correlator.py}; numerical values in \texttt{code/onebody\_correlator.out}.}
 \label{fig:correlator}
 \end{figure}
 
 \begin{remark}[Numerical illustration]\label{rem:onebodynumerics}
-\Cref{fig:correlator} shows $\E_qQ^{[1,N]}_q(x,x+d)$ for boundary and bulk pairs.  The fitted decay
-rates over $10\le d\le40$ are FITRATES.  The Lyapunov exponents estimated with the same code are
-LYAPVALUES.  In particular, the annealed rate is well below $\gstar(\lambda)$ already at $\lambda=4$,
-in line with \cref{rem:rate}(ii).  The boundary and bulk correlators agree within statistical error, and
-neither depends on $N$; uniformity up to the boundary is the content of Theorem~\ref{thm:EC}.  These
-numbers illustrate the theorem but are not used in any proof.
+\Cref{fig:correlator} shows $\E_qQ^{[1,N]}_q(x,x+d)$ for boundary and bulk pairs.  Least-squares fits of
+$\log\E Q$ over $10\le d\le40$ give decay rates $\approx0.08$, $0.18$--$0.19$ and $0.21$--$0.23$ for
+$\lambda=1,2,4$.  These values are the same, within the fluctuations of the fit, for boundary and bulk
+pairs and for $N=100,200,400$; at $\lambda=4$ the estimates beyond $d\approx30$ are dominated by rare
+samples.  The boundary values exceed the bulk values by a small but statistically significant amount at
+$\lambda=1$: by $5$--$13\%$ for $1\le d\le40$ (e.g.\ $0.300$ versus $0.282$ at $d=10$, $N=400$).  The same
+holds at $\lambda=2$ for $d=1$ only ($0.664$ versus $0.646$).  Otherwise the two agree within error.  For
+comparison, the same code estimates $\gstar(\lambda)=\min_{E\in\Ilam}\gamma_\lambda(E)\approx0.13$, $0.34$,
+$0.56$ for $\lambda=1,2,4$ (attained near $E=0$, $E\approx2.45$, $E\approx4.1$ respectively).  So the annealed
+rate is well below $\gstar(\lambda)$, increasingly so as $\lambda$ grows, in line with \cref{rem:rate}(ii).
+These numbers illustrate Theorem~\ref{thm:EC}; they are not used in any proof.
 \end{remark}

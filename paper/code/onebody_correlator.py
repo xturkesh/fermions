@@ -14,6 +14,8 @@ Usage:  python3 onebody_correlator.py [samples]   (default 4000 samples per (lam
 """
 import os
 import sys
+for _v in ('OMP_NUM_THREADS', 'OPENBLAS_NUM_THREADS', 'MKL_NUM_THREADS'):
+    os.environ.setdefault(_v, '1')        # one BLAS thread per worker process
 import numpy as np
 from multiprocessing import Pool
 from scipy.linalg import eigh_tridiagonal
@@ -131,7 +133,7 @@ def main():
     ax.set_xlabel(r'distance $d=|x-y|$')
     ax.set_ylabel(r'$\mathbb{E}_q\, Q^{[1,N]}(x,x+d)$')
     ax.set_title(r'(a) boundary vs bulk, $N=400$', fontsize=9)
-    ax.set_xlim(0, DMAX); ax.set_ylim(1e-7, 1.2)
+    ax.set_xlim(0, 60); ax.set_ylim(1e-6, 1.2)
     ax.grid(True, which='major', color=grid_c, lw=0.5)
     ax.legend(fontsize=7, ncol=1, loc='lower left')
 
@@ -149,7 +151,7 @@ def main():
     ax.semilogy(dc[1:], mc[1:], '-', color='#52514e', lw=1.0, label=r'$N=400$, $x=N/2$')
     ax.set_xlabel(r'distance $d=|x-y|$')
     ax.set_title(r'(b) $N$-independence at the boundary, $\lambda=2$', fontsize=9)
-    ax.set_xlim(0, DMAX); ax.set_ylim(1e-7, 1.2)
+    ax.set_xlim(0, 60); ax.set_ylim(1e-6, 1.2)
     ax.grid(True, which='major', color=grid_c, lw=0.5)
     ax.legend(fontsize=7, loc='lower left')
     figdir = os.path.join(os.path.dirname(HERE), 'figs')

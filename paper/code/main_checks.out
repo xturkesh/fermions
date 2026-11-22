@@ -1,0 +1,86 @@
+=== A. Theorem thm:transport (N=60, J=1.0, h=1.0, lambda=2.0, 300 sectors, 62 times in [0,1e5]) ===
+  max_t,m,q (|<N_<=m>_q - |S cap [1,m]|| - sum_{x<=m<z}|U_xz|^2) = 3.91e-14  (<= 0 required)
+  max (sum_{x<=m<z}|U_xz|^2 - sum_{x<=m<z} Q(x,z))               = 0.00e+00  (<= 0)
+  max (sum_x (|x-y|+1)^p |U_xy|^2 - sum_x (|x-y|+1)^p Q(x,y)), p<=2   = 0.00e+00  (<= 0)
+  symmetry of U_q(t): max|U - U^T| = 3.3e-16
+  F_emp (envelope of max_x E Q(x,x+d)): F(1,5,10,20,40) = 0.688, 0.28, 0.107, 0.0166, 0.000703
+  moments of F_emp (truncated at d<N): M_0=4.59 M_1=24.7 M_2=262 M'_1=107  Sigma_1=20.1  Sigma'_1=97.3  Theta=908
+  E sup_t |transport across the middle cut| = 0.517   (theorem: <= Sigma_1(F) <= M_1(F); with F_emp: 20.1)
+  E sup_t sum_x (|x-y|+1)^0|U_xy|^2 (y=N/2) = 1.000   (theorem: <= 2 M_0(F); with F_emp: 9.18)
+  E sup_t sum_x (|x-y|+1)^1|U_xy|^2 (y=N/2) = 4.603   (theorem: <= 2 M_1(F); with F_emp: 49.3)
+  E sup_t sum_x (|x-y|+1)^2|U_xy|^2 (y=N/2) = 32.985   (theorem: <= 2 M_2(F); with F_emp: 523)
+=== B. ED of the LGT (N=4, J=1.0, h=0.7): propagator identity and operator norms ===
+  max |{c~_x(t),c~_y^+} - sum_q U_q(t)_xy P_q|            = 7.5e-15
+  max | ||[c~_x(t),n_y]|| - max_q |U_q(t)_xy| |             = 5.2e-15
+  max | ||[n_x(t),n_y]|| - max_q |u|(1-|u|^2)^(1/2) |       = 3.6e-15
+  sector-averaged LR (A=c~_1^+c~_2+h.c., B=n_N): max(E_q||P_q[A(t),B]|| - bound) = -1.47e-01 (<=0)
+  state bound: max(|<Psi0,[A(t),B]Psi0>| - E_q||P_q[A(t),B]||) = -4.36e-02 (<=0)
+  definite-charge states |xi>_sigma x |n> (N=4,5, l=2): max |S_full(t) - sum_i h(nu_i)| = 4.0e-14
+=== C. Proposition prop:LR in sectors (N=60, lambda=2.0, 200 sectors) ===
+  A = c~_x^+c~_(x+1) + h.c. (x=11), B = n_y (y=41): max(||P_q[A(t),B]|| - monomial bound) = -3.20e-22 (<=0)
+  E_q sup_t ||P_q[A(t),B]|| = 4.039e-03;  E_q sup_t (monomial bound) = 1.839e-02
+  clean sector N=20: R(1,N) = 0.071429 vs 3/(2(N+1)) = 0.071429;  max_t|U(1,N)| on grid = 0.7949 >= sqrt(R) = 0.2673
+  clean sector N=50: R(1,N) = 0.029412 vs 3/(2(N+1)) = 0.029412;  max_t|U(1,N)| on grid = 0.6451 >= sqrt(R) = 0.1715
+  clean sector N=100: R(1,N) = 0.014851 vs 3/(2(N+1)) = 0.014851;  max_t|U(1,N)| on grid = 0.5358 >= sqrt(R) = 0.1219
+  clean sector N=200: R(1,N) = 0.007463 vs 3/(2(N+1)) = 0.007463;  max_t|U(1,N)| on grid = 0.4381 >= sqrt(R) = 0.0864
+=== D. Theorem thm:imbalance ===
+  identity E_a a_a = 2h<phi_a,V Gamma phi_a> and X_B = 2h sum r_x R(x,B): max err = 1.4e-14
+  pointwise |sum_B r| - 2 sum_(B x B^c) R - |X_B|/(2|h|): max = -1.4e-02 (<=0)
+  Cauchy-Schwarz and sum_a E_a^2 m_a(B) <= L(2J^2+4h^2): max violation = 1.7e-13 (<=0)
+  N=8, h=0.7, all 256 sectors: (1/T)int_0^T I(t)dt (T=1e7, exact) = 0.19046876; E_q N^-1 sum_a a_a^2 = 0.19046877; I(0) = 1.000; |I_q(t) - N^-1 Tr(Gamma U* Gamma U)| = 7.8e-16
+  h=0, N=10: max_a |a_a| = 6.9e-16 (Ibar = 0)
+  lower bounds (kappa_N = max over all intervals B of E sum_{x in B,y notin B} R; 300 sectors):
+    N= 32 lambda=+0.5: Ibar = 0.0298, kappa_N = 5.75, global bound = 1.25e-03, best block bound = 0.00e+00, Ibar >= max: True
+    N= 32 lambda=+1.0: Ibar = 0.0920, kappa_N = 3.70, global bound = 3.47e-03, best block bound = 0.00e+00, Ibar >= max: True
+    N= 32 lambda=+2.0: Ibar = 0.1844, kappa_N = 2.26, global bound = 7.81e-03, best block bound = 0.00e+00, Ibar >= max: True
+    N= 32 lambda=+4.0: Ibar = 0.2556, kappa_N = 1.91, global bound = 1.39e-02, best block bound = 1.31e-05, Ibar >= max: True
+    N= 32 lambda=-1.8: Ibar = 0.1727, kappa_N = 2.32, global bound = 7.01e-03, best block bound = 0.00e+00, Ibar >= max: True
+    N= 64 lambda=+0.5: Ibar = 0.0228, kappa_N = 8.96, global bound = 6.25e-04, best block bound = 0.00e+00, Ibar >= max: True
+    N= 64 lambda=+1.0: Ibar = 0.0819, kappa_N = 4.56, global bound = 1.74e-03, best block bound = 0.00e+00, Ibar >= max: True
+    N= 64 lambda=+2.0: Ibar = 0.1734, kappa_N = 2.41, global bound = 3.91e-03, best block bound = 4.32e-05, Ibar >= max: True
+    N= 64 lambda=+4.0: Ibar = 0.2468, kappa_N = 2.09, global bound = 6.94e-03, best block bound = 2.37e-04, Ibar >= max: True
+    N= 64 lambda=-1.8: Ibar = 0.1580, kappa_N = 2.51, global bound = 3.51e-03, best block bound = 2.17e-05, Ibar >= max: True
+  erratum check: with (J+h) instead of (J+|h|), h=-0.9, N=40, the 'global bound' would be 2.03 > 1
+  lambda=0.5, E Ibar: N=50: 0.0241, N=100: 0.0198, N=200: 0.0172, N=400: 0.0165  (slowly converging in N)
+  Khintchine: min_L<=400 E|sum_1^L r_i|/sqrt(L/2) = 1.000000 (>=1, Szarek), /sqrt(L/3) = 1.2247
+=== E. Theorem thm:arealaw and the Slater lemma ===
+  h(nu) <= 2 ln2 sqrt(nu(1-nu)) on 2e6 grid points: max(h - bound) = 0.00e+00 (<=0; equality at 1/2)
+  d_1 = 0.1534 > 0, max_(2<=k<=2e5) d_k = -2.180e-09 (<0); ratio e_k/c_k decreasing: True
+  Slater lemma (n=8, M=4, left/interior/non-contiguous A): spectrum err 7.8e-16, entropy err 2.2e-15, N_A law err 7.2e-16
+  S <= 2ln2||P_B K P_A||_1: 9.1e-13;  ||.||_1 <= sum|K_xy|: -3.9e-16;  |K_xy| <= sum_z|U_xz||U_yz|: 0.0e+00 (all <=0)
+  sum_z F(max(|x-z|,|y-z|)) <= 2 sum_(m>=ceil(d/2)) F(m): max violation = 4.4e-16 (<=0, up to truncation)
+  E sup_t S(rho^q_A(t)) (N=60, lambda=2, CDW, l=30) = 1.690;  theorem bound 2ln2*Theta(F_emp) = 1.26e+03 <= 8ln2*M_2(F_emp) = 1.45e+03
+  cross-check of the N=10 pipeline against ED (N=4): |S_full diff| = 2.2e-16, |S_f diff| = 4.4e-16
+=== F. Proposition prop:entropies (N=10, h=J=1.0, l=5, CDW on even sites) ===
+     t    S_full  S_A'(Phi)  S_G    S_mix   S_f    S_N   #distinct rho^q_A  H_t
+       0.5   0.927   0.476   0.459   1.391   1.352   0.461    1022             6.929  <-- S_G < S_N
+       1.0   1.446   0.975   0.605   2.652   2.571   0.670    1023             6.930  <-- S_G < S_N
+       2.0   2.265   1.760   0.713   2.709   2.664   0.800    1023             6.930  <-- S_G < S_N
+      10.0   3.403   2.919   0.913   2.566   2.674   0.816    1023             6.930
+     100.0   5.000   4.786   0.980   2.775   2.826   0.890    1023             6.930
+  100000.0   5.382   5.331   0.945   2.902   2.929   0.876    1023             6.930
+  max(|S_full - S_A'| - ln2) = -0.189 (<=0);  max(S_G - S_mix) = -0.932 (<=0);  max(S_mix - min(S_G+H_t, l ln2)) = -0.564 (<=0);  max(S_N - min(S_full,S_mix,S_f)) = -0.466 (<=0)
+  maxima: 2 l ln2 = 6.931 (S_full), l ln2 = 3.466 (S_mix, S_f)
+=== F. Proposition prop:entropies (N=10, h=J=1.0, l=5, CDW on odd sites) ===
+     t    S_full  S_A'(Phi)  S_G    S_mix   S_f    S_N   #distinct rho^q_A  H_t
+       1.0   1.446   0.975   0.605   2.652   2.571   0.670    1023             6.930  <-- S_G < S_N
+  max(|S_full - S_A'| - ln2) = -0.222 (<=0);  max(S_G - S_mix) = -2.047 (<=0);  max(S_mix - min(S_G+H_t, l ln2)) = -0.814 (<=0);  max(S_N - min(S_full,S_mix,S_f)) = -0.777 (<=0)
+  maxima: 2 l ln2 = 6.931 (S_full), l ln2 = 3.466 (S_mix, S_f)
+=== G. Theorem thm:numberentropy ===
+  Massey bound H(X) <= 1/2 ln(2 pi e (Var X + 1/12)) on random/binomial laws: max(H - bound) = -2.84e-03 (<=0)
+  checks Var_q = sum|K_xy|^2, |<N_A>_q - |S cap A|| <= sum|U_xz|^2 <= sum Q: max violation = 3.7e-14
+  N=64, lambda=2.0, CDW, A=[1,32], 400 sectors, t in [0,1e5]:
+    S_N(t): max_t = 1.022, S_N(1e5) = 1.007;  Var_mix(N_A): max_t = 0.458
+    Massey bound with the MEASURED variance (non-rigorous): max_t = 1.113
+    E sup_t Var_q = 0.540 (<= K_1);  E sup_t (<N_A>_q - |S cap A|)^2 = 0.337 (<= K_2)
+    theorem constant with F_emp (truncated at d<N): K_1 = Theta = 908, K_2 = Sigma'_1^2 = 9.48e+03, bound = 6.043
+    with an exponential majorant F(d) = min(1, 1.00 e^(-0.181 d)) of F_emp, untruncated: K_1 = 1.4e+03, K_2 = 1.47e+04, bound = 6.264
+    per-sector bound sup_t E_q S_N^q <= 1/2 ln(2 pi e (K_1 + 1/12)) = 4.825
+=== H. Theorem thm:infvol: finite propagation speed and convergence M -> infinity ===
+  |e^-ith_M(x,y) - e^-ith_M'(x,y)| <= 2 e^c c^n0/n0!: max violation = 6.4e-15;  |e^-ith(x,y)| <= e^c c^d/d!: max violation = 1.2e-17 (<=0)
+  |U^(M)(t)_{0,3} - U^(Mbig)(t)_{0,3}| (one sample): t=0.5,M=5: 5.0e-09, t=0.5,M=20: 4.2e-16, t=1.0,M=5: 2.1e-06, t=1.0,M=20: 7.2e-16, t=2.0,M=5: 4.5e-04, t=2.0,M=20: 1.6e-15, t=5.0,M=5: 5.8e-03, t=5.0,M=20: 3.6e-15
+  E_q |U^(M)_q(t=3)_(0,3)| (coupled sectors, 2000 samples): M=4: 0.13685, M=8: 0.14341, M=16: 0.14341, M=32: 0.14341, M=64: 0.14341
+=== I. Lemma lem:duhamel ===
+  ||(U_q(s)-U_q'(s))delta_z|| <= 4|h| int_0^s ||1_D U_q'(r) delta_z|| dr: max violation = 8.2e-16
+  ... <= 4|h| s sum_(x in D) Q_q'(x,z): max violation = -5.6e-07 (<=0)
+done

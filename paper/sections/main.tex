@@ -1,0 +1,1142 @@
+% ============================================================================
+% Section: Main results -- disorder-free localization
+% ============================================================================
+% Section-local macros (unique names, \providecommand only).
+\providecommand{\cdr}{\tilde c}
+\providecommand{\bent}{\mathsf{h}}           % binary entropy function (not the field h)
+\providecommand{\Hsh}{\mathrm{H}}            % Shannon entropy
+\providecommand{\Sfm}{S_{f}}                 % bare-matter entropy
+\providecommand{\Ibar}{\bar I}
+\providecommand{\rhoqf}[1]{\rho[#1]}         % quasi-free density matrix with symbol #1
+\providecommand{\Alg}{\mathfrak{A}}
+\providecommand{\BAlg}{\mathfrak{B}}
+\providecommand{\GAlg}{\mathfrak{G}}
+\providecommand{\SigF}{\Sigma_1(F)}
+\providecommand{\SigpF}{\Sigma_1'(F)}
+\providecommand{\ThF}{\Theta(F)}
+\providecommand{\FZ}{F_{\Z}}
+\providecommand{\Zone}{\one_N}
+
+\section{Main results: disorder-free localization}\label{sec:main}
+
+By the duality (\cref{thm:duality}) and the exact sector averaging (\cref{cor:sector}), every
+gauge-invariant quantity of the lattice gauge theory in the initial state
+$\Psi_0=\ket{\uparrow\cdots\uparrow}_z\otimes\psi$ is an average over $2^N$ independent free-fermion
+problems, one for each charge configuration $q$, with the i.i.d.\ Bernoulli one-body operators
+$\hq=-J\Delta_N+2h\,\diag(q)$.  In this section we turn annealed one-body bounds into
+statements about the gauge theory.
+
+\emph{Status of the results.}  In finite volume all results are stated under
+Hypothesis~\ref{hyp:EC}, with explicit constants in terms of the moments $M_p(F)$, $M'_p(F)$ of
+the function $F$ in \eqref{eq:hypEC}.  Theorem~\ref{thm:EC} proves Hypothesis~\ref{hyp:EC} for every
+$\lambda=2h/J\neq0$, with $F(d)=\min\{1,Ce^{-\eta d}\}$, so the finite-volume results hold
+unconditionally; but $C$ and $\eta$ are not explicit (\cref{rem:rate}).  The infinite-volume
+statements (\cref{thm:infvol}) use only the Ge--Zhao bound on $\Z$ (\cref{prop:Zline}) and are
+independent of Theorem~\ref{thm:EC}.  The constants are far from optimal; we state them because they
+are explicit.  Two statements are conjectures (Conjectures~\ref{conj:logent} and~\ref{conj:volmix}).
+
+\emph{Overview.}
+\Cref{thm:transport}: sector-averaged localization of the dressed-fermion propagator, bounded
+moments and bounded transport across every cut.
+\Cref{prop:LR}: a sector-averaged zero-velocity Lieb--Robinson bound, and the proof that no
+operator-norm version exists.
+\Cref{thm:imbalance}: a strictly positive infinite-time density-wave imbalance for every $h\neq0$,
+uniformly in $N$.
+\Cref{thm:arealaw,prop:entropies}: uniform-in-time area laws, and the precise relations between the
+entropies $\SG,\Sfull,\Smix,\Sfm,\SN$.
+\Cref{thm:numberentropy}: a uniform bound on the number entropy.
+\Cref{thm:infvol}: thermodynamic limit.
+\Cref{lem:duhamel} and Conjectures~\ref{conj:logent} and~\ref{conj:volmix}: what lies beyond.
+
+\subsection{Preliminaries}\label{sec:main:prelim}
+
+\paragraph{Standing notation.}
+Throughout, $J>0$, $h\in\R\setminus\{0\}$ unless said otherwise, $N\ge2$, and $\E=\E_q$ is the
+expectation over $q$ uniform on $\{\pm1\}^N$ (in finite volume a finite average, so no measurability
+questions arise).  We write
+\[
+  U_q(t):=e^{-it\hq},\qquad Q_q:=Q^{[1,N]}_q,
+\]
+and $R_q$ for the time-averaged transition probability \eqref{eq:Rdef} of $\hq$.  Since $\hq$ is a
+real symmetric matrix, $U_q(t)^{\top}=U_q(t)$, so $|U_q(t)_{xy}|=|U_q(t)_{yx}|$; and
+$\sum_x|U_q(t)_{xy}|^2=1$.  The dressed fermions $\cdr_x$ are those of \eqref{eq:dressed}, and
+$O(t):=e^{itH}Oe^{-itH}$ for operators $O$ on $\cH_N$.  For a Fock state $\psi=\ket{n}$ we write
+$S:=\{x:n_x=1\}$ for its occupied set and
+\begin{equation}\label{eq:main-K}
+  K_q(t):=U_q(t)P_SU_q(t)^*,
+\end{equation}
+where $P_S$ is the orthogonal projection onto $\ell^2(S)$.  $K_q(t)$ is the projection onto
+$U_q(t)\ell^2(S)$, and by \cref{cor:sector}(c),
+$\langle\psi_q(t),c_x^\dagger c_y\psi_q(t)\rangle=\sum_{s\in S}\overline{U_q(t)_{xs}}U_q(t)_{ys}=K_q(t)_{yx}$.
+The region $A$ consists of the sites $1,\dots,\ell$ and the links $b_1,\dots,b_\ell$ ($1\le\ell<N$), and
+$\rho^q_A(t)$ denotes the reduced density matrix of $\psi_q(t)$ on the modes $1,\dots,\ell$, with the
+identification of \S\ref{sec:model:cut}.  $\Hsh(p)=-\sum_kp(k)\ln p(k)$ is the Shannon entropy and
+$\bent(\nu):=-\nu\ln\nu-(1-\nu)\ln(1-\nu)$ the binary entropy function (not to be confused with the
+field $h$).
+
+\paragraph{Constants.}  For $F$ as in Hypothesis~\ref{hyp:EC} we use
+\begin{equation}\label{eq:main-constants}
+\begin{gathered}
+  \SigF:=\sum_{d\ge1}d\,F(d)\le M_1(F),\qquad
+  \SigpF:=\sum_{d\ge1}d\,F(d)^{1/2}\le M'_1(F),\\
+  \ThF:=2\sum_{k\ge1}k(2k+1)F(k)\le4M_2(F).
+\end{gathered}
+\end{equation}
+The last inequality holds because $2k(2k+1)\le4(k+1)^2$.
+
+\begin{lemma}[Sector-diagonal operators]\label{lem:sectornorm}
+Let $X$ be a gauge-invariant operator on $\cH_N$.
+\begin{enumerate}[label=(\alph*)]
+\item $X=\sum_qP_qXP_q$ and $\norm{X}=\max_q\norm{P_qXP_q}$.
+\item Let $\rho$ be a density matrix on $\cH_N$ and $w_q:=\Tr(\rho P_q)$ its sector weights.  Then
+$|\Tr(\rho X)|\le\sum_qw_q\norm{P_qXP_q}$.  One has $w_q=2^{-N}$, and hence
+$|\Tr(\rho X)|\le\E_q\norm{P_qXP_q}$, for $\rho=4^{-N}\one$ and for $\rho=\ket{\Psi_0}\bra{\Psi_0}$ with
+$\Psi_0=\ket{\uparrow\cdots\uparrow}_z\otimes\psi$, where $\psi\in\cF_N$ is any unit vector.
+\item If $X=\sum_qx_qP_q$ with $x_q\in\C$, then
+$\langle\Psi_0,|X|\Psi_0\rangle=4^{-N}\Tr|X|=\E_q|x_q|$ for every $\Psi_0$ as in (b).
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(a) $X$ commutes with the orthogonal projections $P_q$, which sum to $\one$; the blocks $P_qXP_q$ act on
+mutually orthogonal subspaces.  (b) By (a), $\Tr(\rho X)=\sum_q\Tr(P_q\rho P_q\,P_qXP_q)$, and
+$|\Tr(\sigma Y)|\le\Tr(\sigma)\norm{Y}$ for $\sigma\ge0$.  The weights are $2^{-N}$ by
+\cref{cor:sector}(a), resp.\ because $\Tr P_q=2^N$ (\cref{lem:gauss}(iii)).  (c) $|X|=\sum_q|x_q|P_q$; use
+$\norm{P_q\Psi_0}^2=2^{-N}=4^{-N}\Tr P_q$.
+\end{proof}
+
+\paragraph{Quasi-free density matrices.}
+Let $A$ be a finite set of fermionic modes, $\cF_A$ the Fock space over $\ell^2(A)$, $c_x$ ($x\in A$) the
+annihilation operators, $c(v):=\sum_x\overline{v(x)}c_x$, and $\Gamma(C)$ the second quantization of a
+matrix $C$ on $\ell^2(A)$ ($\Gamma(C)\ket0=\ket0$,
+$\Gamma(C)c^\dagger(u_1)\cdots c^\dagger(u_k)\ket0=c^\dagger(Cu_1)\cdots c^\dagger(Cu_k)\ket0$).  For
+$0\le C\le\one$ with eigenvalues $\nu_1,\dots,\nu_{|A|}$ and an orthonormal eigenbasis $(v_i)$, put
+$d_i:=c(v_i)$ and
+\begin{equation}\label{eq:main-rhoC}
+  \rhoqf{C}:=\prod_{i=1}^{|A|}\bigl(\nu_i\,d_i^\dagger d_i+(1-\nu_i)\,d_id_i^\dagger\bigr)
+\end{equation}
+(the factors commute).
+
+\begin{lemma}[Quasi-free density matrices]\label{lem:quasifree}
+Let $0\le C\le\one$ on $\ell^2(A)$.
+\begin{enumerate}[label=(\alph*)]
+\item With $N_A:=\sum_{x\in A}c_x^\dagger c_x$ and the convention that the $j=0$ term is $\Gamma(C)$,
+\begin{equation}\label{eq:main-rhoformula}
+  \rhoqf{C}=\sum_{j=0}^{|A|}\frac{(-1)^j}{j!}\sum_{x_1,\dots,x_j\in A}c_{x_1}\cdots c_{x_j}\,\Gamma(C)\,
+  c^\dagger_{x_j}\cdots c^\dagger_{x_1}.
+\end{equation}
+In particular $\rhoqf{C}$ does not depend on the choice of eigenbasis, its matrix elements in the
+occupation basis are polynomials in the entries of $C$, and $C\mapsto\rhoqf{C}$ is uniformly continuous
+on $\{0\le C\le\one\}$.
+\item $\rhoqf{C}$ is a density matrix with $S(\rhoqf{C})=\sum_i\bent(\nu_i)$.  Under $\rhoqf{C}$, $N_A$ has
+the law of $\sum_i\xi_i$ with independent $\xi_i\sim\mathrm{Bernoulli}(\nu_i)$; its generating function is
+$\Tr(\rhoqf{C}z^{N_A})=\det(\one+(z-1)C)$, and its variance is $\Tr(C-C^2)$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(a) For every operator $Y$ on $\cF_A$,
+$\sum_id_iYd_i^\dagger=\sum_{x,y}\bigl(\sum_i\overline{v_i(x)}v_i(y)\bigr)c_xYc_y^\dagger=\sum_xc_xYc_x^\dagger$,
+by completeness of $(v_i)$.  Iterating, the inner sum in \eqref{eq:main-rhoformula} equals
+$\Xi_j:=\sum_{i_1,\dots,i_j}d_{i_1}\cdots d_{i_j}\Gamma(C)d^\dagger_{i_j}\cdots d^\dagger_{i_1}$.  Let
+$\ket{T}:=\prod_{i\in T}d_i^\dagger\ket0$ (increasing order) for $T\subset\{1,\dots,|A|\}$.  The vector
+$\phi:=d^\dagger_{i_j}\cdots d^\dagger_{i_1}\ket T$ vanishes unless $i_1,\dots,i_j$ are distinct and not in
+$T$; then $\phi=\pm\ket{T\cup R}$ with $R=\{i_1,\dots,i_j\}$, $\Gamma(C)\phi=\prod_{i\in T\cup R}\nu_i\,\phi$
+because $Cv_i=\nu_iv_i$, and $d_{i_1}\cdots d_{i_j}\phi=\ket T$.  Each set $R$ arises from $j!$ ordered
+tuples, so
+\[
+  \sum_j\frac{(-1)^j}{j!}\Xi_j\ket T=\sum_{R\subset T^c}(-1)^{|R|}\prod_{i\in T\cup R}\nu_i\,\ket T
+  =\prod_{i\in T}\nu_i\prod_{i\notin T}(1-\nu_i)\,\ket T=\rhoqf{C}\ket T .
+\]
+The right side of \eqref{eq:main-rhoformula} involves only $C$, and the matrix elements of $\Gamma(C)$ in
+the occupation basis are minors of $C$.  A continuous function on a compact set is uniformly continuous.
+
+(b) In the basis $(\ket T)$, $\rhoqf{C}$ is diagonal with eigenvalues
+$w_T=\prod_{i\in T}\nu_i\prod_{i\notin T}(1-\nu_i)\ge0$, the law of independent Bernoulli$(\nu_i)$
+variables, and $N_A=\sum_id_i^\dagger d_i$ (completeness again) acts on $\ket T$ as $|T|$.  The entropy of a
+product law is the sum of the entropies of its factors.  Finally
+$\sum_Tw_Tz^{|T|}=\prod_i(1-\nu_i+z\nu_i)=\det(\one+(z-1)C)$, and
+$\Var\sum_i\xi_i=\sum_i\nu_i(1-\nu_i)$.
+\end{proof}
+
+\begin{lemma}[Reduced states of Slater determinants]\label{lem:slater}
+Let $\Lambda$ be a finite set of modes, $W\subset\ell^2(\Lambda)$ a subspace of dimension $M$ with orthogonal
+projection $K$, and $\psi_W:=c^\dagger(w_1)\cdots c^\dagger(w_M)\ket0$ for an orthonormal basis $(w_j)$ of $W$
+(unique up to a phase).  Let $A\subset\Lambda$, $B:=\Lambda\setminus A$, and identify
+$\cF_\Lambda\cong\cF_A\otimes\cF_B$ by $c(a)\mapsto c(a)\otimes\one$, $c(b)\mapsto(-1)^{N_A}\otimes c(b)$ for
+$a\in\ell^2(A)$, $b\in\ell^2(B)$, $\ket0\mapsto\ket0\otimes\ket0$.  (For $A=\{1,\dots,\ell\}$ this is the
+identification of \S\ref{sec:model:cut}.)  Under it, the CAR algebra of the modes in $A$ is
+$\mathcal B(\cF_A)\otimes\one$, and we let $\rho_A:=\Tr_{\cF_B}\ket{\psi_W}\bra{\psi_W}$.  Let
+$C_A:=P_AKP_A$, regarded as an operator on $\ell^2(A)$, with eigenvalues $\nu_1,\dots,\nu_{|A|}$, and
+$T:=P_BKP_A$.  Then:
+\begin{enumerate}[label=(\alph*)]
+\item $\rho_A=\rhoqf{C_A}$.  Hence $S(\rho_A)=\sum_i\bent(\nu_i)$, and the law of $N_A$ under $\psi_W$ is the
+Poisson-binomial law of \cref{lem:quasifree}(b).
+\item $C_A-C_A^2=T^*T$.  Hence
+$\Var_{\psi_W}(N_A)=\norm{T}_2^2=\sum_{x\in A,\,y\in B}|K_{yx}|^2$ and
+$\sum_i\sqrt{\nu_i(1-\nu_i)}=\norm{T}_1\le\sum_{x\in A,\,y\in B}|K_{yx}|$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(a) Changing the basis of $W$ multiplies $\psi_W$ by a determinant of modulus one, so we may take $w_j$ to be
+an orthonormal eigenbasis of $W$ for the operator $(P_A|_W)^*(P_A|_W)$, with eigenvalues
+$\mu_j\in[0,1]$.  Then $\langle P_Aw_j,P_Aw_k\rangle=\mu_j\delta_{jk}$ and
+$\langle P_Bw_j,P_Bw_k\rangle=(1-\mu_j)\delta_{jk}$.  Put $a_j:=\mu_j^{-1/2}P_Aw_j$ if $\mu_j>0$ and
+$b_j:=(1-\mu_j)^{-1/2}P_Bw_j$ if $\mu_j<1$; these are orthonormal families in $\ell^2(A)$, resp.\ $\ell^2(B)$,
+and $w_j=\sqrt{\mu_j}\,a_j+\sqrt{1-\mu_j}\,b_j$ (a term with vanishing coefficient is absent).  Expanding
+the product $\prod_jc^\dagger(w_j)$ and moving all $c^\dagger(a_j)$ to the left,
+\[
+  \psi_W=\sum_{T\subset\{1,\dots,M\}}\varepsilon_T\prod_{j\in T}\sqrt{\mu_j}\prod_{j\notin T}\sqrt{1-\mu_j}\;
+  c^\dagger(a_T)\,c^\dagger(b_{T^c})\ket0,
+\]
+with signs $\varepsilon_T=\pm1$ and $c^\dagger(a_T):=\prod_{j\in T}c^\dagger(a_j)$ in increasing order.  Under the
+identification, $c^\dagger(a_T)c^\dagger(b_{T^c})\ket0\mapsto\alpha_T\otimes\beta_{T^c}$ with
+$\alpha_T:=c^\dagger(a_T)\ket0$, $\beta_{T^c}:=c^\dagger(b_{T^c})\ket0$, because the factors $(-1)^{N_A}$ act on the
+vacuum of $\cF_A$.  The $\alpha_T$ with nonzero coefficient are orthonormal, and so are the $\beta_{T^c}$.  Hence
+this is a Schmidt decomposition, and
+$\rho_A=\sum_T\prod_{j\in T}\mu_j\prod_{j\notin T}(1-\mu_j)\,\ket{\alpha_T}\bra{\alpha_T}$.  On the other hand
+$C_A=\sum_j\ket{P_Aw_j}\bra{P_Aw_j}=\sum_{j:\mu_j>0}\mu_j\ket{a_j}\bra{a_j}$, so $C_A$ has the eigenvectors
+$a_j$ ($\mu_j>0$) with eigenvalues $\mu_j$, and eigenvalue $0$ on the orthogonal complement in $\ell^2(A)$.
+Computing \eqref{eq:main-rhoC} in this eigenbasis gives the same operator.  The rest is
+\cref{lem:quasifree}(b); $N_A\otimes\one$ belongs to the algebra of $A$.
+
+(b) Since $K=K^*=K^2$, $C_A-C_A^2=P_AK(\one-P_A)KP_A=T^*T$.  So
+$\sum_i\nu_i(1-\nu_i)=\Tr T^*T=\norm{T}_2^2$ and $\sum_i\sqrt{\nu_i(1-\nu_i)}=\Tr|T|=\norm T_1$.  Finally
+$T=\sum_{x\in A,y\in B}K_{yx}\ket{\delta_y}\bra{\delta_x}$ is a sum of rank-one operators of trace norm
+$|K_{yx}|$.
+\end{proof}
+
+\begin{lemma}[Binary entropy]\label{lem:binent}
+For all $\nu\in[0,1]$: $\bent(\nu)\le2\ln2\,\sqrt{\nu(1-\nu)}$, with equality iff $\nu\in\{0,\tfrac12,1\}$.
+\end{lemma}
+
+\begin{proof}
+Both sides vanish at $\nu\in\{0,1\}$ and are symmetric under $\nu\mapsto1-\nu$.  Write $\nu=(1-s)/2$ with
+$s\in[0,1)$.  The function $f(s):=(1+s)\ln(1+s)+(1-s)\ln(1-s)$ satisfies $f(0)=f'(0)=0$ and
+$f''(s)=2/(1-s^2)=2\sum_{j\ge0}s^{2j}$, hence $f(s)=\sum_{k\ge1}s^{2k}/(k(2k-1))$ and
+\[
+  \bent(\nu)=\ln2-\tfrac12f(s)=\ln2-\sum_{k\ge1}e_ks^{2k},\qquad e_k:=\frac1{2k(2k-1)} .
+\]
+Moreover $2\ln2\sqrt{\nu(1-\nu)}=\ln2\sqrt{1-s^2}=\ln2\,\bigl(1-\sum_{k\ge1}c_ks^{2k}\bigr)$ with
+$c_k:=\binom{2k}{k}\frac1{(2k-1)4^k}>0$.  So the claim is $\sum_{k\ge1}d_ks^{2k}\ge0$ with
+$d_k:=e_k-c_k\ln2$.  We have $d_1=\frac12(1-\ln2)>0$.  The ratio
+$e_k/c_k=4^k/\bigl(2k\binom{2k}{k}\bigr)$ satisfies $(e_{k+1}/c_{k+1})/(e_k/c_k)=2k/(2k+1)<1$, and
+$e_2/c_2=\frac23<\ln2$; hence $d_k<0$ for all $k\ge2$.  Letting $s\uparrow1$ (monotone convergence; all
+$e_k,c_k>0$) gives $\sum_ke_k=\frac12f(1)=\ln2$ and $\sum_kc_k=1$, so $\sum_{k\ge2}d_k=-d_1$.  Since
+$s^{2k}\le s^4$ for $k\ge2$,
+\[
+  \sum_{k\ge1}d_ks^{2k}\ge d_1s^2+s^4\sum_{k\ge2}d_k=d_1(s^2-s^4)\ge0,
+\]
+with equality for $s\in[0,1)$ only if $s=0$, i.e.\ $\nu=\frac12$.
+\end{proof}
+
+\begin{lemma}[Annealed one-body bounds]\label{lem:annealed}
+Assume Hypothesis~\ref{hyp:EC}.  Let $\psi$ be a Fock state with occupied set $S$ (arbitrary), and
+$x\neq y$ in $[1,N]$, $d:=|x-y|$.
+\begin{enumerate}[label=(\roman*)]
+\item $\displaystyle\E\sup_{t\in\R}|K_q(t)_{xy}|\le\E\sum_{z=1}^NQ_q(x,z)Q_q(y,z)\le2\sum_{k\ge\lceil d/2\rceil}F(k)$.
+\item For $1\le m<N$:
+\begin{gather*}
+  \E\sup_t\sum_{x\le m<y}|K_q(t)_{xy}|\le\ThF,\qquad
+  \E\sum_{x\le m<z}Q_q(x,z)\le\SigF,\\
+  \E\Bigl(\sum_{x\le m<z}Q_q(x,z)\Bigr)^2\le\SigpF^2 .
+\end{gather*}
+\item For an interval $B\subset[1,N]$ the same bounds hold for the sums over pairs $x\in B$,
+$y\in[1,N]\setminus B$, with the constants $2\ThF$, $2\SigF$ and $4\SigpF^2$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(i) $|K_q(t)_{xy}|\le\sum_{s\in S}|U_q(t)_{xs}||U_q(t)_{ys}|\le\sum_z Q_q(x,z)Q_q(y,z)$ for all $t$, by
+\cref{lem:consequences}(b).  By \eqref{eq:cons2},
+$\E[Q_q(x,z)Q_q(y,z)]\le F(\max\{|x-z|,|y-z|\})$.  Let $x<y$.  For $z\in[x,y]$ the value
+$k=\max\{z-x,y-z\}$ lies in $[\lceil d/2\rceil,d]$, and each such $k$ arises for at most two $z$; for $z<x$
+or $z>y$ it equals $d+|z-x|$, resp.\ $d+|z-y|$, so each $k>d$ arises at most twice.  Hence the sum is at
+most $2\sum_{k\ge\lceil d/2\rceil}F(k)$.
+
+(ii) The number of pairs $x\le m<y$ with $y-x=d$ is at most $d$.  By (i),
+\[
+  \E\sup_t\sum_{x\le m<y}|K_q(t)_{xy}|\le\sum_{d\ge1}d\cdot2\sum_{k\ge\lceil d/2\rceil}F(k)
+  =2\sum_{k\ge1}F(k)\sum_{d=1}^{2k}d=2\sum_{k\ge1}k(2k+1)F(k).
+\]
+The second bound is \eqref{eq:hypEC} with the same counting.  For the third, by \eqref{eq:cons3},
+$\E(\sum_iQ_i)^2=\sum_{i,j}\E Q_iQ_j\le(\sum_iF(d_i)^{1/2})^2\le\SigpF^2$, where $i$ runs over the pairs
+and $d_i$ is the distance of pair $i$.
+
+(iii) The number of pairs $x\in B$, $y\notin B$ at distance $d$ is at most $2d$.
+\end{proof}
+
+\begin{lemma}[Finite propagation speed]\label{lem:propagation}
+Let $\Lambda\subset\Lambda'\subset\Z$ be intervals ($\Lambda'=\Z$ allowed), $v:\Lambda'\to\R$ with $|v|\le V_0$,
+$k_{\Lambda}:=-J\Delta_\Lambda+\diag(v|_\Lambda)$ on $\ell^2(\Lambda)$, likewise $k_{\Lambda'}$, and $c:=|t|(2J+V_0)$.  For
+$x,y\in\Lambda$:
+\begin{enumerate}[label=(\alph*)]
+\item $|(e^{-itk_\Lambda})_{xy}|\le e^{c}\,c^{|x-y|}/|x-y|!$;
+\item $|(e^{-itk_\Lambda})_{xy}-(e^{-itk_{\Lambda'}})_{xy}|\le2e^{c}\,c^{n_0}/n_0!$, where
+$n_0:=\dist(x,\Lambda'\setminus\Lambda)+\dist(y,\Lambda'\setminus\Lambda)$ (the left side is $0$ if $\Lambda=\Lambda'$).
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+$\norm{k_\Lambda},\norm{k_{\Lambda'}}\le2J+V_0$, and $e^{-itk}=\sum_n(-it)^nk^n/n!$ converges in norm.  The
+entry $(k^n)_{xy}$ is a sum over paths $x=z_0,z_1,\dots,z_n=y$ with $|z_{i+1}-z_i|\le1$ of products of matrix
+entries.  (a) $(k_\Lambda^n)_{xy}=0$ for $n<|x-y|$ and $|(k^n_\Lambda)_{xy}|\le\norm{k_\Lambda}^n$, so the entry is at
+most $\sum_{n\ge d}c^n/n!\le e^cc^d/d!$ with $d=|x-y|$.  (b) A path from $x$ to $y$ that visits
+$\Lambda'\setminus\Lambda$ has length at least $n_0$, and on paths inside $\Lambda$ the entries of $k_\Lambda$ and
+$k_{\Lambda'}$ agree.  So $(k_\Lambda^n)_{xy}=(k^n_{\Lambda'})_{xy}$ for $n<n_0$, and the difference is at most
+$2\sum_{n\ge n_0}c^n/n!\le2e^cc^{n_0}/n_0!$.
+\end{proof}
+
+\subsection{Localization of dressed fermions and bounded transport}\label{sec:main:transport}
+
+\begin{theorem}[Dressed-fermion localization and bounded transport]\label{thm:transport}
+Assume Hypothesis~\ref{hyp:EC}, and let $\Psi_0=\ket{\uparrow\cdots\uparrow}_z\otimes\psi$,
+$\Psi(t)=e^{-itH}\Psi_0$.  For all $N\ge2$:
+\begin{enumerate}[label=(\alph*)]
+\item \emph{(Propagator.)}  For all $x,y\in[1,N]$ and $t\in\R$,
+\begin{equation}\label{eq:main-anticomm}
+  \{\cdr_x(t),\cdr_y^\dagger\}=\sum_qU_q(t)_{xy}\,P_q .
+\end{equation}
+Thus the dressed-fermion propagator is the scalar $U_q(t)_{xy}$ in each sector, and its sector-averaged
+modulus is localized uniformly in time:
+\begin{equation}\label{eq:main-prop}
+  \E_q\sup_{t\in\R}\norm{P_q\{\cdr_x(t),\cdr_y^\dagger\}P_q}=\E_q\sup_{t\in\R}|U_q(t)_{xy}|\le F(|x-y|).
+\end{equation}
+In particular, $\sup_t\langle\Psi_0,|\{\cdr_x(t),\cdr_y^\dagger\}|\,\Psi_0\rangle\le F(|x-y|)$ for every
+matter state $\psi$.
+\item \emph{(One particle: moments.)}  If $\psi=f_y^\dagger\ket0$, then for $0\le p\le2$,
+\[
+  \sup_{t\in\R}\sum_{x=1}^N(|x-y|+1)^p\langle\Psi(t),n_x\Psi(t)\rangle
+  \le\E_q\sup_{t\in\R}\sum_{x=1}^N(|x-y|+1)^p|U_q(t)_{xy}|^2\le2M_p(F).
+\]
+\item \emph{(Transport across any cut.)}  Let $\psi=\ket n$ be a Fock state with occupied set $S$, let
+$1\le m<N$ and $s_m:=|S\cap[1,m]|$.  Then for every $q$ and $t$,
+$|\langle\psi_q(t),N_{\le m}\psi_q(t)\rangle-s_m|\le\sum_{x\le m<z}|U_q(t)_{xz}|^2$, and
+\begin{gather}
+  \E_q\sup_t\bigl|\langle\psi_q(t),N_{\le m}\psi_q(t)\rangle-s_m\bigr|\le\SigF\le M_1(F),\qquad
+  \sup_t\bigl|\langle\Psi(t),N_{\le m}\Psi(t)\rangle-s_m\bigr|\le\SigF,\label{eq:main-transport}\\
+  \sup_t\bigl\langle\Psi(t),(N_{\le m}-s_m)^2\Psi(t)\bigr\rangle\le\ThF+\SigpF^2\le4M_2(F)+M'_1(F)^2.
+  \label{eq:main-transport2}
+\end{gather}
+In particular $\Prob_{\Psi(t)}(|N_{\le m}-s_m|\ge k)\le(4M_2(F)+M'_1(F)^2)/k^2$ for all $t$ and $k>0$.
+\item \emph{(Dressed correlations.)}  For Fock $\psi$ and $x\neq y$,
+$\sup_t|\langle\Psi(t),\cdr_x^\dagger\cdr_y\Psi(t)\rangle|\le2\sum_{k\ge\lceil|x-y|/2\rceil}F(k)$; here
+$\cdr_x^\dagger\cdr_y=f_x^\dagger(\prod_{x\le k<y}\sigma^z_{b_k})f_y$ for $x<y$ (\cref{thm:duality}(d)).
+\end{enumerate}
+All bounds are uniform in $N$, in the position of the cut and in $t$.
+\end{theorem}
+
+\begin{proof}
+(a) By \eqref{eq:heisenberg}, $\cdr_x(t)=\sum_qP_q\sum_zU_q(t)_{xz}\cdr_z$.  The $\cdr$'s commute with every
+$G_k$ (\cref{thm:duality}(d)), hence with $P_q$, and satisfy the CAR.  So
+$\{\cdr_x(t),\cdr_y^\dagger\}=\sum_qP_q\sum_zU_q(t)_{xz}\delta_{zy}$, which is \eqref{eq:main-anticomm}.
+Then $P_q\{\cdr_x(t),\cdr_y^\dagger\}P_q=U_q(t)_{xy}P_q$ with $P_q\neq0$, which gives the identity in
+\eqref{eq:main-prop}; the bound is \eqref{eq:cons1}.  The last statement is \cref{lem:sectornorm}(c), together with
+$\E_q|U_q(t)_{xy}|\le\E_q\sup_s|U_q(s)_{xy}|$.
+
+(b) Here $\psi_q(t)=c^\dagger(U_q(t)\delta_y)\ket0$, so $\langle\psi_q(t),n_x\psi_q(t)\rangle=|U_q(t)_{xy}|^2$, and
+$\langle\Psi(t),n_x\Psi(t)\rangle=\E_q|U_q(t)_{xy}|^2$ by \cref{cor:sector}(b),(c).  Exchange the finite sums,
+use $\sup_t\E\le\E\sup_t$, and apply \eqref{eq:cons4}.
+
+(c) By \cref{cor:sector}(c), $\langle\psi_q(t),n_x\psi_q(t)\rangle=\sum_{s\in S}|U_q(t)_{xs}|^2$.  Using
+$\sum_{x=1}^N|U_q(t)_{xs}|^2=1$ for the $s\in S\cap[1,m]$,
+\[
+  \langle\psi_q(t),N_{\le m}\psi_q(t)\rangle-s_m=\sum_{x\le m,\ s\in S,\ s>m}|U_q(t)_{xs}|^2-\sum_{x>m,\ s\in S,\ s\le m}|U_q(t)_{xs}|^2 .
+\]
+Both sums are non-negative.  Since $|U_q(t)_{xs}|=|U_q(t)_{sx}|$, both are at most
+\[
+  D_q(t):=\sum_{x\le m<z}|U_q(t)_{xz}|^2,
+\]
+and the difference of two numbers in $[0,D]$ has modulus at most $D$.  Next, $D_q(t)\le Y_q:=\sum_{x\le m<z}Q_q(x,z)$, and $\E Y_q\le\SigF$ by \cref{lem:annealed}(ii).  The
+LGT statement follows from \cref{cor:sector}(b), which gives
+\[
+  \langle\Psi(t),N_{\le m}\Psi(t)\rangle=\E_q\langle\psi_q(t),N_{\le m}\psi_q(t)\rangle .
+\]
+For \eqref{eq:main-transport2}: by \cref{cor:sector}(c) the law of $N_{\le m}$ in $\Psi(t)$ is the $q$-average of its
+laws in the $\psi_q(t)$.  Hence
+\[
+  \langle\Psi(t),(N_{\le m}-s_m)^2\Psi(t)\rangle=\E_q\bigl[\Var_q(t)+(\langle\psi_q(t),N_{\le m}\psi_q(t)\rangle-s_m)^2\bigr],
+\]
+where $\Var_q(t)$ is the variance of $N_{\le m}$ in $\psi_q(t)$.  By \cref{lem:slater}(b) with $A=[1,m]$,
+$\Var_q(t)=\sum_{x\le m<y}|K_q(t)_{xy}|^2\le\sum_{x\le m<y}|K_q(t)_{xy}|$, whose $\E\sup_t$ is at most $\ThF$ by
+\cref{lem:annealed}(ii).  The second term is at most $\E Y_q^2\le\SigpF^2$.  The probability bound is
+Chebyshev's inequality.
+
+(d) $\langle\Psi(t),\cdr_x^\dagger\cdr_y\Psi(t)\rangle=\E_qK_q(t)_{yx}$ by \cref{cor:sector}(b),(c); apply
+\cref{lem:annealed}(i).
+\end{proof}
+
+\begin{remark}[On the statement]\label{rem:main-transport}
+(i) The supremum over $t$ is \emph{inside} the sector average, which is stronger than a bound on
+$\sup_t\E_q$: in a typical sector the dressed fermion stays localized for all times.
+(ii) By \cref{lem:productlaw}(c), \cref{thm:transport} holds verbatim for every $\sigma^z$-product gauge
+state $\ket{s}_z$ in place of $\ket{\uparrow\cdots\uparrow}_z$.  For any gauge state whose sector law
+has density at most $K$ with respect to the uniform law (e.g.\ $K=2$ for the open chain,
+\cref{prop:variants}(i)), all bounds hold with an extra factor $K$.  For the dimer law of
+\cref{lem:productlaw}(e) they fail (\cref{sec:dimer}).
+(iii) Parts (a)--(c) use from Hypothesis~\ref{hyp:EC} only the decay of $\E\sup_t|U_q(t)_{xy}|$ and of
+$\E Q_q$; part (c) also uses \eqref{eq:cons3}.
+(iv) \emph{Numerical check} (\texttt{code/main\_checks.py}, part A; $N=60$, $\lambda=2$, CDW, $300$
+sectors, $62$ times in $[0,10^5]$): the deterministic inequalities in the proof of (c) and the moment
+inequalities hold to $4\times10^{-14}$, and $U_q(t)^\top=U_q(t)$ to $3\times10^{-16}$.  The measured
+$\E\sup_t$ of the transported charge across the middle cut is $0.52$.  The bound $\SigF$ evaluated with
+the empirical correlator $F_{\rm emp}$ (the non-increasing envelope of $\max_x\E Q_q(x,x+d)$, an
+estimate, not a proof) is $20$.  For one particle, $\E\sup_t\sum_x(|x-y|+1)^2|U_q(t)_{xy}|^2=33$,
+against $2M_2(F_{\rm emp})\approx5\times10^2$.
+\end{remark}
+
+\subsection{A sector-averaged zero-velocity Lieb--Robinson bound}\label{sec:main:LR}
+
+For $X\subset[1,N]$ let $\Alg(X)$ be the $*$-algebra generated by $\{\cdr_x:x\in X\}$ and $\Alg^+(X)$ its even
+part (spanned by monomials of even degree).  For $Y\subset[1,N]$ let $\BAlg^+(Y)$ be the $*$-algebra generated by
+$\Alg^+(Y)$ and $G_1,\dots,G_N$.  All these operators are gauge invariant.  The generators of $\Alg^+(X)$ are local
+in the original variables: for $x<y$, $\cdr_x^\dagger\cdr_y=f_x^\dagger(\prod_{x\le k<y}\sigma^z_{b_k})f_y$ and
+$\cdr_x\cdr_y=f_xf_y\prod_{x\le k<y}\sigma^z_{b_k}$, and $\cdr_x^\dagger\cdr_x=n_x$ (\cref{thm:duality}(d)).
+$\BAlg^+(Y)$ also contains the electric energies $\sigma^x_{b_{j-1}}\sigma^x_{b_j}=G_j(-1)^{n_j}$, $j\in Y$.  The
+operators $\gamma_{2x-1}:=\cdr_x+\cdr_x^\dagger$ and $\gamma_{2x}:=i(\cdr_x^\dagger-\cdr_x)$, $x\in X$, are self-adjoint
+unitaries.  For an ordered set $\mathcal S$ of indices let $\gamma_{\mathcal S}$ be the ordered product.  Every
+$A\in\Alg(X)$ has a unique expansion $A=\sum_{\mathcal S}a_{\mathcal S}\gamma_{\mathcal S}$ (see the proof), and we
+put $|A|_1:=\sum_{\mathcal S}|a_{\mathcal S}|\le4^{|X|}\norm{A}$.
+
+\begin{proposition}[Sector-averaged zero-velocity Lieb--Robinson bound]\label{prop:LR}
+Let $X,Y\subset[1,N]$ and $B\in\BAlg^+(Y)$.
+\begin{enumerate}[label=(\alph*)]
+\item \emph{(Sector-wise bound; no hypothesis.)}  For a monomial $A=\cdr^{\sharp}_{x_1}\cdots\cdr^{\sharp}_{x_k}$
+($x_i\in X$, each $\cdr^\sharp$ equal to $\cdr$ or $\cdr^\dagger$), and for every $q$ and $t$,
+\begin{equation}\label{eq:main-LRsector}
+  \norm{P_q[A(t),B]}\le2\norm B\sum_{i=1}^k\sum_{y\in Y}|U_q(t)_{x_iy}| .
+\end{equation}
+For general $A\in\Alg(X)$, $\norm{P_q[A(t),B]}\le8|A|_1\norm B\sum_{x\in X,y\in Y}|U_q(t)_{xy}|$.
+\item \emph{(Sector-averaged zero-velocity bound.)}  Under Hypothesis~\ref{hyp:EC},
+\begin{equation}\label{eq:main-LR}
+  \E_q\sup_{t\in\R}\norm{P_q[A(t),B]P_q}\le2\norm B\sum_{i=1}^k\sum_{y\in Y}F(|x_i-y|),\qquad\text{resp.}\quad
+  \le8|A|_1\norm B\sum_{x\in X,y\in Y}F(|x-y|).
+\end{equation}
+Consequently, if a density matrix $\rho$ has sector weights $\Tr(\rho P_q)\le K2^{-N}$, then
+$\sup_t|\Tr(\rho[A(t),B])|$ is at most $K$ times the right side of \eqref{eq:main-LR}.  This covers $K=1$ and
+$\rho=\ket{\Psi_0}\bra{\Psi_0}$, $\Psi_0=\ket{\uparrow\cdots\uparrow}_z\otimes\psi$, with \emph{arbitrary} $\psi$, as well
+as $\rho=4^{-N}\one$.
+\item \emph{(The operator norm sees the clean sector.)}  For all $N$, $x,y\in[1,N]$ and $t$,
+\begin{equation}\label{eq:main-LRnorm}
+  \norm{\{\cdr_x(t),\cdr_y^\dagger\}}=\norm{[\cdr_x(t),n_y]}=\max_q|U_q(t)_{xy}|,\qquad
+  \norm{[n_x(t),n_y]}=\max_q|U_q(t)_{xy}|\bigl(1-|U_q(t)_{xy}|^2\bigr)^{1/2}.
+\end{equation}
+The maximum includes the clean sector $q=\Zone=(1,\dots,1)$.  It has probability $2^{-N}$ under the sector
+law, which vanishes as $N\to\infty$.  In particular, for $N\ge2$,
+\[
+  \sup_t\norm{\{\cdr_1(t),\cdr_N^\dagger\}}\ge\Bigl(\frac{3}{2(N+1)}\Bigr)^{1/2},\qquad
+  \sup_t\norm{[n_1(t),n_N]}\ge\Bigl(\frac{3}{4(N+1)}\Bigr)^{1/2},
+\]
+whereas the sector average in \eqref{eq:main-prop} is at most $F(N-1)$.
+\item \emph{(No operator-norm zero-velocity bound.)}  There is no function $G:\N_0\to[0,\infty)$ such that
+$\sum_dd^2G(d)^2<\infty$ and $\sup_t\norm{[n_x(t),n_y]}\le G(|x-y|)$ for all $N\ge1$ and all $x,y\in[1,N]$.
+The same holds with $[n_x(t),n_y]$ replaced by $\{\cdr_x(t),\cdr_y^\dagger\}$ or by $[\cdr_x(t),n_y]$.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(a) All operators involved are gauge invariant, so they commute with $P_q$.  Replacing each $G_j$ in $B$ by
+$q_j$ gives $B_q\in\Alg^+(Y)$ with $P_qB=P_qB_q$.  If $z\notin Y$, then $\cdr_z$ anticommutes with $\cdr_y$ and
+$\cdr_y^\dagger$ for all $y\in Y$, hence commutes with every even monomial, and $[\cdr_z,B_q]=0$.  By
+\eqref{eq:heisenberg},
+\[
+  P_q[\cdr_x(t),B]=\sum_{z}U_q(t)_{xz}P_q[\cdr_z,B_q]=\sum_{y\in Y}U_q(t)_{xy}P_q[\cdr_y,B_q],
+\]
+and $\norm{P_q[\cdr_y,B_q]}\le\norm{\cdr_yP_qB_q}+\norm{P_qB_q\cdr_y}\le2\norm{P_qB}\le2\norm B$, because $P_q$
+commutes with $\cdr_y$.  The same holds for $\cdr_x(t)^\dagger$, with $\overline{U_q(t)_{xy}}$.  For a monomial,
+$[a_1\cdots a_k,B]=\sum_ia_1\cdots a_{i-1}[a_i,B]a_{i+1}\cdots a_k$.  Moving $P_q$ through
+$a_1(t),\dots,a_{i-1}(t)$, which have norm one, gives \eqref{eq:main-LRsector}.
+
+For general $A$ we first justify the expansion.  The products $\gamma_{\mathcal S}$, with $\mathcal S$ ranging over
+the subsets of the $2|X|$ indices in increasing order, span $\Alg(X)$, since $\gamma_j^2=\one$ and distinct
+$\gamma$'s anticommute.  Let $\tau:=4^{-N}\Tr$.  If $\mathcal S\neq\emptyset$, then $\tau(\gamma_{\mathcal S})=0$.
+Indeed, for $|\mathcal S|$ odd, $\gamma_{\mathcal S}$ anticommutes with $(-1)^{N_f}$, since the $\cdr$'s are odd.  For
+$|\mathcal S|$ even and $j\in\mathcal S$, $\gamma_j\gamma_{\mathcal S}\gamma_j=-\gamma_{\mathcal S}$.  In both cases
+cyclicity of the trace gives $\tau(\gamma_{\mathcal S})=-\tau(\gamma_{\mathcal S})$.  Since
+$\gamma_{\mathcal S}^*\gamma_{\mathcal S'}=\pm\gamma_{\mathcal S\triangle\mathcal S'}$, the $\gamma_{\mathcal S}$ are orthonormal for
+$(A_1,A_2)\mapsto\tau(A_1^*A_2)$, the expansion is unique, and $a_{\mathcal S}=\tau(\gamma_{\mathcal S}^*A)$, so
+$|a_{\mathcal S}|\le\norm A$.  As above,
+$\norm{P_q[\gamma_{2x-1}(t),B]},\norm{P_q[\gamma_{2x}(t),B]}\le4\norm B\sum_{y\in Y}|U_q(t)_{xy}|$, and each
+$x\in X$ carries two indices.  So
+$\norm{P_q[\gamma_{\mathcal S}(t),B]}\le8\norm B\sum_{x\in X,y\in Y}|U_q(t)_{xy}|$.  Sum over $\mathcal S$.
+
+(b) Take $\sup_t$ and $\E_q$ in (a) and use \eqref{eq:cons1}.  The statement on states is
+\cref{lem:sectornorm}(b) applied to the gauge-invariant operator $X=[A(t),B]$.
+
+(c) The first norm is $\max_q|U_q(t)_{xy}|$ by \eqref{eq:main-anticomm} and \cref{lem:sectornorm}(a).  Since
+$[\cdr_z,\cdr_y^\dagger\cdr_y]=\delta_{zy}\cdr_y$, the computation in (a) gives
+$P_q[\cdr_x(t),n_y]=U_q(t)_{xy}P_q\cdr_y$.  In the dual picture $P_q\cdr_y$ is $c_y\otimes\ket q\bra q$, of norm one.
+For $[n_x(t),n_y]$ we use the dual picture in the sector $q$.  With $u:=U_q(t)$ and $w:=u^*\delta_x$, we have
+$\Gamma(u)^*\dGamma(\ket{\delta_x}\bra{\delta_x})\Gamma(u)=\dGamma(\ket w\bra w)$, and
+$[\dGamma(X_1),\dGamma(X_2)]=\dGamma([X_1,X_2])$.  Hence the operator is $\dGamma(Z)\otimes\ket q\bra q$ with
+$Z=[\ket w\bra w,\ket{\delta_y}\bra{\delta_y}]=a\ket w\bra{\delta_y}-\bar a\ket{\delta_y}\bra w$, where
+$a:=\langle w,\delta_y\rangle=u_{xy}$.  The matrix $iZ$ is Hermitian, of rank at most two and trace zero, so
+its eigenvalues are $\pm\mu$ and $0$.  Here $2\mu^2=\Tr Z^*Z=2|a|^2(1-|a|^2)$, using $\norm w=1$.  For a
+Hermitian one-body matrix with eigenvalues $(\lambda_i)$, the eigenvalues of its second quantization are the
+sums $\sum_{i\in T}\lambda_i$; hence $\norm{\dGamma(Z)}=\mu$.
+
+For the lower bound take $q=\Zone$.  The eigenvectors of $h_{\Zone}=-J\Delta_N+2h$ are
+$\varphi_k(x)=\sqrt{2/(N+1)}\sin(\pi kx/(N+1))$, and $\varphi_k(N)^2=\varphi_k(1)^2$.  By \cref{lem:consequences}(c),
+\[
+  \sup_t|U_{\Zone}(t)_{1N}|^2\ge R_{\Zone}(1,N)=\sum_{k=1}^N\varphi_k(1)^4=\frac4{(N+1)^2}\sum_{k=0}^{N}\sin^4\frac{\pi k}{N+1}
+  =\frac{3}{2(N+1)},
+\]
+because $\sin^4\theta=\frac38-\frac12\cos2\theta+\frac18\cos4\theta$, and
+$\sum_{k=0}^{N}\cos\frac{2\pi jk}{N+1}=0$ for $j=1,2$ when $N+1\ge3$.  Put $s_0:=(3/(2(N+1)))^{1/2}\le2^{-1/2}$.
+Since $t\mapsto|U_{\Zone}(t)_{1N}|$ is continuous, vanishes at $t=0$ and has supremum $\ge s_0$, it takes every value
+$s<s_0$.  With $g(s):=s(1-s^2)^{1/2}\ge s/\sqrt2$ on $[0,2^{-1/2}]$, \eqref{eq:main-LRnorm} gives
+$\sup_t\norm{[n_1(t),n_N]}\ge g(s_0)\ge s_0/\sqrt2$.
+
+(d) Suppose $G$ exists.  Then $G(d)\to0$, so there is $d_0$ with $G(d)<\frac12$ for $d\ge d_0$.  Fix $N$ and
+$x,y$ with $|x-y|\ge d_0$, and let $a(t):=U_{\Zone}(t)_{xy}$.  By \eqref{eq:main-LRnorm},
+$g(|a(t)|)\le G(|x-y|)<\frac12$ for all $t$, where $g(s):=s(1-s^2)^{1/2}$.  The set
+$T_0:=\{t:|a(t)|\le2^{-1/2}\}$ is closed and contains $t=0$.  On $[0,2^{-1/2}]$, $g(s)\ge s/\sqrt2$, so
+$|a(t)|\le\sqrt2G(|x-y|)<2^{-1/2}$ on $T_0$, and by continuity $T_0$ is also open.  Hence $T_0=\R$ and
+$|a(t)|\le\sqrt2G(|x-y|)$ for all $t$.  (For the other two operators, $|a(t)|\le G(|x-y|)$ directly by
+\eqref{eq:main-LRnorm}.)  Now take $N=2L+1$ and $y=L+1$, and translate $[1,N]$ to $[-L,L]$.  By
+\cref{lem:propagation}(b) with $v\equiv2h$, $\Lambda=[-L,L]$, $\Lambda'=\Z$, for fixed $t$ and $r$ the entry
+$U_{\Zone}(t)_{L+1+r,L+1}$ converges as $L\to\infty$ to $(e^{-ith_\Z})_{r0}$, where $h_\Z:=-J\Delta_\Z+2h$.  So
+$|(e^{-ith_\Z})_{r0}|\le\sqrt2G(|r|)$ for $|r|\ge d_0$ and all $t$, and
+\[
+  \sum_{r\in\Z}r^2|(e^{-ith_\Z})_{r0}|^2\le\sum_{|r|<d_0}r^2+4\sum_{d\ge d_0}d^2G(d)^2<\infty
+\]
+uniformly in $t$.  This contradicts the ballistic identity $\sum_rr^2|(e^{-ith_\Z})_{r0}|^2=2J^2t^2$ of
+\cref{rem:gaussproj}(iii).
+\end{proof}
+
+\begin{remark}[Interpretation]\label{rem:main-LR}
+\Cref{prop:LR}(b) is a \emph{state-dependent} zero-velocity bound.  It holds for every initial state whose
+gauge field is $z$-polarized (or a $\sigma^z$-product state), whatever the matter state, and for the
+infinite-temperature state, because these states give every sector the same weight.  Parts (c)--(d) show that
+this restriction is necessary: the operator norm is a maximum over sectors, and the clean sector $q=\Zone$ (no
+background charges, the gauge-invariant sector of the usual LGT formulation; \cref{rem:gaussproj}) is ballistic.
+Even the on-site densities $n_1$, $n_N$, which are strictly local in the original variables, have a commutator
+of norm $\ge(3/(4(N+1)))^{1/2}$ at suitable times, which is not exponentially small in the distance $N-1$.
+\emph{Numerical check} (\texttt{code/main\_checks.py}, parts B, C): for $N=4$ the identities
+\eqref{eq:main-anticomm} and \eqref{eq:main-LRnorm} hold to $10^{-14}$ in exact diagonalization of the full
+LGT.  The sector-wise bound \eqref{eq:main-LRsector} holds for $N=60$, $\lambda=2$, $200$ sectors and
+$t\le10^5$; there $\E_q\sup_t\norm{P_q[A(t),n_{41}]}=4.0\times10^{-3}$ for
+$A=\cdr_{11}^\dagger\cdr_{12}+{\rm h.c.}$.  Moreover $R_{\Zone}(1,N)=3/(2(N+1))$ to six digits for
+$N=20,\dots,200$.
+\end{remark}
+
+\subsection{Infinite-time memory of a density wave}\label{sec:main:imbalance}
+
+Let $N$ be even, $\psi$ the charge-density wave ($n_x=1$ iff $x$ is even), $\Gamma:=\diag((-1)^x)_{x=1}^N$,
+$\Psi_0=\ket{\uparrow\cdots\uparrow}_z\otimes\psi$, and
+\[
+  I(t):=\frac2N\sum_{x=1}^N(-1)^x\langle\Psi(t),n_x\Psi(t)\rangle,\qquad I(0)=1 .
+\]
+For a sector $q$ let $(E_\alpha,\varphi_\alpha)$ be the eigenpairs of $\hq$ (real, orthonormal; simple spectrum),
+$a_\alpha:=\langle\varphi_\alpha,\Gamma\varphi_\alpha\rangle$ and $V_q:=\diag(q)$.  Let
+\begin{equation}\label{eq:main-kappa}
+  \kappa_N:=\max_{B}\ \E_q\sum_{x\in B,\ y\in[1,N]\setminus B}R_q(x,y),
+\end{equation}
+the maximum over \emph{all} intervals $B\subset[1,N]$.
+
+\begin{theorem}[Positive infinite-time imbalance for every $h\neq0$]\label{thm:imbalance}
+Let $N$ be even.
+\begin{enumerate}[label=(\roman*)]
+\item For every $h\in\R$, the limit $\Ibar:=\lim_{T\to\infty}T^{-1}\int_0^TI(t)\,dt$ exists and
+$\Ibar=\E_q\,N^{-1}\sum_\alpha a_\alpha^2\in[0,1]$.
+\item \emph{(Anticommutator identity.)}  For every $h\in\R$, $q$ and $\alpha$:
+$E_\alpha a_\alpha=2h\,\langle\varphi_\alpha,V_q\Gamma\varphi_\alpha\rangle$.  If $h=0$, then $a_\alpha=0$ for all
+$\alpha$ and $\Ibar=0$ (chiral obstruction).
+\item \emph{(Unconditional bounds.)}  Let $h\neq0$.  For every block length $1\le L\le N$,
+\begin{equation}\label{eq:main-Ibound}
+  \Ibar\ \ge\ \frac{\lfloor N/L\rfloor}{N}\cdot\frac{h^2\bigl(\sqrt{L/2}-2\kappa_N\bigr)_+^2}{L\,(J+|h|)^2},
+  \qquad\text{and}\qquad \Ibar\ \ge\ \frac{h^2}{N(J+|h|)^2}>0 .
+\end{equation}
+\item \emph{(Uniform in $N$.)}  Under Hypothesis~\ref{hyp:EC}, $\kappa_N\le\kappa:=2\SigF\le2M_1(F)$ for all
+$N$, and for all even $N\ge2$
+\begin{equation}\label{eq:main-Iuniform}
+  \Ibar\ \ge\ \frac{h^2}{16\,L_*\,(J+|h|)^2},\qquad L_*:=\max\{2,\lceil32\kappa^2\rceil\}.
+\end{equation}
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(i) By \cref{cor:sector}(c), $\langle\psi_q(t),n_x\psi_q(t)\rangle=\sum_{s\in S}|U_{xs}|^2$ with $U=U_q(t)$ and
+$S$ the even sites, and $P_S=\frac12(\one+\Gamma)$.  Hence
+\[
+  I_q(t):=\frac2N\sum_x(-1)^x\langle\psi_q(t),n_x\psi_q(t)\rangle=\frac2N\Tr(P_SU^*\Gamma U)
+  =\frac1N\Tr\Gamma+\frac1N\Tr(\Gamma U^*\Gamma U)=\frac1N\Tr(\Gamma U^*\Gamma U),
+\]
+since $\Tr\Gamma=0$ for even $N$.  In the eigenbasis,
+$\Tr(\Gamma U^*\Gamma U)=\sum_{\alpha,\beta}e^{it(E_\beta-E_\alpha)}|\langle\varphi_\alpha,\Gamma\varphi_\beta\rangle|^2$, and
+$T^{-1}\int_0^Te^{i\omega t}dt\to\one[\omega=0]$.  The spectrum is simple (\cref{lem:consequences}(a)), so the
+time average of $I_q$ is $N^{-1}\sum_\alpha a_\alpha^2$.  Since $I(t)=\E_qI_q(t)$ (\cref{cor:sector}(b)) is a finite
+average, (i) follows; $|a_\alpha|\le1$.
+
+(ii) $\Delta_N$ connects only sites of opposite parity, so $\Gamma\Delta_N\Gamma=-\Delta_N$, and
+$\Gamma\hq+\hq\Gamma=2h(\Gamma V_q+V_q\Gamma)=4hV_q\Gamma$.  Taking the expectation in $\varphi_\alpha$ gives
+$2E_\alpha a_\alpha=4h\langle\varphi_\alpha,V_q\Gamma\varphi_\alpha\rangle$.  If $h=0$, then $\hq=-J\Delta_N$, whose
+eigenvalues $-2J\cos(\pi k/(N+1))$ do not vanish for even $N$; so $a_\alpha=0$.
+
+(iii) Fix $q$ and an interval $B$ with $|B|=L$.  Put $m_\alpha(B):=\sum_{x\in B}\varphi_\alpha(x)^2$,
+$r_x:=(-1)^xq_x$ and $R(x,B):=\sum_{y\in B}R_q(x,y)$.
+
+\emph{Step 1.}  By (ii), $E_\alpha a_\alpha=2h\sum_xr_x\varphi_\alpha(x)^2$.  Multiplying by $m_\alpha(B)$ and
+summing over $\alpha$ gives
+\[
+  X_B:=\sum_\alpha E_\alpha a_\alpha m_\alpha(B)=2h\sum_xr_xR(x,B).
+\]
+\emph{Step 2 (Cauchy--Schwarz).}
+\begin{gather*}
+  X_B^2\le\Bigl(\sum_\alpha E_\alpha^2m_\alpha(B)\Bigr)\Bigl(\sum_\alpha a_\alpha^2m_\alpha(B)\Bigr),\\
+  \sum_\alpha E_\alpha^2m_\alpha(B)=\sum_{x\in B}\norm{\hq\delta_x}^2\le L(2J^2+4h^2)\le4L(J+|h|)^2 .
+\end{gather*}
+
+\emph{Step 3 (pointwise lower bound).}  Write
+$X_B/(2h)=\sum_{x\in B}r_x+\sum_xr_x(R(x,B)-\one_B(x))$.  By \eqref{eq:Rdef}, $\sum_yR_q(x,y)=1$ and $R_q$ is
+symmetric, so $\sum_x|R(x,B)-\one_B(x)|=\sum_{x\in B}R(x,B^c)+\sum_{x\notin B}R(x,B)=2\sum_{x\in B,y\notin B}R_q(x,y)$.
+Hence
+\[
+  |X_B|\ge2|h|\Bigl(\Bigl|\sum_{x\in B}r_x\Bigr|-2\sum_{x\in B,y\notin B}R_q(x,y)\Bigr).
+\]
+\emph{Step 4 (averaging).}  The $(r_x)_{x\in B}$ are i.i.d.\ uniform signs.  By Szarek's sharp Khintchine
+inequality \cite{Szarek1976}, $\E|\sum_{x\in B}r_x|\ge(L/2)^{1/2}$.  Hence
+$\E|X_B|\ge2|h|(\sqrt{L/2}-2\kappa_N)$ and $\E X_B^2\ge(\E|X_B|)^2\ge4h^2(\sqrt{L/2}-2\kappa_N)_+^2$.
+
+\emph{Step 5 (blocks).}  Let $B_j:=[(j-1)L+1,jL]$ for $1\le j\le\lfloor N/L\rfloor$.  Since
+$\sum_jm_\alpha(B_j)\le\norm{\varphi_\alpha}^2=1$, Steps 2 and 4 give
+\[
+  \E\sum_\alpha a_\alpha^2\ge\sum_j\E\sum_\alpha a_\alpha^2m_\alpha(B_j)\ge\sum_j\frac{\E X_{B_j}^2}{4L(J+|h|)^2}
+  \ge\Bigl\lfloor\frac NL\Bigr\rfloor\frac{h^2(\sqrt{L/2}-2\kappa_N)_+^2}{L(J+|h|)^2}.
+\]
+Divide by $N$ and use (i).
+
+\emph{Step 6 (global bound).}  For $B=[1,N]$, $R(x,B)=1$, so $X_{[1,N]}=2h\sum_xr_x$ exactly and
+$\E X_{[1,N]}^2=4h^2N$, while $\sum_\alpha E_\alpha^2=\Tr\hq^2\le4N(J+|h|)^2$.  Step 2 gives
+$\E\sum_\alpha a_\alpha^2\ge h^2/(J+|h|)^2$.
+
+(iv) $\E R_q(x,y)\le F(|x-y|)$ by \eqref{eq:cons1}, and an interval has at most $2d$ crossing pairs at distance
+$d$; so $\kappa_N\le2\SigF$.  Let $L:=L_*$.  Then $4\kappa\le\sqrt{L/2}$, so
+$(\sqrt{L/2}-2\kappa)^2\ge L/8$.  If $N\ge2L$, then $\lfloor N/L\rfloor\ge N/L-1\ge N/(2L)$, and
+\eqref{eq:main-Ibound} gives $\Ibar\ge h^2/(16L(J+|h|)^2)$.  If $N<2L$, the global bound gives
+$\Ibar\ge h^2/(N(J+|h|)^2)>h^2/(2L(J+|h|)^2)$.
+\end{proof}
+
+\begin{remark}[On \cref{thm:imbalance}]\label{rem:main-imbalance}
+(i) \emph{Constants.}  The factor $(J+|h|)^2$ comes from $\norm{\hq}\le2J+2|h|$; the proof gives the slightly
+better $\frac12(J^2+2h^2)$ in its place.  Writing $J+h$ instead of $J+|h|$ would be wrong for $h<0$: at
+$h=-0.9J$, $N=40$, the ``global bound'' would be $2.03>1$.  The sharp constant $2^{-1/2}$ is Szarek's theorem.
+An elementary alternative is H\"older's inequality,
+$(\E S^2)^3\le(\E|S|)^2\,\E S^4$ for $S=\sum_{x\in B}r_x$, with $\E S^2=L$ and $\E S^4=3L^2-2L$.  It gives
+$\E|S|\ge(L/3)^{1/2}$, and then \eqref{eq:main-Ibound} holds with $\sqrt{L/3}$ in place of $\sqrt{L/2}$, and
+\eqref{eq:main-Iuniform} with $24$ and $48$ in place of $16$ and $32$.
+(ii) \emph{Mechanism.}  The identity (ii) shows that a nonzero diagonal $a_\alpha$ requires $h\neq0$: for $h=0$ the
+chiral symmetry $\Gamma\hq\Gamma=-\hq$ pairs the eigenvalues $\pm E$ and forces $a_\alpha=0$.  In the clean sector
+$q=\Zone$, $(E_\alpha-2h)a_\alpha=0$ and again $\Ibar_{\Zone}=0$ (\cref{rem:gaussproj}(ii)).  Positivity of $\Ibar$ is
+produced by the sector average, through the anticoncentration of $\sum_{x\in B}r_x$.
+(iii) \emph{The time average needs no $\sup_t$ localization.}  The proof uses only the decay of $\E R_q$, a
+time-averaged, eigenfunction-level quantity.  A lower bound on $\inf_tI(t)$ is not proved here.
+(iv) \emph{Infinite volume.}  We do not formulate \cref{thm:imbalance} in the infinite-volume dynamics of
+\cref{thm:infvol}: $\Ibar$ is an infinite-time average of a volume average, and an infinite-volume version
+would require exchanging $T\to\infty$ and $N\to\infty$.  The natural thermodynamic-limit statement is the
+uniformity in $N$ of \eqref{eq:main-Iuniform}.  It relies on Hypothesis~\ref{hyp:EC} on finite intervals,
+i.e.\ on Theorem~\ref{thm:EC}, and \emph{cannot} be obtained from the Ge--Zhao bound on $\Z$ alone.
+(v) \emph{Numerical check} (\texttt{code/main\_checks.py}, part D).  The identity (ii) and Steps 1--3 hold to
+$10^{-13}$.  For $N=8$, $h=0.7J$ and all $256$ sectors, the exact time average up to $T=10^7$ agrees with
+$\E_qN^{-1}\sum_\alpha a_\alpha^2=0.190469$ to $10^{-8}$.  With $\kappa_N$ computed as the maximum over all
+intervals ($300$ sectors), $N=64$: $\lambda=0.5,1,2,4,-1.8$ give $\Ibar=0.023,0.082,0.173,0.247,0.158$,
+$\kappa_N=9.0,4.6,2.4,2.1,2.5$, and the best of the two bounds \eqref{eq:main-Ibound} is $6\times10^{-4}$,
+$1.7\times10^{-3}$, $3.9\times10^{-3}$, $6.9\times10^{-3}$ and $3.5\times10^{-3}$, respectively.  So the
+rigorous bounds are valid but small.  For $\lambda\le0.5$ the convergence in $N$ is slow: $\E\Ibar=0.0241$,
+$0.0198$, $0.0172$, $0.0165$ for $N=50,100,200,400$.  See also \cref{fig:imbalance}.
+\end{remark}
+
+\subsection{Entanglement}\label{sec:main:entanglement}
+
+\begin{theorem}[Uniform area laws]\label{thm:arealaw}
+Let $\psi=\ket n$ be a Fock state and $1\le\ell<N$.
+\begin{enumerate}[label=(\alph*)]
+\item \emph{(Deterministic chain.)}  For every $q$ and $t$, with $T_q(t):=P_{[\ell+1,N]}K_q(t)P_{[1,\ell]}$,
+\[
+  S(\rho^q_A(t))\le2\ln2\,\norm{T_q(t)}_1\le2\ln2\sum_{x\le\ell<y}|K_q(t)_{xy}| .
+\]
+\item \emph{(Sector-averaged area law.)}  Under Hypothesis~\ref{hyp:EC},
+\[
+  \E_q\sup_{t\in\R}S(\rho^q_A(t))\le2\ln2\,\ThF\le8\ln2\,M_2(F),\qquad\text{hence}\qquad
+  \sup_t\SG(t)\le8\ln2\,M_2(F),
+\]
+uniformly in $N$, $\ell$ and the Fock state $\psi$.
+\item \emph{(Definite-charge initial states.)}  Let $\Psi_0=\ket{\xi}_\sigma\otimes\ket n$ with
+$\xi\in\{\pm1\}^N$ (links in $\sigma^x$-eigenstates), and $q=q(n,\xi)$ as in \cref{lem:productlaw}(d).  Then
+$\Sfull(t)=S(\rho^q_A(t))$ for all $t$.  If $\xi$ is uniformly distributed, so is $q$, and under
+Hypothesis~\ref{hyp:EC}
+\[
+  \E_\xi\sup_t\Sfull(t)\le8\ln2\,M_2(F),\qquad
+  \Prob_\xi\Bigl(\sup_t\Sfull(t)\ge s\Bigr)\le\frac{8\ln2\,M_2(F)}{s}\quad(s>0),
+\]
+and $\E_\xi\Sfull(t)=\SG(t)$ for every $t$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(a) $\psi_q(t)=\prod_{s\in S}c^\dagger(U_q(t)\delta_s)\ket0$ is the Slater determinant of $W=U_q(t)\ell^2(S)$,
+with projection $K_q(t)$.  By \cref{lem:slater}(a), $S(\rho^q_A(t))=\sum_i\bent(\nu_i)$.  By \cref{lem:binent}
+this is at most $2\ln2\sum_i\sqrt{\nu_i(1-\nu_i)}$, and \cref{lem:slater}(b) finishes the proof.  (b)
+\cref{lem:annealed}(ii) and \eqref{eq:main-constants}.  (c) The identity is \eqref{eq:quenchedSfull}, which rests
+on \cref{lem:cutlocal}(c).  For fixed $n$, $\xi\mapsto q(n,\xi)$ is a bijection of $\{\pm1\}^N$
+(\cref{lem:productlaw}(b)), so it maps the uniform law to the uniform law.  The bounds follow from (b) and
+Markov's inequality.
+\end{proof}
+
+\begin{remark}\label{rem:main-arealaw}
+(i) For an interval $A=[a,b]$ in the bulk the same argument, with \cref{lem:annealed}(iii), bounds the
+sector-averaged entropy of the $c$-modes in $A$ by $4\ln2\,\ThF$ (two cuts).  This is used in \cref{thm:infvol}.
+(ii) \emph{Numerical check} (\texttt{code/main\_checks.py}, part E).  On a grid of $2\times10^6$ points
+$\bent(\nu)\le2\ln2\sqrt{\nu(1-\nu)}$ holds; $d_1=0.153$ and $d_k<0$ for $2\le k\le2\times10^5$.
+\cref{lem:slater} is confirmed to $10^{-15}$ against many-body Slater determinants ($8$ modes; left, interior and
+non-contiguous $A$).  The chain in (a) is confirmed along the dynamics ($N=60$, $\lambda=2$, $t\le10^5$).
+For definite-charge states the identity in (c) is confirmed by exact diagonalization of the full LGT ($N=4,5$)
+to $4\times10^{-14}$.  The measured $\E\sup_tS(\rho^q_A(t))$ for the half chain ($N=60$, $\lambda=2$, CDW) is
+$1.7$.  The bound $2\ln2\,\Theta(F_{\rm emp})\approx1.3\times10^3$ is valid but crude.
+\end{remark}
+
+We now compare the entropies of the superposed state.  Let $\psi=\ket n$ be a Fock state,
+$\Psi_0=\ket{\uparrow\cdots\uparrow}_z\otimes\psi$, $\Phi(t):=U^\dagger\Psi(t)=2^{-N/2}\sum_qe^{iht\sum_jq_j}\psi_q(t)\otimes\ket q$
+(\cref{cor:sector}(a)), and $N_A:=\sum_{x\le\ell}n_x$.  Define
+\begin{itemize}
+\item $\Sfull(t):=S_A(\Psi(t))$, the matter-plus-gauge entanglement of $A$ (\S\ref{sec:model:cut});
+\item $\SG(t):=\E_qS(\rho^q_A(t))$, the entanglement conditional on all Gauss charges;
+\item $\Smix(t):=S(\rho_{\rm mix}(t))$, $\rho_{\rm mix}(t):=\E_q\rho^q_A(t)$;
+\item $\Sfm(t):=S(\rho^f_A(t))$, where $\rho^f_A(t)$ is the reduced state of $\Psi(t)$ on the bare fermion modes
+$f_1,\dots,f_\ell$, with \emph{all} links traced out;
+\item $\SN(t):=\Hsh(p_t)$ with $p_t(k):=\Prob_{\Psi(t)}(N_A=k)$; and $p^q_t(k)$ the law of $N_A$ in $\psi_q(t)$;
+\item $H_t:=\Hsh(\mu_t)$, where $\mu_t$ is the law of the random density matrix $q\mapsto\rho^q_A(t)$ (a law on a finite
+set).
+\end{itemize}
+
+\begin{proposition}[Entropy taxonomy]\label{prop:entropies}
+For every $t\in\R$:
+\begin{enumerate}[label=(\alph*)]
+\item \emph{(Duality defect.)}  $|\Sfull(t)-S_{A'}(\Phi(t))|\le\ln2$.
+\item \emph{(Conditional versus mixed.)}  $\rho_{\rm mix}(t)$ is the marginal of $\rho_{A'}(\Phi(t))$ on the modes
+$c_1,\dots,c_\ell$, and
+\[
+  \SG(t)\le\Smix(t)\le\min\{\SG(t)+H_t,\ \ell\ln2\},\qquad H_t\le N\ln2,\qquad H_0=0 .
+\]
+\item \emph{(Number entropy as a lower bound.)}  $p_t=\E_qp^q_t$, and for $X\in\{\mathrm{full},\mathrm{mix},f\}$
+\[
+  S_X(t)=\SN(t)+\sum_kp_t(k)\,S\bigl(\rho_X^{(k)}(t)\bigr)\ \ge\ \SN(t),
+\]
+where $p_t(k)\rho^{(k)}_X(t)$ is the block of the respective reduced state on $\{N_A=k\}$.  For the conditional
+entropy one only has $\SG(t)\ge\E_q\Hsh(p^q_t)$, and $\E_q\Hsh(p^q_t)\le\SN(t)\le\E_q\Hsh(p^q_t)+H_t$.
+\item \emph{(Superposition versus ensemble.)}  Let $\rho^{\rm ens}:=\sum_qP_q\ket{\Psi_0}\bra{\Psi_0}P_q$.  Then
+\[
+  \rho^{\rm ens}=2^{-N}\sum_{\xi\in\{\pm1\}^N}\ket{\xi}\bra{\xi}_\sigma\otimes\ket n\bra n=2^{-N}\one_{\rm links}\otimes\ket n\bra n,
+\]
+and for all gauge-invariant $O_1,\dots,O_m$ and $t_1,\dots,t_m\in\R$,
+\begin{equation}\label{eq:main-ens}
+  \langle\Psi_0,O_1(t_1)\cdots O_m(t_m)\Psi_0\rangle=\Tr\bigl(\rho^{\rm ens}O_1(t_1)\cdots O_m(t_m)\bigr).
+\end{equation}
+In particular, the following are the same for $\Psi(t)$ and for the ensemble
+$\rho^{\rm ens}(t):=e^{-itH}\rho^{\rm ens}e^{itH}$: the law of every gauge-invariant observable; the restriction of
+the state to the dressed-fermion algebra $\Alg([1,\ell])$, which is represented through $U$ by $\rho_{\rm mix}(t)$;
+hence $\Smix(t)$; and $\SN(t)$.  The members $\ket\xi_\sigma\otimes\ket n$ of the
+ensemble are definite-charge states, and their average full entanglement is $\SG(t)$
+(\cref{thm:arealaw}(c)).
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(a) \cref{lem:cutlocal}(b) with $\Phi=\Phi(t)$.
+
+(b) Tracing $\ket{\Phi(t)}\bra{\Phi(t)}$ over the $c$-modes $\ell+1,\dots,N$ and over all $\tau$'s kills the
+off-diagonal terms in $q$, because the $\ket q$ are orthonormal.  What remains is
+$2^{-N}\sum_q\Tr_{c_{>\ell}}\ket{\psi_q(t)}\bra{\psi_q(t)}=\rho_{\rm mix}(t)$.  The first inequality is concavity of $S$.
+Group the sectors according to the value of $\rho^q_A(t)$: $\rho_{\rm mix}(t)=\sum_\sigma\mu_t(\sigma)\sigma$.
+The argument in the proof of \cref{lem:pinching} gives $S(\sum_i\mu_i\sigma_i)\le\sum_i\mu_iS(\sigma_i)+\Hsh(\mu)$:
+$\mu_i\sigma_i\le\sum_j\mu_j\sigma_j$ and operator monotonicity of $\ln$ give
+$-\Tr\sigma_i\ln\sum_j\mu_j\sigma_j\le S(\sigma_i)-\ln\mu_i$, which we average over $i$.  This gives
+$\Smix\le\SG+H_t$.  Also $\Smix\le\ln\dim\cF_{\le\ell}=\ell\ln2$, and $H_t\le\Hsh(q)=N\ln2$.  At $t=0$,
+$\rho^q_A(0)$ does not depend on $q$, so $H_0=0$.
+
+(c) $p_t=\E_qp^q_t$ is \cref{cor:sector}(c).  Let $\cH=\cH_1\otimes\cH_2$ with $N_f=N_1\otimes\one+\one\otimes N_2$, both
+with integer spectrum, and let $N_f\Psi=M\Psi$.  Then $\Psi=\sum_k(Q_k\otimes Q'_{M-k})\Psi$, with $Q_k,Q'_j$ the
+spectral projections.  The partial trace over $\cH_2$ of the cross terms $k\neq k'$ vanishes, because
+$Q'_{M-k}Q'_{M-k'}=0$.  Hence $\Tr_2\ket\Psi\bra\Psi=\bigoplus_kp(k)\rho^{(k)}$ with
+$p(k)=\langle\Psi,(Q_k\otimes\one)\Psi\rangle$, and the entropy of such a block-diagonal state is
+$\Hsh(p)+\sum_kp(k)S(\rho^{(k)})$.  Apply this to $\Psi(t)$, which has $N_f\Psi(t)=|S|\Psi(t)$:
+\begin{itemize}
+\item for $\Sfull$, with $\cH_1=\cH_A$, where the links carry no particle number;
+\item for $\Sfm$, with $\cH_1=\cF_{\le\ell}$ and $\cH_2=\cF_{>\ell}\otimes(\C^2)^{\otimes N}$;
+\item for each $\psi_q(t)$, with $\cH_1=\cF^c_{\le\ell}$.  This shows that every $\rho^q_A(t)$ is block diagonal
+with weights $p^q_t$, hence so is $\rho_{\rm mix}(t)$, with weights $\E_qp^q_t=p_t$.
+\end{itemize}
+In all cases the weights are those of $N_A$, by \cref{cor:sector}(c).  The same per-sector decomposition gives
+$S(\rho^q_A(t))\ge\Hsh(p^q_t)$.  The inequality $\E_q\Hsh(p^q_t)\le\Hsh(\E_qp^q_t)$ is concavity, and the upper
+bound is the classical case of the mixing inequality in (b), after grouping the sectors by the value of
+$\rho^q_A(t)$, which determines $p^q_t$.
+
+(d) By \cref{cor:sector}(a) and \eqref{eq:U},
+$P_q\Psi_0=2^{-N/2}U(\ket n\otimes\ket q)=2^{-N/2}\ket n\otimes\ket{x(n,q)}_\sigma$.  As $q$ runs over $\{\pm1\}^N$,
+$x(n,q)$ runs over $\{\pm1\}^N$ (\cref{lem:gauss}(iii)), which gives the formula for $\rho^{\rm ens}$.  The operator
+$Y:=O_1(t_1)\cdots O_m(t_m)$ is gauge invariant, because $H$ commutes with every $G_j$.  So
+\[
+  \langle\Psi_0,Y\Psi_0\rangle=\sum_{q,q'}\langle P_{q'}\Psi_0,YP_q\Psi_0\rangle=\sum_q\langle P_q\Psi_0,YP_q\Psi_0\rangle
+  =\Tr(\rho^{\rm ens}Y).
+\]
+For the next statement: every element of the CAR algebra of $c_1,\dots,c_\ell$ corresponds under $U$ to an element
+of $\Alg([1,\ell])$, which is gauge invariant.  So $\rho_{\rm mix}(t)$ is determined by gauge-invariant expectation
+values; $\SN$ is the entropy of the law of the gauge-invariant $N_A$.  The last statement is
+\eqref{eq:quenchedSfull} for the members of the ensemble.
+\end{proof}
+
+\begin{remark}[$\SG$ can be smaller than $\SN$]\label{rem:main-SGSN}
+The inequality $\SG\ge\SN$ is \emph{false} in general.  The number entropy is the entropy of the
+\emph{mixture} $p_t=\E_qp^q_t$, while $\SG$ only dominates the \emph{average} $\E_q\Hsh(p^q_t)$, and concavity
+of $\Hsh$ goes the wrong way.  Physically, different charge configurations shift the mean of $N_A$ by
+different amounts.  This spread contributes to $\SN$, but not to the entanglement in any single sector.  Exact
+numerics (\texttt{code/main\_checks.py}, part F; $N=10$, $J=h=1$, $\ell=5$, CDW, all $1024$ sectors) give
+$\SG<\SN$ at early times:
+\begin{center}
+\begin{tabular}{c|cccccc}
+$t$ & $\Sfull$ & $S_{A'}(\Phi)$ & $\SG$ & $\Smix$ & $\Sfm$ & $\SN$\\\hline
+$0.5$ & $0.927$ & $0.476$ & $0.459$ & $1.391$ & $1.352$ & $0.461$\\
+$1$ & $1.446$ & $0.975$ & $0.605$ & $2.652$ & $2.571$ & $0.670$\\
+$2$ & $2.265$ & $1.760$ & $0.713$ & $2.709$ & $2.664$ & $0.800$\\
+$10$ & $3.403$ & $2.919$ & $0.913$ & $2.566$ & $2.674$ & $0.816$\\
+$10^2$ & $5.000$ & $4.786$ & $0.980$ & $2.775$ & $2.826$ & $0.890$\\
+$10^5$ & $5.382$ & $5.331$ & $0.945$ & $2.902$ & $2.929$ & $0.876$
+\end{tabular}
+\end{center}
+(The maxima are $2\ell\ln2=6.93$ for $\Sfull$ and $\ell\ln2=3.47$ for $\Smix$, $\Sfm$.)  All other inequalities of
+\cref{prop:entropies} hold in these data, with $H_t\approx6.93\approx N\ln2$ for $t>0$ (the $1024$ sectors give
+$1022$ or $1023$ distinct $\rho^q_A(t)$).  The pipeline is cross-checked against exact diagonalization of the full LGT for $N=4$, to
+$10^{-15}$.  See also \cref{fig:entropies}.
+\end{remark}
+
+\begin{remark}[Superposition versus sampling; relation to experiment]\label{rem:superposition-main}
+\Cref{prop:entropies}(d) makes exact, for the present model, the statement that no gauge-invariant measurement,
+at any number of times, distinguishes the coherent superposition over charge sectors from the classical
+ensemble of definite-charge states.  The ensemble is the infinite-temperature state of the gauge field.  Only
+quantities that are not expectation values of gauge-invariant observables distinguish the two:
+\begin{itemize}
+\item gauge-variant observables, such as the Loschmidt-type $\langle\sigma^z_{b_j}(t)\rangle$ of
+\eqref{eq:loschmidt}, which vanishes identically in the ensemble;
+\item entanglement functionals.  The superposed state has $\Sfull$, which numerically keeps growing (table
+above, Conjecture~\ref{conj:logent}), while the ensemble members have, on average, the bounded $\SG$ (\cref{thm:arealaw}).
+\end{itemize}
+Gyawali et al.\ \cite{Gyawali2024} observed the same dichotomy on a quantum processor, for a $\Z_2$ LGT in one
+and two spatial dimensions prepared in superpositions over gauge sectors: local observables show localization,
+while R\'enyi entropy measurements distinguish superposition-prepared states from direct disorder sampling.
+\Cref{prop:entropies}(d) is an exact version of this dichotomy for the 1D model of \cite{SKKM2017}, stated for von
+Neumann entropies.  We claim no more than this qualitative correspondence with the experiment.
+\end{remark}
+
+\subsection{Number entropy}\label{sec:main:number}
+
+\begin{lemma}[Entropy of integer variables {\cite{Massey1988}}]\label{lem:intentropy}
+Let $X$ be an integer-valued random variable taking finitely many values.  Then
+$\Hsh(X)\le\frac12\ln\bigl(2\pi e(\Var X+\frac1{12})\bigr)$.
+\end{lemma}
+
+\begin{proof}
+Let $U$ be uniform on $[0,1)$ and independent of $X$, and $Y:=X+U$.  $Y$ has the density
+$f(y)=p(\lfloor y\rfloor)$, where $p$ is the law of $X$.  So its differential entropy is
+$-\int f\ln f=-\sum_kp(k)\ln p(k)=\Hsh(X)$, and $\Var Y=\Var X+\frac1{12}=:\sigma^2$.  Let $\varphi$ be the
+Gaussian density with the mean and variance of $Y$.  By Jensen's inequality,
+$\int_{f>0}f\ln(\varphi/f)\le\ln\int_{f>0}\varphi\le0$, so
+\[
+  \Hsh(X)=-\int f\ln f\le-\int f\ln\varphi=\tfrac12\ln(2\pi\sigma^2)+\frac{\E(Y-\E Y)^2}{2\sigma^2}=\tfrac12\ln(2\pi e\sigma^2).
+\]
+This is the maximum-entropy property of the Gaussian; see \cite[Ch.~8]{CoverThomas2006}.
+\end{proof}
+
+\begin{theorem}[Bounded number entropy]\label{thm:numberentropy}
+Assume Hypothesis~\ref{hyp:EC}.  Let $\psi$ be a Fock state, $\Psi_0=\ket{\uparrow\cdots\uparrow}_z\otimes\psi$ and
+$A=[1,\ell]$, $1\le\ell<N$.  Then, for all $t\in\R$ and all $N$,
+\begin{equation}\label{eq:main-SN}
+  \SN(t)\le\tfrac12\ln\bigl(2\pi e\,(K_1+K_2+\tfrac1{12})\bigr),\qquad
+  K_1:=\ThF\le4M_2(F),\quad K_2:=\SigpF^2\le M'_1(F)^2 .
+\end{equation}
+Moreover $\E_q\sup_t\Hsh(p^q_t)\le\frac12\ln\bigl(2\pi e(K_1+\frac1{12})\bigr)$ for the number entropy in a single sector.
+\end{theorem}
+
+\begin{proof}
+Let $s_\ell:=|S\cap A|$.  Since $p_t$ is the law of $N_A=N_{\le\ell}$ in $\Psi(t)$,
+$\Var_{p_t}(N_A)\le\langle\Psi(t),(N_A-s_\ell)^2\Psi(t)\rangle\le K_1+K_2$ by \eqref{eq:main-transport2}.  Apply
+\cref{lem:intentropy}.  For the second statement, \cref{lem:intentropy} in each sector gives
+$\sup_t\Hsh(p^q_t)\le\frac12\ln(2\pi e(\sup_t\Var_q(t)+\frac1{12}))$.  By Jensen's inequality for the concave
+logarithm and the proof of \cref{thm:transport}(c), the $q$-average is at most
+$\frac12\ln(2\pi e(\E\sup_t\Var_q(t)+\frac1{12}))\le\frac12\ln(2\pi e(K_1+\frac1{12}))$.
+\end{proof}
+
+\begin{remark}[Size of the constant]\label{rem:main-numberentropy}
+\emph{Numerical check} (\texttt{code/main\_checks.py}, part G; $N=64$, $\lambda=2$, CDW, $A=[1,32]$, $400$
+sectors, $t\le10^5$).  The measured number entropy stays below $1.03$ for all sampled times, and
+$\Var_{p_t}(N_A)\le0.46$.  The intermediate quantities are $\E\sup_t\Var_q=0.54$ ($\le K_1$) and
+$\E\sup_t(\langle N_A\rangle_q-s_\ell)^2=0.34$ ($\le K_2$).  The theorem's bound \eqref{eq:main-SN}, evaluated with
+the empirical correlator, is about $6.0$.  With the exponential majorant $F(d)=\min\{1,e^{-0.18d}\}$ of the
+data it is $6.3$.  These are illustrations: \eqref{eq:main-SN} holds with the true $F$ of
+Hypothesis~\ref{hyp:EC}, whose constants are not explicit.  The value $1.11$ obtained by inserting the
+\emph{measured} variance into \cref{lem:intentropy} is not a consequence of the theorem.  Lemma~\ref{lem:intentropy}
+itself was tested on $3000$ random integer laws and on binomial laws.
+\end{remark}
+
+\subsection{Thermodynamic limit}\label{sec:main:infvol}
+
+The chain $[1,N]$ has a fixed left end, and the region $A=[1,\ell]$ touches it (\cref{rem:boundary}).  Bounds on
+$\ell^2(\Z)$ therefore do not directly control the finite-volume quantities above.  In this subsection we use
+two-sided chains, observables in the bulk, and \emph{only} the Ge--Zhao bound \eqref{eq:GeZhao}, in the form of
+\cref{prop:Zline}.
+
+\paragraph{Two-sided chains.}
+For $M\in\N$ let $\Lambda_M:=[-M,M]\cap\Z$, with sites $j\in\Lambda_M$, links $b_j=(j,j+1)$ for $j\in\Lambda_M$, the
+boundary link $b_M$, and $\sigma^x_{b_{-M-1}}:=\one$.  Let $H^{(M)}$, $G_j$ and $\cdr^{(M)}_j=f_j\prod_{k=j}^M\sigma^z_{b_k}$ be
+defined as in \cref{def:model} and \eqref{eq:dressed}.  The relabelling $j\mapsto j+M+1$ identifies this with the model
+on $[1,2M+1]$, so \cref{sec:model} and the preceding results apply.  Fix $n\in\{0,1\}^\Z$ with occupied set $S$, let
+$\Psi^{(M)}_0:=\ket{\uparrow\cdots\uparrow}_z\otimes\ket{n|_{\Lambda_M}}$, and $\Psi^{(M)}(t):=e^{-itH^{(M)}}\Psi^{(M)}_0$.  We
+realize all sector laws on one probability space: $q=(q_x)_{x\in\Z}$ is i.i.d.\ uniform on $\{\pm1\}$, $\E$ is the
+corresponding expectation, and the sector of $\Lambda_M$ is $q|_{\Lambda_M}$.  Let
+\begin{gather*}
+  h^{(M)}_q:=-J\Delta_{\Lambda_M}+2h\diag(q|_{\Lambda_M}),\qquad h^\Z_q:=-J\Delta_\Z+2h\diag(q)\ \text{on }\ell^2(\Z),\\
+  U^{(M)}_q(t):=e^{-ith^{(M)}_q},\qquad U^\Z_q(t):=e^{-ith^\Z_q},
+\end{gather*}
+and $K^\Z_q(t):=U^\Z_q(t)P_SU^\Z_q(t)^*$, a projection on $\ell^2(\Z)$.  Let $Q^\Z_q(x,y)$ be the correlator of
+\cref{prop:Zline} for $A_\Z=h^\Z_q$.  By \cref{lem:normalization} and \eqref{eq:GeZhao},
+$\E\,Q^\Z_q(x,y)\le\FZ(|x-y|)$ with
+\[
+  \FZ(d):=\min\{1,C_\Z e^{-\eta_\Z d}\},
+\]
+where $\eta_\Z\in(0,\gamma^\E)$ and $C_\Z$ are as in \cref{prop:Zline}.  $\FZ$ is non-increasing, and all its moments
+$M_p(\FZ)$, $M'_p(\FZ)$ are finite.  (Lemma~\ref{lem:normalization} is stated on finite intervals; on $\Z$ the same
+diagonal unitary conjugates $h^\Z_q$ to $J(\Delta_\Z+\lambda\diag(q))$.)  By \cref{lem:propagation}(a), the entries of
+$U^\Z_q(t)$ are uniform limits of functions of finitely many $q_x$; hence $U^\Z_q(t)_{xy}$, $K^\Z_q(t)_{xy}$ and
+$Q^\Z_q(x,y)$ are measurable in $q$, and the suprema over $t$ below may be taken over rational $t$.
+
+\paragraph{Local gauge-invariant observables.}
+For a finite interval $X=[a,b]\subset\Z$ and $M$ with $X\subset[-M+1,M-1]$, let $\GAlg(X)$ be the $*$-algebra generated
+by $\cdr^{(M)\sharp}_x\cdr^{(M)\sharp}_y$ ($x,y\in X$) and $G_j$ ($j\in X$).  By \cref{thm:duality}(d) its generators are
+$f^\sharp_xf^\sharp_y\prod_{x\le k<y}\sigma^z_{b_k}$, $n_x$ and $\sigma^x_{b_{j-1}}(-1)^{n_j}\sigma^x_{b_j}$.  These act only on
+the sites of $X$ and the links $b_{a-1},\dots,b_b$, and, as even elements, they do not depend on $M$.  So
+$\GAlg(X)$ is a fixed algebra of local gauge-invariant observables.  It contains the dressed hoppings, the densities,
+the charges and the electric energies in $X$.  For $O\in\GAlg(X)$, $U^\dagger OU=\sum_qO_q\otimes\ket q\bra q$, where
+$O_q$, in the even CAR algebra of the $c$-modes in $X$, is obtained by $\cdr\mapsto c$, $G_j\mapsto q_j$; it depends
+on $q$ only through $q|_X$, and $\norm{O_q}\le\norm O$.  We regard $O_q$ as an operator on $\cF_X$.
+
+\begin{theorem}[Thermodynamic limit; unconditional]\label{thm:infvol}
+Let $\lambda\neq0$.  In the setting above:
+\begin{enumerate}[label=(\alph*)]
+\item \emph{(Limit dynamics.)}  For every finite interval $X$, $O\in\GAlg(X)$ and $t\in\R$, the limit
+\[
+  \omega_t(O):=\lim_{M\to\infty}\langle\Psi^{(M)}(t),O\,\Psi^{(M)}(t)\rangle=\E\,\Tr_{\cF_X}\bigl(\rhoqf{K^\Z_q(t)|_X}\,O_q\bigr)
+\]
+exists, where $K|_X:=P_XKP_X$ on $\ell^2(X)$.  The convergence holds sector by sector, uniformly in $q$, and
+uniformly for $t$ in compact sets.
+\item \emph{(Propagator, moments, transport.)}  For all $x,y\in\Z$, $\E\sup_t|U^\Z_q(t)_{xy}|\le\FZ(|x-y|)$, and
+$\E|U^{(M)}_q(t)_{xy}|\to\E|U^\Z_q(t)_{xy}|$ for every $t$.  If $S=\{y\}$ (one particle), then
+$\langle\Psi^{(M)}(t),n_x\Psi^{(M)}(t)\rangle\to\E|U^\Z_q(t)_{xy}|^2$, and for $0\le p\le2$
+\[
+  \sup_t\sum_{x\in\Z}(|x-y|+1)^p\,\E|U^\Z_q(t)_{xy}|^2\le2M_p(\FZ).
+\]  For general $S$ and every $m\in\Z$, the
+transported charge
+\[
+  \mathcal T_m(t):=\lim_{M\to\infty}\Bigl(\langle\Psi^{(M)}(t),N_{[-M,m]}\Psi^{(M)}(t)\rangle-|S\cap[-M,m]|\Bigr)
+\]
+exists for every $t$, and $\sup_t|\mathcal T_m(t)|\le\Sigma_1(\FZ)$.
+\item \emph{(Lieb--Robinson.)}  For finite $X,Y\subset\Z$, $A\in\Alg^+(X)$ and $B\in\GAlg(Y)$, and every $t$,
+\[
+  \limsup_{M\to\infty}\E\norm{P_q[A(t),B]}\le8|A|_1\norm B\sum_{x\in X,y\in Y}\FZ(|x-y|),
+\]
+and likewise with the monomial bound of \eqref{eq:main-LR}.  The right side does not depend on $t$.
+\item \emph{(Area law for bulk intervals.)}  For a finite interval $A\subset\Z$, let $S^{(M)}_q(t)$ be the entropy of
+the restriction of $\psi^{(M)}_q(t)$ to the $c$-modes in $A$ (\cref{lem:slater}), $\SG^{(M)}(t):=\E S^{(M)}_q(t)$ the
+bulk conditional entanglement, and $S^\Z_q(t):=S(\rhoqf{K^\Z_q(t)|_A})$.  For every $t$, $S^{(M)}_q(t)\to S^\Z_q(t)$
+uniformly in $q$, so $\SG^{(M)}(t)\to\SG^\Z(t):=\E S^\Z_q(t)$.  Moreover
+\[
+  \E\sup_tS^\Z_q(t)\le4\ln2\,\Theta(\FZ)\le16\ln2\,M_2(\FZ).
+\]
+For the half-infinite regions $A_M$ (sites $-M,\dots,m$ and links $b_{-M},\dots,b_m$) one has, for every $t$,
+$\limsup_M\E S(\rho^{q}_{A_M}(t))\le2\ln2\,\Theta(\FZ)$.  The same bound holds for $\limsup_M\E_\xi\Sfull^{(M)}(t)$,
+for definite-charge initial states $\ket{\xi}_\sigma\otimes\ket{n|_{\Lambda_M}}$ with $\xi$ uniform.
+\item \emph{(Number entropy for bulk intervals.)}  For a finite interval $A\subset\Z$ and every $t$, the law of $N_A$
+in $\Psi^{(M)}(t)$ converges to $p_t:=\E\,\mathrm{PB}(\nu(K^\Z_q(t)|_A))$, where $\mathrm{PB}(\nu)$ denotes the
+Poisson-binomial law with the eigenvalues $\nu$ of $K^\Z_q(t)|_A$.  Hence $\SN^{(M)}(t)\to\SN(t):=\Hsh(p_t)$, and
+\[
+  \sup_t\SN(t)\le\tfrac12\ln\bigl(2\pi e\,(2\Theta(\FZ)+4\Sigma_1'(\FZ)^2+\tfrac1{12})\bigr).
+\]
+\end{enumerate}
+In (b)--(e) the bounds concern the limit objects, for every $t$; we do not claim that the limits $M\to\infty$ and
+$\sup_t$ can be interchanged.  (By Theorem~\ref{thm:EC}, which is not used here, the finite-volume bounds also hold
+uniformly in $M$.)
+\end{theorem}
+
+\begin{proof}
+Throughout, $c:=|t|(2J+2|h|)$ and $w(d):=e^cc^d/d!$, so $\sum_dd^kw(d)<\infty$ for all $k$.  By
+\cref{lem:propagation}(a), $|U^{(M)}_q(t)_{xy}|,|U^\Z_q(t)_{xy}|\le w(|x-y|)$ for all $M$ and $q$.  By
+\cref{lem:propagation}(b) with $\Lambda=\Lambda_M$, $\Lambda'=\Z$, for $x,y\in\Lambda_M$,
+\begin{equation}\label{eq:main-conv}
+  |U^{(M)}_q(t)_{xy}-U^\Z_q(t)_{xy}|\le2e^c\frac{c^{n_0}}{n_0!},\qquad n_0=(M+1-|x|)+(M+1-|y|),
+\end{equation}
+uniformly in $q$.
+
+\emph{Step 1: convergence of correlation matrices.}  Fix $x,y$, and let
+$K^{(M)}_q(t):=U^{(M)}_q(t)P_{S\cap\Lambda_M}U^{(M)}_q(t)^*$.  By Cauchy--Schwarz,
+\[
+  |K^{(M)}_q(t)_{xy}-K^\Z_q(t)_{xy}|
+  \le\Bigl(\sum_{s\in\Lambda_M}|U^{(M)}_{xs}-U^\Z_{xs}|^2\Bigr)^{1/2}+\Bigl(\sum_{s\in\Lambda_M}|U^{(M)}_{ys}-U^\Z_{ys}|^2\Bigr)^{1/2}
+  +\sum_{s\notin\Lambda_M}w(|x-s|)w(|y-s|),
+\]
+where we used $\sum_s|U_{xs}|^2=1$ for both unitaries.  By \eqref{eq:main-conv}, every term is bounded independently of
+$q$ and tends to $0$: for $|x|,|y|\le M/2$ and $M\ge2c$, each summand in the first two sums is at most
+$(2e^cc^{\lceil M/2\rceil}/\lceil M/2\rceil!)^2$, and there are $2M+1$ of them.  The bound is also uniform for $|t|$ in
+compact sets.
+
+\emph{(a).}  By \cref{cor:sector}(b) for $\Lambda_M$,
+$\langle\Psi^{(M)}(t),O\Psi^{(M)}(t)\rangle=\E\langle\psi^{(M)}_q(t),O_q\psi^{(M)}_q(t)\rangle$.  The vector $\psi^{(M)}_q(t)$ is the
+Slater determinant with projection $K^{(M)}_q(t)$, and $O_q$ lies in the CAR algebra of the modes in $X$.  So by
+\cref{lem:slater}(a) the inner expectation is $\Tr(\rhoqf{K^{(M)}_q(t)|_X}O_q)$.  By Step 1 and the uniform continuity
+of $C\mapsto\rhoqf C$ (\cref{lem:quasifree}(a)),
+$\norm{\rhoqf{K^{(M)}_q(t)|_X}-\rhoqf{K^\Z_q(t)|_X}}_1\to0$ uniformly in $q$, and $\norm{O_q}\le\norm O$.
+
+\emph{(b).}  $\sup_t|U^\Z_q(t)_{xy}|\le Q^\Z_q(x,y)$ (take $f(E)=e^{-itE}$), so
+$\E\sup_t|U^\Z_q(t)_{xy}|\le\FZ(|x-y|)$.  The convergence of $\E|U^{(M)}_q(t)_{xy}|$ is \eqref{eq:main-conv}.  For one
+particle, $\langle\Psi^{(M)}(t),n_x\Psi^{(M)}(t)\rangle=\E|U^{(M)}_q(t)_{xy}|^2$ (\cref{thm:transport}(b)), which converges.
+For every $t$, by Tonelli,
+$\sum_x(|x-y|+1)^p\E|U^\Z_q(t)_{xy}|^2\le\E\sum_x(|x-y|+1)^pQ^\Z_q(x,y)\le2M_p(\FZ)$, since $|U|^2\le|U|\le Q^\Z_q$ and
+there are at most two $x$ at each distance from $y$.  For transport, the proof of \cref{thm:transport}(c) gives
+\[
+  \langle\Psi^{(M)}(t),N_{[-M,m]}\Psi^{(M)}(t)\rangle-|S\cap[-M,m]|=\E\bigl[a^{(M)}_q(t)-b^{(M)}_q(t)\bigr],
+\]
+with the sums over $x,s\in\Lambda_M$
+\[
+  a^{(M)}_q:=\sum_{x\le m<s,\ s\in S}|U^{(M)}_{q,xs}|^2,\qquad b^{(M)}_q:=\sum_{s\le m<x,\ s\in S}|U^{(M)}_{q,xs}|^2 .
+\]  Each term converges uniformly in $q$ and is dominated by $w(|x-s|)^2$, and
+$\sum_{x\le m<s}w(s-x)^2=\sum_dd\,w(d)^2<\infty$.  By dominated convergence for series, uniformly in $q$,
+\[
+  a^{(M)}_q\to a^\Z_q:=\sum_{x\le m<s,\ s\in S}|U^\Z_{q,xs}|^2,
+\]
+and similarly for $b$.  So
+$\mathcal T_m(t)=\E(a^\Z_q-b^\Z_q)$.  As $h^\Z_q$ is real symmetric, $U^\Z_q(t)$ is symmetric, so
+$|a^\Z_q-b^\Z_q|\le\sum_{x\le m<s}|U^\Z_{q,xs}|^2\le\sum_{x\le m<s}Q^\Z_q(x,s)$.  The expectation of the last sum
+is at most $\sum_dd\,\FZ(d)=\Sigma_1(\FZ)$.
+
+\emph{(c).}  For each $M$ large, (a) of \cref{prop:LR}, applied to the chain $\Lambda_M$ and with $\GAlg(Y)\subset\BAlg^+(Y)$,
+gives $\E\norm{P_q[A(t),B]}\le8|A|_1\norm B\sum_{x\in X,y\in Y}\E|U^{(M)}_q(t)_{xy}|$; the expansion coefficients of the
+even element $A$ do not depend on $M$.  Let $M\to\infty$ using (b).
+
+\emph{(d).}  By \cref{lem:slater}(a), the entropy of the $c$-modes of $A$ in $\psi^{(M)}_q(t)$ is
+$\sum_i\bent(\nu_i(K^{(M)}_q(t)|_A))$.  Eigenvalues of Hermitian matrices are $1$-Lipschitz in operator norm (Weyl), and
+$\bent$ is uniformly continuous on $[0,1]$; Step 1 gives the convergence, uniformly in $q$.  For the bound, $C:=K^\Z_q(t)|_A$
+satisfies $C-C^2=T^*T$ with $T:=P_{\Z\setminus A}K^\Z_q(t)P_A$, because $K^\Z_q(t)$ is a projection on $\ell^2(\Z)$.  Hence,
+by \cref{lem:quasifree}(b) and \cref{lem:binent}, $S^\Z_q(t)\le2\ln2\norm T_1\le2\ln2\sum_{x\in A,y\notin A}|K^\Z_q(t)_{xy}|$.
+Here $T$ has finite rank, and the last step is the rank-one decomposition, which converges in trace norm when the sum
+is finite.  Next, $|K^\Z_q(t)_{xy}|\le\sum_{z\in\Z}Q^\Z_q(x,z)Q^\Z_q(y,z)$ for all $t$, and
+$\E[Q^\Z_q(x,z)Q^\Z_q(y,z)]\le\FZ(\max\{|x-z|,|y-z|\})$ because $Q^\Z_q\le1$.  The counting of
+\cref{lem:annealed}(i),(iii) gives $\E\sup_tS^\Z_q(t)\le2\ln2\cdot2\Theta(\FZ)$.
+
+For $A_M$: by \cref{thm:arealaw}(a), $S(\rho^q_{A_M}(t))\le2\ln2\sum_{x\le m<y;\,x,y\in\Lambda_M}|K^{(M)}_q(t)_{xy}|$.  We have
+$|K^{(M)}_{q,xy}|\le\sum_zw(|x-z|)w(|y-z|)\le e^{2c}\sum_{n\ge|x-y|}(2c)^n/n!=:k(|x-y|)$, since distinct $z$ give distinct
+pairs $(|x-z|,|y-z|)$ with sum at least $|x-y|$.  Moreover $\sum_dd\,k(d)<\infty$.  By Step 1 and dominated convergence,
+the right side converges, uniformly in $q$, to $2\ln2\sum_{x\le m<y}|K^\Z_q(t)_{xy}|$, whose expectation is at most
+$2\ln2\,\Theta(\FZ)$ by the counting of \cref{lem:annealed}(ii).  For the definite-charge states use
+\eqref{eq:quenchedSfull} in $\Lambda_M$ (where $A_M$ is a left segment) and the uniformity of $q|_{\Lambda_M}$ when $\xi$ is
+uniform.
+
+\emph{(e).}  By \cref{lem:slater}(a) and \cref{lem:quasifree}(b), the generating function of $N_A$ in $\psi^{(M)}_q(t)$ is
+$\det(\one+(z-1)K^{(M)}_q(t)|_A)$.  Its coefficients are polynomials in the entries, so they converge uniformly in $q$
+by Step 1.  By \cref{cor:sector}(c), $p^{(M)}_t=\E\,\mathrm{PB}(\nu(K^{(M)}_q(t)|_A))\to p_t$; $N_A$ takes the finitely
+many values $0,\dots,|A|$, so $\SN^{(M)}(t)\to\Hsh(p_t)$.  For the bound, let $s_A:=|S\cap A|$.  The law of total
+variance gives $\Var_{p_t}(N_A)\le\E[\Var^\Z_q+(\mu^\Z_q-s_A)^2]$, where $\Var^\Z_q=\Tr(C-C^2)$ and
+$\mu^\Z_q=\Tr C=\sum_{x\in A}\sum_{s\in S}|U^\Z_{q,xs}|^2$, with $C=K^\Z_q(t)|_A$.  As in (d),
+$\Var^\Z_q=\norm T_2^2\le\sum_{x\in A,y\notin A}|K^\Z_{q,xy}|$, with $\E\sup_t$ at most $2\Theta(\FZ)$.  Using
+$\sum_{x\in\Z}|U^\Z_{q,xs}|^2=1$ (all series converge absolutely),
+$\mu^\Z_q-s_A=\sum_{x\in A,\,s\in S\setminus A}|U^\Z_{q,xs}|^2-\sum_{x\notin A,\,s\in S\cap A}|U^\Z_{q,xs}|^2$.  As in
+\cref{thm:transport}(c), its modulus is at most $Y_q:=\sum_{x\in A,s\notin A}Q^\Z_q(x,s)$.  By Cauchy--Schwarz and
+$\E(Q^\Z_q)^2\le\E Q^\Z_q$,
+$\E Y_q^2\le\bigl(\sum_{x\in A,s\notin A}\FZ(|x-s|)^{1/2}\bigr)^2\le4\Sigma'_1(\FZ)^2$.  Conclude with
+\cref{lem:intentropy}.
+\end{proof}
+
+\begin{remark}[Scope of \cref{thm:infvol}]\label{rem:main-infvol}
+(i) The dressed fermion $\cdr^{(M)}_x$ itself is not a local operator in the limit: its Wilson line runs to the boundary link
+$b_M$.  This is why (c) is formulated for even $A$.  The anticommutator \eqref{eq:main-anticomm} is nevertheless
+controlled through (b).
+(ii) The half-infinite statement in (d) is the infinite-volume counterpart of \cref{thm:arealaw}(b),(c): the region
+contains the left end of $\Lambda_M$ and has a single cut, at $m$.
+(iii) The imbalance (\cref{thm:imbalance}) is not covered; see \cref{rem:main-imbalance}(iv).
+(iv) \emph{Numerical check} (\texttt{code/main\_checks.py}, part H).  The bounds of \cref{lem:propagation} hold to
+$10^{-14}$ for $t\le5$ and $M\le40$.  With coupled sectors ($2000$ samples), $\E|U^{(M)}_q(3)_{0,3}|=0.13685$ for $M=4$ and $0.14341$ for
+$M=8,16,32,64$.
+\end{remark}
+
+\subsection{Beyond the area law: sensitivity to distant charges and conjectures}\label{sec:main:conj}
+
+The superposed state $\Psi(t)$ is a coherent superposition of $2^N$ sector evolutions.  Its full entanglement $\Sfull$
+is not controlled by \cref{thm:arealaw}: by \cref{prop:entropies}(a) it is, up to $\ln2$, the entanglement of
+$\Phi(t)=2^{-N/2}\sum_qe^{iht\sum q}\psi_q(t)\otimes\ket q$ across $A'|B'$.  This entanglement is generated by the dependence
+of the evolution near the cut on the distant charges.  The charges $\tau^x_j$ are exactly conserved local
+integrals of motion.  The rigorous input is the following sensitivity estimate.
+
+\begin{lemma}[Duhamel sensitivity to distant charges]\label{lem:duhamel}
+Let $q,q'\in\{\pm1\}^N$ differ exactly on $D\subset[1,N]$, and let $z\in[1,N]$, $s\in\R$.  Then
+\[
+  \norm{(U_q(s)-U_{q'}(s))\delta_z}\le4|h|\int_0^{|s|}\norm{\one_DU_{q'}(\pm r)\delta_z}\,dr\le4|h|\,|s|\sum_{x\in D}Q_{q'}(x,z),
+\]
+with the sign of $s$ in $\pm r$.  Under Hypothesis~\ref{hyp:EC}, with $q^D$ the configuration $q$ flipped on $D$,
+\[
+  \E_q\sup_{|s|\le t}\norm{(U_q(s)-U_{q^D}(s))\delta_z}\le4|h|\,t\sum_{x\in D}F(|x-z|).
+\]
+In particular, if $\dist(z,D)\ge R$ and $F(d)=\min\{1,Ce^{-\eta d}\}$, the right side is at most
+$8|h|tCe^{-\eta R}/(1-e^{-\eta})$.
+\end{lemma}
+
+\begin{proof}
+Let $s\ge0$ (the case $s<0$ is identical).  $\frac{d}{dr}\bigl(U_q(-r)U_{q'}(r)\bigr)=iU_q(-r)(\hq-h_{q'})U_{q'}(r)$, so
+$U_{q'}(s)-U_q(s)=iU_q(s)\int_0^sU_q(-r)(\hq-h_{q'})U_{q'}(r)\,dr$.  Here $\hq-h_{q'}=2h\diag(q-q')=4h\diag(q\one_D)$, so
+$\norm{(\hq-h_{q'})v}=4|h|\norm{\one_Dv}$.  Since $U_q$ is unitary, the first inequality follows.  Then
+$\norm{\one_DU_{q'}(r)\delta_z}\le\sum_{x\in D}|U_{q'}(r)_{xz}|\le\sum_{x\in D}Q_{q'}(x,z)$.  The map $q\mapsto q^D$ preserves the
+uniform law, so $\E_qQ_{q^D}(x,z)=\E_qQ_q(x,z)\le F(|x-z|)$.  The last claim sums the geometric series over the at most two
+sites at each distance $d\ge R$.
+\end{proof}
+
+So two sectors that differ only at distance $\ge R$ from a site evolve indistinguishably near that site up to times of
+order $e^{\eta R}/|h|$.  Heuristically, at time $t$ only the charges within distance
+$R(t)\simeq\eta^{-1}\ln(|h|t)$ of the cut have dephased the sector components of $\Phi(t)$ near the cut.  This
+suggests logarithmic growth of $\Sfull$, as for l-bit models of many-body localization; the difference is that here
+the l-bits (the charges) are exact and their effect is mediated by free fermions.
+
+\begin{conjecture}[Logarithmic growth of the full entanglement]\label{conj:logent}
+Let $\psi$ be the CDW, $\Psi_0=\ket{\uparrow\cdots\uparrow}_z\otimes\psi$ and $\ell=\lfloor N/2\rfloor$.  There are constants
+$C_1,C_2<\infty$, depending only on $J$ and $h$, such that $\Sfull(t)\le C_1\ln(2+|t|)+C_2$ for all $N$ and $t$.  Moreover
+$\lim_{t\to\infty}\liminf_{N\to\infty}\Sfull(t)=\infty$.
+\end{conjecture}
+
+\emph{What is missing.}  \Cref{lem:duhamel} controls one-body propagators.  Turning it into an entanglement bound uniform in
+$N$ requires a decoupling argument for a coherent superposition of $2^N$ sectors.  Entropy continuity bounds
+(Fannes--Audenaert) cost $\varepsilon\ln\dim$, where $\dim$ is exponential in $N$.  A telescoping argument over the
+distance of the flipped charges, with summable errors (as in \cite{ANSS2016} for disordered XY chains), would be needed; we
+have not carried this out.  The lower bound would require a quantitative non-degeneracy of the sector phases
+$e^{iht\sum q}$ and of the overlaps $\langle\psi_{q'}(t),\psi_q(t)\rangle$.
+
+\begin{conjecture}[Volume law for the mixed entropies]\label{conj:volmix}
+There is $c=c(J,h)>0$ such that, for all $N\ge2\ell$ and the CDW initial state,
+$\liminf_{T\to\infty}T^{-1}\int_0^T\Smix(t)\,dt\ge c\,\ell$, and likewise for $\Sfm$.
+\end{conjecture}
+
+Since $\Smix(0)=\SG(0)=0$ for Fock states (\cref{prop:entropies}(b)), a time average or a restriction to $t\ge t_0$ is
+necessary.  By \cref{prop:entropies}(d), $\Smix$ is the same for the superposition and for the ensemble.  So
+Conjecture~\ref{conj:volmix} concerns the classical randomness of the charges: $\Smix-\SG$ is the Holevo information of the ensemble
+$\{2^{-N},\rho^q_A(t)\}$, i.e.\ the information that the dressed matter in $A$ carries about the charges.  It does not
+concern entanglement of $\Psi(t)$.  At strong coupling, each resonant pair of sites contributes an $O(1)$ mixture between a
+frozen and an oscillating configuration, independently across pairs, which suggests a volume law.
+
+\begin{remark}[Numerics for the conjectures]\label{rem:main-conjnum}
+In the exact data of \cref{rem:main-SGSN} ($N=10$, $J=h=1$, $\ell=5$), $\Sfull$ grows from $1.45$ at $t=1$ to $3.40$, $5.00$ and $5.38$
+at $t=10$, $10^2$, $10^5$, against the maximum $6.93$.  This is consistent with logarithmic growth followed by
+finite-size saturation, but $N=10$ cannot separate the two.  $\Smix/(\ell\ln2)\approx0.84$ at late times.  \Cref{lem:duhamel}
+is confirmed numerically in \texttt{code/main\_checks.py}, part I.
+\end{remark}
+
+\begin{remark}[Summary of the numerical checks]\label{rem:main-checks}
+All inequalities and identities of this section were tested by \texttt{code/main\_checks.py} (output
+\texttt{code/main\_checks.out}).  It uses the independent exact-diagonalization builders of \texttt{code/model\_duality\_check.py}
+for the full LGT ($N\le5$) and the one-body operators $\hq$ for larger $N$.  No violation was found beyond round-off
+($\le10^{-12}$).  The numbers quoted in the remarks of this section come from that output.  They illustrate the theorems
+but are not used in any proof.
+\end{remark}
