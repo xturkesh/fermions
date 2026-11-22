@@ -12,7 +12,9 @@ lake build
 
 ## What is formalized
 
-All objects are finite-dimensional and defined from scratch:
+The finite-volume objects are finite-dimensional and defined from scratch; the infinite-volume
+statements use the product measure of i.i.d. charges on `ℤ` and `ℕ`, entrywise exponential series,
+and bounded operators on `ℓ²(ℤ)`, `ℓ²(ℕ)` with Mathlib's continuous functional calculus:
 - the 1D ℤ₂ lattice gauge theory of Smith–Knolle–Kovrizhin–Moessner, with genuine Jordan–Wigner
   fermions, link spins in the `σˣ` basis, Gauss operators and a boundary link (also the open chain
   and the ring), and its two-dimensional version on arbitrary finite graphs;
@@ -88,6 +90,7 @@ No `axiom` is introduced anywhere.
 | Corollary `cor:ECinfvol` for `X ∈ {ℤ, ℕ}` and the full correlator (`A_ℤ = Δ + λ diag(q)` as a bounded operator on `ℓ²(ℤ)`; `Q^ℤ(x,y) = sup_{\|f\| ≤ 1} \|⟨δ_x, f(A)δ_y⟩\|` with Mathlib's continuous functional calculus; `E Q^ℤ(x,y) ≤ Ce^{-η\|x-y\|}`) | `IsAZ`, `exists_isAZ`, `corrQZ`, `lintegral_corrQZ_le`, `IsAN`, `exists_isAN`, `corrQN`, `lintegral_corrQN_le` | `ECInfVolQ.lean`, `ECInfVolQN.lean` |
 | Theorem `thm:infvol`(e) (bulk intervals `A`: the law of `N_A` in `Ψ^{(M)}(t)` converges to `p_t = E PB(ν(K^ℤ_q(t)\|_A))`, `S_N^{(M)}(t) → H(p_t)`, and `H(p_t) ≤ ½ ln(2πe(2Θ(F) + 4Σ'₁(F)² + 1/12))`) | `KZ`, `KZA`, `pZ`, `tendsto_numDistM`, `tendsto_numberEntropyM`, `numberEntropyZ_le` | `InfVolNumber.lean` |
 | Theorem `thm:infvol`(c) (Lieb–Robinson bound for volume-independent Majorana expansions on `X ⊂ ℤ` and observables localized in `Y`, uniformly in `M`, hence for the `limsup`) | `majListM`, `infvol_LR` | `InfVolLR.lean` |
+| Theorem `thm:infvol`(a) (limit dynamics: for observables `U(∑_q (O_{q\|_X} ⊗ 1) ⊗ \|q⟩⟨q\|)U†` on `Λ_M` built from charge-dependent operators on the modes of `X`, `⟨Ψ^{(M)}(t), O Ψ^{(M)}(t)⟩ → E Tr(ρ[K^ℤ_q(t)\|_X] O_{q\|_X})`; sector by sector uniformly in `q` and `t ∈ [-T, T]`; `⟨ψ, (O ⊗ 1)ψ⟩ = Tr(ρ_X(ψ) O)`) | `embF`, `expect_embF`, `locObsM`, `KZL`, `tendsto_omega`, `tendstoUniformlyOn_sector` | `InfVolDyn.lean` |
 | Theorem `thm:infvol`(d) (bulk intervals: `S^{(M)}_q(t) → S^ℤ_q(t) = ∑_i h(ν_i(K^ℤ_q(t)\|_A))` uniformly in `q`; convergence of `S_G^{(M)}(t)`; `E sup_t S^ℤ_q(t) ≤ 4 ln 2 Θ(F)`; half-infinite regions `[-M, m]`: `E S ≤ 2 ln 2 Θ(F)` for every `M`) | `entM`, `entZ`, `tendstoUniformly_entM`, `tendsto_SGM`, `lintegral_iSup_entZ_le`, `areaLaw_halfInfinite` | `InfVolArea.lean` |
 | Proposition `prop:nocritical`(i),(ii),(iv) (hypotheses of Furstenberg's theorem; no critical energies) | `transferT_mul_inv`, `transferT_commutator`, `transferT_not_commute`, `unipotent_pow_unbounded`, `no_finite_invariant_lines` | `Furstenberg.lean` |
 | Remark `rem:randomwalk` (one charge of the standard ℤ₂ LGT in a random-walk potential) | `Hstd_dual_oneP`, `partialSum_bijective` | `RandomWalk.lean` |
@@ -112,14 +115,14 @@ No `axiom` is introduced anywhere.
 
 ## Verification
 
-`lake build` compiles all 73 modules (about 38,900 lines) without `sorry`; there is no `axiom`,
+`lake build` compiles all 74 modules (about 39,500 lines) without `sorry`; there is no `axiom`,
 `admit`, `native_decide` or `implemented_by` in the library. The script `CheckAxioms.lean` walks
 through every theorem declared in a `DFL` module (including private helper lemmas) and collects the
 axioms it depends on:
 
 ```
 lake env lean CheckAxioms.lean
-# checked 4248 theorems in DFL modules; with non-standard axioms: 0
+# checked 4308 theorems in DFL modules; with non-standard axioms: 0
 ```
 
 i.e. every theorem depends only on Lean's standard axioms `propext`, `Classical.choice` and
@@ -179,7 +182,6 @@ lake env lean Check.lean
   dimer (`thm:dimer`(b),(c), and (d) for `1/2 < p ≤ 1`), and the percolation estimate of Li–Liang
   used in `prop:cluster`(c) (entering `cluster_avg` as the probability that the cluster leaves the
   region).
-- `thm:infvol`(a) (the quasi-free limit state of local gauge-invariant observables).
 - Part (iii) of `prop:dimerimbalance` and the density of states of the dimer model (`lem:dimerdos`),
   which need spectral measures (Borel functional calculus) on `ℓ²(ℤ)`.
 - Remarks, conjectures and numerics.

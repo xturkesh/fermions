@@ -83,7 +83,10 @@ $\Z$: \texttt{tendsto\_evoZ}, \texttt{lintegral\_iSup\_UZ\_le}, \texttt{infvol\_
 \texttt{numberEntropyZ\_le} (\texttt{InfVolNumber}, with \texttt{lgt\_numberEntropy\_bulk} of
 \texttt{NumberEntropyBulk}); \cref{thm:infvol}(c), uniformly in $M$: \texttt{infvol\_LR} (\texttt{InfVolLR});
 \cref{thm:infvol}(d): \texttt{tendstoUniformly\_entM}, \texttt{tendsto\_SGM}, \texttt{lintegral\_iSup\_entZ\_le},
-\texttt{areaLaw\_halfInfinite} (\texttt{InfVolArea}, with \texttt{lgt\_areaLaw\_bulk} of \texttt{SlaterBulk}).
+\texttt{areaLaw\_halfInfinite} (\texttt{InfVolArea}, with \texttt{lgt\_areaLaw\_bulk} of \texttt{SlaterBulk});
+\cref{thm:infvol}(a), for the observables $U\bigl(\sum_qO_{q|_X}\otimes\ket q\bra q\bigr)U^\dagger$ with $O_{q|_X}$ acting on the
+modes of $X$ (this contains $\GAlg(X)$): \texttt{expect\_embF}, \texttt{tendsto\_omega}, \texttt{tendstoUniformlyOn\_sector}
+(\texttt{InfVolDyn}).
 \item \cref{cor:ECinfvol} for the full correlator $Q^X$, $X\in\{\Z,\N\}$, with $f(A_X)$ defined by the continuous
 functional calculus on $\ell^2(X)$: \texttt{exists\_isAZ}, \texttt{lintegral\_corrQZ\_le}, \texttt{exists\_isAN},
 \texttt{lintegral\_corrQN\_le} (\texttt{ECInfVolQ}, \texttt{ECInfVolQN}).
@@ -192,8 +195,8 @@ using $\Gamma h^0\ge g/2$, instead of from the integral formula; the propagator 
 positivity and continuity of the Lyapunov exponent, \cref{prop:nocritical}(iii), \cref{prop:Zline},
 the transport bounds of \cite{JSBS2003} behind \cref{thm:dimer}(b),(c) and (d) for $p\le1$, and the percolation estimate of
 \cite{LiL2022}, which enters \texttt{cluster\_avg} as the probability that the cluster leaves the
-region;
-\item the infinite-volume statements other than those listed above: \cref{thm:infvol}(a),
-\cref{prop:dimerimbalance}(iii) and \cref{lem:dimerdos};
+region, and the verification of the hypotheses of the cited theorems in their own formalism (\cref{lem:hypcheck});
+\item \cref{prop:dimerimbalance}(iii) and \cref{lem:dimerdos}, which need spectral projections of operators on
+$\ell^2(\Z)$ (Borel functional calculus, not available in Mathlib);
 \item remarks, conjectures and numerics.
 \end{itemize}
