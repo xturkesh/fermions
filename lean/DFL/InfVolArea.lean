@@ -23,14 +23,15 @@ For a finite interval `A = [a, b] ⊂ ℤ`, a Fock configuration `n` on `ℤ` an
    (`tendstoUniformly_evoZ`); dominated convergence for series, uniformly in a parameter
    (`tendstoUniformly_tsum`), gives `K^{(M)}_q(t)|_A → K^ℤ_q(t)|_A` uniformly in `q`
    (`tendstoUniformly_KMA`, paper: Step 1).
-2. For a polynomial `p`, `∑_i p(ν_i(C)) = G_p(C) := ∑_k p_k Re Tr C^k` (`sum_eval_eigenvalues`), a
-   continuous function of the entries, invariant under relabelling (`Gp_submatrix`). It is
-   uniformly continuous on the compact set of matrices with entries in the unit disc, which contains
-   `K^{(M)}_q(t)|_A` and `K^ℤ_q(t)|_A`, so `G_p(K^{(M)}_q(t)|_A) → G_p(K^ℤ_q(t)|_A)` uniformly in `q`
-   (`tendstoUniformly_Gp`).
-3. The eigenvalues of `K^ℤ_q(t)|_A` lie in `[0, 1]` (`eig_KZA_mem`): `0 ≤ Re⟨v, C v⟩ ≤ ‖v‖²` passes to
-   the limit. By Weierstrass, `h` is uniformly approximated by polynomials on `[0, 1]`, and with
-   `S^{(M)}_q(t) = ∑_i h(ν_i(C_{bulk}))` (`vonNeumann_rdmF_slater`) this gives the uniform convergence.
+2. For a polynomial `p`, `∑_i p(ν_i(C)) = G_p(C) := ∑_k p_k Re Tr C^k`
+   (`sum_eval_eigenvalues`), a continuous function of the entries, invariant under relabelling
+   (`Gp_submatrix`). It is uniformly continuous on the compact set of matrices with entries in the
+   unit disc, which contains `K^{(M)}_q(t)|_A` and `K^ℤ_q(t)|_A`, so
+   `G_p(K^{(M)}_q(t)|_A) → G_p(K^ℤ_q(t)|_A)` uniformly in `q` (`tendstoUniformly_Gp`).
+3. The eigenvalues of `K^ℤ_q(t)|_A` lie in `[0, 1]` (`eig_KZA_mem`): `0 ≤ Re⟨v, C v⟩ ≤ ‖v‖²`
+   passes to the limit. By Weierstrass, `h` is uniformly approximated by polynomials on `[0, 1]`,
+   and with `S^{(M)}_q(t) = ∑_i h(ν_i(C_{bulk}))` (`vonNeumann_rdmF_slater`) this gives the uniform
+   convergence.
 4. The averages are integrals over `muZ` of functions of `q|_{Λ_M}`; dominated convergence gives
    `tendsto_SGM`. Fatou's lemma and the finite-volume bulk area law `lgt_areaLaw_bulk` give
    `lintegral_iSup_entZ_le`; `areaLaw_halfInfinite` is `lgt_areaLaw_sharp` for the left segment
@@ -59,7 +60,8 @@ open InfVolNumberAux
 /-- `|U^ℤ_q(t)_{xs}| ≤ w_c(|x - s|)`. -/
 lemma norm_UZ_le_wt (J h : ℝ) (q : CfgZ) (t : ℝ) (x s : ℤ) :
     ‖UZ J h q t x s‖ ≤ wt (|t| * (2 * |J| + 2 * |h|)) (x - s).natAbs :=
-  le_of_tendsto' (tendsto_norm.comp (tendsto_evoZ J h q t x s)) fun M => norm_evoZ_le_wt J h q t M x s
+  le_of_tendsto' (tendsto_norm.comp (tendsto_evoZ J h q t x s)) fun M =>
+    norm_evoZ_le_wt J h q t M x s
 
 /-- **Quantitative finite propagation**: for `x, s ∈ Λ_M`,
 `|U^{(M)}_q(t)_{xs} - U^ℤ_q(t)_{xs}| ≤ 2 (c^m/m!) e^c`, `m = M - |x| + 1`, uniformly in `q`. -/
@@ -204,7 +206,8 @@ lemma tendstoUniformly_KM (J h : ℝ) (n : CfgZ) (t : ℝ) (x y : ℤ) :
 
 /-- Uniform convergence of matrices follows from uniform convergence of the entries. -/
 lemma tendstoUniformly_matrix {ι α m n' : Type*} {p : Filter ι} {F : ι → α → Matrix m n' ℂ}
-    {f : α → Matrix m n' ℂ} (h : ∀ i j, TendstoUniformly (fun k x => F k x i j) (fun x => f x i j) p) :
+    {f : α → Matrix m n' ℂ}
+    (h : ∀ i j, TendstoUniformly (fun k x => F k x i j) (fun x => f x i j) p) :
     TendstoUniformly F f p := by
   rw [tendstoUniformly_iff_tendsto, Matrix.uniformity]
   simp only [tendsto_iInf, tendsto_comap_iff]
