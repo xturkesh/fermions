@@ -435,9 +435,7 @@ def boxRight (L₁ L₂ : ℕ) (p : Fin (L₁ - 1) × Fin (L₂ - 1)) : Fin (box
 lemma boxPlaq_eq (L₁ L₂ : ℕ) (p : Fin (L₁ - 1) × Fin (L₂ - 1)) :
     boxPlaq L₁ L₂ p = Pi.single (boxBot L₁ L₂ p) 1 + Pi.single (boxTop L₁ L₂ p) 1 +
       Pi.single (boxLeft L₁ L₂ p) 1 + Pi.single (boxRight L₁ L₂ p) 1 :=
-  ind4_eq _ _ _ _ (by simp [boxBot, boxTop]) (by simp [boxBot, boxLeft])
-    (by simp [boxBot, boxRight]) (by simp [boxTop, boxLeft]) (by simp [boxTop, boxRight])
-    (by simp [boxLeft, boxRight])
+  ind4_eq _ _ _ _ (by simp) (by simp) (by simp) (by simp) (by simp) (by simp)
 
 /-- Box plaquettes are cycles. -/
 lemma box_plaq_cycle (L₁ L₂ : ℕ) (p : Fin (L₁ - 1) × Fin (L₂ - 1)) :
@@ -470,18 +468,26 @@ lemma box_plaq_linIndep (L₁ L₂ : ℕ) : LinearIndependent (ZMod 2) (boxPlaq 
     induction n using Nat.strong_induction_on with
     | _ n ih =>
       intro p hp
-      have h := hsum (boxBot L₁ L₂ p)
-      rw [sum_smul_single_apply_self _ hinj g p, sum_smul_single_apply_eq_zero _ g _ ?_,
-        sum_smul_single_apply_eq_zero _ g _ ?_, sum_smul_single_apply_eq_zero _ g _ ?_] at h
-      · simpa using h
-      · intro p' hp'
+      have htop : (∑ p', g p' • (Pi.single (boxTop L₁ L₂ p') 1 : Cfg (boxM L₁ L₂)))
+          (boxBot L₁ L₂ p) = 0 := by
+        apply sum_smul_single_apply_eq_zero
+        intro p' hp'
         simp only [boxTop, boxBot, EmbeddingLike.apply_eq_iff_eq, Sum.inl.injEq, Prod.mk.injEq,
           Fin.mk.injEq] at hp'
         exact ih p'.2.val (by omega) p' rfl
-      · intro p' hp'
+      have hleft : (∑ p', g p' • (Pi.single (boxLeft L₁ L₂ p') 1 : Cfg (boxM L₁ L₂)))
+          (boxBot L₁ L₂ p) = 0 := by
+        apply sum_smul_single_apply_eq_zero
+        intro p' hp'
         simp [boxLeft, boxBot] at hp'
-      · intro p' hp'
+      have hright : (∑ p', g p' • (Pi.single (boxRight L₁ L₂ p') 1 : Cfg (boxM L₁ L₂)))
+          (boxBot L₁ L₂ p) = 0 := by
+        apply sum_smul_single_apply_eq_zero
+        intro p' hp'
         simp [boxRight, boxBot] at hp'
+      have h := hsum (boxBot L₁ L₂ p)
+      rw [sum_smul_single_apply_self _ hinj g p, htop, hleft, hright] at h
+      simpa using h
   exact fun p => key _ p rfl
 
 end TwoDLatticesAux
@@ -492,13 +498,13 @@ theorem box_plaq_basis (L₁ L₂ : ℕ) : (box L₁ L₂).IsCycleBasis (boxPlaq
   · -- no vertices, no edges
     refine ⟨box_plaq_cycle L₁ L₂, box_plaq_linIndep L₁ L₂, fun z _ => ?_⟩
     have hM : boxM L₁ L₂ = 0 := by simp [boxM, h₁]
-    have hz : z = 0 := funext fun e => absurd e.isLt (by rw [hM]; exact Nat.not_lt_zero _)
+    have hz : z = 0 := funext fun e => absurd e.isLt (by omega)
     rw [hz]
     exact Submodule.zero_mem _
   rcases Nat.eq_zero_or_pos L₂ with h₂ | h₂
   · refine ⟨box_plaq_cycle L₁ L₂, box_plaq_linIndep L₁ L₂, fun z _ => ?_⟩
     have hM : boxM L₁ L₂ = 0 := by simp [boxM, h₂]
-    have hz : z = 0 := funext fun e => absurd e.isLt (by rw [hM]; exact Nat.not_lt_zero _)
+    have hz : z = 0 := funext fun e => absurd e.isLt (by omega)
     rw [hz]
     exact Submodule.zero_mem _
   exact isCycleBasis_of_card (box L₁ L₂) (box_connected L₁ L₂) (Nat.mul_pos h₁ h₂) _
@@ -575,25 +581,407 @@ def torusGamma1 (L₁ L₂ : ℕ) (h₂ : 0 < L₂) : Cfg (torusM L₁ L₂) := 
 def torusGamma2 (L₁ L₂ : ℕ) (h₁ : 0 < L₁) : Cfg (torusM L₁ L₂) := fun e =>
   if ∃ y : Fin L₂, e = torusEdge L₁ L₂ (Sum.inr (⟨0, h₁⟩, y)) then 1 else 0
 
+namespace TwoDLatticesAux
+
+/-- Value of `finSucc` away from the wrap-around. -/
+lemma finSucc_val_of_lt {L : ℕ} (x : Fin L) (h : x.val + 1 < L) : (finSucc x).val = x.val + 1 := by
+  simp [finSucc, Nat.mod_eq_of_lt h]
+
+/-- Value of `finSucc` at the wrap-around. -/
+lemma finSucc_val_of_eq {L : ℕ} (x : Fin L) (h : x.val + 1 = L) : (finSucc x).val = 0 := by
+  simp [finSucc, h]
+
+/-- `finSucc` is injective. -/
+lemma finSucc_injective {L : ℕ} : Function.Injective (finSucc : Fin L → Fin L) := by
+  intro x y h
+  have h' := congrArg Fin.val h
+  have hx := x.isLt
+  have hy := y.isLt
+  apply Fin.ext
+  by_cases hx1 : x.val + 1 < L <;> by_cases hy1 : y.val + 1 < L
+  · rw [finSucc_val_of_lt x hx1, finSucc_val_of_lt y hy1] at h'; omega
+  · rw [finSucc_val_of_lt x hx1, finSucc_val_of_eq y (by omega)] at h'; omega
+  · rw [finSucc_val_of_eq x (by omega), finSucc_val_of_lt y hy1] at h'; omega
+  · omega
+
+/-- `finSucc` is bijective. -/
+lemma finSucc_bijective {L : ℕ} : Function.Bijective (finSucc : Fin L → Fin L) :=
+  Finite.injective_iff_bijective.1 finSucc_injective
+
+/-- The shift `(x, y) ↦ (x, y + 1)` is bijective. -/
+lemma shift2_bijective {L₁ L₂ : ℕ} :
+    Function.Bijective (fun p : Fin L₁ × Fin L₂ => (p.1, finSucc p.2)) :=
+  Function.Bijective.prodMap Function.bijective_id finSucc_bijective
+
+/-- The shift `(x, y) ↦ (x + 1, y)` is bijective. -/
+lemma shift1_bijective {L₁ L₂ : ℕ} :
+    Function.Bijective (fun p : Fin L₁ × Fin L₂ => (finSucc p.1, p.2)) :=
+  Function.Bijective.prodMap finSucc_bijective Function.bijective_id
+
+/-- The horizontal torus edge `(x,y)—(x+1,y)`. -/
+def torusH (L₁ L₂ : ℕ) (p : Fin L₁ × Fin L₂) : Fin (torusM L₁ L₂) := torusEdge L₁ L₂ (Sum.inl p)
+
+/-- The vertical torus edge `(x,y)—(x,y+1)`. -/
+def torusV (L₁ L₂ : ℕ) (p : Fin L₁ × Fin L₂) : Fin (torusM L₁ L₂) := torusEdge L₁ L₂ (Sum.inr p)
+
+/-- Horizontal edges are labelled injectively. -/
+lemma torusH_injective {L₁ L₂ : ℕ} : Function.Injective (torusH L₁ L₂) :=
+  fun _ _ h => Sum.inl_injective ((torusEdge L₁ L₂).injective h)
+
+/-- Vertical edges are labelled injectively. -/
+lemma torusV_injective {L₁ L₂ : ℕ} : Function.Injective (torusV L₁ L₂) :=
+  fun _ _ h => Sum.inr_injective ((torusEdge L₁ L₂).injective h)
+
+/-- A vertical edge is not horizontal. -/
+lemma torusV_ne_torusH {L₁ L₂ : ℕ} (p q : Fin L₁ × Fin L₂) : torusV L₁ L₂ p ≠ torusH L₁ L₂ q :=
+  fun h => Sum.inr_ne_inl ((torusEdge L₁ L₂).injective h)
+
+/-- A horizontal edge is not vertical. -/
+lemma torusH_ne_torusV {L₁ L₂ : ℕ} (p q : Fin L₁ × Fin L₂) : torusH L₁ L₂ p ≠ torusV L₁ L₂ q :=
+  fun h => Sum.inl_ne_inr ((torusEdge L₁ L₂).injective h)
+
+/-- Initial vertex of a torus edge. -/
+lemma torus_src {L₁ L₂ : ℕ} (h₁ : 3 ≤ L₁) (h₂ : 3 ≤ L₂) (e : (Fin L₁ × Fin L₂) ⊕ (Fin L₁ × Fin L₂)) :
+    (torus L₁ L₂ h₁ h₂).src (torusEdge L₁ L₂ e) = torusSrc L₁ L₂ e := by
+  simp [torus]
+
+/-- Final vertex of a torus edge. -/
+lemma torus_tgt {L₁ L₂ : ℕ} (h₁ : 3 ≤ L₁) (h₂ : 3 ≤ L₂) (e : (Fin L₁ × Fin L₂) ⊕ (Fin L₁ × Fin L₂)) :
+    (torus L₁ L₂ h₁ h₂).tgt (torusEdge L₁ L₂ e) = torusTgt L₁ L₂ e := by
+  simp [torus]
+
+/-- A torus plaquette is the sum of its four edges. -/
+lemma torusPlaq_eq {L₁ L₂ : ℕ} (h₁ : 2 ≤ L₁) (h₂ : 2 ≤ L₂) (p : Fin L₁ × Fin L₂) :
+    torusPlaq L₁ L₂ p = Pi.single (torusH L₁ L₂ p) 1 + Pi.single (torusH L₁ L₂ (p.1, finSucc p.2)) 1 +
+      Pi.single (torusV L₁ L₂ p) 1 + Pi.single (torusV L₁ L₂ (finSucc p.1, p.2)) 1 := by
+  have hne1 : p.1 ≠ finSucc p.1 := fun h => finSucc_ne h₁ p.1 h.symm
+  have hne2 : p.2 ≠ finSucc p.2 := fun h => finSucc_ne h₂ p.2 h.symm
+  exact ind4_eq _ _ _ _ (by simp [Prod.ext_iff, hne2]) (by simp) (by simp) (by simp) (by simp)
+    (by simp [Prod.ext_iff, hne1])
+
+/-- Torus plaquettes are cycles. -/
+lemma torus_plaq_cycle {L₁ L₂ : ℕ} (h₁ : 3 ≤ L₁) (h₂ : 3 ≤ L₂) (p : Fin L₁ × Fin L₂) :
+    (torus L₁ L₂ h₁ h₂).bdry (torusPlaq L₁ L₂ p) = 0 := by
+  rw [torusPlaq_eq (by omega) (by omega)]
+  exact bdry_square (torus L₁ L₂ h₁ h₂) ⟨torus_src h₁ h₂ _, torus_tgt h₁ h₂ _⟩
+    ⟨torus_src h₁ h₂ _, torus_tgt h₁ h₂ _⟩ ⟨torus_src h₁ h₂ _, torus_tgt h₁ h₂ _⟩
+    ⟨torus_src h₁ h₂ _, torus_tgt h₁ h₂ _⟩
+
+/-- A sum of unit vectors along an injective family, evaluated on the family. -/
+lemma sum_single_apply_self {α : Type*} [Fintype α] {K : ℕ} (f : α → Fin K)
+    (hf : Function.Injective f) (q : α) : (∑ x, (Pi.single (f x) 1 : Cfg K)) (f q) = 1 := by
+  have := sum_smul_single_apply_self f hf (fun _ => 1) q
+  simp only [one_smul] at this
+  exact this
+
+/-- A sum of unit vectors along a family, evaluated off the family. -/
+lemma sum_single_apply_eq_zero {α : Type*} [Fintype α] {K : ℕ} (f : α → Fin K) (e : Fin K)
+    (he : ∀ x, f x ≠ e) : (∑ x, (Pi.single (f x) 1 : Cfg K)) e = 0 := by
+  have := sum_smul_single_apply_eq_zero f (fun _ => 1) e (fun x hx => absurd hx (he x))
+  simp only [one_smul] at this
+  exact this
+
+/-- `γ₁` is the sum of the horizontal edges of the row `y = 0`. -/
+lemma torusGamma1_eq {L₁ L₂ : ℕ} (h : 0 < L₂) :
+    torusGamma1 L₁ L₂ h = ∑ x : Fin L₁, Pi.single (torusH L₁ L₂ (x, ⟨0, h⟩)) 1 := by
+  have hinj : Function.Injective (fun x : Fin L₁ => torusH L₁ L₂ (x, ⟨0, h⟩)) :=
+    fun _ _ hxy => congrArg Prod.fst (torusH_injective hxy)
+  funext e
+  unfold torusGamma1
+  split_ifs with he
+  · obtain ⟨x, rfl⟩ := he
+    exact (sum_single_apply_self (fun x : Fin L₁ => torusH L₁ L₂ (x, ⟨0, h⟩)) hinj x).symm
+  · exact (sum_single_apply_eq_zero (fun x : Fin L₁ => torusH L₁ L₂ (x, ⟨0, h⟩)) e
+      (fun x hx => he ⟨x, hx.symm⟩)).symm
+
+/-- `γ₂` is the sum of the vertical edges of the column `x = 0`. -/
+lemma torusGamma2_eq {L₁ L₂ : ℕ} (h : 0 < L₁) :
+    torusGamma2 L₁ L₂ h = ∑ y : Fin L₂, Pi.single (torusV L₁ L₂ (⟨0, h⟩, y)) 1 := by
+  have hinj : Function.Injective (fun y : Fin L₂ => torusV L₁ L₂ (⟨0, h⟩, y)) :=
+    fun _ _ hxy => congrArg Prod.snd (torusV_injective hxy)
+  funext e
+  unfold torusGamma2
+  split_ifs with he
+  · obtain ⟨y, rfl⟩ := he
+    exact (sum_single_apply_self (fun y : Fin L₂ => torusV L₁ L₂ (⟨0, h⟩, y)) hinj y).symm
+  · exact (sum_single_apply_eq_zero (fun y : Fin L₂ => torusV L₁ L₂ (⟨0, h⟩, y)) e
+      (fun y hy => he ⟨y, hy.symm⟩)).symm
+
+/-- `γ₁` is a cycle. -/
+lemma torus_gamma1_cycle {L₁ L₂ : ℕ} (h₁ : 3 ≤ L₁) (h₂ : 3 ≤ L₂) (h : 0 < L₂) :
+    (torus L₁ L₂ h₁ h₂).bdry (torusGamma1 L₁ L₂ h) = 0 := by
+  rw [torusGamma1_eq, ← bdryLin_apply, map_sum]
+  simp only [bdryLin_apply, bdry_single, torusH, torus_src, torus_tgt, torusSrc, torusTgt]
+  rw [Finset.sum_add_distrib]
+  have hs : ∑ x : Fin L₁, (Pi.single (boxVert (finSucc x) (⟨0, h⟩ : Fin L₂)) 1 : Cfg (L₁ * L₂)) =
+      ∑ x : Fin L₁, Pi.single (boxVert x (⟨0, h⟩ : Fin L₂)) 1 :=
+    finSucc_bijective.sum_comp (fun x => (Pi.single (boxVert x (⟨0, h⟩ : Fin L₂)) 1 : Cfg (L₁ * L₂)))
+  rw [hs, cfg_add_self]
+
+/-- `γ₂` is a cycle. -/
+lemma torus_gamma2_cycle {L₁ L₂ : ℕ} (h₁ : 3 ≤ L₁) (h₂ : 3 ≤ L₂) (h : 0 < L₁) :
+    (torus L₁ L₂ h₁ h₂).bdry (torusGamma2 L₁ L₂ h) = 0 := by
+  rw [torusGamma2_eq, ← bdryLin_apply, map_sum]
+  simp only [bdryLin_apply, bdry_single, torusV, torus_src, torus_tgt, torusSrc, torusTgt]
+  rw [Finset.sum_add_distrib]
+  have hs : ∑ y : Fin L₂, (Pi.single (boxVert (⟨0, h⟩ : Fin L₁) (finSucc y)) 1 : Cfg (L₁ * L₂)) =
+      ∑ y : Fin L₂, Pi.single (boxVert (⟨0, h⟩ : Fin L₁) y) 1 :=
+    finSucc_bijective.sum_comp (fun y => (Pi.single (boxVert (⟨0, h⟩ : Fin L₁) y) 1 : Cfg (L₁ * L₂)))
+  rw [hs, cfg_add_self]
+
+end TwoDLatticesAux
+
 /-- The torus is connected. -/
 theorem torus_connected (L₁ L₂ : ℕ) (h₁ : 3 ≤ L₁) (h₂ : 3 ≤ L₂) : (torus L₁ L₂ h₁ h₂).Connected := by
-  sorry
+  have hadj : ∀ e, (torus L₁ L₂ h₁ h₂).Adj (torusSrc L₁ L₂ e) (torusTgt L₁ L₂ e) :=
+    fun e => ⟨torusEdge L₁ L₂ e, Or.inl ⟨torus_src h₁ h₂ e, torus_tgt h₁ h₂ e⟩⟩
+  have hsucc : ∀ {L : ℕ} (k : ℕ) (hk : k + 1 < L), finSucc (⟨k, by omega⟩ : Fin L) = ⟨k + 1, hk⟩ :=
+    fun k hk => Fin.ext (finSucc_val_of_lt _ hk)
+  -- moving left along a row
+  have hx : ∀ (k : ℕ) (hk : k < L₁) (y : Fin L₂),
+      Relation.ReflTransGen (torus L₁ L₂ h₁ h₂).Adj (boxVert ⟨k, hk⟩ y)
+        (boxVert ⟨0, by omega⟩ y) := by
+    intro k
+    induction k with
+    | zero => intro hk y; exact Relation.ReflTransGen.refl
+    | succ k ih =>
+      intro hk y
+      have h := hadj (Sum.inl (⟨k, by omega⟩, y))
+      simp only [torusSrc, torusTgt, hsucc k hk] at h
+      exact Relation.ReflTransGen.head (adj_symm _ h) (ih (by omega) y)
+  -- moving down along the column `x = 0`
+  have hy : ∀ (k : ℕ) (hk : k < L₂),
+      Relation.ReflTransGen (torus L₁ L₂ h₁ h₂).Adj (boxVert ⟨0, by omega⟩ ⟨k, hk⟩)
+        (boxVert ⟨0, by omega⟩ ⟨0, by omega⟩) := by
+    intro k
+    induction k with
+    | zero => intro hk; exact Relation.ReflTransGen.refl
+    | succ k ih =>
+      intro hk
+      have h := hadj (Sum.inr (⟨0, by omega⟩, ⟨k, by omega⟩))
+      simp only [torusSrc, torusTgt, hsucc k hk] at h
+      exact Relation.ReflTransGen.head (adj_symm _ h) (ih (by omega))
+  have hroot : ∀ i : Fin (L₁ * L₂), Relation.ReflTransGen (torus L₁ L₂ h₁ h₂).Adj i
+      (boxVert ⟨0, by omega⟩ ⟨0, by omega⟩) := by
+    intro i
+    have hi : i = boxVert (finProdFinEquiv.symm i).1 (finProdFinEquiv.symm i).2 :=
+      (Equiv.apply_symm_apply finProdFinEquiv i).symm
+    rw [hi]
+    exact (hx _ _ _).trans (hy _ _)
+  intro i j
+  exact (hroot i).trans (reflTransGen_adj_symm _ (hroot j))
 
 /-- **First Betti number of the torus** (paper: Theorem `thm:2dmap`(d)): `β = L₁L₂ + 1`. -/
 theorem torus_beta (L₁ L₂ : ℕ) (h₁ : 3 ≤ L₁) (h₂ : 3 ≤ L₂) :
     torusM L₁ L₂ + 1 - L₁ * L₂ = L₁ * L₂ + 1 := by
-  sorry
+  have _ := h₁
+  have _ := h₂
+  rw [torusM, add_assoc, Nat.add_sub_cancel_left]
 
 /-- `∑_p ∂p = 0`: every edge lies on exactly two plaquettes. -/
 theorem torus_sum_plaq (L₁ L₂ : ℕ) (h₁ : 3 ≤ L₁) (h₂ : 3 ≤ L₂) :
     ∑ p : Fin L₁ × Fin L₂, torusPlaq L₁ L₂ p = 0 := by
-  sorry
+  simp only [torusPlaq_eq (by omega : 2 ≤ L₁) (by omega : 2 ≤ L₂), Finset.sum_add_distrib]
+  have hH : ∑ p : Fin L₁ × Fin L₂, (Pi.single (torusH L₁ L₂ (p.1, finSucc p.2)) 1 : Cfg (torusM L₁ L₂)) =
+      ∑ p, Pi.single (torusH L₁ L₂ p) 1 :=
+    shift2_bijective.sum_comp (fun p => (Pi.single (torusH L₁ L₂ p) 1 : Cfg (torusM L₁ L₂)))
+  have hV : ∑ p : Fin L₁ × Fin L₂, (Pi.single (torusV L₁ L₂ (finSucc p.1, p.2)) 1 : Cfg (torusM L₁ L₂)) =
+      ∑ p, Pi.single (torusV L₁ L₂ p) 1 :=
+    shift1_bijective.sum_comp (fun p => (Pi.single (torusV L₁ L₂ p) 1 : Cfg (torusM L₁ L₂)))
+  rw [hH, hV]
+  simp only [cfg_add_self, zero_add]
+
+namespace TwoDLatticesAux
+
+open scoped Kronecker
+
+/-- The translation `x ↦ x + z` of edge labels, as a matrix. -/
+def transl (z : Cfg M) : Matrix (Cfg M) (Cfg M) ℝ :=
+  fun x' x => if x' = x + z then 1 else 0
+
+/-- Translations compose additively. -/
+lemma transl_mul (z z' : Cfg M) : transl z * transl z' = transl (z + z') := by
+  ext x' x
+  simp only [transl, Matrix.mul_apply, mul_ite, mul_one, mul_zero]
+  rw [Finset.sum_eq_single (x + z')]
+  · simp only [ite_true, add_assoc, add_comm z' z]
+  · intro y _ hy
+    simp [hy]
+  · simp
+
+/-- The translation by `0` is the identity. -/
+lemma transl_zero : transl (0 : Cfg M) = 1 := by
+  ext x' x
+  simp [transl, Matrix.one_apply]
+
+/-- The Wilson loop is `1 ⊗ (translation by z)`. -/
+lemma wilsonLoop_eq_transl (G : FinGraph N M) (z : Cfg M) :
+    G.wilsonLoop z = (1 : Matrix (Cfg N) (Cfg N) ℝ) ⊗ₖ transl z := rfl
+
+/-- `W_z W_{z'} = W_{z + z'}`. -/
+lemma wilsonLoop_mul_wilsonLoop (G : FinGraph N M) (z z' : Cfg M) :
+    G.wilsonLoop z * G.wilsonLoop z' = G.wilsonLoop (z + z') := by
+  rw [wilsonLoop_eq_transl, wilsonLoop_eq_transl, wilsonLoop_eq_transl, ← Matrix.mul_kronecker_mul,
+    Matrix.one_mul, transl_mul]
+
+/-- `W_0 = 1`. -/
+lemma wilsonLoop_zero (G : FinGraph N M) : G.wilsonLoop 0 = 1 := by
+  rw [wilsonLoop_eq_transl, transl_zero, Matrix.one_kronecker_one]
+
+/-- The product of the Wilson loops of a list is the Wilson loop of the sum. -/
+lemma list_prod_wilsonLoop (G : FinGraph N M) {α : Type*} (f : α → Cfg M) (l : List α) :
+    (l.map (fun a => G.wilsonLoop (f a))).prod = G.wilsonLoop (l.map f).sum := by
+  induction l with
+  | nil => simp [wilsonLoop_zero]
+  | cons a l ih => rw [List.map_cons, List.prod_cons, ih, List.map_cons, List.sum_cons,
+      wilsonLoop_mul_wilsonLoop]
+
+end TwoDLatticesAux
 
 /-- **`∏_p W_p = 1`** (paper: Theorem `thm:2dmap`(d)). -/
 theorem torus_prod_wilson (L₁ L₂ : ℕ) (h₁ : 3 ≤ L₁) (h₂ : 3 ≤ L₂) :
     ((univ : Finset (Fin L₁ × Fin L₂)).toList.map
       (fun p => (torus L₁ L₂ h₁ h₂).wilsonLoop (torusPlaq L₁ L₂ p))).prod = 1 := by
-  sorry
+  rw [list_prod_wilsonLoop, Finset.sum_map_toList, torus_sum_plaq L₁ L₂ h₁ h₂, wilsonLoop_zero]
+
+namespace TwoDLatticesAux
+
+/-- A combination of torus plaquettes, evaluated on the horizontal edge `(x, y+1)—(x+1, y+1)`. -/
+lemma torus_plaqSum_apply_H {L₁ L₂ : ℕ} (h₁ : 2 ≤ L₁) (h₂ : 2 ≤ L₂) (c : Fin L₁ × Fin L₂ → ZMod 2)
+    (x : Fin L₁) (y : Fin L₂) :
+    (∑ p, c p • torusPlaq L₁ L₂ p) (torusH L₁ L₂ (x, finSucc y)) = c (x, finSucc y) + c (x, y) := by
+  simp only [torusPlaq_eq h₁ h₂, smul_add, Finset.sum_add_distrib, Pi.add_apply]
+  have e1 : (∑ p, c p • (Pi.single (torusH L₁ L₂ p) 1 : Cfg (torusM L₁ L₂)))
+      (torusH L₁ L₂ (x, finSucc y)) = c (x, finSucc y) :=
+    sum_smul_single_apply_self _ torusH_injective c _
+  have e2 : (∑ p, c p • (Pi.single (torusH L₁ L₂ (p.1, finSucc p.2)) 1 : Cfg (torusM L₁ L₂)))
+      (torusH L₁ L₂ (x, finSucc y)) = c (x, y) :=
+    sum_smul_single_apply_self (fun p : Fin L₁ × Fin L₂ => torusH L₁ L₂ (p.1, finSucc p.2))
+      (torusH_injective.comp shift2_bijective.1) c (x, y)
+  have e3 : (∑ p, c p • (Pi.single (torusV L₁ L₂ p) 1 : Cfg (torusM L₁ L₂)))
+      (torusH L₁ L₂ (x, finSucc y)) = 0 :=
+    sum_smul_single_apply_eq_zero _ c _ (fun p hp => absurd hp (torusV_ne_torusH _ _))
+  have e4 : (∑ p, c p • (Pi.single (torusV L₁ L₂ (finSucc p.1, p.2)) 1 : Cfg (torusM L₁ L₂)))
+      (torusH L₁ L₂ (x, finSucc y)) = 0 :=
+    sum_smul_single_apply_eq_zero _ c _ (fun p hp => absurd hp (torusV_ne_torusH _ _))
+  rw [e1, e2, e3, e4, add_zero, add_zero]
+
+/-- A combination of torus plaquettes, evaluated on the vertical edge `(x+1, y)—(x+1, y+1)`. -/
+lemma torus_plaqSum_apply_V {L₁ L₂ : ℕ} (h₁ : 2 ≤ L₁) (h₂ : 2 ≤ L₂) (c : Fin L₁ × Fin L₂ → ZMod 2)
+    (x : Fin L₁) (y : Fin L₂) :
+    (∑ p, c p • torusPlaq L₁ L₂ p) (torusV L₁ L₂ (finSucc x, y)) = c (finSucc x, y) + c (x, y) := by
+  simp only [torusPlaq_eq h₁ h₂, smul_add, Finset.sum_add_distrib, Pi.add_apply]
+  have e1 : (∑ p, c p • (Pi.single (torusH L₁ L₂ p) 1 : Cfg (torusM L₁ L₂)))
+      (torusV L₁ L₂ (finSucc x, y)) = 0 :=
+    sum_smul_single_apply_eq_zero _ c _ (fun p hp => absurd hp (torusH_ne_torusV _ _))
+  have e2 : (∑ p, c p • (Pi.single (torusH L₁ L₂ (p.1, finSucc p.2)) 1 : Cfg (torusM L₁ L₂)))
+      (torusV L₁ L₂ (finSucc x, y)) = 0 :=
+    sum_smul_single_apply_eq_zero _ c _ (fun p hp => absurd hp (torusH_ne_torusV _ _))
+  have e3 : (∑ p, c p • (Pi.single (torusV L₁ L₂ p) 1 : Cfg (torusM L₁ L₂)))
+      (torusV L₁ L₂ (finSucc x, y)) = c (finSucc x, y) :=
+    sum_smul_single_apply_self _ torusV_injective c _
+  have e4 : (∑ p, c p • (Pi.single (torusV L₁ L₂ (finSucc p.1, p.2)) 1 : Cfg (torusM L₁ L₂)))
+      (torusV L₁ L₂ (finSucc x, y)) = c (x, y) :=
+    sum_smul_single_apply_self (fun p : Fin L₁ × Fin L₂ => torusV L₁ L₂ (finSucc p.1, p.2))
+      (torusV_injective.comp shift1_bijective.1) c (x, y)
+  rw [e1, e2, e3, e4]
+  simp only [zero_add]
+
+/-- `γ₁` on a horizontal edge. -/
+lemma gamma1_H {L₁ L₂ : ℕ} (h : 0 < L₂) (x : Fin L₁) (y : Fin L₂) :
+    torusGamma1 L₁ L₂ h (torusH L₁ L₂ (x, y)) = if y = ⟨0, h⟩ then 1 else 0 := by
+  simp [torusGamma1, torusH]
+
+/-- `γ₂` vanishes on horizontal edges. -/
+lemma gamma2_H {L₁ L₂ : ℕ} (h : 0 < L₁) (x : Fin L₁) (y : Fin L₂) :
+    torusGamma2 L₁ L₂ h (torusH L₁ L₂ (x, y)) = 0 := by
+  simp [torusGamma2, torusH]
+
+/-- `γ₁` vanishes on vertical edges. -/
+lemma gamma1_V {L₁ L₂ : ℕ} (h : 0 < L₂) (x : Fin L₁) (y : Fin L₂) :
+    torusGamma1 L₁ L₂ h (torusV L₁ L₂ (x, y)) = 0 := by
+  simp [torusGamma1, torusV]
+
+/-- `γ₂` on a vertical edge. -/
+lemma gamma2_V {L₁ L₂ : ℕ} (h : 0 < L₁) (x : Fin L₁) (y : Fin L₂) :
+    torusGamma2 L₁ L₂ h (torusV L₁ L₂ (x, y)) = if x = ⟨0, h⟩ then 1 else 0 := by
+  simp [torusGamma2, torusV]
+
+/-- A function on `ℤ/L` that is invariant under the shift `y ↦ y + 1` up to a defect `a` at the seam
+is constant, and the defect vanishes. -/
+lemma chain_const {L : ℕ} (hL : 0 < L) (f : Fin L → ZMod 2) (a : ZMod 2)
+    (h : ∀ y : Fin L, f (finSucc y) + f y + (if finSucc y = ⟨0, hL⟩ then a else 0) = 0) :
+    a = 0 ∧ ∀ y, f y = f ⟨0, hL⟩ := by
+  have hstep : ∀ k (hk : k + 1 < L), f ⟨k + 1, hk⟩ = f ⟨k, by omega⟩ := by
+    intro k hk
+    have h1 := h ⟨k, by omega⟩
+    have hs : finSucc (⟨k, by omega⟩ : Fin L) = ⟨k + 1, hk⟩ := Fin.ext (finSucc_val_of_lt _ hk)
+    have hne : (⟨k + 1, hk⟩ : Fin L) ≠ ⟨0, hL⟩ := by simp
+    rw [hs, ite_eq_right hne, add_zero] at h1
+    exact z2_eq_of_add_eq_zero h1
+  have hall : ∀ k (hk : k < L), f ⟨k, hk⟩ = f ⟨0, hL⟩ := by
+    intro k
+    induction k with
+    | zero => intro hk; rfl
+    | succ k ih => intro hk; rw [hstep k hk]; exact ih _
+  refine ⟨?_, fun y => hall y.val y.isLt⟩
+  have h1 := h ⟨L - 1, by omega⟩
+  have hs : finSucc (⟨L - 1, by omega⟩ : Fin L) = ⟨0, hL⟩ :=
+    Fin.ext (finSucc_val_of_eq _ (by simp only; omega))
+  rw [hs, ite_eq_left rfl, hall (L - 1) (by omega), z2_add_self, zero_add] at h1
+  exact h1
+
+/-- The plaquettes `p ≠ p₀` and the loops `γ₁`, `γ₂` are linearly independent. -/
+lemma torus_linIndep {L₁ L₂ : ℕ} (h₁ : 3 ≤ L₁) (h₂ : 3 ≤ L₂) (p₀ : Fin L₁ × Fin L₂) (hL₁ : 0 < L₁)
+    (hL₂ : 0 < L₂) :
+    LinearIndependent (ZMod 2)
+      (Sum.elim (fun p : {p : Fin L₁ × Fin L₂ // p ≠ p₀} => torusPlaq L₁ L₂ p.1)
+        (fun k : Fin 2 => if k = 0 then torusGamma1 L₁ L₂ hL₂ else torusGamma2 L₁ L₂ hL₁)) := by
+  rw [Fintype.linearIndependent_iff]
+  intro g hg
+  obtain ⟨c, hc0, hcp⟩ : ∃ c : Fin L₁ × Fin L₂ → ZMod 2,
+      c p₀ = 0 ∧ ∀ p : {p : Fin L₁ × Fin L₂ // p ≠ p₀}, c p.1 = g (Sum.inl p) :=
+    ⟨fun p => if hp : p = p₀ then 0 else g (Sum.inl ⟨p, hp⟩), dite_eq_left rfl,
+      fun p => dite_eq_right p.2⟩
+  have hsub : ∑ p, c p • torusPlaq L₁ L₂ p =
+      ∑ p : {p : Fin L₁ × Fin L₂ // p ≠ p₀}, g (Sum.inl p) • torusPlaq L₁ L₂ p.1 := by
+    rw [Fintype.sum_eq_add_sum_subtype_ne _ p₀, hc0, zero_smul, zero_add]
+    exact Finset.sum_congr rfl (fun p _ => by rw [hcp p])
+  have hF : ∑ p, c p • torusPlaq L₁ L₂ p + g (Sum.inr 0) • torusGamma1 L₁ L₂ hL₂ +
+      g (Sum.inr 1) • torusGamma2 L₁ L₂ hL₁ = 0 := by
+    rw [hsub, ← hg, Fintype.sum_sum_type, Fin.sum_univ_two, add_assoc]
+    simp
+  have hH : ∀ x y, c (x, finSucc y) + c (x, y) +
+      (if finSucc y = ⟨0, hL₂⟩ then g (Sum.inr 0) else 0) = 0 := by
+    intro x y
+    have := congrFun hF (torusH L₁ L₂ (x, finSucc y))
+    simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul, Pi.zero_apply,
+      torus_plaqSum_apply_H (by omega : 2 ≤ L₁) (by omega : 2 ≤ L₂), gamma1_H, gamma2_H, mul_zero,
+      add_zero, mul_ite, mul_one] at this
+    exact this
+  have hV : ∀ x y, c (finSucc x, y) + c (x, y) +
+      (if finSucc x = ⟨0, hL₁⟩ then g (Sum.inr 1) else 0) = 0 := by
+    intro x y
+    have := congrFun hF (torusV L₁ L₂ (finSucc x, y))
+    simp only [Pi.add_apply, Pi.smul_apply, smul_eq_mul, Pi.zero_apply,
+      torus_plaqSum_apply_V (by omega : 2 ≤ L₁) (by omega : 2 ≤ L₂), gamma1_V, gamma2_V, mul_zero,
+      add_zero, mul_ite, mul_one] at this
+    exact this
+  obtain ⟨ha, -⟩ := chain_const hL₂ (fun y => c (⟨0, hL₁⟩, y)) _ (hH ⟨0, hL₁⟩)
+  have hcol : ∀ x y, c (x, y) = c (x, ⟨0, hL₂⟩) :=
+    fun x => (chain_const hL₂ (fun y => c (x, y)) _ (hH x)).2
+  obtain ⟨hb, hrow⟩ := chain_const hL₁ (fun x => c (x, ⟨0, hL₂⟩)) _ (fun x => hV x ⟨0, hL₂⟩)
+  have hconst : ∀ p : Fin L₁ × Fin L₂, c p = c (⟨0, hL₁⟩, ⟨0, hL₂⟩) :=
+    fun p => (hcol p.1 p.2).trans (hrow p.1)
+  have hzero : ∀ p, c p = 0 := fun p => (hconst p).trans ((hconst p₀).symm.trans hc0)
+  rintro (p | k)
+  · rw [← hcp p]
+    exact hzero p.1
+  · fin_cases k
+    · exact ha
+    · exact hb
+
+end TwoDLatticesAux
 
 /-- **A cycle basis of the torus** (paper: Theorem `thm:2dmap`(d)): the plaquettes `p ≠ p₀` and the two
 non-contractible loops `γ₁`, `γ₂`. -/
@@ -601,12 +989,26 @@ theorem torus_basis (L₁ L₂ : ℕ) (h₁ : 3 ≤ L₁) (h₂ : 3 ≤ L₂) (p
     (torus L₁ L₂ h₁ h₂).IsCycleBasis
       (Sum.elim (fun p : {p : Fin L₁ × Fin L₂ // p ≠ p₀} => torusPlaq L₁ L₂ p.1)
         (fun k : Fin 2 => if k = 0 then torusGamma1 L₁ L₂ (by omega) else torusGamma2 L₁ L₂ (by omega))) := by
-  sorry
+  refine isCycleBasis_of_card (torus L₁ L₂ h₁ h₂) (torus_connected L₁ L₂ h₁ h₂)
+    (Nat.mul_pos (by omega) (by omega)) _ ?_ (torus_linIndep h₁ h₂ p₀ (by omega) (by omega)) ?_
+  · rintro (p | k)
+    · exact torus_plaq_cycle h₁ h₂ p.1
+    · by_cases hk : k = 0
+      · simp only [Sum.elim_inr, ite_eq_left hk]
+        exact torus_gamma1_cycle h₁ h₂ _
+      · simp only [Sum.elim_inr, ite_eq_right hk]
+        exact torus_gamma2_cycle h₁ h₂ _
+  · have hcard := Fintype.card_congr (Equiv.optionSubtypeNe p₀)
+    rw [Fintype.card_option, Fintype.card_prod, Fintype.card_fin, Fintype.card_fin] at hcard
+    rw [Fintype.card_sum, Fintype.card_fin, torus_beta L₁ L₂ h₁ h₂]
+    omega
 
 /-- **All `2^β` flux labels occur on the torus** (paper: Theorem `thm:2dmap`(d)). -/
 theorem torus_card_fluxClasses (L₁ L₂ : ℕ) (h₁ : 3 ≤ L₁) (h₂ : 3 ≤ L₂) :
     (torus L₁ L₂ h₁ h₂).fluxClasses.card = 2 ^ (L₁ * L₂ + 1) := by
-  sorry
+  rw [← torus_beta L₁ L₂ h₁ h₂]
+  exact (torus L₁ L₂ h₁ h₂).card_fluxClasses (torus_connected L₁ L₂ h₁ h₂)
+    (Nat.mul_pos (by omega) (by omega))
 
 end FinGraph
 
