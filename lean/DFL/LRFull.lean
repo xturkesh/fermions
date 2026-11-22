@@ -405,8 +405,11 @@ lemma norm_gaussProj_comm_heis_dressedSharp_le (J h : ℝ) (Y : Finset (Fin N))
   have hPa : P * a = P * T := (gaussProj_heis_dressedSharp J h q t x b).1
   have hPT : P * T = T * P := comm_gaussProj_sum_dressedSharp q _ b
   have e1 : P * (a * B - B * a) = P * (T * B - B * T) := by
-    rw [Matrix.mul_sub, Matrix.mul_sub, ← Matrix.mul_assoc, hPa, ← Matrix.mul_assoc, hPB,
-      Matrix.mul_assoc, hPa, ← Matrix.mul_assoc P B T, hPB, Matrix.mul_assoc, Matrix.mul_assoc]
+    have h1 : P * (a * B - B * a) = (P * a) * B - B * (P * a) := by
+      rw [Matrix.mul_sub, ← Matrix.mul_assoc, ← Matrix.mul_assoc, hPB, Matrix.mul_assoc B]
+    have h2 : P * (T * B - B * T) = (P * T) * B - B * (P * T) := by
+      rw [Matrix.mul_sub, ← Matrix.mul_assoc, ← Matrix.mul_assoc, hPB, Matrix.mul_assoc B]
+    rw [h1, h2, hPa]
   have e2 : T * B - B * T =
       ∑ y ∈ Y, coef J h q t x y b • (dressedSharp y b * B - B * dressedSharp y b) := by
     rw [hT, Matrix.sum_mul, Matrix.mul_sum, ← Finset.sum_sub_distrib]
@@ -425,8 +428,283 @@ lemma norm_gaussProj_comm_heis_dressedSharp_le (J h : ℝ) (Y : Finset (Fin N))
         rw [norm_smul, norm_coef]
         exact mul_le_mul_of_nonneg_left (norm_comm_dressedSharp_le y b B) (norm_nonneg _)
     _ = 2 * ‖B‖ * ∑ y ∈ Y, ‖evo (hq J h q) t x y‖ := by
-        rw [one_mul, Finset.sum_mul, Finset.mul_sum]
+        rw [one_mul, Finset.mul_sum]
         exact Finset.sum_congr rfl fun y _ => by ring
+
+/-! #### Leibniz rule -/
+
+/-- A product of factors of norm `≤ 1` has norm `≤ 1`. -/
+lemma norm_list_prod_le_one {α : Type*} (f : α → Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℂ)
+    (hf : ∀ p, ‖f p‖ ≤ 1) (l : List α) : ‖(l.map f).prod‖ ≤ 1 := by
+  induction l with
+  | nil => simp
+  | cons p l ih =>
+    rw [List.map_cons, List.prod_cons]
+    calc ‖f p * (l.map f).prod‖ ≤ ‖f p‖ * ‖(l.map f).prod‖ := norm_mul_le _ _
+      _ ≤ 1 * 1 := mul_le_mul (hf p) ih (norm_nonneg _) zero_le_one
+      _ = 1 := one_mul 1
+
+/-- **Leibniz rule for commutators with a product**, in norm: if every factor `a_i` has norm `≤ 1`
+and commutes with `P`, then `‖P [a_1 ⋯ a_k, B]‖ ≤ ∑_i ‖P [a_i, B]‖`. -/
+lemma norm_comm_list_prod_le {α : Type*} (P B : Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℂ)
+    (f : α → Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℂ)
+    (c : α → ℝ) (hf : ∀ p, ‖f p‖ ≤ 1) (hP : ∀ p, P * f p = f p * P)
+    (hc : ∀ p, ‖P * (f p * B - B * f p)‖ ≤ c p) (l : List α) :
+    ‖P * ((l.map f).prod * B - B * (l.map f).prod)‖ ≤ (l.map c).sum := by
+  induction l with
+  | nil => simp
+  | cons p l ih =>
+    rw [List.map_cons, List.prod_cons, List.map_cons, List.sum_cons]
+    set M := (l.map f).prod with hMdef
+    have e : P * (f p * M * B - B * (f p * M)) =
+        f p * (P * (M * B - B * M)) + P * (f p * B - B * f p) * M := by
+      have h1 : f p * (P * (M * B - B * M)) = P * f p * M * B - P * f p * B * M := by
+        rw [← Matrix.mul_assoc, ← hP p]
+        simp only [Matrix.mul_sub, Matrix.mul_assoc]
+      rw [h1]
+      simp only [Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_assoc]
+      abel
+    rw [e]
+    have hM : ‖M‖ ≤ 1 := norm_list_prod_le_one f hf l
+    have hcp : 0 ≤ c p := (norm_nonneg _).trans (hc p)
+    calc ‖f p * (P * (M * B - B * M)) + P * (f p * B - B * f p) * M‖
+        ≤ ‖f p * (P * (M * B - B * M))‖ + ‖P * (f p * B - B * f p) * M‖ := norm_add_le _ _
+      _ ≤ ‖f p‖ * ‖P * (M * B - B * M)‖ + ‖P * (f p * B - B * f p)‖ * ‖M‖ :=
+          add_le_add (norm_mul_le _ _) (norm_mul_le _ _)
+      _ ≤ 1 * (l.map c).sum + c p * 1 :=
+          add_le_add (mul_le_mul (hf p) ih (norm_nonneg _) zero_le_one)
+            (mul_le_mul (hc p) hM (norm_nonneg _) hcp)
+      _ = c p + (l.map c).sum := by ring
+
+/-- A list without repetitions of (site, flag) pairs with sites in `X` visits each site at most
+twice: `∑_{p ∈ l} g(p.1) ≤ 2 ∑_{x ∈ X} g(x)` for `g ≥ 0`. -/
+lemma list_sum_le_two_mul (l : List (Fin N × Bool)) (X : Finset (Fin N)) (hl : l.Nodup)
+    (hX : ∀ p ∈ l, p.1 ∈ X) (g : Fin N → ℝ) (hg : ∀ x, 0 ≤ g x) :
+    (l.map (fun p => g p.1)).sum ≤ 2 * ∑ x ∈ X, g x := by
+  rw [← List.sum_toFinset _ hl]
+  have hsub : l.toFinset ⊆ X ×ˢ (univ : Finset Bool) := by
+    intro p hp
+    rw [List.mem_toFinset] at hp
+    exact Finset.mem_product.mpr ⟨hX p hp, Finset.mem_univ _⟩
+  calc ∑ p ∈ l.toFinset, g p.1 ≤ ∑ p ∈ X ×ˢ (univ : Finset Bool), g p.1 :=
+        Finset.sum_le_sum_of_subset_of_nonneg hsub fun p _ _ => hg p.1
+    _ = 2 * ∑ x ∈ X, g x := by
+        rw [Finset.sum_product, Finset.mul_sum]
+        refine Finset.sum_congr rfl fun x _ => ?_
+        rw [Fintype.sum_bool]
+        ring
+
+/-! #### Majorana operators -/
+
+/-- `c̃_x c̃_x = 0` (complexified). -/
+lemma cplx_dressed_mul_self (x : Fin N) : cplx (dressed x) * cplx (dressed x) = 0 := by
+  have h := dressed_anticomm x x
+  have h2 : dressed x * dressed x = 0 := by
+    have h3 : (2 : ℝ) • (dressed x * dressed x) = 0 := by rw [two_smul]; exact h
+    exact (smul_eq_zero.mp h3).resolve_left two_ne_zero
+  rw [← TransportSharpAux.cplx_mul', h2, TransportSharpAux.cplx_zero']
+
+/-- `c̃_x† c̃_x† = 0` (complexified). -/
+lemma cplx_dressed_transpose_mul_self (x : Fin N) :
+    cplx (dressed x)ᵀ * cplx (dressed x)ᵀ = 0 := by
+  rw [← cplx_conjTranspose', ← conjTranspose_mul, cplx_dressed_mul_self, conjTranspose_zero]
+
+/-- `(c̃_x†)† = c̃_x`. -/
+lemma cplx_dressed_transpose_conjTranspose (x : Fin N) :
+    (cplx (dressed x)ᵀ)ᴴ = cplx (dressed x) := by
+  rw [cplx_conjTranspose', transpose_transpose]
+
+/-- The Majorana operators are self-adjoint unitaries: `γᴴ γ = 1`. -/
+lemma majorana_conjTranspose_mul_self (x : Fin N) (b : Bool) :
+    (majorana x b)ᴴ * majorana x b = 1 := by
+  have hcH : (cplx (dressed x))ᴴ = cplx (dressed x)ᵀ := cplx_conjTranspose' _
+  have hdH := cplx_dressed_transpose_conjTranspose x
+  have h1 := cplx_dressed_mul_self x
+  have h2 := cplx_dressed_transpose_mul_self x
+  have h3 : cplx (dressed x) * cplx (dressed x)ᵀ + cplx (dressed x)ᵀ * cplx (dressed x) = 1 := by
+    rw [TransportSharpAux.cplx_dressed_CAR]
+    simp
+  cases b
+  · show (cplx (dressed x) + cplx (dressed x)ᵀ)ᴴ * (cplx (dressed x) + cplx (dressed x)ᵀ) = 1
+    rw [conjTranspose_add, hcH, hdH, Matrix.add_mul, Matrix.mul_add, Matrix.mul_add, h1, h2, ← h3]
+    abel
+  · show (Complex.I • (cplx (dressed x)ᵀ - cplx (dressed x)))ᴴ *
+        (Complex.I • (cplx (dressed x)ᵀ - cplx (dressed x))) = 1
+    have hI : star Complex.I * Complex.I = 1 := by simp [Complex.conj_I]
+    rw [conjTranspose_smul, conjTranspose_sub, hcH, hdH, Matrix.smul_mul, Matrix.mul_smul,
+      smul_smul, hI, one_smul, Matrix.sub_mul, Matrix.mul_sub, Matrix.mul_sub, h1, h2, ← h3]
+    abel
+
+/-- `‖γ‖ ≤ 1`. -/
+lemma norm_majorana_le (x : Fin N) (b : Bool) : ‖majorana x b‖ ≤ 1 :=
+  norm_le_one_of_isometry _ (majorana_conjTranspose_mul_self x b)
+
+/-- The evolved Majorana operators in terms of the evolved dressed fermions. -/
+lemma heis_majorana (J h t : ℝ) (x : Fin N) (b : Bool) :
+    heis J h t (majorana x b) = if b then
+      Complex.I • (heis J h t (dressedSharp x true) - heis J h t (dressedSharp x false))
+      else heis J h t (dressedSharp x false) + heis J h t (dressedSharp x true) := by
+  cases b
+  · exact heis_add J h t _ _
+  · show heis J h t (Complex.I • (cplx (dressed x)ᵀ - cplx (dressed x))) = _
+    rw [heis_smul, heis_sub]
+    rfl
+
+/-- `P_q` commutes with `γ(t)`. -/
+lemma comm_gaussProj_heis_majorana (J h : ℝ) (q : Cfg N) (t : ℝ) (x : Fin N) (b : Bool) :
+    cplx (gaussProj q) * heis J h t (majorana x b) =
+      heis J h t (majorana x b) * cplx (gaussProj q) := by
+  have h0 := comm_gaussProj_heis_dressedSharp J h q t x false
+  have h1 := comm_gaussProj_heis_dressedSharp J h q t x true
+  rw [heis_majorana]
+  cases b
+  · simp only [Bool.false_eq_true, ite_false]
+    rw [Matrix.mul_add, Matrix.add_mul, h0, h1]
+  · simp only [ite_true]
+    rw [Matrix.mul_smul, Matrix.smul_mul, Matrix.mul_sub, Matrix.sub_mul, h0, h1]
+
+/-- **Sector-wise commutator bound for one evolved Majorana operator**:
+`‖P_q [γ(t), B]‖ ≤ 4‖B‖ ∑_{y ∈ Y} |U_q(t)_{xy}|`. -/
+lemma norm_gaussProj_comm_heis_majorana_le (J h : ℝ) (Y : Finset (Fin N))
+    (B : Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℂ) (hB : LocB Y B) (q : Cfg N) (t : ℝ)
+    (x : Fin N) (b : Bool) :
+    ‖cplx (gaussProj q) * (heis J h t (majorana x b) * B - B * heis J h t (majorana x b))‖ ≤
+      4 * ‖B‖ * ∑ y ∈ Y, ‖evo (hq J h q) t x y‖ := by
+  have h0 := norm_gaussProj_comm_heis_dressedSharp_le J h Y B hB q t x false
+  have h1 := norm_gaussProj_comm_heis_dressedSharp_le J h Y B hB q t x true
+  set P := cplx (gaussProj q) with hP
+  set a0 := heis J h t (dressedSharp x false) with ha0
+  set a1 := heis J h t (dressedSharp x true) with ha1
+  rw [heis_majorana]
+  cases b
+  · simp only [Bool.false_eq_true, ite_false]
+    have e : P * ((a0 + a1) * B - B * (a0 + a1)) =
+        P * (a0 * B - B * a0) + P * (a1 * B - B * a1) := by
+      simp only [Matrix.add_mul, Matrix.mul_add, Matrix.mul_sub]
+      abel
+    rw [e]
+    calc ‖P * (a0 * B - B * a0) + P * (a1 * B - B * a1)‖
+        ≤ ‖P * (a0 * B - B * a0)‖ + ‖P * (a1 * B - B * a1)‖ := norm_add_le _ _
+      _ ≤ 2 * ‖B‖ * ∑ y ∈ Y, ‖evo (hq J h q) t x y‖ +
+          2 * ‖B‖ * ∑ y ∈ Y, ‖evo (hq J h q) t x y‖ := add_le_add h0 h1
+      _ = 4 * ‖B‖ * ∑ y ∈ Y, ‖evo (hq J h q) t x y‖ := by ring
+  · simp only [ite_true]
+    have e : P * ((Complex.I • (a1 - a0)) * B - B * (Complex.I • (a1 - a0))) =
+        Complex.I • (P * (a1 * B - B * a1) - P * (a0 * B - B * a0)) := by
+      simp only [Matrix.smul_mul, Matrix.mul_smul, Matrix.sub_mul, Matrix.mul_sub, smul_sub]
+      abel
+    rw [e, norm_smul, Complex.norm_I, one_mul]
+    calc ‖P * (a1 * B - B * a1) - P * (a0 * B - B * a0)‖
+        ≤ ‖P * (a1 * B - B * a1)‖ + ‖P * (a0 * B - B * a0)‖ := norm_sub_le _ _
+      _ ≤ 2 * ‖B‖ * ∑ y ∈ Y, ‖evo (hq J h q) t x y‖ +
+          2 * ‖B‖ * ∑ y ∈ Y, ‖evo (hq J h q) t x y‖ := add_le_add h1 h0
+      _ = 4 * ‖B‖ * ∑ y ∈ Y, ‖evo (hq J h q) t x y‖ := by ring
+
+/-! #### Products, gauge invariance and averages -/
+
+/-- `P` commutes with a product of factors commuting with `P`. -/
+lemma comm_list_prod {α : Type*} (P : Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℂ)
+    (f : α → Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℂ) (hP : ∀ p, P * f p = f p * P)
+    (l : List α) : P * (l.map f).prod = (l.map f).prod * P := by
+  induction l with
+  | nil => simp
+  | cons p l ih =>
+    rw [List.map_cons, List.prod_cons, ← Matrix.mul_assoc, hP p, Matrix.mul_assoc, ih,
+      Matrix.mul_assoc]
+
+/-- `‖P_q X P_q‖ ≤ ‖P_q X‖`. -/
+lemma norm_block_le (X : Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℂ) (q : Cfg N) :
+    ‖cplx (gaussProj q) * X * cplx (gaussProj q)‖ ≤ ‖cplx (gaussProj q) * X‖ :=
+  (norm_mul_le _ _).trans (mul_le_of_le_one_right (norm_nonneg _) (norm_cplx_gaussProj_le q))
+
+/-- The Bernoulli average of a list sum is the list sum of the averages. -/
+lemma avgQ_list_sum {α : Type*} (l : List α) (f : α → Cfg N → ℝ) :
+    avgQ (fun q => (l.map (fun p => f p q)).sum) = (l.map (fun p => avgQ (f p))).sum := by
+  induction l with
+  | nil =>
+    simp only [List.map_nil, List.sum_nil]
+    exact TransportSharpAux.avgQ_const 0
+  | cons p l ih =>
+    simp only [List.map_cons, List.sum_cons]
+    rw [TransportSharpAux.avgQ_add, ih]
+
+/-- Sector average of the monomial bound under Hypothesis (EC), at a fixed time. -/
+lemma avgQ_mono_bound_le (J h : ℝ) {F : ℕ → ℝ} (hEC : EC J h F) (l : List (Fin N × Bool))
+    (Y : Finset (Fin N)) (t : ℝ) :
+    avgQ (fun q : Cfg N => (l.map (fun p => ∑ y ∈ Y, ‖evo (hq J h q) t p.1 y‖)).sum) ≤
+      (l.map (fun p => ∑ y ∈ Y, F (Nat.dist p.1.val y.val))).sum := by
+  rw [avgQ_list_sum l (fun p q => ∑ y ∈ Y, ‖evo (hq J h q) t p.1 y‖)]
+  refine List.sum_le_sum fun p _ => ?_
+  rw [TransportSharpAux.avgQ_sum]
+  exact Finset.sum_le_sum fun y _ => TransportSharpAux.avgQ_norm_evo_le J h hEC p.1 y t
+
+/-! #### The number operator and `P_q c̃_y` -/
+
+/-- `n_y` commutes with every sector projection (both are diagonal). -/
+lemma comm_gaussProj_number (q : Cfg N) (y : Fin N) :
+    cplx (gaussProj q) * cplx (numOp {y} ⊗ₖ (1 : Matrix (Cfg N) (Cfg N) ℝ)) =
+      cplx (numOp {y} ⊗ₖ (1 : Matrix (Cfg N) (Cfg N) ℝ)) * cplx (gaussProj q) := by
+  rw [cplx_number_eq, SectorNormAux.cplx_gaussProj, diagonal_mul_diagonal, diagonal_mul_diagonal]
+  congr 1
+  funext p
+  ring
+
+/-- `[c̃_z, n_y] = δ_{zy} c̃_y` (complexified). -/
+lemma cplx_dressed_comm_number (z y : Fin N) :
+    cplx (dressed z) * cplx (numOp {y} ⊗ₖ (1 : Matrix (Cfg N) (Cfg N) ℝ)) -
+      cplx (numOp {y} ⊗ₖ (1 : Matrix (Cfg N) (Cfg N) ℝ)) * cplx (dressed z) =
+      if z = y then cplx (dressed y) else 0 := by
+  rw [← cplx_dressed_number]
+  have h1 := TransportSharpAux.cplx_dressed_CAR z y
+  have h2 : cplx (dressed z) * cplx (dressed y) + cplx (dressed y) * cplx (dressed z) = 0 := by
+    rw [← TransportSharpAux.cplx_mul', ← TransportSharpAux.cplx_mul',
+      ← TransportSharpAux.cplx_add', dressed_anticomm, TransportSharpAux.cplx_zero']
+  calc cplx (dressed z) * (cplx (dressed y)ᵀ * cplx (dressed y)) -
+        cplx (dressed y)ᵀ * cplx (dressed y) * cplx (dressed z)
+      = (cplx (dressed z) * cplx (dressed y)ᵀ + cplx (dressed y)ᵀ * cplx (dressed z)) *
+          cplx (dressed y) - cplx (dressed y)ᵀ *
+          (cplx (dressed z) * cplx (dressed y) + cplx (dressed y) * cplx (dressed z)) := by
+        simp only [Matrix.add_mul, Matrix.mul_add, Matrix.mul_assoc]
+        abel
+    _ = if z = y then cplx (dressed y) else 0 := by
+        rw [h1, h2, Matrix.mul_zero, sub_zero]
+        split_ifs <;> simp
+
+/-- **`‖P_q c̃_y‖ = 1`**: `(P_q c̃_y)† (P_q c̃_y) = n_y P_q` is a nonzero diagonal projection. -/
+lemma norm_gaussProj_mul_dressed (q : Cfg N) (y : Fin N) :
+    ‖cplx (gaussProj q) * cplx (dressed y)‖ = 1 := by
+  set v : Cfg N × Cfg N → ℂ := fun p =>
+    ((occ (p.1 y) : ℝ) : ℂ) * (if chargeOf p.1 p.2 = q then 1 else 0) with hv
+  have hA : (cplx (gaussProj q) * cplx (dressed y))ᴴ * (cplx (gaussProj q) * cplx (dressed y)) =
+      diagonal v := by
+    rw [conjTranspose_mul, SectorNormAux.cplx_gaussProj_conjTranspose, cplx_conjTranspose',
+      Matrix.mul_assoc, ← Matrix.mul_assoc (cplx (gaussProj q)) (cplx (gaussProj q)),
+      SectorNormAux.cplx_gaussProj_mul_self]
+    have hc : cplx (gaussProj q) * cplx (dressed y) = cplx (dressed y) * cplx (gaussProj q) :=
+      comm_gaussProj_dressedSharp q y false
+    rw [hc, ← Matrix.mul_assoc, cplx_dressed_number, cplx_number_eq, SectorNormAux.cplx_gaussProj,
+      diagonal_mul_diagonal]
+  have h1 : ‖(cplx (gaussProj q) * cplx (dressed y))ᴴ * (cplx (gaussProj q) * cplx (dressed y))‖ =
+      1 := by
+    rw [hA, l2_opNorm_diagonal]
+    apply le_antisymm
+    · refine (pi_norm_le_iff_of_nonneg zero_le_one).mpr fun p => ?_
+      simp only [hv]
+      unfold occ
+      split_ifs <;> simp
+    · set p₀ : Cfg N × Cfg N := (fockCfg {y}, linkOf (fockCfg {y}) q) with hp₀
+      have hv₀ : v p₀ = 1 := by
+        have e1 : p₀.1 y = 1 := by simp [hp₀, fockCfg]
+        have e2 : chargeOf p₀.1 p₀.2 = q := chargeOf_linkOf _ q
+        simp only [hv, e1, e2, ite_true, mul_one]
+        unfold occ
+        have : (1 : ZMod 2) ≠ 0 := by decide
+        simp [this]
+      calc (1 : ℝ) = ‖v p₀‖ := by rw [hv₀, norm_one]
+        _ ≤ ‖v‖ := norm_le_pi_norm v p₀
+  rw [l2_opNorm_conjTranspose_mul_self] at h1
+  have h0 := norm_nonneg (cplx (gaussProj q) * cplx (dressed y))
+  exact le_antisymm (by nlinarith) (by nlinarith)
 
 end LRFullAux
 
@@ -439,7 +717,21 @@ theorem LR_sector_mono (J h : ℝ) (l : List (Fin N × Bool)) (Y : Finset (Fin N
     (B : Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℂ) (hB : LocB Y B) (q : Cfg N) (t : ℝ) :
     ‖cplx (gaussProj q) * (heis J h t (dressedMono l) * B - B * heis J h t (dressedMono l))‖ ≤
       2 * ‖B‖ * (l.map (fun p => ∑ y ∈ Y, ‖evo (hq J h q) t p.1 y‖)).sum := by
-  sorry
+  have hprod : heis J h t (dressedMono l) =
+      (l.map (fun p => heis J h t (dressedSharp p.1 p.2))).prod := by
+    rw [dressedMono, heis_list_prod]
+  rw [hprod, ← List.sum_map_mul_left]
+  have hf : ∀ p : Fin N × Bool, ‖heis J h t (dressedSharp p.1 p.2)‖ ≤ 1 := fun p =>
+    (norm_heis_le J h t (dressedSharp p.1 p.2)).trans (norm_dressedSharp_le p.1 p.2)
+  have hP : ∀ p : Fin N × Bool, cplx (gaussProj q) * heis J h t (dressedSharp p.1 p.2) =
+      heis J h t (dressedSharp p.1 p.2) * cplx (gaussProj q) := fun p =>
+    comm_gaussProj_heis_dressedSharp J h q t p.1 p.2
+  have hc : ∀ p : Fin N × Bool, ‖cplx (gaussProj q) * (heis J h t (dressedSharp p.1 p.2) * B -
+      B * heis J h t (dressedSharp p.1 p.2))‖ ≤ 2 * ‖B‖ * ∑ y ∈ Y, ‖evo (hq J h q) t p.1 y‖ :=
+    fun p => norm_gaussProj_comm_heis_dressedSharp_le J h Y B hB q t p.1 p.2
+  exact norm_comm_list_prod_le (α := Fin N × Bool) (cplx (gaussProj q)) B
+    (fun p : Fin N × Bool => heis J h t (dressedSharp p.1 p.2))
+    (fun p : Fin N × Bool => 2 * ‖B‖ * ∑ y ∈ Y, ‖evo (hq J h q) t p.1 y‖) hf hP hc l
 
 /-- **Sector-wise Lieb–Robinson bound for general observables** (paper: Proposition `prop:LR`(a)): for an
 expansion `A = ∑_{S ∈ s} a_S γ_S` in Majorana monomials without repeated indices and with sites in `X`. -/
@@ -449,7 +741,53 @@ theorem LR_sector_maj (J h : ℝ) (X Y : Finset (Fin N)) (s : Finset (List (Fin 
     ‖cplx (gaussProj q) * (heis J h t (∑ l ∈ s, a l • majMono l) * B -
         B * heis J h t (∑ l ∈ s, a l • majMono l))‖ ≤
       8 * (∑ l ∈ s, ‖a l‖) * ‖B‖ * ∑ x ∈ X, ∑ y ∈ Y, ‖evo (hq J h q) t x y‖ := by
-  sorry
+  set P := cplx (gaussProj q) with hP
+  have hsum : heis J h t (∑ l ∈ s, a l • majMono l) = ∑ l ∈ s, a l • heis J h t (majMono l) := by
+    rw [heis_sum]
+    exact Finset.sum_congr rfl fun l _ => heis_smul J h t _ _
+  rw [hsum]
+  have e : P * ((∑ l ∈ s, a l • heis J h t (majMono l)) * B -
+      B * ∑ l ∈ s, a l • heis J h t (majMono l)) =
+      ∑ l ∈ s, a l • (P * (heis J h t (majMono l) * B - B * heis J h t (majMono l))) := by
+    rw [Matrix.sum_mul, Matrix.mul_sum, ← Finset.sum_sub_distrib, Matrix.mul_sum]
+    refine Finset.sum_congr rfl fun l _ => ?_
+    rw [Matrix.smul_mul, Matrix.mul_smul, ← smul_sub, Matrix.mul_smul]
+  rw [e]
+  set S := ∑ x ∈ X, ∑ y ∈ Y, ‖evo (hq J h q) t x y‖ with hS
+  have hg0 : ∀ x : Fin N, 0 ≤ ∑ y ∈ Y, ‖evo (hq J h q) t x y‖ := fun x =>
+    Finset.sum_nonneg fun y _ => norm_nonneg _
+  have hf : ∀ p : Fin N × Bool, ‖heis J h t (majorana p.1 p.2)‖ ≤ 1 := fun p =>
+    (norm_heis_le J h t (majorana p.1 p.2)).trans (norm_majorana_le p.1 p.2)
+  have hPc : ∀ p : Fin N × Bool, P * heis J h t (majorana p.1 p.2) =
+      heis J h t (majorana p.1 p.2) * P := fun p =>
+    comm_gaussProj_heis_majorana J h q t p.1 p.2
+  have hc : ∀ p : Fin N × Bool, ‖P * (heis J h t (majorana p.1 p.2) * B -
+      B * heis J h t (majorana p.1 p.2))‖ ≤ 4 * ‖B‖ * ∑ y ∈ Y, ‖evo (hq J h q) t p.1 y‖ :=
+    fun p => norm_gaussProj_comm_heis_majorana_le J h Y B hB q t p.1 p.2
+  have hmono : ∀ l ∈ s, ‖P * (heis J h t (majMono l) * B - B * heis J h t (majMono l))‖ ≤
+      8 * ‖B‖ * S := by
+    intro l hl
+    have hprod : heis J h t (majMono l) =
+        (l.map (fun p : Fin N × Bool => heis J h t (majorana p.1 p.2))).prod := by
+      rw [majMono, heis_list_prod]
+    rw [hprod]
+    refine (norm_comm_list_prod_le (α := Fin N × Bool) P B
+      (fun p : Fin N × Bool => heis J h t (majorana p.1 p.2))
+      (fun p : Fin N × Bool => 4 * ‖B‖ * ∑ y ∈ Y, ‖evo (hq J h q) t p.1 y‖) hf hPc hc l).trans ?_
+    rw [List.sum_map_mul_left]
+    have h2 := list_sum_le_two_mul l X (hs l hl).1 (hs l hl).2
+      (fun x : Fin N => ∑ y ∈ Y, ‖evo (hq J h q) t x y‖) hg0
+    calc 4 * ‖B‖ * (l.map (fun p : Fin N × Bool => ∑ y ∈ Y, ‖evo (hq J h q) t p.1 y‖)).sum
+        ≤ 4 * ‖B‖ * (2 * S) := mul_le_mul_of_nonneg_left h2 (by positivity)
+      _ = 8 * ‖B‖ * S := by ring
+  calc ‖∑ l ∈ s, a l • (P * (heis J h t (majMono l) * B - B * heis J h t (majMono l)))‖
+      ≤ ∑ l ∈ s, ‖a l‖ * ‖P * (heis J h t (majMono l) * B - B * heis J h t (majMono l))‖ :=
+        (norm_sum_le _ _).trans (Finset.sum_le_sum fun l _ => norm_smul_le _ _)
+    _ ≤ ∑ l ∈ s, ‖a l‖ * (8 * ‖B‖ * S) :=
+        Finset.sum_le_sum fun l hl => mul_le_mul_of_nonneg_left (hmono l hl) (norm_nonneg _)
+    _ = 8 * (∑ l ∈ s, ‖a l‖) * ‖B‖ * S := by
+        rw [← Finset.sum_mul]
+        ring
 
 /-! ### (b) -/
 
@@ -459,7 +797,23 @@ theorem LR_avg_mono (J h : ℝ) {F : ℕ → ℝ} (hEC : EC J h F) (l : List (Fi
     avgQ (fun q : Cfg N => ⨆ t : ℝ, ‖cplx (gaussProj q) *
         (heis J h t (dressedMono l) * B - B * heis J h t (dressedMono l)) * cplx (gaussProj q)‖) ≤
       2 * ‖B‖ * (l.map (fun p => ∑ y ∈ Y, F (Nat.dist p.1.val y.val))).sum := by
-  sorry
+  have hpt : ∀ q : Cfg N, (⨆ t : ℝ, ‖cplx (gaussProj q) *
+      (heis J h t (dressedMono l) * B - B * heis J h t (dressedMono l)) * cplx (gaussProj q)‖) ≤
+      2 * ‖B‖ * (l.map (fun p : Fin N × Bool =>
+        ∑ y ∈ Y, corrQ (hq J h q) (hq_isHermitian J h q) p.1 y)).sum := by
+    intro q
+    refine ciSup_le fun t => ?_
+    refine (norm_block_le _ q).trans ((LR_sector_mono J h l Y B hB q t).trans ?_)
+    refine mul_le_mul_of_nonneg_left (List.sum_le_sum fun p _ => ?_) (by positivity)
+    exact Finset.sum_le_sum fun y _ =>
+      norm_evo_le_corrQ (hq J h q) (hq_isHermitian J h q) t p.1 y
+  refine (TransportSharpAux.avgQ_mono hpt).trans ?_
+  rw [TransportSharpAux.avgQ_const_mul]
+  refine mul_le_mul_of_nonneg_left ?_ (by positivity)
+  rw [avgQ_list_sum l (fun p q => ∑ y ∈ Y, corrQ (hq J h q) (hq_isHermitian J h q) p.1 y)]
+  refine List.sum_le_sum fun p _ => ?_
+  rw [TransportSharpAux.avgQ_sum]
+  exact Finset.sum_le_sum fun y _ => hEC.bound N p.1 y
 
 /-- **Sector-averaged zero-velocity bound for general observables** (paper: eq. `eq:main-LR`). -/
 theorem LR_avg_maj (J h : ℝ) {F : ℕ → ℝ} (hEC : EC J h F) (X Y : Finset (Fin N))
@@ -469,7 +823,24 @@ theorem LR_avg_maj (J h : ℝ) {F : ℕ → ℝ} (hEC : EC J h F) (X Y : Finset 
         (heis J h t (∑ l ∈ s, a l • majMono l) * B - B * heis J h t (∑ l ∈ s, a l • majMono l)) *
           cplx (gaussProj q)‖) ≤
       8 * (∑ l ∈ s, ‖a l‖) * ‖B‖ * ∑ x ∈ X, ∑ y ∈ Y, F (Nat.dist x.val y.val) := by
-  sorry
+  have hpt : ∀ q : Cfg N, (⨆ t : ℝ, ‖cplx (gaussProj q) *
+      (heis J h t (∑ l ∈ s, a l • majMono l) * B - B * heis J h t (∑ l ∈ s, a l • majMono l)) *
+        cplx (gaussProj q)‖) ≤
+      8 * (∑ l ∈ s, ‖a l‖) * ‖B‖ *
+        ∑ x ∈ X, ∑ y ∈ Y, corrQ (hq J h q) (hq_isHermitian J h q) x y := by
+    intro q
+    refine ciSup_le fun t => ?_
+    refine (norm_block_le _ q).trans ((LR_sector_maj J h X Y s hs a B hB q t).trans ?_)
+    refine mul_le_mul_of_nonneg_left (Finset.sum_le_sum fun x _ => Finset.sum_le_sum fun y _ => ?_)
+      (by positivity)
+    exact norm_evo_le_corrQ (hq J h q) (hq_isHermitian J h q) t x y
+  refine (TransportSharpAux.avgQ_mono hpt).trans ?_
+  rw [TransportSharpAux.avgQ_const_mul]
+  refine mul_le_mul_of_nonneg_left ?_ (by positivity)
+  rw [TransportSharpAux.avgQ_sum]
+  refine Finset.sum_le_sum fun x _ => ?_
+  rw [TransportSharpAux.avgQ_sum]
+  exact Finset.sum_le_sum fun y _ => hEC.bound N x y
 
 /-- **Expectations** (paper: Proposition `prop:LR`(b)): for a density matrix with sector weights
 `Tr(ρ P_q) ≤ K 2^{-N}`, `|Tr(ρ [A(t), B])| ≤ 2K ‖B‖ ∑_i ∑_{y ∈ Y} F(|x_i - y|)` for every `t`. -/
@@ -479,7 +850,58 @@ theorem LR_trace_mono (J h : ℝ) {F : ℕ → ℝ} (hEC : EC J h F) (l : List (
     (hw : ∀ q : Cfg N, (ρ * cplx (gaussProj q)).trace.re ≤ K / 2 ^ N) (t : ℝ) :
     ‖(ρ * (heis J h t (dressedMono l) * B - B * heis J h t (dressedMono l))).trace‖ ≤
       K * (2 * ‖B‖ * (l.map (fun p => ∑ y ∈ Y, F (Nat.dist p.1.val y.val))).sum) := by
-  sorry
+  set X := heis J h t (dressedMono l) * B - B * heis J h t (dressedMono l) with hXdef
+  have hprod : heis J h t (dressedMono l) =
+      (l.map (fun p : Fin N × Bool => heis J h t (dressedSharp p.1 p.2))).prod := by
+    rw [dressedMono, heis_list_prod]
+  have hPX : ∀ q : Cfg N, cplx (gaussProj q) * X = X * cplx (gaussProj q) := by
+    intro q
+    have hPa : cplx (gaussProj q) * heis J h t (dressedMono l) =
+        heis J h t (dressedMono l) * cplx (gaussProj q) := by
+      rw [hprod]
+      exact comm_list_prod (α := Fin N × Bool) _
+        (fun p : Fin N × Bool => heis J h t (dressedSharp p.1 p.2))
+        (fun p => comm_gaussProj_heis_dressedSharp J h q t p.1 p.2) l
+    have hPB : cplx (gaussProj q) * B = B * cplx (gaussProj q) :=
+      comm_gaussProj_of_gaugeInv B hB.gauge q
+    have e1 : cplx (gaussProj q) * X = cplx (gaussProj q) * heis J h t (dressedMono l) * B -
+        cplx (gaussProj q) * B * heis J h t (dressedMono l) := by
+      rw [hXdef, Matrix.mul_sub, ← Matrix.mul_assoc, ← Matrix.mul_assoc]
+    have e2 : X * cplx (gaussProj q) = heis J h t (dressedMono l) * (B * cplx (gaussProj q)) -
+        B * (heis J h t (dressedMono l) * cplx (gaussProj q)) := by
+      rw [hXdef, Matrix.sub_mul, Matrix.mul_assoc, Matrix.mul_assoc]
+    rw [e1, e2, hPa, hPB, Matrix.mul_assoc (heis J h t (dressedMono l)) (cplx (gaussProj q)) B,
+      Matrix.mul_assoc B (cplx (gaussProj q)) (heis J h t (dressedMono l)), hPB, hPa]
+  have hX : GaugeInv X := gaugeInv_of_comm_gaussProj X hPX
+  have hw0 : ∀ q : Cfg N, 0 ≤ (ρ * cplx (gaussProj q)).trace.re := by
+    intro q
+    have hσ : (cplx (gaussProj q) * ρ * cplx (gaussProj q)).PosSemidef := by
+      have := hρ.conjTranspose_mul_mul_same (cplx (gaussProj q))
+      rwa [SectorNormAux.cplx_gaussProj_conjTranspose] at this
+    have h0 := hσ.trace_nonneg
+    rw [SectorNormAux.trace_proj_mul_proj] at h0
+    exact (Complex.nonneg_iff.mp h0).1
+  have hK : 0 ≤ K := by
+    have h := (hw0 0).trans (hw 0)
+    rwa [le_div_iff₀ (by positivity), zero_mul] at h
+  set g : Cfg N → ℝ := fun q => 2 * ‖B‖ *
+    (l.map (fun p : Fin N × Bool => ∑ y ∈ Y, ‖evo (hq J h q) t p.1 y‖)).sum with hg
+  have hblock : ∀ q : Cfg N,
+      ‖cplx (gaussProj q) * X * cplx (gaussProj q)‖ ≤ g q := fun q =>
+    (norm_block_le X q).trans (LR_sector_mono J h l Y B hB q t)
+  refine (norm_trace_le ρ X hρ hX).trans ?_
+  calc ∑ q : Cfg N, (ρ * cplx (gaussProj q)).trace.re * ‖cplx (gaussProj q) * X * cplx (gaussProj q)‖
+      ≤ ∑ q : Cfg N, K / 2 ^ N * g q :=
+        Finset.sum_le_sum fun q _ => mul_le_mul (hw q) (hblock q) (norm_nonneg _)
+          (div_nonneg hK (by positivity))
+    _ = K * avgQ g := by
+        rw [avgQ, Finset.mul_sum, Finset.mul_sum]
+        refine Finset.sum_congr rfl fun q _ => ?_
+        ring
+    _ ≤ K * (2 * ‖B‖ * (l.map (fun p => ∑ y ∈ Y, F (Nat.dist p.1.val y.val))).sum) := by
+        refine mul_le_mul_of_nonneg_left ?_ hK
+        rw [hg, TransportSharpAux.avgQ_const_mul]
+        exact mul_le_mul_of_nonneg_left (avgQ_mono_bound_le J h hEC l Y t) (by positivity)
 
 /-! ### (c) -/
 
@@ -487,13 +909,51 @@ theorem LR_trace_mono (J h : ℝ) {F : ℕ → ℝ} (hEC : EC J h F) (l : List (
 theorem norm_dressedAnticomm_eq (J h : ℝ) (x y : Fin N) (t : ℝ) :
     ‖dressedAnticomm J h x y t‖ =
       univ.sup' univ_nonempty (fun q : Cfg N => ‖evo (hq J h q) t x y‖) := by
-  sorry
+  have hX : GaugeInv (dressedAnticomm J h x y t) := by
+    refine gaugeInv_of_comm_gaussProj _ fun q => ?_
+    rw [dressed_anticomm_t, SectorNormAux.sum_smul_gaussProj, SectorNormAux.cplx_gaussProj,
+      diagonal_mul_diagonal, diagonal_mul_diagonal]
+    congr 1
+    funext p
+    ring
+  rw [norm_gaugeInv _ hX]
+  exact Finset.sup'_congr univ_nonempty rfl fun q _ => norm_sector_anticomm J h x y t q
 
 /-- **`‖[c̃_x(t), n_y]‖ = max_q |U_q(t)_{xy}|`** (paper: eq. `eq:main-LRnorm`). -/
 theorem norm_comm_number_eq (J h : ℝ) (x y : Fin N) (t : ℝ) :
     ‖heis J h t (cplx (dressed x)) * cplx (numOp {y} ⊗ₖ (1 : Matrix (Cfg N) (Cfg N) ℝ)) -
         cplx (numOp {y} ⊗ₖ (1 : Matrix (Cfg N) (Cfg N) ℝ)) * heis J h t (cplx (dressed x))‖ =
       univ.sup' univ_nonempty (fun q : Cfg N => ‖evo (hq J h q) t x y‖) := by
-  sorry
+  have hYcomm : ∀ q q' : Cfg N, cplx (gaussProj q') * (evo (hq J h q) t x y • cplx (dressed y)) =
+      (evo (hq J h q) t x y • cplx (dressed y)) * cplx (gaussProj q') := by
+    intro q q'
+    rw [Matrix.mul_smul, Matrix.smul_mul]
+    congr 1
+    exact comm_gaussProj_dressedSharp q' y false
+  have hZ : heis J h t (cplx (dressed x)) * cplx (numOp {y} ⊗ₖ (1 : Matrix (Cfg N) (Cfg N) ℝ)) -
+      cplx (numOp {y} ⊗ₖ (1 : Matrix (Cfg N) (Cfg N) ℝ)) * heis J h t (cplx (dressed x)) =
+      ∑ q : Cfg N, cplx (gaussProj q) * (evo (hq J h q) t x y • cplx (dressed y)) := by
+    have hX : heis J h t (cplx (dressed x)) =
+        ∑ q, cplx (gaussProj q) * ∑ z, evo (hq J h q) t x z • cplx (dressed z) :=
+      heisenberg_dressed J h x t
+    rw [hX, Matrix.sum_mul, Matrix.mul_sum, ← Finset.sum_sub_distrib]
+    refine Finset.sum_congr rfl fun q _ => ?_
+    rw [Matrix.mul_assoc, ← Matrix.mul_assoc (cplx (numOp {y} ⊗ₖ (1 : Matrix (Cfg N) (Cfg N) ℝ))),
+      ← comm_gaussProj_number q y, Matrix.mul_assoc, ← Matrix.mul_sub]
+    congr 1
+    rw [Matrix.sum_mul, Matrix.mul_sum, ← Finset.sum_sub_distrib]
+    simp_rw [Matrix.smul_mul, Matrix.mul_smul, ← smul_sub, cplx_dressed_comm_number, smul_ite,
+      smul_zero]
+    simp only [Finset.sum_ite_eq', Finset.mem_univ, ite_true]
+  rw [hZ]
+  have hG : GaugeInv (∑ q : Cfg N, cplx (gaussProj q) * (evo (hq J h q) t x y • cplx (dressed y))) :=
+    gaugeInv_of_comm_gaussProj _ fun q₀ => by
+      rw [gaussProj_mul_sectorSum (fun q => evo (hq J h q) t x y • cplx (dressed y)),
+        sectorSum_mul_gaussProj (fun q => evo (hq J h q) t x y • cplx (dressed y)) hYcomm]
+  rw [norm_gaugeInv _ hG]
+  refine Finset.sup'_congr univ_nonempty rfl fun q _ => ?_
+  rw [gaussProj_mul_sectorSum (fun q => evo (hq J h q) t x y • cplx (dressed y)), Matrix.mul_assoc,
+    ← hYcomm q q, ← Matrix.mul_assoc, SectorNormAux.cplx_gaussProj_mul_self, Matrix.mul_smul,
+    norm_smul, norm_gaussProj_mul_dressed, mul_one]
 
 end DFL
