@@ -1,5 +1,6 @@
 import DFL.LRFull
 import DFL.Imbalance
+import DFL.Normalization
 
 /-!
 # The operator norm sees the clean sector (paper: Proposition `prop:LR`(c))
@@ -61,7 +62,7 @@ structure TwoModes (e ed r rd : 𝒜) (s : ℂ) : Prop where
   rd_ed : rd * ed = -(ed * rd)
 
 /-- Normal ordering of polynomials in two orthogonal fermionic modes. -/
-macro "car_norm" H:term : tactic => `(tactic| (simp only [mul_add, add_mul, mul_sub, sub_mul,
+local macro "car_norm" H:term : tactic => `(tactic| (simp only [mul_add, add_mul, mul_sub, sub_mul,
     mul_neg, neg_mul, smul_mul_assoc, mul_smul_comm, mul_assoc, one_mul, mul_one, zero_mul,
     mul_zero, smul_add, smul_sub, smul_neg, neg_neg, smul_zero, smul_smul, neg_zero, add_zero,
     zero_add, sub_zero, zero_sub, ($H).ee, ($H).dd, ($H).e_ed, ($H).rr, ($H).rdrd, ($H).r_rd,
@@ -211,7 +212,8 @@ lemma modeOp_CAR (f g : Fin N → ℂ) :
   rw [← Finset.sum_add_distrib]
   have e1 : ∀ z', f z • cplx (dressed z) * (star (g z') • cplx (dressed z')ᵀ) +
       star (g z') • cplx (dressed z')ᵀ * (f z • cplx (dressed z)) =
-      (f z * star (g z')) • (if z = z' then (1 : Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℂ) else 0) := by
+      (f z * star (g z')) •
+        (if z = z' then (1 : Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℂ) else 0) := by
     intro z'
     rw [smul_mul_smul_comm, smul_mul_smul_comm, mul_comm (star (g z')) (f z), ← smul_add,
       TransportSharpAux.cplx_dressed_CAR]
@@ -321,7 +323,8 @@ lemma vacProj_ne_zero (q : Cfg N) : vacProj q ≠ 0 := by
 lemma dressed_transpose_mul_vacProj_ne_zero (y : Fin N) (q : Cfg N) :
     (cplx (dressed y))ᴴ * vacProj q ≠ 0 := by
   intro h
-  have hCAR : cplx (dressed y) * (cplx (dressed y))ᴴ = 1 - (cplx (dressed y))ᴴ * cplx (dressed y) := by
+  have hCAR : cplx (dressed y) * (cplx (dressed y))ᴴ =
+      1 - (cplx (dressed y))ᴴ * cplx (dressed y) := by
     have h2 := TransportSharpAux.cplx_dressed_CAR y y
     rw [ite_eq_left rfl, ← cplx_conjTranspose'] at h2
     exact eq_sub_of_add_eq h2
@@ -358,7 +361,8 @@ lemma sum_rowRest (J h : ℝ) (q : Cfg N) (t : ℝ) (x y : Fin N) :
     rw [Complex.star_def, Complex.mul_conj']
     push_cast
     ring
-  rw [Finset.sum_congr rfl (fun z _ => hsplit z), Finset.sum_add_distrib, Finset.sum_ite_eq'] at hrow
+  rw [Finset.sum_congr rfl (fun z _ => hsplit z), Finset.sum_add_distrib,
+    Finset.sum_ite_eq'] at hrow
   simp only [Finset.mem_univ, ite_true] at hrow
   rw [ha] at hrow
   linear_combination hrow
@@ -369,7 +373,8 @@ lemma sum_single_mul (y : Fin N) (g : Fin N → ℂ) :
   rw [Finset.sum_eq_single y (fun z _ hz => by rw [Pi.single_eq_of_ne hz, zero_mul])
     (fun h => absurd (Finset.mem_univ y) h), Pi.single_eq_same, one_mul]
 
-/-- `c̃_y` and `r = ∑_{z ≠ y} U_q(t)_{xz} c̃_z` are two orthogonal modes, `{r, r†} = ∑_{z ≠ y} |U_{xz}|²`. -/
+/-- `c̃_y` and `r = ∑_{z ≠ y} U_q(t)_{xz} c̃_z` are two orthogonal modes, with
+`{r, r†} = ∑_{z ≠ y} |U_{xz}|²`. -/
 lemma twoModes_row (J h : ℝ) (q : Cfg N) (t : ℝ) (x y : Fin N) :
     TwoModes (cplx (dressed y)) (cplx (dressed y))ᴴ (modeOp (rowRest J h q t x y))
       (modeOp (rowRest J h q t x y))ᴴ
@@ -608,6 +613,271 @@ lemma transProb_le_of_forall (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsHermitia
 
 end TimeAvg
 
+/-! ### The clean sector `q = 0` (all `G_j = +1`) -/
+
+section Clean
+
+open Real
+
+/-- `∑_{j<n} cos(2π m j / n) = 0` if `n ∤ m`. -/
+lemma sum_range_cos_eq_zero (n m : ℕ) (hn : 0 < n) (hm : ¬ n ∣ m) :
+    ∑ j ∈ range n, Real.cos (2 * π * m * j / n) = 0 := by
+  have hprim := Complex.isPrimitiveRoot_exp n hn.ne'
+  set ζ := Complex.exp (2 * π * Complex.I / n) with hζ
+  have h1 : ζ ^ m ≠ 1 := fun h => hm ((hprim.pow_eq_one_iff_dvd m).mp h)
+  have h2 : (ζ ^ m) ^ n = 1 := by rw [← pow_mul, mul_comm, pow_mul, hprim.pow_eq_one, one_pow]
+  have h3 : ∑ j ∈ range n, (ζ ^ m) ^ j = 0 := by rw [geom_sum_eq h1, h2, sub_self, zero_div]
+  have h4 : ∀ j : ℕ, ((ζ ^ m) ^ j).re = Real.cos (2 * π * m * j / n) := by
+    intro j
+    rw [← pow_mul, hζ, ← Complex.exp_nat_mul]
+    have e : ((m * j : ℕ) : ℂ) * (2 * π * Complex.I / n) =
+        ((2 * π * m * j / n : ℝ) : ℂ) * Complex.I := by
+      push_cast
+      ring
+    rw [e, Complex.exp_ofReal_mul_I_re]
+  calc ∑ j ∈ range n, Real.cos (2 * π * m * j / n) = (∑ j ∈ range n, (ζ ^ m) ^ j).re := by
+        rw [Complex.re_sum]
+        exact Finset.sum_congr rfl fun j _ => (h4 j).symm
+    _ = 0 := by rw [h3, Complex.zero_re]
+
+/-- `∑_{j=1}^{n} cos(2π m j/(n+1)) = -1` if `n + 1 ∤ m`. -/
+lemma sum_cos_succ (n m : ℕ) (hm : ¬ (n + 1) ∣ m) :
+    ∑ j : Fin n, Real.cos (2 * π * m * ((j : ℝ) + 1) / ((n : ℝ) + 1)) = -1 := by
+  have h := sum_range_cos_eq_zero (n + 1) m (Nat.succ_pos n) hm
+  rw [Finset.sum_range_succ'] at h
+  rw [Fin.sum_univ_eq_sum_range (fun j => Real.cos (2 * π * m * ((j : ℝ) + 1) / ((n : ℝ) + 1))) n]
+  push_cast at h
+  simp only [mul_zero, zero_div, Real.cos_zero] at h
+  linarith
+
+/-- `sin⁴θ = 3/8 - cos(2θ)/2 + cos(4θ)/8`. -/
+lemma sin_pow_four (θ : ℝ) :
+    Real.sin θ ^ 4 = 3 / 8 - Real.cos (2 * θ) / 2 + Real.cos (4 * θ) / 8 := by
+  have h2 : Real.cos (2 * θ) = 1 - 2 * Real.sin θ ^ 2 := by
+    rw [Real.cos_two_mul, Real.cos_sq']
+    ring
+  have h4 : Real.cos (4 * θ) = 2 * Real.cos (2 * θ) ^ 2 - 1 := by
+    rw [show 4 * θ = 2 * (2 * θ) by ring, Real.cos_two_mul]
+  rw [h4, h2]
+  ring
+
+/-- The wave number angle `θ_k = π k/(N+1)`, `k = κ + 1 ∈ {1, …, N}`. -/
+def sineAngle (κ : Fin N) : ℝ := π * ((κ : ℝ) + 1) / ((N : ℝ) + 1)
+
+/-- The sine mode `φ_k(x) = (2/(N+1))^{1/2} sin(θ_k (x+1))`. -/
+def sineMode (κ x : Fin N) : ℝ := √(2 / ((N : ℝ) + 1)) * Real.sin (sineAngle κ * ((x : ℝ) + 1))
+
+/-- The eigenvalue `-2J cos θ_k + 2h` of the sine mode `φ_k` in the clean sector. -/
+def sineEig (J h : ℝ) (κ : Fin N) : ℝ := -2 * J * Real.cos (sineAngle κ) + 2 * h
+
+/-- `∑_y A_{xy} f(y+1) = f(x) + f(x+2)` for the path adjacency matrix `A`, if
+`f(0) = f(N+1) = 0`. -/
+lemma sum_pathAdj_mul (f : ℕ → ℝ) (h0 : f 0 = 0) (hN : f (N + 1) = 0) (x : Fin N) :
+    ∑ y : Fin N, pathAdj N x y * f (y.val + 1) = f x.val + f (x.val + 2) := by
+  have hsplit : ∀ y : Fin N, pathAdj N x y * f (y.val + 1) =
+      (if y.val = x.val + 1 then f (y.val + 1) else 0) +
+        (if y.val + 1 = x.val then f (y.val + 1) else 0) := by
+    intro y
+    simp only [pathAdj]
+    by_cases h1 : y.val = x.val + 1
+    · have h2 : ¬ y.val + 1 = x.val := by omega
+      rw [ite_eq_left (Or.inl h1.symm), ite_eq_left h1, ite_eq_right h2]
+      ring
+    · by_cases h2 : y.val + 1 = x.val
+      · rw [ite_eq_left (Or.inr h2), ite_eq_right h1, ite_eq_left h2]
+        ring
+      · have h3 : ¬ (x.val + 1 = y.val ∨ y.val + 1 = x.val) := by omega
+        rw [ite_eq_right h3, ite_eq_right h1, ite_eq_right h2]
+        ring
+  rw [Finset.sum_congr rfl fun y _ => hsplit y, Finset.sum_add_distrib,
+    Fin.sum_univ_eq_sum_range (fun j => if j = x.val + 1 then f (j + 1) else 0) N,
+    Fin.sum_univ_eq_sum_range (fun j => if j + 1 = x.val then f (j + 1) else 0) N,
+    Finset.sum_ite_eq', add_comm]
+  congr 1
+  · rcases Nat.eq_zero_or_pos x.val with hx | hx
+    · rw [hx, h0]
+      exact Finset.sum_eq_zero fun j _ => ite_eq_right (by omega)
+    · obtain ⟨k, hk⟩ : ∃ k, x.val = k + 1 := ⟨x.val - 1, by omega⟩
+      rw [hk]
+      have e : ∀ i : ℕ, (if i + 1 = k + 1 then f (i + 1) else 0) =
+          if i = k then f (k + 1) else 0 := by
+        intro i
+        by_cases hi : i = k
+        · rw [ite_eq_left (by omega), ite_eq_left hi, hi]
+        · rw [ite_eq_right (by omega), ite_eq_right hi]
+      rw [Finset.sum_congr rfl fun i _ => e i, Finset.sum_ite_eq', ite_eq_left]
+      have := x.isLt
+      simp only [Finset.mem_range]
+      omega
+  · split_ifs with hx
+    · rfl
+    · have : x.val + 2 = N + 1 := by
+        have := x.isLt
+        simp only [Finset.mem_range] at hx
+        omega
+      rw [this, hN]
+
+/-- In the clean sector `h_0 = -J A + 2h`. -/
+lemma sum_hq_zero_mul (J h : ℝ) (v : Fin N → ℝ) (x : Fin N) :
+    ∑ y, hq J h (0 : Cfg N) x y * v y = -J * ∑ y, pathAdj N x y * v y + 2 * h * v x := by
+  simp [hq, Matrix.add_apply, Matrix.one_apply, add_mul, Finset.sum_add_distrib, Finset.mul_sum,
+    mul_assoc, sgn]
+
+/-- The sine modes are eigenvectors of `h_0`. -/
+lemma sineMode_eig (J h : ℝ) (κ x : Fin N) :
+    ∑ y, hq J h (0 : Cfg N) x y * sineMode κ y = sineEig J h κ * sineMode κ x := by
+  set c := √(2 / ((N : ℝ) + 1)) with hc
+  set θ := sineAngle κ with hθ
+  set f : ℕ → ℝ := fun j => c * Real.sin (θ * j) with hf
+  have hmode : ∀ y : Fin N, sineMode κ y = f (y.val + 1) := by
+    intro y
+    simp only [sineMode, hf, hc, hθ]
+    push_cast
+    ring_nf
+  have h0 : f 0 = 0 := by simp [hf]
+  have hN : f (N + 1) = 0 := by
+    simp only [hf]
+    have e : θ * ((N + 1 : ℕ) : ℝ) = ((κ.val + 1 : ℕ) : ℝ) * π := by
+      rw [hθ, sineAngle]
+      push_cast
+      field_simp
+    rw [e, Real.sin_nat_mul_pi, mul_zero]
+  rw [sum_hq_zero_mul]
+  simp only [hmode]
+  rw [sum_pathAdj_mul f h0 hN x]
+  simp only [hf, sineEig, ← hθ]
+  have e1 : θ * ((x.val : ℕ) : ℝ) = θ * ((x.val + 1 : ℕ) : ℝ) - θ := by push_cast; ring
+  have e2 : θ * ((x.val + 2 : ℕ) : ℝ) = θ * ((x.val + 1 : ℕ) : ℝ) + θ := by push_cast; ring
+  rw [e1, e2, Real.sin_sub, Real.sin_add]
+  ring
+
+/-- The sine modes are normalized. -/
+lemma sineMode_norm (κ : Fin N) : ∑ x, sineMode κ x ^ 2 = 1 := by
+  have hN1 : (0 : ℝ) < (N : ℝ) + 1 := by positivity
+  have hc2 : √(2 / ((N : ℝ) + 1)) ^ 2 = 2 / ((N : ℝ) + 1) := Real.sq_sqrt (by positivity)
+  have hdvd : ¬ (N + 1) ∣ (κ.val + 1) := fun hd => by
+    have := Nat.le_of_dvd (Nat.succ_pos _) hd
+    have := κ.isLt
+    omega
+  have hcos := sum_cos_succ N (κ.val + 1) hdvd
+  have e : ∀ x : Fin N, sineMode κ x ^ 2 = 2 / ((N : ℝ) + 1) *
+      (1 / 2 - Real.cos (2 * π * ((κ.val + 1 : ℕ) : ℝ) * ((x : ℝ) + 1) / ((N : ℝ) + 1)) / 2) := by
+    intro x
+    have a : 2 * (π * ((κ : ℝ) + 1) / ((N : ℝ) + 1) * ((x : ℝ) + 1)) =
+        2 * π * ((κ.val + 1 : ℕ) : ℝ) * ((x : ℝ) + 1) / ((N : ℝ) + 1) := by
+      push_cast
+      ring
+    rw [sineMode, mul_pow, hc2, Real.sin_sq_eq_half_sub, sineAngle, a]
+  rw [Finset.sum_congr rfl fun x _ => e x, ← Finset.mul_sum, Finset.sum_sub_distrib,
+    ← Finset.sum_div, ← Finset.sum_div, hcos]
+  simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul, mul_one]
+  field_simp
+  ring
+
+/-- Distinct sine modes have distinct eigenvalues (`J ≠ 0`). -/
+lemma sineEig_injective (J h : ℝ) (hJ : J ≠ 0) : Function.Injective (sineEig (N := N) J h) := by
+  intro κ κ' e
+  have hN1 : (0 : ℝ) < (N : ℝ) + 1 := by positivity
+  have hmem : ∀ κ : Fin N, sineAngle κ ∈ Set.Icc 0 π := by
+    intro κ
+    have hk : (κ : ℝ) + 1 ≤ (N : ℝ) + 1 := by
+      have := κ.isLt
+      have : (κ : ℝ) ≤ N := by exact_mod_cast this.le
+      linarith
+    refine ⟨by unfold sineAngle; positivity, ?_⟩
+    unfold sineAngle
+    rw [div_le_iff₀ hN1]
+    nlinarith [Real.pi_pos]
+  have hcos : Real.cos (sineAngle κ) = Real.cos (sineAngle κ') := by
+    unfold sineEig at e
+    have : -2 * J * (Real.cos (sineAngle κ) - Real.cos (sineAngle κ')) = 0 := by linarith
+    rcases mul_eq_zero.mp this with h1 | h1
+    · exact absurd (by linarith : J = 0) hJ
+    · linarith
+  have hθ := Real.injOn_cos (hmem κ) (hmem κ') hcos
+  unfold sineAngle at hθ
+  have h2 : ((κ : ℕ) : ℝ) = ((κ' : ℕ) : ℝ) := by
+    field_simp at hθ
+    nlinarith [Real.pi_pos]
+  exact Fin.ext (by exact_mod_cast h2)
+
+/-- `∑_{k=1}^{N} sin⁴(π k/(N+1)) = 3(N+1)/8` for `N ≥ 2`. -/
+lemma sum_sin_pow_four (hN : 2 ≤ N) :
+    ∑ κ : Fin N, Real.sin (sineAngle κ) ^ 4 = 3 * ((N : ℝ) + 1) / 8 := by
+  have h1 : ¬ (N + 1) ∣ 1 := fun hd => by have := Nat.le_of_dvd one_pos hd; omega
+  have h2 : ¬ (N + 1) ∣ 2 := fun hd => by have := Nat.le_of_dvd two_pos hd; omega
+  have hc1 := sum_cos_succ N 1 h1
+  have hc2 := sum_cos_succ N 2 h2
+  have e : ∀ κ : Fin N, Real.sin (sineAngle κ) ^ 4 =
+      3 / 8 - Real.cos (2 * π * ((1 : ℕ) : ℝ) * ((κ : ℝ) + 1) / ((N : ℝ) + 1)) / 2 +
+        Real.cos (2 * π * ((2 : ℕ) : ℝ) * ((κ : ℝ) + 1) / ((N : ℝ) + 1)) / 8 := by
+    intro κ
+    have a2 : 2 * (π * ((κ : ℝ) + 1) / ((N : ℝ) + 1)) =
+        2 * π * ((1 : ℕ) : ℝ) * ((κ : ℝ) + 1) / ((N : ℝ) + 1) := by
+      push_cast
+      ring
+    have a4 : 4 * (π * ((κ : ℝ) + 1) / ((N : ℝ) + 1)) =
+        2 * π * ((2 : ℕ) : ℝ) * ((κ : ℝ) + 1) / ((N : ℝ) + 1) := by
+      push_cast
+      ring
+    rw [sin_pow_four, sineAngle, a2, a4]
+  rw [Finset.sum_congr rfl fun κ _ => e κ, Finset.sum_add_distrib, Finset.sum_sub_distrib,
+    ← Finset.sum_div, ← Finset.sum_div, ← Finset.sum_div, hc1, hc2]
+  simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+  ring
+
+/-- **The clean-sector transition probability** `R(1, N) = ∑_k φ_k(1)⁴ = 3/(2(N+1))` for `N ≥ 2`. -/
+lemma transProb_clean (J h : ℝ) (hJ : J ≠ 0) (hN : 2 ≤ N) :
+    transProb (hq J h (0 : Cfg N)) (hq_isHermitian J h 0) ⟨0, by omega⟩ ⟨N - 1, by omega⟩ =
+      3 / (2 * ((N : ℝ) + 1)) := by
+  set hA := hq_isHermitian J h (0 : Cfg N) with hAdef
+  have hinj := hq_eigenvalues_injective J h hJ (0 : Cfg N)
+  have key : ∀ κ : Fin N, ∃ β, hA.eigenvalues β = sineEig J h κ ∧
+      ∀ x, |sineMode κ x| = |hA.eigenvectorBasis β x| := fun κ =>
+    NormalizationAux.exists_abs_eq_eigvec _ hA hinj _ _ (sineMode_eig J h κ) (sineMode_norm κ)
+  choose σ hσ1 hσ2 using key
+  have hσinj : Function.Injective σ := by
+    intro κ κ' e
+    exact sineEig_injective J h hJ (by rw [← hσ1 κ, ← hσ1 κ', e])
+  have hN1 : (0 : ℝ) < (N : ℝ) + 1 := by positivity
+  have hc2 : √(2 / ((N : ℝ) + 1)) ^ 2 = 2 / ((N : ℝ) + 1) := Real.sq_sqrt (by positivity)
+  set x0 : Fin N := ⟨0, by omega⟩ with hx0
+  set x1 : Fin N := ⟨N - 1, by omega⟩ with hx1
+  have hterm : ∀ κ : Fin N,
+      (hA.eigenvectorBasis (σ κ) x0) ^ 2 * (hA.eigenvectorBasis (σ κ) x1) ^ 2 =
+      (2 / ((N : ℝ) + 1)) ^ 2 * Real.sin (sineAngle κ) ^ 4 := by
+    intro κ
+    rw [← sq_abs (hA.eigenvectorBasis (σ κ) x0), ← hσ2 κ x0, sq_abs,
+      ← sq_abs (hA.eigenvectorBasis (σ κ) x1), ← hσ2 κ x1, sq_abs, sineMode, sineMode]
+    have e0 : sineAngle κ * ((x0 : ℝ) + 1) = sineAngle κ := by simp [hx0]
+    have e1 : sineAngle κ * ((x1 : ℝ) + 1) = ((κ.val + 1 : ℕ) : ℝ) * π - sineAngle κ := by
+      have hc : ((x1 : ℕ) : ℝ) + 1 = N := by
+        rw [hx1]
+        simp only
+        rw [Nat.cast_sub (by omega : 1 ≤ N)]
+        push_cast
+        ring
+      rw [hc, sineAngle]
+      push_cast
+      field_simp
+      ring
+    have hsq : ((-1 : ℝ) ^ (κ.val + 1)) ^ 2 = 1 := by
+      rw [← pow_mul, mul_comm, pow_mul, neg_one_sq, one_pow]
+    rw [e0, e1, Real.sin_nat_mul_pi_sub, mul_pow, mul_pow, hc2, neg_sq, mul_pow, hsq, one_mul]
+    ring
+  rw [transProb, ← hσinj.bijective_of_finite.sum_comp
+    (fun β => (hA.eigenvectorBasis β x0) ^ 2 * (hA.eigenvectorBasis β x1) ^ 2)]
+  simp only
+  rw [Finset.sum_congr rfl fun κ _ => hterm κ, ← Finset.mul_sum, sum_sin_pow_four hN]
+  field_simp
+  ring
+
+/-- `U(0) = 1`. -/
+lemma evo_zero_eq {ι : Type*} [Fintype ι] [DecidableEq ι] (A : Matrix ι ι ℝ) : evo A 0 = 1 := by
+  simp [evo]
+
+end Clean
+
 end LRNormAux
 
 open LRNormAux
@@ -626,12 +896,116 @@ theorem norm_comm_nn_eq (J h : ℝ) (x y : Fin N) (t : ℝ) :
 theorem sup_norm_dressedAnticomm_ge (J h : ℝ) (hJ : J ≠ 0) (hN : 2 ≤ N) :
     √(3 / (2 * ((N : ℝ) + 1))) ≤
       ⨆ t : ℝ, ‖dressedAnticomm (N := N) J h ⟨0, by omega⟩ ⟨N - 1, by omega⟩ t‖ := by
-  sorry
+  set x0 : Fin N := ⟨0, by omega⟩ with hx0
+  set x1 : Fin N := ⟨N - 1, by omega⟩ with hx1
+  have hbdd : BddAbove (Set.range fun t : ℝ => ‖dressedAnticomm (N := N) J h x0 x1 t‖) := by
+    refine ⟨1, ?_⟩
+    rintro _ ⟨t, rfl⟩
+    dsimp only
+    rw [norm_dressedAnticomm_eq]
+    exact Finset.sup'_le _ _ fun q _ => norm_evo_le_one _ (hq_isSymm J h q) t _ _
+  have hle : ∀ t : ℝ, ‖evo (hq J h (0 : Cfg N)) t x0 x1‖ ≤
+      ⨆ t : ℝ, ‖dressedAnticomm (N := N) J h x0 x1 t‖ := by
+    intro t
+    refine le_trans ?_ (le_ciSup hbdd t)
+    rw [norm_dressedAnticomm_eq]
+    exact Finset.le_sup' (fun q : Cfg N => ‖evo (hq J h q) t x0 x1‖) (Finset.mem_univ 0)
+  set S := ⨆ t : ℝ, ‖dressedAnticomm (N := N) J h x0 x1 t‖ with hS
+  have hS0 : 0 ≤ S := (norm_nonneg _).trans (hle 0)
+  have htp := transProb_le_of_forall _ (hq_isHermitian J h 0) (hq_eigenvalues_injective J h hJ 0)
+    x0 x1 (S ^ 2) fun t => pow_le_pow_left₀ (norm_nonneg _) (hle t) 2
+  rw [transProb_clean J h hJ hN] at htp
+  calc √(3 / (2 * ((N : ℝ) + 1))) ≤ √(S ^ 2) := Real.sqrt_le_sqrt htp
+    _ = S := Real.sqrt_sq hS0
 
 /-- `sup_t ‖[n_1(t), n_N]‖ ≥ (3/(4(N+1)))^{1/2}` for `N ≥ 2` (paper: Proposition `prop:LR`(c)). -/
 theorem sup_norm_comm_nn_ge (J h : ℝ) (hJ : J ≠ 0) (hN : 2 ≤ N) :
     √(3 / (4 * ((N : ℝ) + 1))) ≤ ⨆ t : ℝ, ‖numComm (N := N) J h ⟨0, by omega⟩ ⟨N - 1, by omega⟩ t‖ := by
-  sorry
+  set x0 : Fin N := ⟨0, by omega⟩ with hx0
+  set x1 : Fin N := ⟨N - 1, by omega⟩ with hx1
+  set u : ℝ → ℝ := fun t => ‖evo (hq J h (0 : Cfg N)) t x0 x1‖ with hu
+  have hucont : Continuous u := (continuous_evo_apply _ (hq_isHermitian J h 0) x0 x1).norm
+  have hx01 : x0 ≠ x1 := by
+    rw [hx0, hx1, Ne, Fin.ext_iff]
+    simp only
+    omega
+  have hu0 : u 0 = 0 := by
+    simp only [hu]
+    rw [evo_zero_eq, Matrix.one_apply_ne hx01, norm_zero]
+  have hbdd : BddAbove (Set.range fun t : ℝ => ‖numComm (N := N) J h x0 x1 t‖) := by
+    refine ⟨1, ?_⟩
+    rintro _ ⟨t, rfl⟩
+    dsimp only
+    rw [norm_comm_nn_eq]
+    refine Finset.sup'_le _ _ fun q _ => ?_
+    have h1 := norm_evo_le_one _ (hq_isSymm J h q) t x0 x1
+    have h2 : √(1 - ‖evo (hq J h q) t x0 x1‖ ^ 2) ≤ 1 :=
+      Real.sqrt_le_one.mpr (by nlinarith [norm_nonneg (evo (hq J h q) t x0 x1)])
+    calc ‖evo (hq J h q) t x0 x1‖ * √(1 - ‖evo (hq J h q) t x0 x1‖ ^ 2) ≤ 1 * 1 :=
+          mul_le_mul h1 h2 (Real.sqrt_nonneg _) zero_le_one
+      _ = 1 := one_mul 1
+  set S := ⨆ t : ℝ, ‖numComm (N := N) J h x0 x1 t‖ with hS
+  have hg : ∀ t, u t * √(1 - u t ^ 2) ≤ S := by
+    intro t
+    refine le_trans ?_ (le_ciSup hbdd t)
+    rw [norm_comm_nn_eq]
+    exact Finset.le_sup' (fun q : Cfg N =>
+      ‖evo (hq J h q) t x0 x1‖ * √(1 - ‖evo (hq J h q) t x0 x1‖ ^ 2)) (Finset.mem_univ 0)
+  have hS0 : 0 ≤ S := by
+    have := hg 0
+    rwa [hu0, zero_mul] at this
+  set s₀ := √(3 / (2 * ((N : ℝ) + 1))) with hs₀
+  have hN1 : (0 : ℝ) < N + 1 := by positivity
+  have hs₀0 : 0 ≤ s₀ := Real.sqrt_nonneg _
+  have hs₀sq : s₀ ^ 2 = 3 / (2 * ((N : ℝ) + 1)) := Real.sq_sqrt (by positivity)
+  have hs₀half : s₀ ^ 2 ≤ 1 / 2 := by
+    rw [hs₀sq, div_le_div_iff₀ (by positivity) (by norm_num)]
+    have : (2 : ℝ) ≤ N := by exact_mod_cast hN
+    nlinarith
+  have hreach : ∀ s, 0 ≤ s → s < s₀ → ∃ t, u t = s := by
+    intro s hs0 hs
+    obtain ⟨t₁, ht₁⟩ : ∃ t₁, s ≤ u t₁ := by
+      by_contra hcon
+      simp only [not_exists, not_le] at hcon
+      have htp := transProb_le_of_forall _ (hq_isHermitian J h 0)
+        (hq_eigenvalues_injective J h hJ 0) x0 x1 (s ^ 2) fun t =>
+          pow_le_pow_left₀ (norm_nonneg _) (hcon t).le 2
+      rw [transProb_clean J h hJ hN, ← hs₀sq] at htp
+      nlinarith
+    have hmem : s ∈ Set.uIcc (u 0) (u t₁) := by
+      rw [hu0]
+      exact Set.mem_uIcc.mpr (Or.inl ⟨hs0, ht₁⟩)
+    obtain ⟨t, _, ht⟩ := intermediate_value_uIcc hucont.continuousOn hmem
+    exact ⟨t, ht⟩
+  have hsqrt2 : 0 < √2 := Real.sqrt_pos.mpr two_pos
+  have key : ∀ c, c < s₀ / √2 → c ≤ S := by
+    intro c hc
+    rcases le_or_gt c 0 with hc0 | hc0
+    · exact hc0.trans hS0
+    · set s := c * √2 with hs_def
+      have hs : s < s₀ := by
+        rw [lt_div_iff₀ hsqrt2] at hc
+        exact hc
+      have hs0 : 0 ≤ s := by positivity
+      obtain ⟨t, ht⟩ := hreach s hs0 hs
+      have h1 := hg t
+      rw [ht] at h1
+      have hs2 : s ^ 2 ≤ 1 / 2 := by nlinarith
+      have h2 : √(1 / 2) ≤ √(1 - s ^ 2) := Real.sqrt_le_sqrt (by linarith)
+      have h3 : c = s * √(1 / 2) := by
+        rw [hs_def, mul_assoc, ← Real.sqrt_mul (by norm_num : (0 : ℝ) ≤ 2),
+          show (2 : ℝ) * (1 / 2) = 1 by norm_num, Real.sqrt_one, mul_one]
+      calc c = s * √(1 / 2) := h3
+        _ ≤ s * √(1 - s ^ 2) := mul_le_mul_of_nonneg_left h2 hs0
+        _ ≤ S := h1
+  have hfin : s₀ / √2 ≤ S := le_of_forall_lt_imp_le_of_dense key
+  have he : √(3 / (4 * ((N : ℝ) + 1))) = s₀ / √2 := by
+    rw [hs₀, ← Real.sqrt_div (by positivity)]
+    congr 1
+    field_simp
+    ring
+  rw [he]
+  exact hfin
 
 /-- The sector average is small: `E_q sup_t ‖P_q {c̃_1(t), c̃_N†} P_q‖ ≤ F(N-1)` (paper: Proposition
 `prop:LR`(c)). -/
