@@ -41,3 +41,15 @@ import DFL.GraphFlux
 import DFL.GraphWilson
 import DFL.TwoDMap
 import DFL.Cluster
+import DFL.GaussLaw
+import DFL.SectorNorm
+import DFL.Normalization
+import DFL.SlaterExact
+import DFL.BinEntropy
+import DFL.AreaLawSharp
+import DFL.DualityFull
+import DFL.TransportSharp
+import DFL.TwoDLaws
+import DFL.TwoDLattices
+import DFL.DimerTransfer
+import DFL.DimerTL
