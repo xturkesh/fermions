@@ -13,6 +13,23 @@ the cut, with Schmidt coefficients `∏_{j ∈ T} ν_j ∏_{j ∉ T} (1 - ν_j)`
 * `numDist_slater`: the law of `N_A` is the Poisson-binomial law of the `ν_i`;
 * `genfun_slater`: its generating function is `det(1 + (z-1) C_A)` (paper: `lem:quasifree`(b));
 * `sum_sqrt_eig_le`: `∑_i √(ν_i (1 - ν_i)) ≤ ∑_{x ∈ A, y ∉ A} |K_{xy}|` (paper: `lem:slater`(b)).
+
+## Proof outline (auxiliary lemmas in `DFL.SlaterExactAux`)
+
+1. `slater_setup`: `ψ` is a phase times the Slater determinant of canonical orbitals `w_k`
+   (`AreaLawAux.canonical_orbitals`) with `⟨P_A w_k, P_A w_l⟩ = μ_k δ_kl` and
+   `⟨P_B w_k, P_B w_l⟩ = (1 - μ_k) δ_kl`.
+2. `slater_expand`: expanding `∏_k (c†(P_A w_k) + c†(P_B w_k)) |0⟩` across the cut gives
+   `∑_σ s_σ X_σ ⊗ Y_σ` (`σ : Fin M → Bool`, `|s_σ| = 1`); by the CAR Gram identity
+   `gram_prodSel` the `X_σ` and the `Y_σ` are orthogonal families, and `X_σ` has `|σ|` particles
+   (`isNum_prodSel`).
+3. `slater_core`: hence `ρ_A = Z Z†` with `Z† Z = diag(λ_σ)`, `λ_σ = ∏_{σ_k} μ_k ∏_{¬σ_k} (1 - μ_k)`,
+   so `S(ρ_A) = ∑_σ η(λ_σ) = ∑_k h(μ_k)` and `P(N_A = n) = ∑_{|σ| = n} λ_σ`.
+4. `mset_eigenvalues`: `C_A = B B†` and `B† B = diag(μ)` have the same nonzero spectrum
+   (`Matrix.charpoly_mul_comm'`), so sums of `f` with `f 0 = 0` and products of `F` with `F 0 = 1`
+   agree (`sum_eq_of_mset`, `prod_eq_of_mset`); this transfers `h`, `√(ν(1-ν))` and the generating
+   polynomial `pbPoly` of the Poisson-binomial law. Finally `det(1 + (z-1) C_A) =
+   ∏_k (1 + (z-1) μ_k)` by the Weinstein–Aronszajn identity (`det_one_add_smul`).
 -/
 
 open Matrix Finset
@@ -196,10 +213,6 @@ lemma parMul_vac : parMul (fockVec (∅ : Finset (Fin K))) = fockVec ∅ := by
     have h0 : ∑ i, fockCfg (∅ : Finset (Fin K)) i = 0 := by simp [fockCfg]
     simp [parMul, parC, h0, sgn]
   · simp [parMul, fockVec, hn]
-
-/-- `parMul` is linear. -/
-lemma parMul_smul (c : ℂ) (Z : Cfg K → ℂ) : parMul (c • Z) = c • parMul Z := by
-  funext n; simp only [parMul, Pi.smul_apply, smul_eq_mul]; ring
 
 /-- `prodSel u σ` has the parity of the number of selected orbitals. -/
 lemma parMul_prodSel {M : ℕ} (u : Fin M → Fin K → ℂ) (σ : Fin M → Bool) :
@@ -468,11 +481,6 @@ lemma genfun_poissonBinomial {ι : Type*} [Fintype ι] [DecidableEq ι] (ν : ι
 
 /-! ### Equal nonzero spectra -/
 
-/-- Equal matrices have equal eigenvalues. -/
-lemma eigenvalues_congr {ι : Type*} [Fintype ι] [DecidableEq ι] {ρ σ : Matrix ι ι ℂ}
-    (hρ : ρ.IsHermitian) (hσ : σ.IsHermitian) (h : ρ = σ) : hρ.eigenvalues = hσ.eigenvalues := by
-  subst h; rfl
-
 /-- `B Bᴴ` and `Bᴴ B = diag(ν)` have the same nonzero spectrum: an identity of multisets padded
 with zeros. -/
 lemma mset_eigenvalues {ι κ : Type*} [Fintype ι] [DecidableEq ι] [Fintype κ] [DecidableEq κ]
@@ -701,7 +709,8 @@ lemma slater_core (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsSymm) (S : Finset (
     rw [e, hX]
     split_ifs with h
     · subst h
-      rw [hsq, ← hlam σ, hXn, Complex.ofReal_mul, Complex.ofReal_prod]
+      rw [hsq, ← hlam σ, hXn, Complex.ofReal_mul,
+        Complex.ofReal_prod (s := univ) (f := fun k => if σ k then ν k else 1)]
       congr 1
       exact Finset.prod_congr rfl fun k _ => by split_ifs <;> simp
     · simp
@@ -725,7 +734,9 @@ lemma slater_core (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsSymm) (S : Finset (
     simp only [hre, ← Finset.mul_sum]
     have hsupp : IsNum (∑ k, if σ k then 1 else 0) (X σ) := isNum_prodSel a σ
     by_cases hn : (∑ j, if σ j then 1 else 0) = n
-    · rw [ite_eq_left hn, ← hlam σ, nsq]
+    · rw [ite_eq_left hn]
+      show μ σ * _ = lam σ
+      rw [← hlam σ, nsq]
       congr 1
       rw [Finset.sum_filter_of_ne]
       intro x _ hx
@@ -745,14 +756,29 @@ end SlaterExactAux
 /-- `C_A` is Hermitian. -/
 theorem corrA_isHermitian (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsSymm) (S : Finset (Fin N))
     (t : ℝ) (ℓ : ℕ) (hℓ : ℓ ≤ N) : (corrA A S t ℓ hℓ).IsHermitian := by
-  sorry
+  -- `hA` is not needed: `K = U P_S U†` is Hermitian for every `U`
+  have _ := hA
+  unfold Matrix.IsHermitian corrA
+  rw [Matrix.conjTranspose_submatrix, FreeDynAux.corrMat_conjTranspose]
 
 /-- The eigenvalues of `C_A` lie in `[0, 1]`. -/
 theorem eig_corrA_mem (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsSymm) (S : Finset (Fin N))
     (t : ℝ) (ℓ : ℕ) (hℓ : ℓ ≤ N) (i : Fin ℓ) :
     0 ≤ (corrA_isHermitian A hA S t ℓ hℓ).eigenvalues i ∧
       (corrA_isHermitian A hA S t ℓ hℓ).eigenvalues i ≤ 1 := by
-  sorry
+  obtain ⟨M, B, ν, hCB, hBB, hν, -, -, -⟩ := SlaterExactAux.slater_core A hA S t ℓ hℓ
+  have hm := SlaterExactAux.mset_eigenvalues _ (corrA_isHermitian A hA S t ℓ hℓ) B hCB ν hBB
+  simp only [Fintype.card_fin] at hm
+  have hi : (corrA_isHermitian A hA S t ℓ hℓ).eigenvalues i ∈
+      M • ({0} : Multiset ℝ) + univ.val.map (corrA_isHermitian A hA S t ℓ hℓ).eigenvalues :=
+    Multiset.mem_add.mpr (Or.inr (Multiset.mem_map_of_mem _ (Finset.mem_univ_val i)))
+  rw [hm, Multiset.mem_add] at hi
+  rcases hi with h | h
+  · rw [Multiset.mem_singleton.mp (Multiset.mem_of_mem_nsmul h)]
+    norm_num
+  · obtain ⟨k, -, hk⟩ := Multiset.mem_map.mp h
+    rw [← hk]
+    exact hν k
 
 /-- **Entanglement entropy of a Slater determinant** (paper: Lemma `lem:slater`(a)):
 `S(ρ_A) = ∑_i h(ν_i)`. -/
@@ -760,14 +786,22 @@ theorem vonNeumann_rdm_slater (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsSymm) (
     (t : ℝ) (ℓ : ℕ) (hℓ : ℓ ≤ N) :
     vonNeumann (rdm ℓ hℓ (evo (dGamma A) t *ᵥ fockVec S)) (rdm_isHermitian ℓ hℓ _) =
       ∑ i, Real.binEntropy ((corrA_isHermitian A hA S t ℓ hℓ).eigenvalues i) := by
-  sorry
+  obtain ⟨M, B, ν, hCB, hBB, -, -, hent, -⟩ := SlaterExactAux.slater_core A hA S t ℓ hℓ
+  have hm := SlaterExactAux.mset_eigenvalues _ (corrA_isHermitian A hA S t ℓ hℓ) B hCB ν hBB
+  rw [hent]
+  exact (SlaterExactAux.sum_eq_of_mset hm Real.binEntropy Real.binEntropy_zero).symm
 
 /-- **The law of `N_A` is Poisson-binomial** (paper: Lemmas `lem:slater`(a), `lem:quasifree`(b)). -/
 theorem numDist_slater (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsSymm) (S : Finset (Fin N))
     (t : ℝ) (ℓ : ℕ) (hℓ : ℓ ≤ N) (k : ℕ) :
     numDist (segment ℓ) (evo (dGamma A) t *ᵥ fockVec S) k =
       poissonBinomial (corrA_isHermitian A hA S t ℓ hℓ).eigenvalues k := by
-  sorry
+  obtain ⟨M, B, ν, hCB, hBB, -, -, -, hnum⟩ := SlaterExactAux.slater_core A hA S t ℓ hℓ
+  have hm := SlaterExactAux.mset_eigenvalues _ (corrA_isHermitian A hA S t ℓ hℓ) B hCB ν hBB
+  have hp := SlaterExactAux.prod_eq_of_mset hm
+    (fun x => Polynomial.C x * Polynomial.X + Polynomial.C (1 - x)) (by simp)
+  rw [hnum k, ← SlaterExactAux.coeff_pbPoly, ← SlaterExactAux.coeff_pbPoly,
+    SlaterExactAux.pbPoly, SlaterExactAux.pbPoly, hp]
 
 /-- **Generating function** (paper: Lemma `lem:quasifree`(b)):
 `∑_k P(N_A = k) z^k = det(1 + (z - 1) C_A)`. -/
@@ -775,7 +809,12 @@ theorem genfun_slater (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsSymm) (S : Fins
     (t : ℝ) (ℓ : ℕ) (hℓ : ℓ ≤ N) (z : ℂ) :
     ∑ k ∈ range (N + 1), (numDist (segment ℓ) (evo (dGamma A) t *ᵥ fockVec S) k : ℂ) * z ^ k =
       (1 + (z - 1) • corrA A S t ℓ hℓ).det := by
-  sorry
+  obtain ⟨M, B, ν, hCB, hBB, -, -, -, -⟩ := SlaterExactAux.slater_core A hA S t ℓ hℓ
+  have hm := SlaterExactAux.mset_eigenvalues _ (corrA_isHermitian A hA S t ℓ hℓ) B hCB ν hBB
+  simp only [numDist_slater A hA S t ℓ hℓ]
+  rw [SlaterExactAux.genfun_poissonBinomial _ N (by simpa using hℓ) z,
+    SlaterExactAux.prod_eq_of_mset hm (fun x => (x : ℂ) * z + (1 - x)) (by simp), hCB,
+    SlaterExactAux.det_one_add_smul B ν hBB z]
 
 /-- **Trace-norm bound** (paper: Lemma `lem:slater`(b)):
 `∑_i √(ν_i (1 - ν_i)) = ‖P_B K P_A‖₁ ≤ ∑_{x ∈ A, y ∉ A} |K_{xy}|`. -/
@@ -784,6 +823,9 @@ theorem sum_sqrt_eig_le (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsSymm) (S : Fi
     ∑ i, √((corrA_isHermitian A hA S t ℓ hℓ).eigenvalues i *
         (1 - (corrA_isHermitian A hA S t ℓ hℓ).eigenvalues i)) ≤
       ∑ x ∈ segment ℓ, ∑ y ∈ univ \ segment ℓ, ‖corrMat A S t x y‖ := by
-  sorry
+  obtain ⟨M, B, ν, hCB, hBB, -, hsq, -, -⟩ := SlaterExactAux.slater_core A hA S t ℓ hℓ
+  have hm := SlaterExactAux.mset_eigenvalues _ (corrA_isHermitian A hA S t ℓ hℓ) B hCB ν hBB
+  rw [SlaterExactAux.sum_eq_of_mset hm (fun x => √(x * (1 - x))) (by simp)]
+  exact hsq
 
 end DFL
