@@ -2,9 +2,10 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{amsmath,amssymb,amsthm,mathtools}
-\usepackage{bm,bbm}
+\usepackage{bm}
 \usepackage{graphicx}
 \usepackage[margin=1in]{geometry}
+\usepackage[expansion=false]{microtype}
 \usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
 \usepackage{enumitem}
 \usepackage[capitalise]{cleveref}
@@ -20,6 +21,11 @@
 \newtheorem{definition}[theorem]{Definition}
 \theoremstyle{remark}
 \newtheorem{remark}[theorem]{Remark}
+
+\crefname{hypothesis}{Hypothesis}{Hypotheses}
+\Crefname{hypothesis}{Hypothesis}{Hypotheses}
+\crefname{conjecture}{Conjecture}{Conjectures}
+\Crefname{conjecture}{Conjecture}{Conjectures}
 
 \input{macros}
 
@@ -42,6 +48,9 @@
 \input{sections/u1}
 \input{sections/numerics}
 \input{sections/discussion}
+
+\appendix
+\input{sections/lean}
 
 \bibliographystyle{unsrt}
 \bibliography{refs}
