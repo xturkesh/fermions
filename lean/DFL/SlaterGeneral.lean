@@ -70,7 +70,10 @@ lemma gram_slaterAlt_diag {M : ℕ} (u v : Fin M → Fin K → ℂ)
     (huv : ∀ k l, k ≠ l → star (u k) ⬝ᵥ v l = 0) :
     star (slaterAlt K M u) ⬝ᵥ slaterAlt K M v = ∏ k, star (u k) ⬝ᵥ v k := by
   induction M with
-  | zero => simp [slaterAlt_apply, fockVec]
+  | zero =>
+    simp only [slaterAlt_apply, List.ofFn_zero, List.prod_nil, Matrix.one_mulVec,
+      Finset.univ_eq_empty, Finset.prod_empty]
+    rw [star_dotProduct_self, fockVec, nsq_pi_single, Complex.ofReal_one]
   | succ M ih =>
     have ih' := ih (fun k => u k.succ) (fun k => v k.succ)
       (fun k l hkl => huv _ _ fun h => hkl (Fin.succ_injective _ h))
@@ -104,7 +107,7 @@ lemma count_update_not_mem (R : Finset (Fin K)) (n : Cfg K) (x : Fin K) (hxR : x
     count R (Function.update n x 0) = count R n := by
   unfold count
   refine Finset.sum_congr rfl fun k hk => ?_
-  rw [Function.update_of_ne (fun h => hxR (h ▸ hk))]
+  rw [Function.update_of_ne (fun h : k = x => hxR (h ▸ hk))]
 
 /-- `c†(u)` with `u` supported in `R` raises the particle number in `R` by one. -/
 lemma isNumR_crOp_in (R : Finset (Fin K)) {m : ℕ} (u : Fin K → ℂ) (hu : ∀ x ∉ R, u x = 0)
@@ -145,7 +148,7 @@ lemma isNumR_slaterAlt (R : Finset (Fin K)) {M : ℕ} (u : Fin M → Fin K → �
     intro n hn
     rw [slaterAlt_apply]
     simp only [List.ofFn_zero, List.prod_nil, Matrix.one_mulVec, fockVec, Pi.single_apply]
-    rw [if_neg]
+    rw [ite_eq_right]
     rintro rfl
     apply hn
     simp [count, fockCfg, occ]
@@ -154,9 +157,9 @@ lemma isNumR_slaterAlt (R : Finset (Fin K)) {M : ℕ} (u : Fin M → Fin K → �
       (fun k hk => hout _ hk)
     rw [slaterAlt_succ, Fin.sum_univ_succ]
     by_cases h0 : p 0
-    · rw [if_pos h0, add_comm]
+    · rw [ite_eq_left h0, add_comm]
       exact isNumR_crOp_in R _ (hin 0 h0) _ ih'
-    · rw [if_neg h0, zero_add]
+    · rw [ite_eq_right h0, zero_add]
       exact isNumR_crOp_out R _ (hout 0 h0) _ ih'
 
 /-- `∏_k (k ∈ s ? ν_k : 1 - ν_k) = ∏_{k ∈ s} ν_k ∏_{k ∉ s} (1 - ν_k)`. -/
@@ -164,8 +167,8 @@ lemma prod_ite_mem_eq {M : ℕ} (ν : Fin M → ℝ) (s : Finset (Fin M)) :
     ∏ k, (if k ∈ s then ν k else 1 - ν k) = (∏ k ∈ s, ν k) * ∏ k ∈ univ \ s, (1 - ν k) := by
   rw [← Finset.prod_mul_prod_compl s, Finset.compl_eq_univ_sdiff]
   congr 1
-  · exact Finset.prod_congr rfl fun k hk => if_pos hk
-  · exact Finset.prod_congr rfl fun k hk => if_neg (Finset.mem_sdiff.mp hk).2
+  · exact Finset.prod_congr rfl fun k hk => ite_eq_left hk
+  · exact Finset.prod_congr rfl fun k hk => ite_eq_right (Finset.mem_sdiff.mp hk).2
 
 /-! ### The law of `N_R` -/
 
@@ -259,13 +262,13 @@ lemma slater_core_gen (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsSymm) (S : Fins
   have hν0 : ∀ k, 0 ≤ ν k := by
     intro k
     have h := daa k k
-    rw [if_pos rfl, star_dotProduct_self] at h
+    rw [ite_eq_left rfl, star_dotProduct_self] at h
     have h' : nsq (a k) = ν k := by exact_mod_cast h
     rw [← h']; exact nsq_nonneg _
   have hν1 : ∀ k, ν k ≤ 1 := by
     intro k
     have h := dbb k k
-    rw [if_pos rfl, star_dotProduct_self] at h
+    rw [ite_eq_left rfl, star_dotProduct_self] at h
     have h' : nsq (b k) = 1 - ν k := by exact_mod_cast h
     linarith [nsq_nonneg (b k)]
   -- `C_R = B Bᴴ` and `Bᴴ B = diag(ν)`
@@ -293,18 +296,18 @@ lemma slater_core_gen (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsSymm) (S : Fins
     intro s s' k l hkl
     by_cases hk : k ∈ s <;> by_cases hl : l ∈ s'
     · rw [Finset.piecewise_eq_of_mem _ _ _ hk, Finset.piecewise_eq_of_mem _ _ _ hl, daa,
-        if_neg hkl]
+        ite_eq_right hkl]
     · rw [Finset.piecewise_eq_of_mem _ _ _ hk, Finset.piecewise_eq_of_notMem _ _ _ hl, dab]
     · rw [Finset.piecewise_eq_of_notMem _ _ _ hk, Finset.piecewise_eq_of_mem _ _ _ hl, dba]
     · rw [Finset.piecewise_eq_of_notMem _ _ _ hk, Finset.piecewise_eq_of_notMem _ _ _ hl, dbb,
-        if_neg hkl]
+        ite_eq_right hkl]
   have hkk_same : ∀ (s : Finset (Fin M)) (k : Fin M),
       star (s.piecewise a b k) ⬝ᵥ s.piecewise a b k =
         ((if k ∈ s then ν k else 1 - ν k : ℝ) : ℂ) := by
     intro s k
     by_cases hk : k ∈ s
-    · rw [Finset.piecewise_eq_of_mem _ _ _ hk, daa, if_pos rfl, if_pos hk]
-    · rw [Finset.piecewise_eq_of_notMem _ _ _ hk, dbb, if_pos rfl, if_neg hk]
+    · rw [Finset.piecewise_eq_of_mem _ _ _ hk, daa, ite_eq_left rfl, ite_eq_left hk]
+    · rw [Finset.piecewise_eq_of_notMem _ _ _ hk, dbb, ite_eq_left rfl, ite_eq_right hk]
   have hkk_diff : ∀ (s s' : Finset (Fin M)) (k : Fin M), ¬(k ∈ s ↔ k ∈ s') →
       star (s.piecewise a b k) ⬝ᵥ s'.piecewise a b k = 0 := by
     intro s s' k hk
@@ -379,7 +382,7 @@ lemma slater_core_gen (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsSymm) (S : Fins
       refine Finset.sum_congr rfl fun s hs => ?_
       rw [dotProduct_sum]
       simp only [hT]
-      rw [Finset.sum_ite_eq F s (fun _ => (w s : ℂ)), if_pos hs]
+      rw [Finset.sum_ite_eq F s (fun _ => (w s : ℂ)), ite_eq_left hs]
     have h5 : nsq X = ∑ s ∈ F, w s := by exact_mod_cast h4
     rw [h3, h5]
     rfl
@@ -418,7 +421,7 @@ theorem eig_corrR_mem (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsSymm) (S : Fins
   have hm := SlaterExactAux.mset_eigenvalues _ (corrR_isHermitian A S t R) B hCB ν hBB
   simp only [Fintype.card_fin] at hm
   have hi : (corrR_isHermitian A S t R).eigenvalues i ∈
-      Fintype.card R • ({0} : Multiset ℝ) + univ.val.map (corrR_isHermitian A S t R).eigenvalues :=
+      M • ({0} : Multiset ℝ) + univ.val.map (corrR_isHermitian A S t R).eigenvalues :=
     Multiset.mem_add.mpr (Or.inr (Multiset.mem_map_of_mem _ (Finset.mem_univ_val i)))
   rw [hm, Multiset.mem_add] at hi
   rcases hi with h | h
