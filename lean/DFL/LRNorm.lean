@@ -505,6 +505,109 @@ lemma norm_block_K (J h : ℝ) (x y : Fin N) (t : ℝ) (q : Cfg N) :
     (SectorNormAux.cplx_gaussProj_conjTranspose q) hPK hX hT hPT hXT, hl_def,
     Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq (norm_nonneg _)]
 
+/-! ### Long-time averages -/
+
+section TimeAvg
+
+open Filter Topology
+
+/-- `|U(t)_{xy}|² = ∑_{α,β} p_α p_β cos((E_β - E_α) t)` with `p_α = φ_α(x) φ_α(y)`. -/
+lemma normSq_evo_eq (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsHermitian) (t : ℝ) (x y : Fin N) :
+    ‖evo A t x y‖ ^ 2 = ∑ α, ∑ β, (hA.eigenvectorBasis α x * hA.eigenvectorBasis α y) *
+      (hA.eigenvectorBasis β x * hA.eigenvectorBasis β y) *
+        Real.cos ((hA.eigenvalues β - hA.eigenvalues α) * t) := by
+  have h1 : ‖evo A t x y‖ ^ 2 = (evo A t x y * star (evo A t x y)).re := by
+    rw [Complex.star_def, Complex.mul_conj', ← Complex.ofReal_pow, Complex.ofReal_re]
+  have hsr : ∀ r : ℝ, star (r : ℂ) = r := fun r => Complex.conj_ofReal r
+  rw [h1, OneBodyAux.evo_apply_eq_sum A hA t x y, star_sum, Finset.sum_mul_sum, Complex.re_sum]
+  refine Finset.sum_congr rfl fun α _ => ?_
+  rw [Complex.re_sum]
+  refine Finset.sum_congr rfl fun β _ => ?_
+  have e1 : Complex.exp (-(t : ℂ) * Complex.I * (hA.eigenvalues α : ℂ)) *
+      ((hA.eigenvectorBasis α x : ℂ) * (hA.eigenvectorBasis α y : ℂ)) *
+      star (Complex.exp (-(t : ℂ) * Complex.I * (hA.eigenvalues β : ℂ)) *
+        ((hA.eigenvectorBasis β x : ℂ) * (hA.eigenvectorBasis β y : ℂ))) =
+      (Complex.exp (-(t : ℂ) * Complex.I * (hA.eigenvalues α : ℂ)) *
+        star (Complex.exp (-(t : ℂ) * Complex.I * (hA.eigenvalues β : ℂ)))) *
+      (((hA.eigenvectorBasis α x * hA.eigenvectorBasis α y) *
+        (hA.eigenvectorBasis β x * hA.eigenvectorBasis β y) : ℝ) : ℂ) := by
+    rw [star_mul, star_mul, hsr, hsr]
+    push_cast
+    ring
+  rw [e1, Complex.re_mul_ofReal, ImbalanceAux.re_phase, mul_comm t]
+  ring
+
+/-- `t ↦ U(t)_{xy}` is continuous. -/
+lemma continuous_evo_apply (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsHermitian) (x y : Fin N) :
+    Continuous (fun t : ℝ => evo A t x y) := by
+  have e : (fun t : ℝ => evo A t x y) = fun t : ℝ =>
+      ∑ α, Complex.exp (-(t : ℂ) * Complex.I * (hA.eigenvalues α : ℂ)) *
+        ((hA.eigenvectorBasis α x : ℂ) * (hA.eigenvectorBasis α y : ℂ)) :=
+    funext fun t => OneBodyAux.evo_apply_eq_sum A hA t x y
+  rw [e]
+  refine continuous_finsetSum _ fun α _ => Continuous.mul ?_ continuous_const
+  exact Complex.continuous_exp.comp
+    (((Complex.continuous_ofReal.neg).mul continuous_const).mul continuous_const)
+
+/-- **Long-time average**: for simple spectrum, `T⁻¹ ∫_0^T |U(t)_{xy}|² dt → R(x, y)`. -/
+lemma tendsto_avg_normSq_evo (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsHermitian)
+    (hinj : Function.Injective hA.eigenvalues) (x y : Fin N) :
+    Tendsto (fun T : ℝ => (1 / T) * ∫ t in (0 : ℝ)..T, ‖evo A t x y‖ ^ 2) atTop
+      (𝓝 (transProb A hA x y)) := by
+  set E := hA.eigenvalues with hE
+  set p : Fin N → ℝ := fun α => hA.eigenvectorBasis α x * hA.eigenvectorBasis α y with hp
+  have hcont : ∀ (c ω : ℝ), Continuous (fun t : ℝ => c * Real.cos (ω * t)) := by
+    intro c ω
+    fun_prop
+  have hint : ∀ T, ∫ t in (0 : ℝ)..T, ‖evo A t x y‖ ^ 2 =
+      ∑ α, ∑ β, p α * p β * ∫ t in (0 : ℝ)..T, Real.cos ((E β - E α) * t) := by
+    intro T
+    simp_rw [normSq_evo_eq A hA]
+    rw [intervalIntegral.integral_finsetSum (fun α _ => ?_)]
+    · refine Finset.sum_congr rfl fun α _ => ?_
+      rw [intervalIntegral.integral_finsetSum (fun β _ => ?_)]
+      · refine Finset.sum_congr rfl fun β _ => ?_
+        exact intervalIntegral.integral_const_mul _ _
+      · exact (hcont _ _).intervalIntegrable _ _
+    · have : Continuous (fun t : ℝ => ∑ β, p α * p β * Real.cos ((E β - E α) * t)) := by
+        fun_prop
+      exact this.intervalIntegrable _ _
+  have hlim : transProb A hA x y =
+      ∑ α, ∑ β, p α * p β * (if E β - E α = 0 then 1 else 0) := by
+    rw [transProb]
+    refine Finset.sum_congr rfl fun α _ => ?_
+    have : ∀ β, (if E β - E α = 0 then (1 : ℝ) else 0) = if β = α then 1 else 0 := by
+      intro β
+      by_cases hβ : β = α
+      · simp [hβ]
+      · have : E β - E α ≠ 0 := fun e => hβ (hinj (sub_eq_zero.mp e))
+        simp [hβ, this]
+    simp only [this, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true, hp]
+    ring
+  rw [hlim]
+  simp_rw [hint, Finset.mul_sum]
+  refine tendsto_finsetSum _ fun α _ => tendsto_finsetSum _ fun β _ => ?_
+  have := (ImbalanceAux.tendsto_avg_cos (E β - E α)).const_mul (p α * p β)
+  refine this.congr fun T => ?_
+  ring
+
+/-- `sup_t |U(t)_{xy}|² ≥ R(x, y)` for simple spectrum. -/
+lemma transProb_le_of_forall (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsHermitian)
+    (hinj : Function.Injective hA.eigenvalues) (x y : Fin N) (M : ℝ)
+    (hM : ∀ t, ‖evo A t x y‖ ^ 2 ≤ M) : transProb A hA x y ≤ M := by
+  refine le_of_tendsto (tendsto_avg_normSq_evo A hA hinj x y) ?_
+  filter_upwards [eventually_gt_atTop 0] with T hT
+  have hc : Continuous (fun t : ℝ => ‖evo A t x y‖ ^ 2) :=
+    ((continuous_evo_apply A hA x y).norm).pow 2
+  have h1 : ∫ t in (0 : ℝ)..T, ‖evo A t x y‖ ^ 2 ≤ ∫ t in (0 : ℝ)..T, M :=
+    intervalIntegral.integral_mono_on hT.le (hc.intervalIntegrable _ _)
+      intervalIntegrable_const (fun t _ => hM t)
+  rw [intervalIntegral.integral_const, sub_zero, smul_eq_mul] at h1
+  rw [one_div, inv_mul_le_iff₀ hT]
+  linarith
+
+end TimeAvg
+
 end LRNormAux
 
 open LRNormAux
