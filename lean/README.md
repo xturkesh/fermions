@@ -87,6 +87,7 @@ No `axiom` is introduced anywhere.
 | Lemma `lem:dimercritical`, JSBS hypotheses | `dimerTM_plus_crit`, `dimerTM_minus_elliptic`, `dimerTM_commute_crit`, `jsbs_condition`, `dimerTM_minus_not_elliptic` | `DimerCritical.lean` |
 | Lemma `lem:dimercritical`(i),(iii),(iv) and eq. `eq:dimerangles` (commutator `[D_+, D_-] = 2λ(λ²-E²)σ_x`; rotation normal form `S⁻¹D_+(λ)S = -1`, `S⁻¹D_-(λ)S = R_{2θ}`; averaged phases; `κ = ‖S‖‖S⁻¹‖ = ((1+λ)/(1-λ))^{1/2}`; `E_c = -λ`), Lemma `lem:dimertransfer` (`‖T^z(n,m)‖ ≤ K₁e^{K₂\|z-λ\|(n-m)}` for every dimer configuration) | `dimerD_commutator`, `dimerD_commute_iff`, `dimerTheta_spec`, `dimerS_conj_plus`, `dimerS_conj_tm`, `dimerS_conj_minus`, `dimer_angles`, `dimerS_kappa`, `gamma2_tmC`, `dimerS_conj_neg`, `dimer_transfer_bound` | `DimerTransfer.lean` |
 | Lemma `lem:dimerTL` (finite speed uniformly in the potential; finite-volume difference, for finite `Λ'`; ballistic bound `∑_y \|y\|^p \|⟨δ_y, e^{-isH}δ_0⟩\|² ≤ (2\|s\|)^p`) | `dimerTL_i`, `dimerTL_i'`, `dimerTL_ii`, `dimerTL_iii` | `DimerTL.lean` |
+| Proposition `prop:dimerlower` on finite intervals (Plancherel identity eq. `eq:plancherel`; `M_p(T;x) ≥ c_{λ,p} T^{p-1}` for every dimer configuration) | `dimerMom`, `dimerGreen`, `dimerMom_plancherel`, `dimer_lower_bound` | `DimerLower.lean` |
 | Proposition `prop:dimerimbalance`(i),(ii) | `dimer_stagWeight_identity`, `dimerImbalance_timeAvg` | `DimerImbalance.lean` |
 | Theorem `thm:2dmap` for `σᶻ`-polarized gauge states, on **any finite graph** | `FinGraph.sector_average_matter`, `FinGraph.gaussOp_comm_ham`, `FinGraph.dGamma_hq` | `Graph.lean` |
 | Lemma `lem:2dgauge`(i)–(iii), Theorem `thm:2dmap`(a) (fluxes = gauge classes, `2^β` flux sectors, orbits of size `2^{\|V\|-1}`; Wilson loops; `∏ G_i = (-1)^{N_f}`) | `FinGraph.flux_eq_iff_gauge`, `FinGraph.gaugeAct_eq_self_iff`, `FinGraph.card_gaugeOrbit`, `FinGraph.card_fluxClasses`, `FinGraph.wilsonLoop_comm_ham`, `FinGraph.wilsonLoop_comm_gaussOp`, `FinGraph.gaussOp_prod` | `GraphFlux.lean`, `GraphWilson.lean` |
@@ -102,14 +103,14 @@ No `axiom` is introduced anywhere.
 
 ## Verification
 
-`lake build` compiles all 62 modules (about 31,600 lines) without `sorry`; there is no `axiom`,
+`lake build` compiles all 63 modules (about 32,600 lines) without `sorry`; there is no `axiom`,
 `admit`, `native_decide` or `implemented_by` in the library. The script `CheckAxioms.lean` walks
 through every theorem declared in a `DFL` module (including private helper lemmas) and collects the
 axioms it depends on:
 
 ```
 lake env lean CheckAxioms.lean
-# checked 3498 theorems in DFL modules; with non-standard axioms: 0
+# checked 3597 theorems in DFL modules; with non-standard axioms: 0
 ```
 
 i.e. every theorem depends only on Lean's standard axioms `propext`, `Classical.choice` and
