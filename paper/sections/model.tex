@@ -1,0 +1,795 @@
+% ---------------------------------------------------------------------------
+% Section 2: the model and its exact free-fermion duality
+% ---------------------------------------------------------------------------
+% Section-local macros (unique names, \providecommand only).
+\providecommand{\sxb}[1]{\sigma^{x}_{b_{#1}}}
+\providecommand{\szb}[1]{\sigma^{z}_{b_{#1}}}
+\providecommand{\taux}[1]{\tau^{x}_{#1}}
+\providecommand{\tauz}[1]{\tau^{z}_{#1}}
+\providecommand{\cdr}{\tilde c}
+\providecommand{\LinkS}{\mathcal{S}}
+\providecommand{\SiteT}{\mathcal{T}}
+
+\section{The model and its exact free-fermion duality}\label{sec:model}
+
+In this section we define the model, prove the exact duality to free fermions coupled to static
+$\Z_2$ charges (\cref{thm:duality}), show that the duality is local across a cut up to a single
+controlled gate (\cref{lem:cutlocal}), and derive the exact sector-averaging formulas for the
+initial states of \cite{SKKM2017} (\cref{cor:sector}) and for general product initial states
+(\cref{lem:productlaw}).  Everything in this section is an exact identity in finite volume; no
+probabilistic or spectral input is used.  The one-body input enters only in \cref{sec:onebody}.
+
+\subsection{Hilbert space, Hamiltonian and Gauss law}\label{sec:model:def}
+
+\paragraph{Matter.}
+Fix $N\ge 1$ and the sites $j\in\{1,\dots,N\}$.  Let $\cF_N$ be the fermionic Fock space over
+$\C^N=\ell^2(\{1,\dots,N\})$, with annihilation operators $f_1,\dots,f_N$,
+$\{f_i,f_j^\dagger\}=\delta_{ij}$, $\{f_i,f_j\}=0$, and $n_j=f_j^\dagger f_j$.  For
+$X\subset\{1,\dots,N\}$ we write $N_X=\sum_{j\in X}n_j$, $N_f=N_{\{1,\dots,N\}}$,
+$N_{\le j}=N_{\{1,\dots,j\}}$, $N_{<j}=N_{\{1,\dots,j-1\}}$, $N_{>j}=N_{\{j+1,\dots,N\}}$.
+The occupation basis is fixed once and for all by the ordering convention
+\begin{equation}\label{eq:occbasis}
+  \ket{n}:=(f_1^\dagger)^{n_1}(f_2^\dagger)^{n_2}\cdots(f_N^\dagger)^{n_N}\ket{0},\qquad
+  n=(n_1,\dots,n_N)\in\{0,1\}^N ,
+\end{equation}
+so that, with $e_j$ the $j$-th unit vector and $N_{<j}(n)=\sum_{k<j}n_k$,
+\begin{equation}\label{eq:fsign}
+  f_j\ket{n}=\delta_{n_j,1}\,(-1)^{N_{<j}(n)}\ket{n-e_j},\qquad
+  f_j^\dagger\ket{n}=\delta_{n_j,0}\,(-1)^{N_{<j}(n)}\ket{n+e_j}.
+\end{equation}
+This is the Jordan--Wigner ordering ``site $1$ first''.  An operator is \emph{even} if it commutes
+with the fermion parity $(-1)^{N_f}$ and \emph{odd} if it anticommutes with it.
+
+\paragraph{Gauge field.}
+The links are $b_j=(j,j+1)$, $j=1,\dots,N$.  Each link carries a spin $\tfrac12$, with Pauli
+matrices $\sxb{j},\szb{j}$ acting on the $j$-th factor of $\LinkS_N:=(\C^2)^{\otimes N}$.  The
+link $b_N$ is the \emph{boundary link}: it carries no hopping (there is no site $N+1$).  We set
+$\sxb{0}:=\one$.  The total Hilbert space is
+\begin{equation}\label{eq:HilbertN}
+  \cH_N:=\cF_N\otimes\LinkS_N,\qquad \dim\cH_N=4^N ;
+\end{equation}
+the spins are bosonic, i.e.\ every $\sigma^{x,z}_{b_j}$ commutes with every $f_k$ (and every
+spin operator is even).  We write $\sigma^z\ket{\uparrow}=\ket{\uparrow}$,
+$\sigma^z\ket{\downarrow}=-\ket{\downarrow}$, $\ket{\pm}:=(\ket{\uparrow}\pm\ket{\downarrow})/\sqrt2$,
+so that
+\begin{equation}\label{eq:szflip}
+  \sigma^x\ket{\pm}=\pm\ket{\pm},\qquad \sigma^z\ket{\pm}=\ket{\mp}\quad\text{(no phases).}
+\end{equation}
+For $x=(x_{b_1},\dots,x_{b_N})\in\{\pm1\}^N$ we write $\ket{x}_\sigma:=\bigotimes_{j}\ket{x_{b_j}}$
+for the $\sigma^x$-eigenbasis (where $\ket{x_{b_j}}$ means $\ket{+}$ or $\ket{-}$), and for
+$s\in\{\pm1\}^N$ we write $\ket{s}_z$ for the $\sigma^z$-eigenbasis; $\ket{\uparrow\cdots\uparrow}_z$
+is the $z$-polarized state.  Link configurations are always written with subscripts $b_j$, so that
+they are not confused with sites $x,y$.
+
+\begin{definition}[The model]\label{def:model}
+Let $J>0$ and $h\in\R\setminus\{0\}$.  The Hamiltonian on $\cH_N$ is
+\begin{equation}\label{eq:H}
+  H=-J\sum_{j=1}^{N-1}\szb{j}\bigl(f_j^\dagger f_{j+1}+f_{j+1}^\dagger f_j\bigr)
+    -h\sum_{j=1}^{N}\sxb{j-1}\,\sxb{j}\qquad(\sxb{0}:=\one),
+\end{equation}
+and the Gauss operators are
+\begin{equation}\label{eq:gauss}
+  G_j:=\sxb{j-1}\,(-1)^{n_j}\,\sxb{j},\qquad j=1,\dots,N .
+\end{equation}
+An operator $O$ on $\cH_N$ is \emph{gauge invariant} if $[O,G_j]=0$ for all $j$.  For
+$q\in\{\pm1\}^N$ let $P_q:=\prod_{j=1}^N\frac12(\one+q_jG_j)$.
+\end{definition}
+
+All algebraic statements of this section hold for arbitrary real $J,h$; the restrictions $J>0$,
+$h\neq0$ only matter for the localization results.  The boundary link enters $H$ only through
+the term $-h\,\sxb{N-1}\sxb{N}$; for $N=1$, $H=-h\,\sxb{1}$.  Conjugation by $G_j$ is the local
+gauge transformation at $j$: it maps $f_j\mapsto -f_j$, $\szb{j-1}\mapsto-\szb{j-1}$ (if $j\ge2$),
+$\szb{j}\mapsto-\szb{j}$, and fixes all other $f_k$, $\sigma^z_{b_k}$ and all $\sigma^x_{b_k}$.
+
+\begin{lemma}[Gauss law]\label{lem:gauss}
+\leavevmode
+\begin{enumerate}[label=(\roman*)]
+\item The $G_j$ are self-adjoint unitaries, commute with each other, with $N_f$ and with $H$.
+\item For every $j\in\{1,\dots,N\}$ one has the operator identity (one-dimensional $\Z_2$ Gauss law)
+\begin{equation}\label{eq:gausslaw1d}
+  \sxb{j}=(-1)^{N_{\le j}}\prod_{k\le j}G_k .
+\end{equation}
+In particular $\prod_{j=1}^NG_j=(-1)^{N_f}\sxb{N}$, and the boundary flux $\sxb{N}$ commutes with $H$.
+\item For every $q\in\{\pm1\}^N$ the projection $P_q$ has rank $2^N$; thus $\cH_N=\bigoplus_q
+P_q\cH_N$ with $2^N$ non-trivial superselection sectors, each invariant under $H$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(i) $G_j$ is a product of commuting self-adjoint unitaries ($\sigma^x$'s on distinct links and a
+parity), and all $G_j$ are built from the mutually commuting operators $\sxb{k}$, $(-1)^{n_k}$.  They
+commute with $N_f$ and with the electric term, which is a function of the $\sxb{k}$.  The hopping
+term $T_k:=\szb{k}(f_k^\dagger f_{k+1}+f_{k+1}^\dagger f_k)$ anticommutes with $\sxb{k}$, with
+$(-1)^{n_k}$ and with $(-1)^{n_{k+1}}$ (because $(-1)^{n_k}f_k^\dagger=-f_k^\dagger(-1)^{n_k}$ and
+$(-1)^{n_k}$ commutes with $f_{k+1}$), and commutes with all other $\sxb{i}$ and $(-1)^{n_i}$.
+$G_k$ contains exactly two of these anticommuting factors ($\sxb{k}$ and $(-1)^{n_k}$), as does
+$G_{k+1}$ ($\sxb{k}$ and $(-1)^{n_{k+1}}$); the other $G_j$ contain none.  Hence $[G_j,T_k]=0$
+for all $j,k$.
+(ii) Since $(\sxb{k})^2=\one$, the product telescopes:
+$\prod_{k\le j}G_k=\sxb{0}\sxb{j}\prod_{k\le j}(-1)^{n_k}=\sxb{j}(-1)^{N_{\le j}}$.  For $j=N$ this
+gives $\prod_jG_j=(-1)^{N_f}\sxb{N}$, and $\sxb{N}=(-1)^{N_f}\prod_jG_j$ commutes with $H$ by (i).
+(iii) The vectors $\ket{n}\otimes\ket{x}_\sigma$ form an orthonormal basis of joint eigenvectors of
+the $G_j$, with eigenvalues $x_{b_{j-1}}(-1)^{n_j}x_{b_j}$ ($x_{b_0}:=1$).  For fixed $n$ the map
+$x\mapsto q$, $q_j=x_{b_{j-1}}(-1)^{n_j}x_{b_j}$, is a bijection of $\{\pm1\}^N$ (its inverse is
+$x_{b_j}=\prod_{k\le j}q_k(-1)^{n_k}$).  Hence every $q$ is attained by exactly $2^N$ basis vectors.
+\end{proof}
+
+The eigenvalue $q_j$ of $G_j$ is the static $\Z_2$ background charge at site $j$.  The
+\emph{gauge-invariant subspace} in the usual lattice-gauge-theory sense (no background charges) is
+$P_{(1,\dots,1)}\cH_N$; the $z$-polarized initial states of \cite{SKKM2017} are \emph{not} in it,
+but are uniform superpositions over all sectors (\cref{cor:sector}).
+
+\begin{remark}[Comparison with \cite{SKKM2017}; boundary conventions]\label{rem:boundary}
+\leavevmode
+\begin{enumerate}[label=(\alph*)]
+\item \emph{Hamiltonian.}  \eqref{eq:H} is Eq.~(1) of \cite{SKKM2017},
+$\hat H=-J\sum_{\langle ij\rangle}\hat\sigma^z_{i,j}\hat f_i^\dagger\hat f_j
+-h\sum_i\hat\sigma^x_{i-1,i}\hat\sigma^x_{i,i+1}$ (the sum over $\langle ij\rangle$ contains both
+orientations).  The electric term is the \emph{two-link} term; this is essential.  The standard
+$\Z_2$ gauge theory with single-link electric term $-h\sum_b\sigma^x_b$ is \emph{not} free:
+already one fermion sees a random-walk potential and two fermions interact
+(\cref{rem:randomwalk}).
+\item \emph{Duality.}  Following the Kramers--Wannier duality of the Ising chain
+\cite{KramersWannier1941,FradkinSusskind1978}, SKKM introduce site spins by
+$\hat\tau^z_j=\hat\sigma^x_{j-1,j}\hat\sigma^x_{j,j+1}$,
+$\hat\sigma^z_{j,j+1}=\hat\tau^x_j\hat\tau^x_{j+1}$ (their Eq.~(3)), the charges
+$\hat q_j=\hat\tau^z_j(-1)^{\hat n_j}$, which are our $G_j$, and the fermions
+$\hat c_j=\hat\tau^x_j\hat f_j$, which lead to their Eqs.~(4) and (2),
+$\hat H_{\{q_j\}}=-J\sum_{\langle ij\rangle}\hat c_i^\dagger\hat c_j+2h\sum_jq_j(\hat c_j^\dagger\hat c_j-\tfrac12)$.
+Since $2h\sum_jq_j(n_j-\frac12)=2h\sum_jq_jn_j-h\sum_jq_j$, this is exactly
+$\dGamma(\hq)-h\sum_jq_j$ in \cref{thm:duality}(b).  With the boundary link the operators
+$\hat\tau^z_j:=\sxb{j-1}\sxb{j}$ and $\hat\tau^x_j:=\prod_{k\ge j}\szb{k}$ satisfy the Pauli
+algebra exactly on $\LinkS_N$, and $\hat\tau^x_j\hat\tau^x_{j+1}=\szb{j}$ for $j<N$; with this
+choice SKKM's $\hat c_j$ is our dressed fermion $\cdr_j$ of \eqref{eq:dressed} and SKKM's $\hat\tau^x_j$
+is $U\tauz{j}U^\dagger$.  (Our dual spins $\tau_j$ of \cref{thm:duality} live on a different space
+and should not be confused with SKKM's $\hat\tau_j$: the charge is $U^\dagger G_jU=\taux{j}$.)
+\item \emph{Initial states.}  For $\ket{S}=\ket{\uparrow\uparrow\cdots}$ SKKM write the initial state as
+\[
+  \ket{0}=2^{-N/2}\sum_{\{q_i\}=\pm1}\ket{q_1,\dots,q_N}\otimes\ket{\psi},
+\]
+a sum over all $2^N$ charge configurations (their Eq.~(5)).  With the boundary link this holds literally
+(\cref{cor:sector}(a)).  SKKM work with $N$ sites and open boundary conditions, and they
+consider domain-wall, density-wave and $h=0$ ground-state fermion states, with $N$ up to $200$.
+\item \emph{The ``open'' chain} has $N$ sites and $N-1$ links, $\sxb{0}=\sxb{N}:=\one$ in
+\eqref{eq:H} and \eqref{eq:gauss}.  Then $\prod_jG_j=(-1)^{N_f}$ identically, so only the
+charge configurations with $\prod_jq_j=(-1)^{N_f}$ occur, and for a matter state of definite
+parity the sum in SKKM's Eq.~(5) runs over the $2^{N-1}$ configurations of a parity hyperplane.
+The open chain is the restriction of our model to the invariant subspace $\{\sxb{N}=+1\}$
+(\cref{prop:variants}(i)).  The boundary link $b_N$ is a static $\Z_2$ flux through the right
+end; it makes $\sxb{N}=(-1)^{N_f}\prod_jG_j$ a free conserved label, removes the parity constraint,
+and makes the charges exactly i.i.d.  The two conventions differ by a density bounded by $2$
+(\cref{prop:variants}(i)), which is harmless for all localization bounds.
+\item \emph{The ``ring''} ($N$ sites, $N$ links, hopping also across $b_N=(N,1)$) has, in
+addition, the conserved Wilson loop $W=\prod_j\szb{j}$, again the constraint
+$\prod_jG_j=(-1)^{N_f}$, and the one-body operator acquires the twist $W$ on the bond $(N,1)$,
+with no additional parity-dependent twist (\cref{prop:variants}(ii)).  SKKM use periodic boundary
+conditions for their Fermi-sea initial state and note the global constraint, which is satisfied by
+the $z$-polarized spin state; in our language this state has $W=+1$.
+\end{enumerate}
+\end{remark}
+
+\subsection{The duality}\label{sec:model:duality}
+
+\paragraph{Dual space.}
+Let $\cK_N:=\cF^c_N\otimes\SiteT_N$, where $\cF^c_N$ is the Fock space of fermions $c_1,\dots,c_N$
+with occupation basis $\ket{n}_c$ defined by the same ordering convention \eqref{eq:occbasis}, and
+$\SiteT_N=(\C^2)^{\otimes N}$ carries spins $\tau_j$ on the \emph{sites}, commuting with the $c$'s.
+We use the orthonormal basis $\ket{q}$, $q\in\{\pm1\}^N$, of $\SiteT_N$ with
+\begin{equation}\label{eq:taubasis}
+  \taux{j}\ket{q}=q_j\ket{q},\qquad \tauz{j}\ket{q}=\ket{q^{(j)}},
+\end{equation}
+where $q^{(j)}$ is $q$ with $q_j$ replaced by $-q_j$ (this fixes the phases of the basis).  We
+write $\ket{n,q}:=\ket{n}_c\otimes\ket{q}$, set $\tauz{N+1}:=\one$, and identify $\cF_N$ with
+$\cF_N^c$ via $\ket{n}\mapsto\ket{n}_c$; under this identification $f_j$ corresponds to $c_j$, and
+a matter vector $\psi\in\cF_N$ is also regarded as a vector of $\cF_N^c$.  For an $N\times N$
+matrix $A$ let $\dGamma(A):=\sum_{x,y}A_{xy}c_x^\dagger c_y$, and for a unitary $V$ let $\Gamma(V)$
+be its second quantization ($\Gamma(V)\ket{0}=\ket{0}$, $\Gamma(V)c^\dagger(u)\Gamma(V)^*=c^\dagger(Vu)$),
+so that $\e^{-\ii t\dGamma(A)}=\Gamma(\e^{-\ii tA})$ for self-adjoint $A$.  Let $\Delta_N$ be the
+adjacency matrix of the path $\{1,\dots,N\}$, $(\Delta_Nu)(x)=u(x+1)+u(x-1)$ with
+$u(0)=u(N+1)=0$, and
+\begin{equation}\label{eq:hq}
+  \hq:=-J\Delta_N+2h\,\diag(q)\quad\text{on }\ell^2(\{1,\dots,N\}),\qquad \lambda:=2h/J .
+\end{equation}
+
+\paragraph{The unitary.}
+For $n\in\{0,1\}^N$ and $q\in\{\pm1\}^N$ define the link configuration
+\begin{equation}\label{eq:xnq}
+  x_{b_j}(n,q):=\prod_{k\le j}q_k(-1)^{n_k},\qquad j=1,\dots,N,
+\end{equation}
+and the linear map $U:\cK_N\to\cH_N$ by
+\begin{equation}\label{eq:U}
+  U\ket{n,q}:=\ket{n}\otimes\ket{x(n,q)}_\sigma .
+\end{equation}
+Conversely, with $x_{b_0}:=1$,
+\begin{equation}\label{eq:qofx}
+  q_j=x_{b_{j-1}}\,(-1)^{n_j}\,x_{b_j},\qquad j=1,\dots,N .
+\end{equation}
+
+\begin{theorem}[Exact duality]\label{thm:duality}
+$U$ is unitary, preserves all occupation numbers (in particular it is even), and:
+\begin{enumerate}[label=(\alph*)]
+\item \emph{Gauss operators:} $U^\dagger G_jU=\taux{j}$ for all $j$; hence
+$U^\dagger P_qU=\one\otimes\ket{q}\bra{q}$.
+\item \emph{Hamiltonian:}
+\begin{equation}\label{eq:dualH}
+  U^\dagger HU=-J\sum_{j=1}^{N-1}(c_j^\dagger c_{j+1}+c_{j+1}^\dagger c_j)-h\sum_{j=1}^N\taux{j}(-1)^{n_j}
+  =\sum_{q\in\{\pm1\}^N}\Bigl(\dGamma(\hq)-h\sum_{j=1}^Nq_j\Bigr)\otimes\ket{q}\bra{q}.
+\end{equation}
+Consequently, with $E_1(q)<\dots<E_N(q)$ the eigenvalues of $\hq$ (simple, since $\hq$ is a Jacobi
+matrix with non-zero off-diagonal entries), the spectrum of $H$ (with
+multiplicities) is the union over $q$ of the multisets
+$\{\sum_\alpha m_\alpha E_\alpha(q)-h\sum_jq_j:\ m\in\{0,1\}^N\}$.
+\item \emph{Dictionary:} for all $j$ (with $\tauz{N+1}=\one$),
+\begin{gather*}
+  U^\dagger n_jU=n_j,\qquad U^\dagger(-1)^{N_f}U=(-1)^{N_c},\qquad U^\dagger f_jU=c_j\tauz{j},\\
+  U^\dagger\szb{j}U=\tauz{j}\tauz{j+1},\qquad
+  U^\dagger\Bigl(\prod_{k=j}^N\szb{k}\Bigr)U=\tauz{j},\\
+  U^\dagger\sxb{j}U=\prod_{k\le j}\taux{k}(-1)^{n_k},\qquad
+  U^\dagger\sxb{j-1}\sxb{j}U=\taux{j}(-1)^{n_j},\\
+  U^\dagger\bigl(\szb{j}f_j^\dagger f_{j+1}\bigr)U=c_j^\dagger c_{j+1}\quad(j<N).
+\end{gather*}
+\item \emph{Dressed fermions:} the operators
+\begin{equation}\label{eq:dressed}
+  \cdr_j:=Uc_jU^\dagger=f_j\prod_{k=j}^{N}\szb{k}
+\end{equation}
+satisfy the CAR, commute with every $G_k$, are odd, and $\cdr_j^\dagger\cdr_j=n_j$.  For $x<y$,
+$\cdr_x^\dagger\cdr_y=f_x^\dagger\bigl(\prod_{x\le k<y}\szb{k}\bigr)f_y$, the gauge-invariant
+hopping with a Wilson line between $x$ and $y$.  In terms of the original operators,
+\begin{equation}\label{eq:Hdressed}
+  H=-J\sum_{j=1}^{N-1}(\cdr_j^\dagger\cdr_{j+1}+\cdr_{j+1}^\dagger\cdr_j)-h\sum_{j=1}^NG_j(-1)^{n_j}
+   =\sum_q P_q\Bigl(\sum_{x,y}(\hq)_{xy}\cdr_x^\dagger\cdr_y-h\sum_jq_j\Bigr).
+\end{equation}
+\item \emph{Dynamics:}
+$U^\dagger\e^{-\ii tH}U=\sum_q\e^{\ii ht\sum_jq_j}\,\Gamma(\e^{-\ii t\hq})\otimes\ket{q}\bra{q}$, and
+\begin{equation}\label{eq:heisenberg}
+  \e^{\ii tH}\cdr_x\e^{-\ii tH}=\sum_qP_q\sum_{y=1}^N(\e^{-\ii t\hq})_{xy}\,\cdr_y\qquad(t\in\R).
+\end{equation}
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+\emph{Unitarity.}  By \eqref{eq:xnq}--\eqref{eq:qofx} the map $(n,q)\mapsto(n,x(n,q))$ is a
+bijection of $\{0,1\}^N\times\{\pm1\}^N$.  Hence $U$ maps the orthonormal basis
+$\{\ket{n,q}\}$ of $\cK_N$ onto the orthonormal basis $\{\ket{n}\otimes\ket{x}_\sigma\}$ of
+$\cH_N$, and it does not change $n$.
+
+\emph{(a).}  $G_j(\ket{n}\otimes\ket{x}_\sigma)=x_{b_{j-1}}(-1)^{n_j}x_{b_j}\ket{n}\otimes\ket{x}_\sigma$.
+For $x=x(n,q)$ the eigenvalue is $q_j$ by \eqref{eq:qofx}, so $G_jU\ket{n,q}=q_jU\ket{n,q}=U\taux{j}\ket{n,q}$.
+The formula for $P_q$ follows.
+
+\emph{(c).}  The first two identities hold because $U$ does not change $n$.
+$\sxb{j}U\ket{n,q}=x_{b_j}(n,q)U\ket{n,q}$, and $x_{b_j}(n,q)$ is the eigenvalue of
+$\prod_{k\le j}\taux{k}(-1)^{n_k}$ on $\ket{n,q}$; the identity for $\sxb{j-1}\sxb{j}$ follows by
+multiplying the cases $j-1$ and $j$.  By \eqref{eq:szflip}, $\szb{j}\ket{x}_\sigma=\ket{x'}_\sigma$
+where $x'$ is $x$ with $x_{b_j}$ flipped.  By \eqref{eq:qofx}, $x_{b_j}$ enters only $q_j$ and
+$q_{j+1}$ (only $q_N$ if $j=N$), so $x(n,q)'=x(n,q')$ with $q'$ obtained from $q$ by flipping
+$q_j$ and $q_{j+1}$ (resp.\ $q_N$); thus $\szb{j}U\ket{n,q}=U\tauz{j}\tauz{j+1}\ket{n,q}$.  For the
+fermions, \eqref{eq:fsign} gives
+$f_jU\ket{n,q}=\delta_{n_j,1}(-1)^{N_{<j}(n)}\ket{n-e_j}\otimes\ket{x(n,q)}_\sigma$.  Now
+$x(n-e_j,q^{(j)})=x(n,q)$: in \eqref{eq:xnq} only the factor $q_j(-1)^{n_j}$ changes, into
+$(-q_j)(-(-1)^{n_j})$.  Hence, using \eqref{eq:fsign} for the $c$'s,
+\[
+  f_jU\ket{n,q}=\delta_{n_j,1}(-1)^{N_{<j}(n)}\,U\ket{n-e_j,q^{(j)}}=U\,c_j\tauz{j}\ket{n,q}.
+\]
+The fermionic sign $(-1)^{N_{<j}(n)}$ is the same on both sides because $U$ does not change the
+occupation numbers; this is the only place where the ordering convention enters, and the result
+holds for any convention used simultaneously for $f$ and $c$.  Since the $\tau$'s commute with the
+$c$'s and $(\tauz{k})^2=\one$,
+$U^\dagger\szb{j}f_j^\dagger f_{j+1}U=\tauz{j}\tauz{j+1}\,\tauz{j}c_j^\dagger\,c_{j+1}\tauz{j+1}=c_j^\dagger c_{j+1}$.
+Finally $\prod_{k=j}^N\tauz{k}\tauz{k+1}=\tauz{j}$ (telescoping, $\tauz{N+1}=\one$).
+
+\emph{(b).}  By (c), $(\szb{j}f_j^\dagger f_{j+1})^\dagger=\szb{j}f_{j+1}^\dagger f_j\mapsto c_{j+1}^\dagger c_j$
+and $\sxb{j-1}\sxb{j}\mapsto\taux{j}(-1)^{n_j}$, which gives the first expression in
+\eqref{eq:dualH}.  On $\cF^c_N\otimes\ket{q}$ the electric part acts as
+$-h\sum_jq_j(\one-2n_j)=2h\sum_jq_jn_j-h\sum_jq_j$, and
+$-J\sum_{j<N}(c_j^\dagger c_{j+1}+c_{j+1}^\dagger c_j)+2h\sum_jq_jn_j=\dGamma(\hq)$.  If
+$\hq\varphi_\alpha=E_\alpha\varphi_\alpha$ with $(\varphi_\alpha)$ orthonormal and
+$a_\alpha:=\sum_x\overline{\varphi_\alpha(x)}c_x$, then $\dGamma(\hq)=\sum_\alpha E_\alpha a_\alpha^\dagger a_\alpha$,
+whose eigenvalues are $\sum_\alpha m_\alpha E_\alpha$, $m\in\{0,1\}^N$.
+
+\emph{(d).}  By (c), $c_j=c_j\tauz{j}\tauz{j}=(U^\dagger f_jU)\bigl(U^\dagger\prod_{k\ge j}\szb{k}U\bigr)$;
+conjugating with $U$ gives \eqref{eq:dressed}.  The CAR and oddness are preserved by the even unitary
+$U$; $c_j$ commutes with $\taux{k}$, so $\cdr_j$ commutes with $G_k$ by (a); and
+$\cdr_j^\dagger\cdr_j=Un_jU^\dagger=n_j$ by (c).  For $x<y$ the strings
+$\prod_{k\ge x}\szb{k}\prod_{k\ge y}\szb{k}=\prod_{x\le k<y}\szb{k}$ combine and commute with the
+$f$'s.  \eqref{eq:Hdressed} is $U(\eqref{eq:dualH})U^\dagger$, using
+$U\taux{j}(-1)^{n_j}U^\dagger=G_j(-1)^{n_j}$ and $U(\one\otimes\ket{q}\bra{q})U^\dagger=P_q$.
+
+\emph{(e).}  The first identity follows from \eqref{eq:dualH}.  For a self-adjoint $A$, both sides of
+$\e^{\ii t\dGamma(A)}c_x\e^{-\ii t\dGamma(A)}=\sum_y(\e^{-\ii tA})_{xy}c_y$ solve the same linear
+differential equation with the same initial value, because $[c_a^\dagger c_b,c_x]=-\delta_{ax}c_b$
+gives $\ii[\dGamma(A),c_x]=-\ii\sum_bA_{xb}c_b$.  Conjugating with $U$, the scalar phases
+$\e^{\pm\ii ht\sum q}$ cancel since $c_y$ commutes with $\ket{q}\bra{q}$, and
+$U(c_y\otimes\ket{q}\bra{q})U^\dagger=\cdr_yP_q$.
+\end{proof}
+
+\begin{remark}[Where the Wilson line ends]\label{rem:strings}
+The string of $\cdr_j$ runs from $b_j$ to the boundary link $b_N$.  A left-anchored string does not
+work: $c'_j:=(\prod_{k<j}\szb{k})f_j=\cdr_j\prod_{k=1}^N\szb{k}$ satisfies the CAR but anticommutes
+with $G_1$ (for $j=1$ through $(-1)^{n_1}$, for $j\ge2$ through $\szb{1}$), because
+$U^\dagger\prod_k\szb{k}U=\tauz{1}$ flips $q_1$.  In the open and ring variants of
+\cref{rem:boundary}, $\prod_jG_j=(-1)^{N_f}$, so every gauge-invariant operator is even and there is
+no gauge-invariant single fermion at all; only bilinears such as
+$f_x^\dagger(\prod_{x\le k<y}\szb{k})f_y$ survive.  In our model $\cdr_j$ anticommutes with both
+$(-1)^{N_f}$ and $\sxb{N}$, consistently with $\prod_jG_j=(-1)^{N_f}\sxb{N}$.  The algebra generated
+by $\{\cdr_j,G_j,\prod_{k\ge j}\szb{k}\}_{j\le N}$ is a CAR$\,\otimes\,$Pauli system on $\cH_N$, and $U$
+is the unitary that intertwines it with $\{c_j,\taux{j},\tauz{j}\}$.
+\end{remark}
+
+\begin{proposition}[Open and ring variants]\label{prop:variants}
+\leavevmode
+\begin{enumerate}[label=(\roman*)]
+\item \emph{Open chain.}  Let $H^{\rm open}$ and $G^{\rm open}_j$ be given by \eqref{eq:H},
+\eqref{eq:gauss} on $\cF_N\otimes(\C^2)^{\otimes(N-1)}$ with $\sxb{0}=\sxb{N}:=\one$, and let
+$\iota\chi:=\chi\otimes\ket{+}_{b_N}$.  Then $H(\one\otimes\iota)=(\one\otimes\iota)H^{\rm open}$ and
+$G_j(\one\otimes\iota)=(\one\otimes\iota)G_j^{\rm open}$, so $H^{\rm open}$ is unitarily equivalent to
+$H$ restricted to the invariant subspace $\{\sxb{N}=+1\}$, and
+\begin{equation}\label{eq:openparity}
+  U^\dagger\tfrac12(\one+\sxb{N})U=\sum_q\Pi_{\pi(q)}\otimes\ket{q}\bra{q},\qquad\pi(q):=\prod_{j}q_j,
+\end{equation}
+where $\Pi_{\pm}$ is the projection onto $\{(-1)^{N_c}=\pm1\}$ in $\cF^c_N$.  Thus
+$H^{\rm open}\cong\bigoplus_q\bigl(\dGamma(\hq)-h\sum_jq_j\bigr)\big|_{\Pi_{\pi(q)}\cF^c_N}$ (the
+parity constraint $\prod_jq_j=(-1)^{N_f}$).  If $\psi$ has definite parity $\pi$, the state
+$\psi\otimes\ket{\uparrow\cdots\uparrow}_z\in\cF_N\otimes(\C^2)^{\otimes(N-1)}$ has sector law uniform on
+$\{q:\prod_jq_j=\pi\}$, i.e.\ with density $2\cdot\one[\prod_jq_j=\pi]\le2$ with respect to the
+i.i.d.\ Bernoulli$(1/2)$ law, and the same matter state $\psi$ in every sector.
+\item \emph{Ring} ($N\ge3$).  Let $H^{\rm ring}$ be \eqref{eq:H} on $\cH_N$ with the hopping sum
+extended to $j=N$ ($f_{N+1}:=f_1$) and $\sxb{0}:=\sxb{N}$, let $G^{\rm ring}_j$ be \eqref{eq:gauss}
+with $\sxb{0}:=\sxb{N}$, and $W:=\prod_{j=1}^N\szb{j}$.  Then, with the same $U$,
+\begin{gather*}
+  U^\dagger G^{\rm ring}_1U=(-1)^{N_c}\prod_{k\ge2}\taux{k},\qquad U^\dagger G^{\rm ring}_jU=\taux{j}\ (j\ge2),
+  \qquad U^\dagger WU=\tauz{1},\\
+  \begin{aligned}
+  U^\dagger H^{\rm ring}U={}&-J\sum_{j=1}^{N-1}(c_j^\dagger c_{j+1}+{\rm h.c.})-J\tauz{1}(c_N^\dagger c_1+c_1^\dagger c_N)\\
+  &-h(-1)^{N_c}\Bigl(\prod_{k\ge2}\taux{k}\Bigr)(-1)^{n_1}-h\sum_{j=2}^N\taux{j}(-1)^{n_j}.
+  \end{aligned}
+\end{gather*}
+Consequently $W$ and the $G^{\rm ring}_j$ commute with $H^{\rm ring}$, $\prod_jG_j^{\rm ring}=(-1)^{N_f}$, and on
+the joint eigenspace $\{G^{\rm ring}_j=q_j\ \forall j,\ W=w\}$ (non-zero for every $q$ and $w$) the
+Hamiltonian $H^{\rm ring}$ is unitarily equivalent to $\dGamma(h_{q,w})-h\sum_jq_j$ restricted to
+$\Pi_{\pi(q)}\cF^c_N$, where
+\begin{equation}\label{eq:ringtwist}
+  h_{q,w}:=\hq-Jw\bigl(\ket{1}\bra{N}+\ket{N}\bra{1}\bigr).
+\end{equation}
+The twist on the bond $(N,1)$ is exactly $w$, the eigenvalue of the Wilson loop, with no
+parity-dependent factor.  The state $\psi\otimes\ket{\uparrow\cdots\uparrow}_z$ with $\psi$ of parity
+$\pi$ has $W=+1$ (periodic $h_{q,1}$) and sector law uniform on $\{q:\prod_jq_j=\pi\}$.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(i) $\sxb{N}$ enters $H$ only through $-h\sxb{N-1}\sxb{N}$ and $G_j$ only for $j=N$; on
+$\ket{+}_{b_N}$ it acts as $1$, which gives the intertwining relations.  By
+\cref{lem:gauss}(ii) and \cref{thm:duality}(a),(c),
+$U^\dagger\sxb{N}U=(-1)^{N_c}\prod_j\taux{j}$, which is \eqref{eq:openparity}.  Restricting
+\eqref{eq:dualH} to its range gives the sector decomposition.  For the initial state,
+$\iota(\ket{\uparrow\cdots\uparrow}_z)=2^{-(N-1)/2}\sum_{x:\,x_{b_N}=+1}\ket{x}_\sigma$.  For a Fock
+vector $\ket{n}$, by \eqref{eq:U} and \eqref{eq:qofx} the vectors $U^\dagger(\ket{n}\otimes\ket{x}_\sigma)=\ket{n,q(n,x)}$
+with $x_{b_N}=+1$ are exactly the $\ket{n,q}$ with $\prod_jq_j=(-1)^{|n|}$, each once.  By linearity,
+for $\psi$ of parity $\pi$, $U^\dagger(\psi\otimes\iota\ket{\uparrow\cdots\uparrow}_z)
+=2^{-(N-1)/2}\sum_{q:\,\pi(q)=\pi}\psi\otimes\ket{q}$.
+
+(ii) The operators $f_j,\sigma_{b_j}$ and $U$ are the same as before, so the dictionary of
+\cref{thm:duality}(c) applies.  The new hopping term maps as
+$\szb{N}f_N^\dagger f_1\mapsto\tauz{N}\,c_N^\dagger\tauz{N}\,c_1\tauz{1}=\tauz{1}c_N^\dagger c_1$, and similarly
+for its adjoint.  The new electric term maps as
+\[
+  \sxb{N}\sxb{1}\mapsto\Bigl(\prod_{k\le N}\taux{k}(-1)^{n_k}\Bigr)\taux{1}(-1)^{n_1}
+  =(-1)^{N_c}\Bigl(\prod_{k\ge2}\taux{k}\Bigr)(-1)^{n_1};
+\]
+multiplying by $(-1)^{n_1}$ gives $U^\dagger G^{\rm ring}_1U$.  $W\mapsto\prod_j\tauz{j}\tauz{j+1}=\tauz{1}$.  The dual Hamiltonian
+contains $\tau_1$ only through $\tauz{1}$ and $\tau_k$, $k\ge2$, only through $\taux{k}$, and it
+commutes with $(-1)^{N_c}$.  Use the basis $\ket{w}_1\otimes\ket{q_2,\dots,q_N}$ of $\SiteT_N$ with
+$\tauz{1}\ket{w}_1=w\ket{w}_1$.  On $\Pi_\pi\cF_N^c\otimes\ket{w}_1\otimes\ket{q_2,\dots,q_N}$ put
+$q_1:=\pi\prod_{k\ge2}q_k$.  Then $U^\dagger G^{\rm ring}_1U=q_1$ there, and the dual Hamiltonian acts as
+\[
+  -J\sum_{j<N}(c_j^\dagger c_{j+1}+{\rm h.c.})-Jw(c_N^\dagger c_1+{\rm h.c.})-h\sum_jq_j(\one-2n_j)
+  =\dGamma(h_{q,w})-h\sum_jq_j .
+\]  These subspaces exhaust $\cK_N$ and are the joint eigenspaces of
+$(U^\dagger G_j^{\rm ring}U)_j$ and $U^\dagger WU$, with $\pi=\prod_jq_j$.  Finally
+$U^\dagger(\psi\otimes\ket{\uparrow\cdots\uparrow}_z)=2^{-N/2}\sum_q\psi\otimes\ket{q}$ (the same
+computation as in \cref{cor:sector}(a) below), and
+$2^{-1/2}\sum_{q_1}\ket{q_1}$ is the $\tauz{1}=+1$ eigenvector by \eqref{eq:taubasis}; so $w=1$.  Since
+$U^\dagger G_1^{\rm ring}U=\pi\prod_{k\ge2}\taux{k}$ on $\Pi_\pi\cF^c_N\otimes\SiteT_N$, the law of
+$(q_2,\dots,q_N)$ is uniform and $q_1=\pi\prod_{k\ge2}q_k$.
+\end{proof}
+
+\subsection{Locality of the duality across a cut}\label{sec:model:cut}
+
+Fix $1\le\ell<N$.  Let $A$ consist of the sites $1,\dots,\ell$ and the links $b_1,\dots,b_\ell$, and
+$B$ of the sites $\ell+1,\dots,N$ and the links $b_{\ell+1},\dots,b_N$.  Identify
+$\cF_N\cong\cF_{\le\ell}\otimes\cF_{>\ell}$ via $\ket{n}\mapsto\ket{n_{\le\ell}}\otimes\ket{n_{>\ell}}$, where
+$\ket{n_{\le\ell}}=(f_1^\dagger)^{n_1}\cdots(f_\ell^\dagger)^{n_\ell}\ket0$ and
+$\ket{n_{>\ell}}=(f_{\ell+1}^\dagger)^{n_{\ell+1}}\cdots(f_N^\dagger)^{n_N}\ket0$.  By
+\eqref{eq:fsign}, $f_j\mapsto f_j\otimes\one$ for $j\le\ell$ and $f_j\mapsto(-1)^{N_{\le\ell}}\otimes f_j$
+for $j>\ell$.  Hence the CAR algebra of the modes $1,\dots,\ell$ is exactly $\mathcal{B}(\cF_{\le\ell})\otimes\one$,
+and
+\[
+  \cH_N\cong\cH_A\otimes\cH_B,\qquad\cH_A:=\cF_{\le\ell}\otimes(\C^2)^{\otimes\ell},\quad
+  \cH_B:=\cF_{>\ell}\otimes(\C^2)^{\otimes(N-\ell)},
+\]
+with the algebra generated by $\{f_j,\sigma^{x,z}_{b_j}\}_{j\le\ell}$ equal to $\mathcal{B}(\cH_A)\otimes\one$.
+For a unit vector $\Psi\in\cH_N$ we let $\rho_A(\Psi):=\Tr_{\cH_B}\ket{\Psi}\bra{\Psi}$ and
+$S_A(\Psi):=-\Tr\rho_A\ln\rho_A$.  Thus $\Tr(\rho_A(\Psi)O)=\langle\Psi,O\Psi\rangle$ for every $O$ in the
+algebra of $A$, so $\rho_A$ is the canonical fermionic reduced state of the left segment, and
+$\Sfull(t)=S_A(\Psi(t))$.  On the dual side we use the same identification
+$\cK_N\cong\cK_{A'}\otimes\cK_{B'}$, $\ket{n,q}\mapsto\ket{n_{\le\ell},q_{\le\ell}}\otimes\ket{n_{>\ell},q_{>\ell}}$, where
+$A'=(c_k,\tau_k)_{k\le\ell}$, and we write $\rho_{A'}(\Phi)$, $S_{A'}(\Phi)$.
+
+Let $U_{\le\ell}:\cK_{A'}\to\cH_A$ be the duality unitary \eqref{eq:U} of the chain $\{1,\dots,\ell\}$
+(whose boundary link is $b_\ell$), and $U_{>\ell}:\cK_{B'}\to\cH_B$,
+$U_{>\ell}\ket{n_{>\ell},q_{>\ell}}=\ket{n_{>\ell}}\otimes\ket{y}_\sigma$ with
+$y_{b_j}:=\prod_{\ell<k\le j}q_k(-1)^{n_k}$, $j>\ell$.  Let $P^\pm_\ell:=\frac12(\one\pm\sxb{\ell})$ on
+$\cH_A$, $V_\ell:=\prod_{k=\ell+1}^N\szb{k}$ on $\cH_B$, and
+\begin{equation}\label{eq:Cgate}
+  C_\ell:=P^+_\ell\otimes\one+P^-_\ell\otimes V_\ell .
+\end{equation}
+
+\begin{lemma}[Cut-locality]\label{lem:cutlocal}
+\leavevmode
+\begin{enumerate}[label=(\alph*)]
+\item $U=C_\ell\,(U_{\le\ell}\otimes U_{>\ell})$.
+\item For every unit vector $\Phi\in\cK_N$: $\ \abs{S_A(U\Phi)-S_{A'}(\Phi)}\le\ln2$.
+\item If $\Phi$ is an eigenvector of $(-1)^{N_c}$ and of $\prod_{k\le\ell}\taux{k}$ (which is
+$U^\dagger\prod_{k\le\ell}G_kU$, the total $\Z_2$ charge in $A$), then $S_A(U\Phi)=S_{A'}(\Phi)$.  In
+particular, for a definite-charge state $\Phi=\phi\otimes\ket{q}$ with $\phi\in\cF_N^c$ of definite
+parity, $S_A(U\Phi)=S(\rho^\phi_{\le\ell})$, the entanglement entropy of $\phi$ for the modes
+$1,\dots,\ell$.
+\item The constant $\ln2$ in (b) is attained in both directions.
+\end{enumerate}
+\end{lemma}
+
+In particular, for a definite-charge initial state $\Psi_0=\ket{\xi}_\sigma\otimes\ket{n}$
+(\cref{lem:productlaw}(d)) with $q=q(n,\xi)$, \cref{thm:duality}(e) gives
+$U^\dagger\Psi(t)=\e^{\ii ht\sum_jq_j}\psi_q(t)\otimes\ket{q}$, where $\psi_q(t)=\Gamma(\e^{-\ii t\hq})\ket{n}$
+has parity $(-1)^{\abs{n}}$.  Hence, for all $t$,
+\begin{equation}\label{eq:quenchedSfull}
+  \Sfull(t)=S_A(\Psi(t))=S\bigl(\rho^{\psi_q(t)}_{\le\ell}\bigr):
+\end{equation}
+the full matter-plus-gauge entanglement of a definite-charge state is exactly the free-fermion
+entanglement in its sector.
+
+The defect in (b) comes only from the electric flux through the cut link $b_\ell$.  By
+\eqref{eq:gausslaw1d}, $\sxb{\ell}=(-1)^{N_{\le\ell}}\prod_{k\le\ell}G_k$, i.e.\ the flux is fixed by
+the matter parity and the background charge of $A$.  It is a single classical bit, which explains
+the bound $\ln2$.
+
+\begin{lemma}[Two-block pinching]\label{lem:pinching}
+Let $P^++P^-=\one$ be orthogonal projections on a finite-dimensional space and
+$\mathcal{P}(\sigma):=P^+\sigma P^++P^-\sigma P^-$.  Then $S(\sigma)\le S(\mathcal{P}(\sigma))\le S(\sigma)+\ln2$
+for every density matrix $\sigma$.
+\end{lemma}
+
+\begin{proof}
+With the unitary $R:=P^+-P^-$ one has $\mathcal{P}(\sigma)=\frac12(\sigma+R\sigma R^\dagger)$.  The lower
+bound is concavity of $S$, since $S(R\sigma R^\dagger)=S(\sigma)$.  For the upper bound let
+$\sigma_1,\sigma_2$ be density matrices and $\bar\sigma=\frac12(\sigma_1+\sigma_2)$.  For $\varepsilon>0$,
+$\bar\sigma+\varepsilon\ge\frac12\sigma_i+\varepsilon>0$, and operator monotonicity of the logarithm gives
+$-\Tr\sigma_i\ln(\bar\sigma+\varepsilon)\le-\Tr\sigma_i\ln(\tfrac12\sigma_i+\varepsilon)$.  Averaging over
+$i=1,2$ and letting $\varepsilon\downarrow0$ (with $0\ln0=0$) yields
+$S(\bar\sigma)\le\frac12\sum_iS(\sigma_i)+\ln2$.  Apply this with $\sigma_1=\sigma$, $\sigma_2=R\sigma R^\dagger$.
+\end{proof}
+
+\begin{proof}[Proof of \cref{lem:cutlocal}]
+(a) Write $n=(n_<,n_>)$ and $q=(q_<,q_>)$ for the parts in $A'$ and $B'$.  By \eqref{eq:xnq},
+$x_{b_j}(n,q)=x_{b_j}(n_<,q_<)$ for $j\le\ell$ and $x_{b_j}(n,q)=x_{b_\ell}(n_<,q_<)\,y_{b_j}(n_>,q_>)$
+for $j>\ell$.  Under the identifications, $(U_{\le\ell}\otimes U_{>\ell})\ket{n,q}=\ket{n}\otimes\ket{x_{\le\ell}(n_<,q_<),y(n_>,q_>)}_\sigma$.
+No fermionic sign occurs, because both factors preserve occupation numbers and the identifications
+are defined on occupation basis vectors.  $P^\pm_\ell$ selects $x_{b_\ell}=\pm1$, and on
+$x_{b_\ell}=-1$ the operator $V_\ell$ flips every $y_{b_j}$ by \eqref{eq:szflip}.  Hence
+$C_\ell(U_{\le\ell}\otimes U_{>\ell})\ket{n,q}=\ket{n}\otimes\ket{x(n,q)}_\sigma=U\ket{n,q}$.
+
+(b) Let $\Psi':=(U_{\le\ell}\otimes U_{>\ell})\Phi$, $\rho':=\rho_A(\Psi')=U_{\le\ell}\,\rho_{A'}(\Phi)\,U_{\le\ell}^\dagger$,
+and $\rho:=\rho_A(U\Phi)=\rho_A(C_\ell\Psi')$.  Then $S(\rho')=S_{A'}(\Phi)$.  Since
+$(P^s_\ell\otimes\one)C_\ell=P^s_\ell\otimes V_s$ with $V_+=\one$, $V_-=V_\ell$, and the partial trace over
+$\cH_B$ is invariant under conjugation by unitaries on $\cH_B$,
+\[
+  P^s_\ell\rho P^s_\ell=P^s_\ell\,\Tr_{\cH_B}\bigl[(\one\otimes V_s)\ket{\Psi'}\bra{\Psi'}(\one\otimes V_s^\dagger)\bigr]P^s_\ell
+  =P^s_\ell\rho'P^s_\ell,\qquad s=\pm .
+\]
+So $\mathcal{P}(\rho)=\mathcal{P}(\rho')$ for the pinching of \cref{lem:pinching} with $P^\pm=P^\pm_\ell$.
+Hence $S(\rho)\le S(\mathcal{P}(\rho))=S(\mathcal{P}(\rho'))\le S(\rho')+\ln2$, and symmetrically.
+
+(c) Let $(-1)^{N_c}\Phi=\pi\Phi$ and $\prod_{k\le\ell}\taux{k}\Phi=Q\Phi$.  By \cref{thm:duality}(c) for the
+chain $\{1,\dots,\ell\}$, $U_{\le\ell}^\dagger\sxb{\ell}U_{\le\ell}=\prod_{k\le\ell}\taux{k}(-1)^{n_k}$.  Under the
+identification $(-1)^{N_c}=(-1)^{N_{\le\ell}}\otimes(-1)^{N_{>\ell}}$, and $U_{>\ell}$ commutes with
+$(-1)^{N_{>\ell}}$.  Hence
+\[
+  (\sxb{\ell}\otimes\one)\Psi'=(U_{\le\ell}\otimes U_{>\ell})\bigl(Q(-1)^{N_{\le\ell}}\otimes\one\bigr)\Phi
+  =Q\pi\,(\one\otimes(-1)^{N_{>\ell}})\Psi' .
+\]
+So $(P^\pm_\ell\otimes\one)\Psi'=(\one\otimes R^\pm)\Psi'$ with the complementary projections
+$R^\pm:=\frac12(\one\pm Q\pi(-1)^{N_{>\ell}})$ on $\cH_B$, which commute with $V_\ell$.  Therefore
+$U\Phi=C_\ell\Psi'=(\one\otimes(R^++V_\ell R^-))\Psi'$.  Here $R^++V_\ell R^-$ is a unitary on $\cH_B$,
+so $\rho_A(U\Phi)=\rho'$ and $S_A(U\Phi)=S_{A'}(\Phi)$.  For $\Phi=\phi\otimes\ket{q}$, $\Phi$ is an eigenvector of
+$\prod_{k\le\ell}\taux{k}$, and $\rho_{A'}(\Phi)=\rho^\phi_{\le\ell}\otimes\ket{q_{\le\ell}}\bra{q_{\le\ell}}$.
+
+(d) Take $N=2$, $\ell=1$, $n=(0,0)$.  The vector $\Phi=\ket{0,0}_c\otimes2^{-1/2}(\ket{+1}+\ket{-1})_{\tau_1}\otimes\ket{+1}_{\tau_2}$
+is a product over $A'|B'$, while by \eqref{eq:xnq}
+$U\Phi=\ket{0,0}\otimes2^{-1/2}(\ket{+}_{b_1}\ket{+}_{b_2}+\ket{-}_{b_1}\ket{-}_{b_2})$ has $S_A=\ln2$.
+Conversely, $\Psi=\ket{0,0}\otimes\ket{\uparrow}_{b_1}\otimes\ket{+}_{b_2}$ is a product over $A|B$, while
+$U^\dagger\Psi=\ket{0,0}_c\otimes2^{-1/2}(\ket{+1,+1}+\ket{-1,-1})_{\tau}$ has $S_{A'}=\ln2$.
+\end{proof}
+
+\begin{remark}[Interior intervals]\label{rem:interior}
+For an interval $A=[\ell_1+1,\ell_2]$ (sites and links) with $1\le\ell_1<\ell_2<N$, applying (a) at
+$\ell_1$ and, inside the right factor, at $\ell_2$ writes $U$ as a local unitary followed by two
+controlled gates.  The control of the first gate lies outside $A$; after tracing it out, the reduced
+state of $A$ becomes a two-component mixture related to the original one by a unitary on one
+component.  The argument of (b) then gives $\abs{S_A(U\Phi)-S_{A'}(\Phi)}\le2\ln2$.  We do not use this.
+For interior intervals, odd elements of the algebra of $A$ carry the Jordan--Wigner string of the
+left part.  For states of definite total fermion parity, however, the partial trace over the
+complement is block diagonal with respect to the parity of $A$ and coincides with the fermionic
+reduced state.
+\end{remark}
+
+\subsection{Sector averaging}\label{sec:model:sector}
+
+For $q\in\{\pm1\}^N$ and $\psi\in\cF_N$ we write $\psi_q(t):=\Gamma(\e^{-\ii t\hq})\psi$.  $\E_q$
+denotes expectation with respect to the uniform probability measure on $\{\pm1\}^N$, i.e.\ $q_1,\dots,q_N$
+i.i.d.\ Bernoulli$(1/2)$ with values $\pm1$.  For a gauge-invariant $O$ the operator $U^\dagger OU$
+commutes with every $\taux{j}$.  It therefore leaves every joint eigenspace $\cF^c_N\otimes\ket{q}$
+invariant, and
+\begin{equation}\label{eq:Oq}
+  U^\dagger OU=\sum_qO_q\otimes\ket{q}\bra{q}
+\end{equation}
+for unique operators $O_q$ on $\cF^c_N$.  We set $O_q(t):=\Gamma(\e^{\ii t\hq})O_q\Gamma(\e^{-\ii t\hq})$.
+
+\begin{corollary}[Exact sector averaging]\label{cor:sector}
+Let $\psi\in\cF_N$ be a unit vector, $\Psi_0:=\ket{\uparrow\cdots\uparrow}_z\otimes\psi$ (we do not
+distinguish $\LinkS_N\otimes\cF_N$ from $\cF_N\otimes\LinkS_N$), and $\Psi(t):=\e^{-\ii tH}\Psi_0$.
+\begin{enumerate}[label=(\alph*)]
+\item $U^\dagger\Psi_0=2^{-N/2}\sum_q\psi\otimes\ket{q}$ and
+$U^\dagger\Psi(t)=2^{-N/2}\sum_q\e^{\ii ht\sum_jq_j}\,\psi_q(t)\otimes\ket{q}$.  In particular
+$\norm{P_q\Psi_0}^2=2^{-N}$ for every $q$: the charges are exactly i.i.d.\ Bernoulli$(1/2)$, and
+every sector carries the same matter state $\psi$.
+\item For every gauge-invariant $O$ and $t\in\R$,
+\begin{equation}\label{eq:sectoravg}
+  \langle\Psi(t),O\,\Psi(t)\rangle=\E_q\,\langle\psi_q(t),O_q\,\psi_q(t)\rangle .
+\end{equation}
+More generally, for gauge-invariant $O_1,\dots,O_m$ and $t_1,\dots,t_m\in\R$,
+\[
+  \langle\Psi_0,O_1(t_1)\cdots O_m(t_m)\Psi_0\rangle=\E_q\langle\psi,O_{1,q}(t_1)\cdots O_{m,q}(t_m)\psi\rangle,
+\]
+where $O(t)=\e^{\ii tH}O\e^{-\ii tH}$.  The constants $-h\sum_jq_j$ drop out.
+\item \emph{Sector-diagonal observables.}  The following are gauge invariant, with the stated $O_q$:
+\begin{itemize}
+\item every function $F(n_1,\dots,n_N)$ of the occupations, with $O_q=F(n_1,\dots,n_N)$
+independent of $q$; in particular $n_x$ and $\one[N_X=k]$.  Hence the distribution of $N_X$ in
+$\Psi(t)$ is $\Prob_{\Psi(t)}(N_X=k)=\E_q\langle\psi_q(t),\one[N_X=k]\psi_q(t)\rangle$, the
+$q$-average of the per-sector distributions;
+\item every polynomial in the dressed fermions $\cdr_x,\cdr_x^\dagger$, with $O_q$ the same
+polynomial in $c_x,c_x^\dagger$; in particular $f_x^\dagger(\prod_{x\le k<y}\szb{k})f_y\mapsto c_x^\dagger c_y$;
+\item the electric field and energy: $\sxb{j}\mapsto(\prod_{k\le j}q_k)(-1)^{N_{\le j}}$ and
+$\sxb{j-1}\sxb{j}\mapsto q_j(-1)^{n_j}$, together with their products.
+\end{itemize}
+For a Fock state $\psi=\ket{n}$ with occupied set $\{s_1<\dots<s_M\}$, write $u_q(t):=\e^{-\ii t\hq}$.
+Then $\langle\psi_q(t),c_x^\dagger c_y\psi_q(t)\rangle=\sum_{a=1}^M\overline{u_q(t)_{xs_a}}\,u_q(t)_{ys_a}$, and
+\begin{equation}\label{eq:stringdet}
+  \langle\psi_q(t),(-1)^{N_{\le j}}\psi_q(t)\rangle=\det\bigl[(u_q(t)^*R_ju_q(t))_{s_as_b}\bigr]_{a,b=1}^M,
+  \qquad R_j:=\diag\bigl((-1)^{\one[x\le j]}\bigr)_{x=1}^N .
+\end{equation}
+\item \emph{The gauge field $\szb{j}$ is not sector diagonal.}  It anticommutes with $G_j$ and
+$G_{j+1}$ (with $G_N$ only, if $j=N$), and
+\begin{equation}\label{eq:loschmidt}
+  \langle\Psi(t),\szb{j}\Psi(t)\rangle=\E_q\Bigl[\e^{\ii ht(\sum_kq_k-\sum_kq'_k)}\,
+  \langle\psi_{q'}(t),\psi_q(t)\rangle\Bigr],\qquad q':=q^{[j]},
+\end{equation}
+where $q^{[j]}$ is $q$ with $q_j$ and $q_{j+1}$ flipped ($q_N$ only, if $j=N$), so that
+$\sum_kq_k-\sum_kq'_k=2(q_j+q_{j+1})$ (resp.\ $2q_N$).  For Fock $\psi$,
+$\langle\psi_{q'}(t),\psi_q(t)\rangle=\det[(u_{q'}(t)^*u_q(t))_{s_as_b}]_{a,b=1}^M$.  Thus gauge-field
+observables are Loschmidt echoes between sectors that differ by a local flip of the potential, and
+the sector-dependent phase in \eqref{eq:loschmidt} cannot be omitted.
+\end{enumerate}
+\end{corollary}
+
+\begin{proof}
+(a) $\ket{\uparrow}=2^{-1/2}(\ket{+}+\ket{-})$, so $\ket{\uparrow\cdots\uparrow}_z=2^{-N/2}\sum_x\ket{x}_\sigma$.
+For fixed $n$, $U^\dagger(\ket{n}\otimes\ket{x}_\sigma)=\ket{n,q(n,x)}$ with $q(n,x)$ given by
+\eqref{eq:qofx}, and $x\mapsto q(n,x)$ is a bijection of $\{\pm1\}^N$.  Hence
+$U^\dagger(\ket{n}\otimes\ket{\uparrow\cdots\uparrow}_z)=2^{-N/2}\sum_q\ket{n,q}$, and the claim
+follows by linearity in $\psi$.  The time evolution follows from \cref{thm:duality}(e).
+(b) By (a) and \eqref{eq:Oq},
+\[
+  \langle\Psi(t),O\Psi(t)\rangle=2^{-N}\sum_{q,q'}\e^{\ii ht(\sum_kq_k-\sum_kq'_k)}
+  \bigl\langle\psi_{q'}(t)\otimes\ket{q'},(O_q\psi_q(t))\otimes\ket{q}\bigr\rangle,
+\]
+and only $q'=q$ contributes.  For the multi-time formula,
+$U^\dagger O_i(t_i)U=\sum_qO_{i,q}(t_i)\otimes\ket{q}\bra{q}$ by \cref{thm:duality}(e); the phases cancel
+because $O_i$ is block diagonal.
+(c) Gauge invariance and the $O_q$ follow from \cref{thm:duality}(c),(d) and \cref{lem:gauss}.  The
+determinant formulas follow from $\psi_q(t)=c^\dagger(u_qe_{s_1})\cdots c^\dagger(u_qe_{s_M})\ket0$
+(with $u_q=u_q(t)$), from $(-1)^{N_{\le j}}=\Gamma(R_j)$, and from
+\[
+  \bigl\langle c^\dagger(v_1)\cdots c^\dagger(v_M)\ket0,\,c^\dagger(w_1)\cdots c^\dagger(w_M)\ket0\bigr\rangle
+  =\det[\langle v_a,w_b\rangle]_{a,b=1}^M .
+\]
+(d) By \cref{thm:duality}(c), $U^\dagger\szb{j}U=\tauz{j}\tauz{j+1}$ maps $\cF^c_N\otimes\ket{q}$ onto
+$\cF^c_N\otimes\ket{q^{[j]}}$.  Hence, by (a),
+\[
+  \langle\Psi(t),\szb{j}\Psi(t)\rangle
+  =2^{-N}\sum_q\e^{-\ii ht\sum_kq^{[j]}_k}\,\e^{\ii ht\sum_kq_k}\,
+  \bigl\langle\psi_{q^{[j]}}(t),\psi_q(t)\bigr\rangle .
+\]
+The determinant formula is the overlap formula used in (c).
+\end{proof}
+
+\begin{remark}[Superposition versus ensemble]\label{rem:superposition}
+By \eqref{eq:sectoravg}, the dynamics of every gauge-invariant observable in the coherent
+superposition $\Psi_0$ coincides with the dynamics in the \emph{ensemble} of definite-charge states
+$\psi\otimes\ket{q}$ (in the dual picture), $q$ i.i.d.  The superposed state and the ensemble are
+distinguished only by observables that are not gauge invariant, such as $\szb{j}$ in
+\eqref{eq:loschmidt}, and by entanglement-type quantities (\cref{lem:cutlocal},
+\cref{prop:entropies}).
+\end{remark}
+
+\begin{lemma}[Sector laws of product initial states]\label{lem:productlaw}
+Let $\chi=\bigotimes_{j=1}^N\chi_j\in\LinkS_N$ be a product state of the links.  Write
+$\chi(x):=\prod_j\langle x_{b_j}|\chi_j\rangle$ for its $\sigma^x$-amplitudes, and
+$\Psi_0=\chi\otimes\psi$.
+\begin{enumerate}[label=(\alph*)]
+\item For every $\psi=\sum_n\psi(n)\ket{n}$, $U^\dagger\Psi_0=\sum_q\psi^{(q)}\otimes\ket{q}$ with
+$\psi^{(q)}:=\sum_n\chi(x(n,q))\psi(n)\ket{n}$.
+\item \emph{Fock matter.}  If $\psi=\ket{n}$, then $\psi^{(q)}=\chi(x(n,q))\ket{n}$.  The sector law
+$\mu(q):=\norm{P_q\Psi_0}^2=\abs{\chi(x(n,q))}^2$ is the image of the product law
+$\bigotimes_j\bigl(\abs{\langle+|\chi_j\rangle}^2\delta_{+1}+\abs{\langle-|\chi_j\rangle}^2\delta_{-1}\bigr)$
+of $x$ under the bijection $x\mapsto q$, $q_j=(-1)^{n_j}x_{b_{j-1}}x_{b_j}$, $x_{b_0}=1$.  Every
+sector in the support carries the matter state $\ket{n}$, up to a phase, and for every gauge-invariant
+$O$, $\langle\Psi(t),O\Psi(t)\rangle=\sum_q\mu(q)\langle n,O_q(t)\,n\rangle$.
+\item \emph{$\sigma^z$-product gauge states.}  If $\chi=\ket{s}_z$ with $D:=\{j:s_j=-1\}$, then for every
+$\psi$
+\[
+  U^\dagger\Psi_0=2^{-N/2}\sum_q\varepsilon_D(q)\,(W_D\psi)\otimes\ket{q},\qquad
+  \varepsilon_D(q):=\prod_{j\in D}\prod_{k\le j}q_k,\quad W_D:=\prod_{j\in D}(-1)^{N_{\le j}} .
+\]
+So the charges are i.i.d.\ Bernoulli$(1/2)$, and \cref{cor:sector}(b),(c) hold with $\psi$ replaced
+by $W_D\psi$.  For Fock $\psi$, $W_D\psi=\pm\psi$, and the gauge-invariant dynamics is identical to
+that of $\ket{\uparrow\cdots\uparrow}_z\otimes\psi$.
+\item \emph{$\sigma^x$-product gauge states.}  If $\chi=\ket{\xi}_\sigma$, $\xi\in\{\pm1\}^N$, and
+$\psi=\ket{n}$, then $U^\dagger\Psi_0=\ket{n}\otimes\ket{q(n,\xi)}$, a single (definite-charge) sector with
+$q_j=(-1)^{n_j}\xi_{b_{j-1}}\xi_{b_j}$.
+\item \emph{Mixed product states and the dimer law.}  Let $N=2M$ be even.  Let the odd links
+$b_{2k-1}$ be in $\sigma^z$-eigenstates and the even links $b_{2k}$ in the $\sigma^x$-eigenstates
+$\ket{\xi_{2k}}$, $\xi_{2k}\in\{\pm1\}$, and let $\psi=\ket{n}$.  Then $(q_{2k-1})_{k=1}^M$ are i.i.d.\ uniform
+under $\mu$, and $q_{2k}=d_k\,q_{2k-1}$ with the deterministic signs
+$d_k:=(-1)^{n_{2k-1}+n_{2k}}\xi_{2k-2}\xi_{2k}$, $\xi_0:=1$.  In particular, for
+\[
+  \chi_{2k-1}=\ket{\uparrow}_z,\qquad \chi_{2k}=\ket{(-1)^k}\ \ (\sigma^x\text{-eigenvalue }(-1)^k),\qquad
+  n_{2k-1}=0,\quad n_{2k}=1,
+\]
+for $k=1,\dots,M$,
+one has, with all amplitudes positive,
+\begin{equation}\label{eq:dimerstate}
+  U^\dagger\Psi_0=2^{-M/2}\sum_{\eta\in\{\pm1\}^M}\ket{n}\otimes\ket{\eta_1,\eta_1,\eta_2,\eta_2,\dots,\eta_M,\eta_M}.
+\end{equation}
+The sector law is the \emph{random dimer law}: i.i.d.\ equal pairs $(q_{2k-1},q_{2k})=(\eta_k,\eta_k)$,
+$\eta_k$ i.i.d.\ uniform.  The same CDW matter state sits in every sector.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(a) Expand $\chi=\sum_x\chi(x)\ket{x}_\sigma$ and use $U^\dagger(\ket{n}\otimes\ket{x}_\sigma)=\ket{n,q(n,x)}$
+together with the bijection $x\leftrightarrow q$ for fixed $n$.
+(b) This is (a) for $\psi=\ket{n}$.  The probability of $x$ under the product law is
+$\abs{\chi(x)}^2$, and the formula for gauge-invariant $O$ follows as in \cref{cor:sector}(b).
+(c) $\ket{\downarrow}=\sigma^x\ket{\uparrow}$, so $\Psi_0=\bigl(\prod_{j\in D}\sxb{j}\bigr)(\ket{\uparrow\cdots\uparrow}_z\otimes\psi)$.
+By \cref{thm:duality}(c),
+$U^\dagger\prod_{j\in D}\sxb{j}U=\prod_{j\in D}\bigl(\prod_{k\le j}\taux{k}\bigr)\,\prod_{j\in D}(-1)^{N_{\le j}}$;
+apply it to \cref{cor:sector}(a).  The sign $\varepsilon_D(q)$ has modulus one and $W_D$ is a $q$-independent
+unitary.  It acts on Fock states as a sign.
+(d) This is (a) with $\chi(x)=\delta_{x,\xi}$.
+(e) On the support of $\chi(x)$, $x_{b_{2k}}=\xi_{2k}$, while $y_k:=x_{b_{2k-1}}$ are free, with
+$\abs{\chi(x)}^2=2^{-M}$.  By \eqref{eq:qofx}, $q_{2k-1}=(-1)^{n_{2k-1}}\xi_{2k-2}\,y_k$ and
+$q_{2k}=(-1)^{n_{2k}}y_k\,\xi_{2k}$.  So $q_{2k-1}$ is a fixed sign times $y_k$, i.i.d.\ uniform, and
+$q_{2k}q_{2k-1}=d_k$.  For the specific state, $\langle y|\uparrow\rangle=2^{-1/2}>0$ for both values of
+$y$, and $\xi_{2k-2}\xi_{2k}=(-1)^{k-1}(-1)^k=-1$ (also for $k=1$, since $\xi_0=1$, $\xi_2=-1$).
+Hence $d_k=(-1)^{0+1}\cdot(-1)=1$, $q_{2k-1}=q_{2k}=(-1)^{k-1}y_k=:\eta_k$, and $y\mapsto\eta$ is a
+bijection, which gives \eqref{eq:dimerstate}.
+\end{proof}
+
+\begin{remark}\label{rem:productlaws}
+\leavevmode
+\begin{enumerate}[label=(\alph*)]
+\item \cref{lem:productlaw}(c) is the precise form of the observation in the Supplementary Material of
+\cite{SKKM2017} that every $\sigma^z$-product spin state is gauge equivalent to the polarized one:
+the sector law stays i.i.d.\ uniform, and the matter state changes by the $q$-independent unitary
+$W_D$.
+\item For the biased $\sigma^x$-product states $\chi_j=\cos\theta\ket{+}+\sin\theta\ket{-}$ with Fock
+matter, (b) shows that $q_j=(-1)^{n_j}x_{b_{j-1}}x_{b_j}$ with $x$ i.i.d.\ and
+$\Prob(x_{b_j}=1)=\cos^2\theta$.  This is a $1$-block factor of an i.i.d.\ sequence, which is not i.i.d.\
+unless $\cos^2\theta\in\{0,\tfrac12,1\}$.
+\item The localization statements of \cref{sec:main} are for the i.i.d.\ law.  They transfer to every
+sector law with bounded density with respect to it, at the cost of multiplying the bounds by the
+density, e.g.\ by $2$ for the open chain.  The dimer law \eqref{eq:dimerstate} has density $2^{N/2}$ on
+its support, which is unbounded in $N$; in infinite volume the two laws are mutually singular.
+\Cref{sec:dimer} shows that for $0<2h<J$ the dimer law leads to transport that is at least diffusive.
+Disorder-free localization is a property of the sector law induced by the initial state, not of the
+Hamiltonian alone.
+\end{enumerate}
+\end{remark}
+
+\begin{remark}[A single sector is ballistic: DFL needs superpositions of sectors]\label{rem:gaussproj}
+Let $\Psi_0\in P_q\cH_N$ for one fixed $q$.  This is the case, for instance, for the strictly
+gauge-invariant subspace $G_j\equiv1$ of the usual lattice-gauge-theory formulation (no background
+charges), or for the definite-charge states $\ket{\xi}_\sigma\otimes\ket{n}$ of
+\cref{lem:productlaw}(d).  Then, by \cref{thm:duality}(e), the matter evolves under the single,
+deterministic one-body operator $\hq$, and nothing is averaged.  Write $\one_N:=(1,\dots,1)$.  Then
+$h_{\one_N}=-J\Delta_N+2h\one$ is the clean hopping operator shifted by a constant, and none of
+the localization properties of \cref{sec:main} holds in this sector:
+\begin{enumerate}[label=(\roman*)]
+\item \emph{No decay of the eigenfunction correlator.}  The eigenvectors of $h_{\one_N}$ are
+\[
+  \varphi_k(x)=\sqrt{\tfrac{2}{N+1}}\,\sin\tfrac{\pi kx}{N+1},\qquad k=1,\dots,N,
+\]
+and $\sin\frac{\pi kN}{N+1}=\pm\sin\frac{\pi k}{N+1}$.  Since
+$\sum_{k=1}^N\sin^2\frac{\pi k}{N+1}=\frac{N+1}{2}$,
+\[
+  \Qc^{[1,N]}_{\one_N}(1,N)=\sum_{k=1}^N\abs{\varphi_k(1)\varphi_k(N)}=1\qquad\text{for every }N .
+\]
+This is the largest possible value, since always $\Qc\le1$.  So the deterministic analogue of
+Hypothesis~\ref{hyp:EC} fails in this sector.
+\item \emph{No memory of a density wave.}  Let $N$ be even, $\Gamma:=\diag((-1)^x)$, and
+$a_k:=\langle\varphi_k,\Gamma\varphi_k\rangle$.  Since $\Gamma\Delta_N\Gamma=-\Delta_N$, we have
+$h_{\one_N}\Gamma+\Gamma h_{\one_N}=4h\Gamma$.  Taking the expectation in $\varphi_k$ gives
+$(E_k-2h)a_k=0$, where $E_k=2h-2J\cos(\pi k/(N+1))\neq2h$ because $N+1$ is odd.  Hence $a_k=0$ for
+all $k$.  Take the CDW Fock state $\psi$ ($n_x=1$ iff $x$ is even) in this sector, e.g.\
+$\Psi_0=\ket{\xi}_\sigma\otimes\psi$ with $\xi_{b_j}=\prod_{k\le j}(-1)^{n_k}$.  Its imbalance
+$I(t):=\frac2N\sum_x(-1)^x\langle\Psi(t),n_x\Psi(t)\rangle$ equals
+$\frac1N\Tr(\Gamma\e^{-\ii th_{\one_N}}\Gamma\e^{\ii th_{\one_N}})$, because $\Tr\Gamma=0$.  Its time
+average is $\frac1N\sum_ka_k^2=0$, since the spectrum is simple.  Compare \cref{thm:imbalance}, where
+the $q$-average makes the time average strictly positive for every $h\neq0$.
+\item \emph{Ballistic transport.}  On $\ell^2(\Z)$, let $h_\Z:=-J\Delta+2h$ and let $X$ be the
+position operator.  Since $h_\Z$ is bounded and of finite range, $\e^{-\ii th_\Z}$ maps finitely
+supported vectors into the domain of every polynomial in $X$.  On such vectors
+$\e^{\ii th_\Z}X\e^{-\ii th_\Z}=X+tV$, with $V=\ii[h_\Z,X]=-\ii J(S_+-S_-)$, $(S_\pm u)(x)=u(x\pm1)$,
+because $V$ commutes with $h_\Z$.  Hence
+$\langle\delta_y,\e^{\ii th_\Z}(X-y)^2\e^{-\ii th_\Z}\delta_y\rangle=t^2\norm{V\delta_y}^2=2J^2t^2$
+for all $t$.  Consequently there is no bound
+$\sup_t\abs{\langle\delta_x,\e^{-\ii th_\Z}\delta_y\rangle}\le F(\abs{x-y})$ with
+$\sum_dd^2F(d)^2<\infty$.  By \eqref{eq:heisenberg}, the dressed-fermion propagator restricted to
+$P_{\one_N}\cH_N$ is $\e^{-\ii th_{\one_N}}$, and at fixed $t$ it converges, away from the ends, to
+$\e^{-\ii th_\Z}$ as $N\to\infty$ (finite propagation speed).  This is why the zero-velocity
+Lieb--Robinson bound of \cref{prop:LR} can only hold on average over sectors, and not in operator
+norm uniformly in $N$.
+\end{enumerate}
+Disorder-free localization in this model is therefore a property of the uniform \emph{superposition}
+(equivalently, the uniform average) over the $2^N$ sectors in \cref{cor:sector}.  It is never a
+property of a single superselection sector.  In particular, it is invisible in the strictly
+gauge-invariant subspace.
+\end{remark}
+
+\begin{remark}[Numerical verification]\label{rem:EDcheck}
+The script
+\begin{center}
+\texttt{code/model\_duality\_check.py}\quad(output: \texttt{code/model\_duality\_check.out})
+\end{center}
+builds $H$, the $G_j$, the $f_j$ (Jordan--Wigner, ordering \eqref{eq:occbasis}) and the link Pauli
+matrices on $\cH_N$ from scratch.  It builds $U$ as the explicit matrix
+$(\one\otimes\mathrm{Had}^{\otimes N})\,\Pi$, where $\Pi$ is the permutation matrix of
+$(n,q)\mapsto(n,x(n,q))$ and $\mathrm{Had}$ is the Hadamard matrix.  It checks, for $N=2,\dots,6$ and
+$J=1$, $h=0.7$:
+\begin{itemize}
+\item every identity of \cref{thm:duality}(a)--(d), and \eqref{eq:gausslaw1d}, to $\le10^{-14}$;
+\item the spectral identity of \cref{thm:duality}(b) (full spectrum of dimension $4^N\le4096$ against
+the union of the free-fermion sector spectra), max $\abs{\Delta E}\le1.0\times10^{-13}$;
+\item the open and ring identities of \cref{prop:variants}, as operator identities and as spectra.
+Sector by sector for the ring ($N=3,4$), twist $w$ has error $\le6\times10^{-15}$, while the
+alternative Jordan--Wigner-type twist $w(-1)^{N_f+1}$ has error $2.0$;
+\item the cut decomposition of \cref{lem:cutlocal}(a) for all $\ell$, to $3\times10^{-17}$.  It also
+checks \cref{lem:cutlocal}(b),(c) on random vectors ($N=3,4$; equality in (c) to $2\times10^{-15}$)
+and the sharpness examples of (d).  Along the dynamics from $\ket{\uparrow\cdots\uparrow}_z\otimes$CDW
+($N=6$, $\ell=3$, $h=J$) the defect $\abs{S_A(\Psi(t))-S_{A'}(U^\dagger\Psi(t))}$ reaches $0.50$, so it
+is a genuine effect, of the order of the bound $\ln2$;
+\item the dynamics of \cref{cor:sector}: full exact diagonalization of the LGT against
+\eqref{eq:sectoravg}, \eqref{eq:stringdet}, \eqref{eq:loschmidt} for $N=4,5,6$, $h\in\{0.4,1.3\}$,
+$t\le10$, for the CDW and for random non-Fock $\psi$.  The observables are $n_x$, all dressed
+bilinears, $\sxb{j}$, $\szb{j}$ and the distribution of $N_{\le\lfloor N/2\rfloor}$; the maximal
+deviation is $\le10^{-14}$.  Dropping the phase in \eqref{eq:loschmidt} gives an error of $0.78$
+($N=4$, $h=1.3$);
+\item \cref{lem:productlaw}(b)--(e), including the dimer law \eqref{eq:dimerstate} for $N=2,4,6$, to
+$10^{-15}$;
+\item \cref{rem:gaussproj}: $a_k=0$ to $3\times10^{-14}$ for even $N\le200$,
+$\Qc_{\one_N}^{[1,N]}(1,N)=1$ to $10^{-14}$ for $N\le300$, and the ballistic law on a chain of
+length $1201$ (relative error $3\times10^{-15}$ for $t\le100$).
+\end{itemize}
+\end{remark}
