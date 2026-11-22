@@ -40,3 +40,41 @@ h=3.0: |h^2-K^2-4h^2|=0.0e+00; min|E|=6.0000 >= 2h=6.0; |sorted|E| - sqrt(eps_K^
 ====================================================================================================
 D. Strong-coupling cluster confinement on a 24x24 box (J=1), q i.i.d. Bernoulli(1/2), zero flux
 ====================================================================================================
+h=3.0 (g=4h-8J=4.0):
+   t=    0.1: max_q ||e^(-ith) - e^(-ith0)|| = 0.302  (bound     3.200, trivial bound 2);  E P(leave own cluster) = 0.0177
+   t=    0.3: max_q ||e^(-ith) - e^(-ith0)|| = 0.520  (bound     5.600, trivial bound 2);  E P(leave own cluster) = 0.0486
+   t=    1.0: max_q ||e^(-ith) - e^(-ith0)|| = 0.785  (bound    14.000, trivial bound 2);  E P(leave own cluster) = 0.0361
+   t=    3.0: max_q ||e^(-ith) - e^(-ith0)|| = 1.726  (bound    38.000, trivial bound 2);  E P(leave own cluster) = 0.0857
+   t=   10.0: max_q ||e^(-ith) - e^(-ith0)|| = 2.000  (bound   122.000, trivial bound 2);  E P(leave own cluster) = 0.2019
+   t=   30.0: max_q ||e^(-ith) - e^(-ith0)|| = 2.000  (bound   362.000, trivial bound 2);  E P(leave own cluster) = 0.3051
+   t=  100.0: max_q ||e^(-ith) - e^(-ith0)|| = 2.000  (bound  1202.000, trivial bound 2);  E P(leave own cluster) = 0.3675
+   t=  300.0: max_q ||e^(-ith) - e^(-ith0)|| = 2.000  (bound  3602.000, trivial bound 2);  E P(leave own cluster) = 0.3685
+   t= 1000.0: max_q ||e^(-ith) - e^(-ith0)|| = 2.000  (bound 12002.000, trivial bound 2);  E P(leave own cluster) = 0.3812
+   time scale g/J^2 = 4
+h=4.0 (g=4h-8J=8.0):
+   t=    0.1: max_q ||e^(-ith) - e^(-ith0)|| = 0.291  (bound     1.600, trivial bound 2);  E P(leave own cluster) = 0.0163
+   t=    0.3: max_q ||e^(-ith) - e^(-ith0)|| = 0.312  (bound     2.800, trivial bound 2);  E P(leave own cluster) = 0.0148
+   t=    1.0: max_q ||e^(-ith) - e^(-ith0)|| = 0.672  (bound     7.000, trivial bound 2);  E P(leave own cluster) = 0.0271
+   t=    3.0: max_q ||e^(-ith) - e^(-ith0)|| = 1.497  (bound    19.000, trivial bound 2);  E P(leave own cluster) = 0.0527
+   t=   10.0: max_q ||e^(-ith) - e^(-ith0)|| = 2.000  (bound    61.000, trivial bound 2);  E P(leave own cluster) = 0.1494
+   t=   30.0: max_q ||e^(-ith) - e^(-ith0)|| = 2.000  (bound   181.000, trivial bound 2);  E P(leave own cluster) = 0.2335
+   t=  100.0: max_q ||e^(-ith) - e^(-ith0)|| = 2.000  (bound   601.000, trivial bound 2);  E P(leave own cluster) = 0.3198
+   t=  300.0: max_q ||e^(-ith) - e^(-ith0)|| = 2.000  (bound  1801.000, trivial bound 2);  E P(leave own cluster) = 0.3333
+   t= 1000.0: max_q ||e^(-ith) - e^(-ith0)|| = 2.000  (bound  6001.000, trivial bound 2);  E P(leave own cluster) = 0.3434
+   time scale g/J^2 = 8
+h=6.0 (g=4h-8J=16.0):
+   t=    0.1: max_q ||e^(-ith) - e^(-ith0)|| = 0.262  (bound     0.800, trivial bound 2);  E P(leave own cluster) = 0.0119
+   t=    0.3: max_q ||e^(-ith) - e^(-ith0)|| = 0.197  (bound     1.400, trivial bound 2);  E P(leave own cluster) = 0.0037
+   t=    1.0: max_q ||e^(-ith) - e^(-ith0)|| = 0.467  (bound     3.500, trivial bound 2);  E P(leave own cluster) = 0.0099
+   t=    3.0: max_q ||e^(-ith) - e^(-ith0)|| = 1.174  (bound     9.500, trivial bound 2);  E P(leave own cluster) = 0.0247
+   t=   10.0: max_q ||e^(-ith) - e^(-ith0)|| = 2.000  (bound    30.500, trivial bound 2);  E P(leave own cluster) = 0.0847
+   t=   30.0: max_q ||e^(-ith) - e^(-ith0)|| = 2.000  (bound    90.500, trivial bound 2);  E P(leave own cluster) = 0.1447
+   t=  100.0: max_q ||e^(-ith) - e^(-ith0)|| = 2.000  (bound   300.500, trivial bound 2);  E P(leave own cluster) = 0.1926
+   t=  300.0: max_q ||e^(-ith) - e^(-ith0)|| = 2.000  (bound   900.500, trivial bound 2);  E P(leave own cluster) = 0.2124
+   t= 1000.0: max_q ||e^(-ith) - e^(-ith0)|| = 2.000  (bound  3000.500, trivial bound 2);  E P(leave own cluster) = 0.2225
+   time scale g/J^2 = 16
+[time 287.6s]
+
+Empirical P(sup-norm radius of the equal-charge cluster of x >= R), q i.i.d. Bernoulli(1/2) on Z^2:
+   R=2: 8.67e-01  R=4: 7.22e-01  R=6: 6.01e-01  R=8: 4.85e-01  R=10: 3.91e-01  R=12: 3.05e-01  R=14: 2.32e-01
+[total time 288.4s]

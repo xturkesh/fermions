@@ -29,21 +29,86 @@ def heis (J h : ℝ) (O : Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℂ) (t : ℝ
 def ensemble (n : Cfg N) : Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℂ :=
   (1 / 2 ^ N : ℂ) • diagonal (fun p => if p.1 = n then 1 else 0)
 
+namespace EnsembleAux
+
+/-- Complexification is multiplicative. -/
+lemma cplx_mul {ι : Type*} [Fintype ι] (A B : Matrix ι ι ℝ) : cplx (A * B) = cplx A * cplx B := by
+  ext i k
+  simp [cplx, Matrix.mul_apply]
+
+/-- Two matrices commute if their relabellings by a bijection commute. -/
+lemma comm_of_submatrix {ι κ : Type*} [Fintype ι] [Fintype κ] (A B : Matrix ι ι ℝ) (e : κ ≃ ι)
+    (h : A.submatrix e e * B.submatrix e e = B.submatrix e e * A.submatrix e e) :
+    A * B = B * A := by
+  rw [submatrix_mul_equiv, submatrix_mul_equiv] at h
+  have := congrArg (fun M => M.submatrix e.symm e.symm) h
+  simpa using this
+
+/-- The LGT Hamiltonian commutes with every Gauss operator (checked in the dual frame). -/
+lemma H_mul_gauss (J h : ℝ) (j : Fin N) : H J h * gauss j = gauss j * H J h := by
+  apply comm_of_submatrix _ _ dualEquiv
+  rw [duality, gauss_dual, Hdual]
+  ext ⟨n', q'⟩ ⟨n, q⟩
+  rw [mul_diagonal, diagonal_mul, blockDiagonal_apply']
+  split_ifs with hq
+  · subst hq; ring
+  · simp
+
+/-- The complexified Gauss operators are self-adjoint. -/
+lemma cplx_gauss_conjTranspose (j : Fin N) : (cplx (gauss j))ᴴ = cplx (gauss j) := by
+  rw [sec_cplx_gauss, diagonal_conjTranspose]
+  refine congrArg diagonal (funext fun p => ?_)
+  simp
+
+/-- The propagator commutes with every Gauss operator. -/
+lemma evo_comm_gauss (J h : ℝ) (j : Fin N) (t : ℝ) :
+    Commute (evo (H J h) t) (cplx (gauss j)) := by
+  have hc : Commute (cplx (H J h)) (cplx (gauss j)) := by
+    show cplx (H J h) * cplx (gauss j) = cplx (gauss j) * cplx (H J h)
+    rw [← cplx_mul, ← cplx_mul, H_mul_gauss]
+  exact (hc.smul_left _).exp_left
+
+/-- The adjoint propagator commutes with every Gauss operator. -/
+lemma evo_conjTranspose_comm_gauss (J h : ℝ) (j : Fin N) (t : ℝ) :
+    Commute (evo (H J h) t)ᴴ (cplx (gauss j)) := by
+  have h2 := congrArg conjTranspose (evo_comm_gauss J h j t).eq
+  rw [conjTranspose_mul, conjTranspose_mul, cplx_gauss_conjTranspose] at h2
+  exact h2.symm
+
+/-- The expectation in a basis vector is a diagonal entry. -/
+lemma expect_single {ι : Type*} [Fintype ι] [DecidableEq ι] (M : Matrix ι ι ℂ) (i : ι) :
+    expect M (Pi.single i 1) = M i i := by
+  simp [expect, dotProduct, mulVec, Pi.single_apply]
+
+end EnsembleAux
+
+open EnsembleAux
+
 /-- Products of gauge-invariant observables are gauge invariant. -/
 theorem gaugeInv_mul {O P : Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℂ} (hO : GaugeInv O)
     (hP : GaugeInv P) : GaugeInv (O * P) := by
-  sorry
+  intro j
+  exact Commute.mul_left (hO j) (hP j)
 
 /-- Heisenberg evolution preserves gauge invariance. -/
 theorem gaugeInv_heis (J h : ℝ) {O : Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℂ}
     (hO : GaugeInv O) (t : ℝ) : GaugeInv (heis J h O t) := by
-  sorry
+  intro j
+  exact ((evo_conjTranspose_comm_gauss J h j t).mul_left (hO j)).mul_left
+    (evo_comm_gauss J h j t)
 
 /-- **Superposition = ensemble** for one gauge-invariant observable. -/
 theorem expect_initZ_eq_trace_ensemble (n : Cfg N)
     (X : Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℂ) (hX : GaugeInv X) :
     expect X (initZ (Pi.single n 1)) = trace (ensemble n * X) := by
-  sorry
+  rw [← sec_expect_submatrix X dualEquiv, gaugeInv_submatrix X hX, sec_expect_blockDiagonal]
+  have hvec : ∀ q : Cfg N, (fun n' => (initZ (Pi.single n 1) ∘ dualEquiv) (n', q)) =
+      (((Real.sqrt 2) ^ N : ℝ) : ℂ)⁻¹ • Pi.single n 1 := by
+    intro q; ext n'; simp [initZ]
+  simp only [hvec, sec_expect_smul, sec_norm_sq_prefactor, expect_single]
+  rw [← Finset.mul_sum, ensemble, Matrix.smul_mul, trace_smul, smul_eq_mul]
+  congr 1
+  done
 
 /-- **Superposition = ensemble for all multi-time correlators of gauge-invariant observables**
 (paper: Proposition `prop:entropies`(d), eq. `eq:main-ens`). -/

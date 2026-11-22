@@ -395,7 +395,11 @@ $h=6$ ($g=16$); at $h=4$ ($g=8$) it is $\le3\%$ for $t\le1$, $15\%$ at $t=10$ an
 the leakage sets in on the time scale $g/J^2$, as in \cref{rem:clusterstop}.  The worst-case operator-norm
 difference in \eqref{eq:clusterbound} is $0.26$ at $t=0.1$, $h=6$ (bound $0.8$) and reaches its maximal value $2$
 near $t=10$; with our constants the bound (b) is informative only for $t\lesssim0.4$ at these parameters, while the
-averaged leakage stays small up to $t\sim g/J^2$.
+averaged leakage stays small up to $t\sim g/J^2$.  The equal-charge clusters are subcritical but not small:
+for i.i.d.\ $q$ on $\Z^2$ ($200\times200$ samples, $4000$ clusters) the sup-norm radius $R$ of $\Tclus_q(x)$ satisfies
+$\Prob(R\ge r)\approx0.72,\,0.39,\,0.23$ for $r=4,10,14$, a decay length of about $9$ lattice spacings, since
+$\frac12$ is not far below $p_c^{\rm site}\approx0.593$.  So the probabilistic term in \eqref{eq:clusterprob} is small
+only for $R$ of several tens of lattice spacings.
 \end{itemize}
 \end{remark}
 
@@ -507,7 +511,8 @@ box $\Lambda$ and a Fock state $\ket n$ with occupied set $S_n$,
 because $\langle\Psi(t),n_y\Psi(t)\rangle=2^{1-\abs V}\sum_{\Tpi_q=\Tpi}\sum_{a\in S_n}\abs{(\e^{-\ii th_{q,+}})_{ya}}^2$ and
 $\dist(y,S_n)>R$ implies $y\notin B_R(a)$ for every $a\in S_n$ (here $\dist$ is the $\ell^\infty$-distance).
 So every particle stays within distance $R$ of its initial position, up to probability
-$O((J/g)^2+(tJ^2/g)^2+\e^{-2c_*R})$, as long as $t\ll g/J^2\sim\abs h/J^2$.  The same holds in every flux
+$O((J/g)^2+(tJ^2/g)^2+\e^{-2c_*R})$, as long as $t\ll g/J^2\sim\abs h/J^2$.  (The clusters themselves are not small:
+their radius has a decay length of about $9$ lattice spacings at density $\frac12$, see \cref{rem:2dED}.)  The same holds in every flux
 sector, since \cref{prop:cluster} is uniform in $s$.  In terms of SKKM's discussion \cite[Sect.~I.C]{SKKM2018}:
 at strong coupling the charges, attached to the fermions, are confined to the finite clusters of their own sign.
 \end{remark}
