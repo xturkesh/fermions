@@ -1,11 +1,10 @@
-# LaTeX build artifacts
-*.aux
-*.fdb_latexmk
-*.fls
-*.log
-*.out
-*.toc
-*.bbl
-*.blg
-*.synctex.gz
-main.pdf
+# LaTeX build artifacts (root of paper/ only; code/*.out are numerics logs and are tracked)
+/*.aux
+/*.fdb_latexmk
+/*.fls
+/*.log
+/*.out
+/*.toc
+/*.bbl
+/*.blg
+/*.synctex.gz

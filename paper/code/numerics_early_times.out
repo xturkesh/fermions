@@ -1,0 +1,10 @@
+=== (1) Var_q(N_A) at Jt = 0.01: equal versus opposite charges at the cut (J = 1, CDW on even sites) ===
+  N=256 h=1.0: equal charges 9.9980002906e-05 (spread over samples 2.0e-13), opposite 9.9966673950e-05; difference -1.3329e-08, predicted -(4/3) h^2 t^4 = -1.3333e-08
+  N=256 h=0.5: equal charges 9.9980002706e-05 (spread over samples 4.4e-14), opposite 9.9976670337e-05; difference -3.3324e-09, predicted -(4/3) h^2 t^4 = -3.3333e-09
+  N=10 h=1.0: equal charges 9.9980002920e-05 (spread over samples 1.8e-13), opposite 9.9966673910e-05; difference -1.3329e-08, predicted -(4/3) h^2 t^4 = -1.3333e-08
+  N=10 h=0.5: equal charges 9.9980002733e-05 (spread over samples 4.7e-14), opposite 9.9976670342e-05; difference -3.3324e-09, predicted -(4/3) h^2 t^4 = -3.3333e-09
+=== (2) S_N - S_G versus lambda^4 (Jt)^6 / 72 at lambda = 2 ===
+  N=10 (exact): grid times [0.01, 0.0121, 0.0147, 0.0178, 0.0215, 0.0261, 0.0316, 0.0383, 0.0464, 0.0562, 0.0681, 0.0825, 0.1]
+     ratio data/formula: [0.926, 0.968, 0.988, 0.991, 0.991, 0.989, 0.985, 0.979, 0.971, 0.959, 0.944, 0.924, 0.896]; max |ratio - 1| = 0.104
+  N=256 (400 sectors): grid times [0.02, 0.0215, 0.0233, 0.0251, 0.0271, 0.0293, 0.0316, 0.0341, 0.0369, 0.0398, 0.043, 0.0464, 0.0501, 0.0541, 0.0584, 0.0631, 0.0681, 0.0736, 0.0794, 0.0858, 0.0926, 0.1]
+     ratio data/formula: [0.857, 0.909, 0.937, 0.955, 0.967, 0.972, 0.976, 0.977, 0.976, 0.975, 0.973, 0.969, 0.966, 0.961, 0.956, 0.95, 0.944, 0.936, 0.928, 0.919, 0.908, 0.896]; max |ratio - 1| = 0.143
