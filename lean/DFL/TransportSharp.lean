@@ -52,7 +52,6 @@ def dressedT (J h : ℝ) (x : Fin N) (t : ℝ) : Matrix (Cfg N × Cfg N) (Cfg N 
 def dressedAnticomm (J h : ℝ) (x y : Fin N) (t : ℝ) : Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℂ :=
   dressedT J h x t * cplx (dressed y)ᵀ + cplx (dressed y)ᵀ * dressedT J h x t
 
-
 namespace TransportSharpAux
 
 /-! ### Auxiliary lemmas -/
@@ -155,7 +154,6 @@ lemma avgQ_iSup_norm_evo_le (J h : ℝ) {F : ℕ → ℝ} (hEC : EC J h F) (x y 
   (avgQ_mono fun q => ciSup_le fun t =>
     norm_evo_le_corrQ (hq J h q) (hq_isHermitian J h q) t x y).trans (hEC.bound N x y)
 
-
 /-- There are `2^N` charge configurations. -/
 lemma card_cfg : Fintype.card (Cfg N) = 2 ^ N := by
   simp [Cfg, ZMod.card]
@@ -210,7 +208,6 @@ lemma norm_evo_sq_le_corrQ (J h : ℝ) (q : Cfg N) (t : ℝ) (x z : Fin N) :
   have h0 := norm_nonneg (evo (hq J h q) t x z)
   have h2 := norm_evo_le_corrQ (hq J h q) (hq_isHermitian J h q) t x z
   nlinarith
-
 
 section Unitary
 
@@ -327,8 +324,8 @@ lemma abs_mean_sub_le_symm (U : Matrix (Fin N) (Fin N) ℂ) (hU : Uᴴ * U = 1) 
     intro z
     rw [add_comm, Finset.sum_sdiff (subset_univ R)]
     exact sum_normSq_col U hU z
-  set D := ∑ x ∈ R, ∑ z ∈ univ \ R, Complex.normSq (U x z) with hD
-  set a := ∑ z ∈ S \ R, ∑ x ∈ R, Complex.normSq (U x z) with ha_def
+  set D := ∑ x ∈ R, ∑ z ∈ univ \ R, Complex.normSq (U x z)
+  set a := ∑ z ∈ S \ R, ∑ x ∈ R, Complex.normSq (U x z)
   set b := ∑ z ∈ S ∩ R, ∑ x ∈ univ \ R, Complex.normSq (U x z) with hb_def
   have hab : ∑ x ∈ R, ∑ z ∈ S, Complex.normSq (U x z) - ((S ∩ R).card : ℝ) = a - b := by
     rw [Finset.sum_comm, ← Finset.sum_inter_add_sum_sdiff S R]
@@ -428,6 +425,269 @@ lemma avgQ_cross_corrQ_le {J h : ℝ} {F : ℕ → ℝ} (hEC : EC J h F) (m : �
         Finset.sum_le_sum fun x _ => Finset.sum_le_sum fun z _ => hEC.bound N x z
     _ ≤ sigma1 F := sum_cross_le F hEC.nonneg (ec_summable_mul hEC) m
 
+/-! #### The second moment of the transported charge -/
+
+/-- `leftOf m = segment (m + 1)`. -/
+lemma leftOf_eq_segment (m : ℕ) : leftOf (N := N) m = segment (m + 1) := by
+  ext x
+  simp [leftOf, segment]
+
+/-- **Cauchy–Schwarz** for the Bernoulli average: `avg(√u √v) ≤ √(avg u) √(avg v)`. -/
+lemma avgQ_sqrt_mul_sqrt_le {u v : Cfg N → ℝ} (hu : ∀ q, 0 ≤ u q) (hv : ∀ q, 0 ≤ v q) :
+    avgQ (fun q => √(u q) * √(v q)) ≤ √(avgQ u) * √(avgQ v) := by
+  simp only [avgQ]
+  have hc : (0 : ℝ) ≤ 1 / 2 ^ N := by positivity
+  have h1 : (1 / 2 ^ N : ℝ) * ∑ q, √(u q) * √(v q) =
+      ∑ q, √((1 / 2 ^ N : ℝ) * u q) * √((1 / 2 ^ N : ℝ) * v q) := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl (fun q _ => ?_)
+    rw [Real.sqrt_mul hc, Real.sqrt_mul hc,
+      show √(1 / 2 ^ N : ℝ) * √(u q) * (√(1 / 2 ^ N : ℝ) * √(v q)) =
+        (√(1 / 2 ^ N : ℝ) * √(1 / 2 ^ N : ℝ)) * (√(u q) * √(v q)) by ring,
+      Real.mul_self_sqrt hc]
+  rw [h1, Finset.mul_sum, Finset.mul_sum]
+  exact Real.sum_sqrt_mul_sqrt_le _ (fun q => mul_nonneg hc (hu q)) (fun q => mul_nonneg hc (hv q))
+
+/-- **Minkowski-type bound** for the Bernoulli average:
+`avg((∑ᵢ aᵢ)²) ≤ (∑ᵢ bᵢ)²` whenever `aᵢ ≥ 0` and `√(avg aᵢ²) ≤ bᵢ`. -/
+lemma avgQ_sq_sum_le {κ : Type*} (s : Finset κ) (a : κ → Cfg N → ℝ) (b : κ → ℝ)
+    (ha : ∀ i ∈ s, ∀ q, 0 ≤ a i q) (hb : ∀ i ∈ s, √(avgQ (fun q => a i q ^ 2)) ≤ b i) :
+    avgQ (fun q => (∑ i ∈ s, a i q) ^ 2) ≤ (∑ i ∈ s, b i) ^ 2 := by
+  have h1 : (fun q => (∑ i ∈ s, a i q) ^ 2) = fun q => ∑ i ∈ s, ∑ j ∈ s, a i q * a j q := by
+    funext q; rw [sq, Finset.sum_mul_sum]
+  rw [h1, avgQ_sum, sq, Finset.sum_mul_sum]
+  refine Finset.sum_le_sum (fun i hi => ?_)
+  rw [avgQ_sum]
+  refine Finset.sum_le_sum (fun j hj => ?_)
+  have e : (fun q => a i q * a j q) = fun q => √(a i q ^ 2) * √(a j q ^ 2) := by
+    funext q
+    rw [Real.sqrt_sq (ha i hi q), Real.sqrt_sq (ha j hj q)]
+  rw [e]
+  refine (avgQ_sqrt_mul_sqrt_le (fun q => sq_nonneg _) (fun q => sq_nonneg _)).trans ?_
+  exact mul_le_mul (hb i hi) (hb j hj) (Real.sqrt_nonneg _)
+    ((Real.sqrt_nonneg _).trans (hb i hi))
+
+/-- `|U_{xz}|⁴ ≤ |U_{xz}|` for the unitary propagator. -/
+lemma normSq_sq_evo_le_norm (J h : ℝ) (q : Cfg N) (t : ℝ) (x z : Fin N) :
+    Complex.normSq (evo (hq J h q) t x z) ^ 2 ≤ ‖evo (hq J h q) t x z‖ := by
+  rw [Complex.normSq_eq_norm_sq]
+  have h1 := norm_evo_le_one _ (hq_isSymm J h q) t x z
+  have h0 := norm_nonneg (evo (hq J h q) t x z)
+  have h3 : ‖evo (hq J h q) t x z‖ ^ 3 ≤ 1 := pow_le_one₀ h0 h1
+  nlinarith [mul_le_mul_of_nonneg_left h3 h0]
+
+/-- `|K_{xy}| ≤ 1` for the correlation matrix `K = U P_S U†`. -/
+lemma norm_corrMat_le_one (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsSymm) (S : Finset (Fin N))
+    (t : ℝ) (x y : Fin N) : ‖corrMat A S t x y‖ ≤ 1 := by
+  have hrow : ∀ x, ∑ z, ‖evo A t x z‖ ^ 2 = 1 := fun x => by
+    simpa [Complex.normSq_eq_norm_sq] using sum_normSq_row (evo A t) (evo_unitary' A hA t) x
+  refine (AreaLawAux.norm_corrMat_le A S t x y).trans ?_
+  have hz : ∀ z, ‖evo A t x z‖ * ‖evo A t y z‖ ≤ (‖evo A t x z‖ ^ 2 + ‖evo A t y z‖ ^ 2) / 2 :=
+    fun z => by nlinarith [sq_nonneg (‖evo A t x z‖ - ‖evo A t y z‖)]
+  calc ∑ z, ‖evo A t x z‖ * ‖evo A t y z‖
+      ≤ ∑ z, (‖evo A t x z‖ ^ 2 + ‖evo A t y z‖ ^ 2) / 2 := Finset.sum_le_sum fun z _ => hz z
+    _ = (∑ z, ‖evo A t x z‖ ^ 2 + ∑ z, ‖evo A t y z‖ ^ 2) / 2 := by
+      rw [← Finset.sum_add_distrib, Finset.sum_div]
+    _ = 1 := by rw [hrow, hrow]; norm_num
+
+/-- `|K_{xy}|² ≤ ∑_z Q(x,z) Q(y,z)`, uniformly in time. -/
+lemma normSq_corrMat_le_corrQ (J h : ℝ) (q : Cfg N) (S : Finset (Fin N)) (t : ℝ) (x y : Fin N) :
+    Complex.normSq (corrMat (hq J h q) S t x y) ≤
+      ∑ z, corrQ (hq J h q) (hq_isHermitian J h q) x z *
+        corrQ (hq J h q) (hq_isHermitian J h q) y z := by
+  rw [Complex.normSq_eq_norm_sq]
+  have h1 := norm_corrMat_le_one _ (hq_isSymm J h q) S t x y
+  have h0 := norm_nonneg (corrMat (hq J h q) S t x y)
+  have h2 := AreaLawSharpAux.norm_corrMat_le_corrQ J h q S t x y
+  nlinarith
+
+/-- Per-sector second moment of `N_R` about `c`:
+`∑_n (N_R(n) - c)² |v_n|² = Var_q(N_R) + (⟨N_R⟩_q - c)²`. -/
+lemma sector_second_moment (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsSymm)
+    (S R : Finset (Fin N)) (t c : ℝ) :
+    ∑ n, (count R n - c) ^ 2 * Complex.normSq ((evo (dGamma A) t *ᵥ fockVec S) n) =
+      (∑ x ∈ R, ∑ y ∈ univ \ R, Complex.normSq (corrMat A S t x y)) +
+        (∑ x ∈ R, ∑ z ∈ S, Complex.normSq (evo A t x z) - c) ^ 2 := by
+  have hnorm := sum_normSq_evo_fock A hA S t
+  have hM1 := sum_count_normSq A hA S R t
+  have hvar := number_variance A hA S R t
+  simp only [numOp, diagonal_mul_diagonal] at hvar
+  rw [expect_cplx_diagonal, expect_cplx_diagonal] at hvar
+  have hvar' : ∑ n, count R n * count R n *
+        Complex.normSq ((evo (dGamma A) t *ᵥ fockVec S) n) -
+      (∑ n, count R n * Complex.normSq ((evo (dGamma A) t *ᵥ fockVec S) n)) ^ 2 =
+      ∑ x ∈ R, ∑ y ∈ univ \ R, Complex.normSq (corrMat A S t x y) := by
+    exact_mod_cast hvar
+  have hexp : ∑ n, (count R n - c) ^ 2 * Complex.normSq ((evo (dGamma A) t *ᵥ fockVec S) n) =
+      ∑ n, count R n * count R n * Complex.normSq ((evo (dGamma A) t *ᵥ fockVec S) n) -
+        2 * c * ∑ n, count R n * Complex.normSq ((evo (dGamma A) t *ᵥ fockVec S) n) +
+        c ^ 2 * ∑ n, Complex.normSq ((evo (dGamma A) t *ᵥ fockVec S) n) := by
+    rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_sub_distrib, ← Finset.sum_add_distrib]
+    exact Finset.sum_congr rfl (fun n _ => by ring)
+  rw [hexp, hnorm, hM1]
+  rw [hM1] at hvar'
+  linear_combination hvar'
+
+/-- The LGT second moment of `N_R` about `c` is the Bernoulli average of the sector second
+moments. -/
+lemma lgt_second_moment_eq (J h : ℝ) (S R : Finset (Fin N)) (c t : ℝ) :
+    (expect (matter ((numOp R - c • (1 : Matrix (Cfg N) (Cfg N) ℝ)) *
+        (numOp R - c • (1 : Matrix (Cfg N) (Cfg N) ℝ)))) (lgtState J h (fockVec S) t)).re =
+      avgQ (fun q : Cfg N => ∑ n, (count R n - c) ^ 2 *
+        Complex.normSq ((evo (dGamma (hq J h q)) t *ᵥ fockVec S) n)) := by
+  have e : (numOp R - c • (1 : Matrix (Cfg N) (Cfg N) ℝ)) *
+      (numOp R - c • (1 : Matrix (Cfg N) (Cfg N) ℝ)) =
+      diagonal (fun n => (count R n - c) ^ 2) := by
+    rw [numOp, smul_one_eq_diagonal, diagonal_sub, diagonal_mul_diagonal]
+    congr 1
+    funext n
+    ring
+  rw [e, lgt_expect_diag_re]
+
+/-- **Averaged second moment of the transported charge**:
+`E_q ∑_n (N_{≤m}(n) - s_m)² |ψ_q(t)(n)|² ≤ Θ(F) + Σ'₁(F)²`. -/
+lemma avgQ_second_moment_le {J h : ℝ} {F : ℕ → ℝ} (hEC : EC J h F) (S : Finset (Fin N))
+    (m : ℕ) (t : ℝ) :
+    avgQ (fun q : Cfg N => ∑ n, (count (leftOf m) n - ((S ∩ leftOf m).card : ℝ)) ^ 2 *
+      Complex.normSq ((evo (dGamma (hq J h q)) t *ᵥ fockVec S) n)) ≤
+      thetaF F + sigma1' F ^ 2 := by
+  have e1 : (fun q : Cfg N => ∑ n, (count (leftOf m) n - ((S ∩ leftOf m).card : ℝ)) ^ 2 *
+      Complex.normSq ((evo (dGamma (hq J h q)) t *ᵥ fockVec S) n)) =
+      fun q : Cfg N => (∑ x ∈ leftOf (N := N) m, ∑ y ∈ univ \ leftOf (N := N) m,
+        Complex.normSq (corrMat (hq J h q) S t x y)) +
+        (∑ x ∈ leftOf (N := N) m, ∑ z ∈ S, Complex.normSq (evo (hq J h q) t x z) -
+          ((S ∩ leftOf m).card : ℝ)) ^ 2 := by
+    funext q
+    exact sector_second_moment _ (hq_isSymm J h q) S _ t _
+  rw [e1, avgQ_add]
+  refine add_le_add ?_ ?_
+  · refine (avgQ_mono fun q => Finset.sum_le_sum fun x _ => Finset.sum_le_sum fun y _ =>
+      normSq_corrMat_le_corrQ J h q S t x y).trans ?_
+    rw [leftOf_eq_segment]
+    exact AreaLawSharpAux.avgQ_cut_corrQ_le hEC (m + 1)
+  · have hpt : ∀ q : Cfg N, (∑ x ∈ leftOf (N := N) m, ∑ z ∈ S,
+        Complex.normSq (evo (hq J h q) t x z) - ((S ∩ leftOf m).card : ℝ)) ^ 2 ≤
+        (∑ p ∈ leftOf (N := N) m ×ˢ (univ \ leftOf (N := N) m),
+          Complex.normSq (evo (hq J h q) t p.1 p.2)) ^ 2 := by
+      intro q
+      have hab := abs_mean_sub_le_symm (evo (hq J h q) t) (evo_unitary _ (hq_isSymm J h q) t)
+        (evo_transpose _ (hq_isSymm J h q) t) S (leftOf m)
+      have e : ∑ x ∈ leftOf (N := N) m, ∑ z ∈ univ \ leftOf (N := N) m,
+          Complex.normSq (evo (hq J h q) t x z) =
+          ∑ p ∈ leftOf (N := N) m ×ˢ (univ \ leftOf (N := N) m),
+            Complex.normSq (evo (hq J h q) t p.1 p.2) := (Finset.sum_product' _ _ _).symm
+      rw [e] at hab
+      rw [← sq_abs]
+      exact pow_le_pow_left₀ (abs_nonneg _) hab 2
+    have hpair : ∀ x z : Fin N,
+        √(avgQ (fun q : Cfg N => Complex.normSq (evo (hq J h q) t x z) ^ 2)) ≤
+          √(F (Nat.dist x.val z.val)) := fun x z =>
+      Real.sqrt_le_sqrt ((avgQ_mono fun q => normSq_sq_evo_le_norm J h q t x z).trans
+        (avgQ_norm_evo_le J h hEC x z t))
+    refine (avgQ_mono hpt).trans ?_
+    refine (avgQ_sq_sum_le (leftOf (N := N) m ×ˢ (univ \ leftOf (N := N) m))
+      (fun p q => Complex.normSq (evo (hq J h q) t p.1 p.2))
+      (fun p => √(F (Nat.dist p.1.val p.2.val)))
+      (fun p _ q => Complex.normSq_nonneg _) (fun p _ => hpair p.1 p.2)).trans ?_
+    refine pow_le_pow_left₀ (Finset.sum_nonneg fun p _ => Real.sqrt_nonneg _) ?_ 2
+    rw [Finset.sum_product]
+    exact sum_cross_le (fun d => √(F d)) (fun d => Real.sqrt_nonneg _)
+      (ec_summable_mul_sqrt hEC) m
+
+/-! #### Number distributions -/
+
+/-- The particle number of `R` in the configuration `n`, as a natural number. -/
+def countNat (R : Finset (Fin N)) (n : Cfg N) : ℕ := (R.filter (fun x => n x ≠ 0)).card
+
+/-- `count` is the natural number `countNat`. -/
+lemma count_eq_countNat (R : Finset (Fin N)) (n : Cfg N) : count R n = countNat R n := by
+  unfold count countNat occ
+  rw [Finset.card_filter]
+  push_cast
+  refine Finset.sum_congr rfl (fun x _ => ?_)
+  split_ifs <;> simp_all
+
+/-- The particle number is at most `N`. -/
+lemma countNat_le (R : Finset (Fin N)) (n : Cfg N) : countNat R n ≤ N :=
+  (Finset.card_filter_le _ _).trans ((Finset.card_le_univ R).trans (by simp))
+
+/-- Summing over the level sets `{count R = k}`, `k ∈ {0, …, N}`, is summing over everything. -/
+lemma sum_fiber_count (R : Finset (Fin N)) (φ : Cfg N → ℝ) :
+    ∑ k ∈ range (N + 1), ∑ n ∈ univ.filter (fun n => count R n = k), φ n = ∑ n, φ n := by
+  have h : ∀ k : ℕ, univ.filter (fun n : Cfg N => count R n = k) =
+      univ.filter (fun n => countNat R n = k) := by
+    intro k; ext n; simp [count_eq_countNat]
+  simp_rw [h]
+  exact Finset.sum_fiberwise_of_maps_to
+    (fun n _ => mem_range.2 (Nat.lt_succ_of_le (countNat_le R n))) φ
+
+/-- The number distribution of a normalized vector is a probability distribution. -/
+lemma numDist_isProb (R : Finset (Fin N)) (v : Cfg N → ℂ)
+    (hv : ∑ n, Complex.normSq (v n) = 1) :
+    IsProb N (numDist R v) where
+  nonneg k := Finset.sum_nonneg (fun n _ => Complex.normSq_nonneg _)
+  sum_one := by unfold numDist; rw [sum_fiber_count]; exact hv
+
+/-- Second moment about `c` of the number distribution. -/
+lemma sum_numDist_mul_sq (R : Finset (Fin N)) (v : Cfg N → ℂ) (c : ℝ) :
+    ∑ k ∈ range (N + 1), numDist R v k * ((k : ℝ) - c) ^ 2 =
+      ∑ n, (count R n - c) ^ 2 * Complex.normSq (v n) := by
+  unfold numDist
+  simp_rw [Finset.sum_mul]
+  rw [← sum_fiber_count R]
+  refine Finset.sum_congr rfl (fun k _ => Finset.sum_congr rfl (fun n hn => ?_))
+  rw [(mem_filter.1 hn).2]
+  ring
+
+/-- The LGT number distribution is the Bernoulli average of the sector number distributions. -/
+lemma lgtNumDist_eq_avgQ (J h : ℝ) (R : Finset (Fin N)) (ψ : Cfg N → ℂ) (t : ℝ) (k : ℕ) :
+    lgtNumDist J h R ψ t k = avgQ (fun q => numDist R (evo (dGamma (hq J h q)) t *ᵥ ψ) k) := by
+  rw [lgtNumDist, numProj, lgt_expect_diag_re]
+  congr 1
+  funext q
+  rw [numDist, Finset.sum_filter]
+  refine Finset.sum_congr rfl (fun n _ => ?_)
+  split_ifs <;> ring
+
+/-- **Jensen's inequality** for the logarithm and the Bernoulli average. -/
+lemma avgQ_log_le {f : Cfg N → ℝ} (hf : ∀ q, 0 < f q) :
+    avgQ (fun q => Real.log (f q)) ≤ Real.log (avgQ f) := by
+  have hw : ∑ _q : Cfg N, (1 / 2 ^ N : ℝ) = 1 := by
+    rw [Finset.sum_const, Finset.card_univ, card_cfg, nsmul_eq_mul]
+    push_cast
+    field_simp
+  have h := strictConcaveOn_log_Ioi.concaveOn.le_map_sum (t := (univ : Finset (Cfg N)))
+    (w := fun _ => (1 / 2 ^ N : ℝ)) (p := f) (fun _ _ => by positivity) hw
+    (fun q _ => Set.mem_Ioi.mpr (hf q))
+  simp only [smul_eq_mul] at h
+  simpa only [avgQ, Finset.mul_sum] using h
+
+/-! #### Dressed hopping -/
+
+/-- `c̃_x† c̃_y` is gauge invariant. -/
+lemma gaugeInv_dressed_hop (x y : Fin N) : GaugeInv (cplx ((dressed x)ᵀ * dressed y)) := by
+  intro j
+  rw [← cplx_mul', ← cplx_mul']
+  congr 1
+  rw [Matrix.mul_assoc, dressed_comm_gauss, ← Matrix.mul_assoc, dressed_transpose_comm_gauss,
+    Matrix.mul_assoc]
+
+/-- In the dual frame `U† c̃_x† c̃_y U = c_x† c_y ⊗ 1`, so every sector block of `c̃_x† c̃_y` is the
+free hopping `c_x† c_y`. -/
+lemma sectorBlock_dressed_hop (x y : Fin N) (q : Cfg N) :
+    sectorBlock (cplx ((dressed x)ᵀ * dressed y)) q = cplx (cre x * ann y) := by
+  have hk : (ann x ⊗ₖ (1 : Matrix (Cfg N) (Cfg N) ℝ))ᵀ * (ann y ⊗ₖ (1 : Matrix (Cfg N) (Cfg N) ℝ)) =
+      (cre x * ann y) ⊗ₖ (1 : Matrix (Cfg N) (Cfg N) ℝ) := by
+    rw [← kroneckerMap_transpose, transpose_one, ← mul_kronecker_mul, Matrix.one_mul]
+    rfl
+  have hd : (dressed x)ᵀ * dressed y =
+      ((cre x * ann y) ⊗ₖ (1 : Matrix (Cfg N) (Cfg N) ℝ)).submatrix (dualEquiv (N := N)).symm
+        dualEquiv.symm := by
+    rw [dressed_eq x, dressed_eq y, transpose_submatrix, submatrix_mul_equiv, hk]
+  ext n' n
+  simp only [sectorBlock, hd, cplx, Matrix.map_apply, submatrix_apply, Equiv.symm_apply_apply,
+    kronecker_apply, Matrix.one_apply_eq, mul_one]
+
 end TransportSharpAux
 
 open TransportSharpAux
@@ -522,6 +782,8 @@ theorem one_particle_moments (J h : ℝ) {F : ℕ → ℝ} (hEC : EC J h F) (y :
     avgQ (fun q : Cfg N => ⨆ s : ℝ,
         ∑ x : Fin N, ((Nat.dist x.val y.val : ℝ) + 1) ^ p * ‖evo (hq J h q) s x y‖ ^ 2) ≤
       2 * momentF p F := by
+  -- the lower bound `0 ≤ p` is not needed: `(d + 1)^p ≥ 0` for every real `p`
+  have _ := hp0
   have hw0 : ∀ x : Fin N, 0 ≤ ((Nat.dist x.val y.val : ℝ) + 1) ^ p := fun x =>
     Real.rpow_nonneg (by positivity) p
   constructor
@@ -606,7 +868,8 @@ theorem lgt_transport_sq (J h : ℝ) {F : ℕ → ℝ} (hEC : EC J h F) (S : Fin
     (expect (matter ((numOp (leftOf m) - ((S ∩ leftOf m).card : ℝ) • 1) *
         (numOp (leftOf m) - ((S ∩ leftOf m).card : ℝ) • 1))) (lgtState J h (fockVec S) t)).re ≤
       thetaF F + sigma1' F ^ 2 := by
-  sorry
+  rw [lgt_second_moment_eq]
+  exact avgQ_second_moment_le hEC S m t
 
 /-! ### (d) Dressed correlations -/
 
@@ -616,7 +879,28 @@ theorem dressed_corr_le (J h : ℝ) {F : ℕ → ℝ} (hEC : EC J h F) (S : Fins
     (hxy : x ≠ y) (t : ℝ) :
     ‖expect (cplx ((dressed x)ᵀ * dressed y)) (lgtState J h (fockVec S) t)‖ ≤
       2 * ∑' k : ℕ, (if Nat.dist x.val y.val ≤ 2 * k then F k else 0) := by
-  sorry
+  -- the bound also holds for `x = y`
+  have _ := hxy
+  rw [sector_average J h (fockVec S) _ (gaugeInv_dressed_hop x y) t]
+  have e : ∀ q : Cfg N, expect (sectorBlock (cplx ((dressed x)ᵀ * dressed y)) q)
+      (evo (Hsec J h q) t *ᵥ fockVec S) = corrMat (hq J h q) S t y x := by
+    intro q
+    rw [sectorBlock_dressed_hop, Hsec, expect_evo_sub_smul_one, two_point _ (hq_isSymm J h q)]
+  simp_rw [e]
+  calc ‖(1 / 2 ^ N : ℂ) * ∑ q : Cfg N, corrMat (hq J h q) S t y x‖
+      ≤ avgQ (fun q : Cfg N => ‖corrMat (hq J h q) S t y x‖) := by
+        rw [norm_mul, avgQ]
+        have h2 : ‖(1 / 2 ^ N : ℂ)‖ = 1 / 2 ^ N := by
+          rw [norm_div, norm_one, norm_pow, Complex.norm_ofNat]
+        rw [h2]
+        exact mul_le_mul_of_nonneg_left (norm_sum_le _ _) (by positivity)
+    _ ≤ avgQ (fun q : Cfg N => ∑ z, corrQ (hq J h q) (hq_isHermitian J h q) y z *
+          corrQ (hq J h q) (hq_isHermitian J h q) x z) :=
+        avgQ_mono fun q => AreaLawSharpAux.norm_corrMat_le_corrQ J h q S t y x
+    _ ≤ 2 * ∑' k : ℕ, (if Nat.dist y.val x.val ≤ 2 * k then F k else 0) :=
+        AreaLawSharpAux.avgQ_sum_corrQ_le hEC y x
+    _ = 2 * ∑' k : ℕ, (if Nat.dist x.val y.val ≤ 2 * k then F k else 0) := by
+        rw [Nat.dist_comm]
 
 /-! ### Number entropy -/
 
@@ -626,7 +910,26 @@ theorem lgt_numberEntropy_sharp (J h : ℝ) {F : ℕ → ℝ} (hEC : EC J h F) (
     (t : ℝ) :
     shannon N (lgtNumDist J h (leftOf m) (fockVec S) t) ≤
       (1 / 2) * Real.log (2 * Real.pi * Real.exp 1 * (thetaF F + sigma1' F ^ 2 + 1 / 12)) := by
-  sorry
+  have hp := lgtNumDist_isProb J h (leftOf m) S t
+  refine shannon_le_of_pvar_le hp ?_
+  calc pvar N (lgtNumDist J h (leftOf m) (fockVec S) t)
+      ≤ ∑ k ∈ range (N + 1), lgtNumDist J h (leftOf m) (fockVec S) t k *
+          ((k : ℝ) - ((S ∩ leftOf m).card : ℝ)) ^ 2 := pvar_le_sum_sq hp _
+    _ = avgQ (fun q => ∑ k ∈ range (N + 1),
+          numDist (leftOf m) (evo (dGamma (hq J h q)) t *ᵥ fockVec S) k *
+            ((k : ℝ) - ((S ∩ leftOf m).card : ℝ)) ^ 2) := by
+        rw [avgQ_sum]
+        refine Finset.sum_congr rfl (fun k _ => ?_)
+        rw [lgtNumDist_eq_avgQ, mul_comm, ← avgQ_const_mul]
+        congr 1
+        funext q
+        ring
+    _ = avgQ (fun q : Cfg N => ∑ n, (count (leftOf m) n - ((S ∩ leftOf m).card : ℝ)) ^ 2 *
+          Complex.normSq ((evo (dGamma (hq J h q)) t *ᵥ fockVec S) n)) := by
+        congr 1
+        funext q
+        exact sum_numDist_mul_sq _ _ _
+    _ ≤ thetaF F + sigma1' F ^ 2 := avgQ_second_moment_le hEC S m t
 
 /-- **Number entropy in a single sector** (paper: Theorem `thm:numberentropy`):
 `E_q sup_t H(p^q_t) ≤ ½ ln(2πe(Θ(F) + 1/12))`. -/
@@ -635,6 +938,55 @@ theorem avg_sup_sector_numberEntropy_le (J h : ℝ) {F : ℕ → ℝ} (hEC : EC 
     avgQ (fun q : Cfg N => ⨆ t : ℝ,
       shannon N (numDist (leftOf m) (evo (dGamma (hq J h q)) t *ᵥ fockVec S))) ≤
       (1 / 2) * Real.log (2 * Real.pi * Real.exp 1 * (thetaF F + 1 / 12)) := by
-  sorry
+  set V : Cfg N → ℝ := fun q => ∑ x ∈ leftOf (N := N) m, ∑ y ∈ univ \ leftOf (N := N) m,
+    ∑ z, corrQ (hq J h q) (hq_isHermitian J h q) x z *
+      corrQ (hq J h q) (hq_isHermitian J h q) y z with hV
+  have hV0 : ∀ q, 0 ≤ V q := fun q =>
+    Finset.sum_nonneg fun x _ => Finset.sum_nonneg fun y _ => Finset.sum_nonneg fun z _ =>
+      mul_nonneg (corrQ_nonneg _ _ x z) (corrQ_nonneg _ _ y z)
+  have hVavg : avgQ V ≤ thetaF F := by
+    rw [hV, leftOf_eq_segment]
+    exact AreaLawSharpAux.avgQ_cut_corrQ_le hEC (m + 1)
+  have hpt : ∀ q : Cfg N, (⨆ t : ℝ,
+      shannon N (numDist (leftOf m) (evo (dGamma (hq J h q)) t *ᵥ fockVec S))) ≤
+      (1 / 2) * Real.log (2 * Real.pi * Real.exp 1 * (V q + 1 / 12)) := by
+    intro q
+    refine ciSup_le fun t => ?_
+    have hp := numDist_isProb (leftOf m) _ (sum_normSq_evo_fock _ (hq_isSymm J h q) S t)
+    refine shannon_le_of_pvar_le hp ?_
+    set μ : ℝ := ∑ x ∈ leftOf (N := N) m, ∑ z ∈ S, Complex.normSq (evo (hq J h q) t x z)
+    calc pvar N (numDist (leftOf m) (evo (dGamma (hq J h q)) t *ᵥ fockVec S))
+        ≤ ∑ k ∈ range (N + 1), numDist (leftOf m) (evo (dGamma (hq J h q)) t *ᵥ fockVec S) k *
+            ((k : ℝ) - μ) ^ 2 := pvar_le_sum_sq hp μ
+      _ = (∑ x ∈ leftOf (N := N) m, ∑ y ∈ univ \ leftOf (N := N) m,
+            Complex.normSq (corrMat (hq J h q) S t x y)) + (μ - μ) ^ 2 := by
+          rw [sum_numDist_mul_sq]
+          exact sector_second_moment _ (hq_isSymm J h q) S _ t μ
+      _ ≤ V q := by
+          rw [sub_self, sq, mul_zero, add_zero]
+          exact Finset.sum_le_sum fun x _ => Finset.sum_le_sum fun y _ =>
+            normSq_corrMat_le_corrQ J h q S t x y
+  have hpos : ∀ q, 0 < 2 * Real.pi * Real.exp 1 * (V q + 1 / 12) := fun q => by
+    have := hV0 q
+    positivity
+  have hlin : avgQ (fun q => 2 * Real.pi * Real.exp 1 * (V q + 1 / 12)) =
+      2 * Real.pi * Real.exp 1 * (avgQ V + 1 / 12) := by
+    rw [avgQ_const_mul, avgQ_add, avgQ_const]
+  have hA0 : 0 ≤ avgQ V := by
+    have := avgQ_mono (f := fun _ => (0 : ℝ)) (g := V) hV0
+    rwa [avgQ_const] at this
+  calc avgQ (fun q : Cfg N => ⨆ t : ℝ,
+        shannon N (numDist (leftOf m) (evo (dGamma (hq J h q)) t *ᵥ fockVec S)))
+      ≤ avgQ (fun q => (1 / 2) * Real.log (2 * Real.pi * Real.exp 1 * (V q + 1 / 12))) :=
+        avgQ_mono hpt
+    _ = (1 / 2) * avgQ (fun q => Real.log (2 * Real.pi * Real.exp 1 * (V q + 1 / 12))) :=
+        avgQ_const_mul _ _
+    _ ≤ (1 / 2) * Real.log (avgQ (fun q => 2 * Real.pi * Real.exp 1 * (V q + 1 / 12))) :=
+        mul_le_mul_of_nonneg_left (avgQ_log_le hpos) (by norm_num)
+    _ = (1 / 2) * Real.log (2 * Real.pi * Real.exp 1 * (avgQ V + 1 / 12)) := by rw [hlin]
+    _ ≤ (1 / 2) * Real.log (2 * Real.pi * Real.exp 1 * (thetaF F + 1 / 12)) := by
+        refine mul_le_mul_of_nonneg_left (Real.log_le_log (by positivity) ?_) (by norm_num)
+        have : 0 < 2 * Real.pi * Real.exp 1 := by positivity
+        nlinarith
 
 end DFL
