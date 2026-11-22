@@ -64,3 +64,4 @@ import DFL.DimerLower
 import DFL.SlaterBulk
 import DFL.AreaLawFull
 import DFL.LRNorm
+import DFL.DimerLGT

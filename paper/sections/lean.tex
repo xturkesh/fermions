@@ -125,7 +125,8 @@ $2\ln2\,\Theta(F)$), \texttt{vonNeumann\_rdmLGT\_xprod}, \texttt{avg\_full\_eq\_
 (\texttt{DimerTransfer}); \cref{lem:dimerTL} (with $\Lambda'$ finite in (ii)): \texttt{dimerTL\_i},
 \texttt{dimerTL\_ii}, \texttt{dimerTL\_iii} (\texttt{DimerTL}); \cref{prop:dimerlower} on finite intervals, with the
 Plancherel identity \eqref{eq:plancherel}: \texttt{dimerMom\_plancherel}, \texttt{dimer\_lower\_bound}
-(\texttt{DimerLower}).
+(\texttt{DimerLower}); \cref{thm:dimer}(a) in every dimer sector, and (d) for $p>1$: \texttt{dimer\_sector\_moment\_lower},
+\texttt{dimer\_sup\_moment\_unbounded}, \texttt{not\_EC\_dimer} (\texttt{DimerLGT}).
 \item \cref{lem:2dgauge}, \cref{thm:2dmap}(a),(b), on arbitrary finite graphs:
 \texttt{flux\_eq\_iff\_gauge}, \texttt{card\_gaugeOrbit}, \texttt{card\_fluxClasses},
 \texttt{wilsonLoop\_comm\_ham}, \texttt{gaussOp\_prod}; the joint eigenvectors $V_{q,s}\ket n$:
@@ -178,7 +179,7 @@ using $\Gamma h^0\ge g/2$, instead of from the integral formula; the propagator 
 \begin{itemize}
 \item the literature results entering as inputs: the large-deviation estimate together with the
 positivity and continuity of the Lyapunov exponent, \cref{prop:nocritical}(iii), \cref{prop:Zline},
-the transport bounds of \cite{JSBS2003} behind \cref{thm:dimer}, and the percolation estimate of
+the transport bounds of \cite{JSBS2003} behind \cref{thm:dimer}(b),(c) and (d) for $p\le1$, and the percolation estimate of
 \cite{LiL2022}, which enters \texttt{cluster\_avg} as the probability that the cluster leaves the
 region;
 \item the infinite-volume statements other than those listed above: \cref{thm:infvol}(a),(c),(d),
