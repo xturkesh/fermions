@@ -31,6 +31,24 @@ def entM (J h : ℝ) (n q : CfgZ) (a b : ℤ) (t : ℝ) (M : ℕ) : ℝ :=
 def entZ (J h : ℝ) (n q : CfgZ) (a b : ℤ) (t : ℝ) : ℝ :=
   ∑ i, Real.binEntropy ((KZA_isHermitian J h q n t a b).eigenvalues i)
 
+namespace InfVolAreaAux
+
+/-- The entanglement entropy of a left segment is bounded in time (by a time-independent
+majorant). -/
+lemma bddAbove_vonNeumann_rdm {N : ℕ} (J h : ℝ) (q : Cfg N) (S : Finset (Fin N)) (ℓ : ℕ)
+    (hℓ : ℓ ≤ N) :
+    BddAbove (Set.range fun t : ℝ =>
+      vonNeumann (rdm ℓ hℓ (evo (dGamma (hq J h q)) t *ᵥ fockVec S)) (rdm_isHermitian ℓ hℓ _)) :=
+  ⟨2 * Real.log 2 * ∑ x ∈ segment ℓ, ∑ y ∈ univ \ segment ℓ,
+        ∑ z, corrQ (hq J h q) (hq_isHermitian J h q) x z *
+          corrQ (hq J h q) (hq_isHermitian J h q) y z, by
+    rintro _ ⟨t, rfl⟩
+    exact (vonNeumann_slater_sharp (hq J h q) (hq_isSymm J h q) S t ℓ hℓ).trans
+      (mul_le_mul_of_nonneg_left (Finset.sum_le_sum fun x _ => Finset.sum_le_sum fun y _ =>
+        AreaLawSharpAux.norm_corrMat_le_corrQ J h q S t x y) AreaLawSharpAux.two_log_two_nonneg)⟩
+
+end InfVolAreaAux
+
 /-- **`S^{(M)}_q(t) → S^ℤ_q(t)` uniformly in `q`** (paper: Theorem `thm:infvol`(d)). -/
 theorem tendstoUniformly_entM (J h : ℝ) (n : CfgZ) (a b : ℤ) (t : ℝ) :
     TendstoUniformly (fun (M : ℕ) (q : CfgZ) => entM J h n q a b t M)
@@ -60,6 +78,12 @@ theorem areaLaw_halfInfinite (J h : ℝ) {F : ℕ → ℝ} (hEC : EC J h F) (n :
       vonNeumann (rdm (m + M + 1).toNat (by have h1 := (abs_le.mp hm).1; have h2 := (abs_le.mp hm).2; omega)
         (evo (dGamma (hq J h q')) t *ᵥ fockVec (occM M n)))
         (rdm_isHermitian _ _ _)) ≤ 2 * Real.log 2 * thetaF F := by
-  sorry
+  have hℓ : (m + M + 1).toNat ≤ 2 * M + 1 := by
+    have h1 := (abs_le.mp hm).1
+    have h2 := (abs_le.mp hm).2
+    omega
+  refine le_trans ?_ (lgt_areaLaw_sharp J h hEC (m + M + 1).toNat hℓ (occM M n))
+  exact AreaLawAux.avgQ_mono' fun q' =>
+    le_ciSup (InfVolAreaAux.bddAbove_vonNeumann_rdm J h q' (occM M n) _ hℓ) t
 
 end DFL
