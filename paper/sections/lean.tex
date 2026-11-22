@@ -42,8 +42,12 @@ only external input is this literature result (\texttt{lgt\_transport\_of\_ldt},
 
 \paragraph{Correspondence.}  Lean names, followed by their files:
 \begin{itemize}[leftmargin=1.5em,itemsep=1pt]
-\item \cref{thm:duality,lem:gauss,cor:sector}: \texttt{duality}, \texttt{gauss\_dual},
+\item \cref{thm:duality,cor:sector}: \texttt{duality}, \texttt{gauss\_dual},
 \texttt{numOp\_dual}, \texttt{sector\_average} (\texttt{Duality}, \texttt{Sector}).
+\item \cref{lem:gauss}: \texttt{gauss\_comm\_H}, \texttt{gauss\_law\_1d}, \texttt{gauss\_prod},
+\texttt{sxL\_last\_comm\_H}, \texttt{rank\_gaussProj}, \texttt{gaussProj\_comm\_H} (\texttt{GaussLaw});
+\cref{lem:sectornorm}: \texttt{gaugeInv\_eq\_sum}, \texttt{norm\_gaugeInv}, \texttt{norm\_trace\_le},
+\texttt{norm\_expect\_initZ\_le}, \texttt{sectorDiag\_abs}, \texttt{expect\_sectorDiag\_abs} (\texttt{SectorNorm}).
 \item \cref{lem:productlaw}: \texttt{sector\_average\_prod\_fock}, \texttt{sector\_average\_zprod}
 (\texttt{ProductLaw}).
 \item \cref{prop:variants}: \texttt{sector\_average\_open} (open chain); \texttt{ring\_duality},
@@ -55,7 +59,9 @@ only external input is this literature result (\texttt{lgt\_transport\_of\_ldt},
 \item \cref{lem:cutlocal}(b),(c),(d): \texttt{cutlocal\_defect}, \texttt{vonNeumann\_rdmLGT\_xprod},
 \texttt{exProd\_U\_entropy}, \texttt{exProd\_Udag\_entropy} (\texttt{Entropies}, \texttt{CutLocal},
 \texttt{CutLocalExamples}).
-\item \cref{lem:consequences,hyp:EC}: \texttt{norm\_evo\_le\_corrQ}, \texttt{EC} (\texttt{OneBody}).
+\item \cref{lem:consequences,hyp:EC}: \texttt{norm\_evo\_le\_corrQ}, \texttt{EC} (\texttt{OneBody});
+\cref{lem:normalization}: \texttt{stag\_conj\_hq\_eq\_smul}, \texttt{corrQ\_hq\_neg}, \texttt{avgQ\_law\_neg\_h}
+(\texttt{Normalization}).
 \item \cref{thm:EC}(i) with \cref{lem:green,lem:entry,lem:badset,lem:double}: \texttt{ec\_of\_ldt},
 \texttt{poisson}, \texttt{box\_right}, \texttt{box\_left}, \texttt{entry\_ldt},
 \texttt{exists\_resEnd}, \texttt{single\_box}, \texttt{two\_box} (\texttt{Transfer}, \texttt{Resonance},
@@ -75,8 +81,13 @@ $\Z$: \texttt{tendsto\_evoZ}, \texttt{lintegral\_iSup\_UZ\_le}, \texttt{infvol\_
 \texttt{avgPar\_imbInf\_uniform} (\texttt{OpenImbalance}).
 \item \cref{lem:intentropy,thm:numberentropy}: \texttt{massey}, \texttt{lgt\_numberEntropy}
 (\texttt{Entropy}, \texttt{Main}).
-\item \cref{thm:arealaw}: \texttt{lgt\_areaLaw}, \texttt{lgt\_areaLaw\_full} (\texttt{AreaLaw},
-\texttt{CutLocal}).
+\item \cref{lem:slater}, and \cref{lem:quasifree}(b) for the reduced states of Slater determinants on left
+segments: \texttt{vonNeumann\_rdm\_slater} ($S(\rho_A)=\sum_i\bent(\nu_i)$), \texttt{numDist\_slater},
+\texttt{genfun\_slater}, \texttt{sum\_sqrt\_eig\_le} (\texttt{SlaterExact}); \cref{lem:binent}:
+\texttt{binEntropy\_le\_two\_log\_two\_sqrt}, \texttt{binEntropy\_eq\_two\_log\_two\_sqrt\_iff} (\texttt{BinEntropy});
+\cref{lem:annealed}(i),(ii): \texttt{annealed\_K}, \texttt{annealed\_cut} (\texttt{AreaLawSharp}).
+\item \cref{thm:arealaw}: \texttt{vonNeumann\_slater\_sharp}, \texttt{lgt\_areaLaw\_sharp} (with the constant
+$2\ln2\,\Theta(F)$), \texttt{lgt\_areaLaw\_full} (\texttt{AreaLawSharp}, \texttt{CutLocal}).
 \item \cref{prop:entropies}: (a) \texttt{lgt\_duality\_defect}; (b) \texttt{mixRdm\_eq\_marginal},
 \texttt{condEntropy\_le\_mix}, \texttt{mix\_le\_cond\_add}, \texttt{mix\_le\_log},
 \texttt{sectorLawEntropy\_le}, \texttt{sectorLawEntropy\_zero}; (c) \texttt{lgtNumDist\_eq\_avg},
@@ -96,8 +107,9 @@ $\Z$: \texttt{tendsto\_evoZ}, \texttt{lintegral\_iSup\_UZ\_le}, \texttt{infvol\_
 \texttt{GraphWilson}, \texttt{TwoDMap}).
 \item \cref{prop:2dlaws}: (a) \texttt{sector\_average\_flux} (and \texttt{sector\_average\_matter}
 for $s=+$); (b) \texttt{sector\_average\_xpol}, \texttt{xpol\_summand\_gauge}; (c)(i),(ii)
-\texttt{checkerboard\_sq}, \texttt{checkerboard\_gap}, \texttt{checkerboard\_edge\_iff}
-(\texttt{Graph}, \texttt{GraphFlux}, \texttt{TwoD}).
+\texttt{checkerboard\_sq}, \texttt{checkerboard\_gap}, \texttt{checkerboard\_edge\_iff}; (c)(iii),(iv)
+\texttt{checkerboard\_evo\_eigvec}, \texttt{checkerboard\_evo}, \texttt{Ks\_sq\_diag}
+(\texttt{Graph}, \texttt{GraphFlux}, \texttt{TwoD}, \texttt{TwoDLaws}).
 \item \cref{prop:nocompact}: \texttt{no\_compact\_eigenvector} (\texttt{TwoD}).
 \item \cref{prop:cluster}: \texttt{hqs0\_cluster}, \texttt{cluster\_bound}, \texttt{cluster\_leak},
 \texttt{cluster\_avg} (\texttt{Cluster}).
@@ -113,8 +125,12 @@ for $s=+$); (b) \texttt{sector\_average\_xpol}, \texttt{xpol\_summand\_gauge}; (
 
 \paragraph{Deviations.}  Sites and links are indexed from $0$.  The constants of
 \cref{thm:numberentropy}, \cref{thm:arealaw}, \cref{thm:imbalance}(iv) and \cref{thm:EC} appear as existential
-quantifiers, with values depending only on $J$, $h$ and the profile $F$ (resp.\ on $|\lambda|$).  The Lean area law
-has the constant $2$ in place of $2\ln2$.  Four proofs take a different route from the text.
+quantifiers, with values depending only on $J$, $h$ and the profile $F$ (resp.\ on $|\lambda|$).  The area law is
+formalized twice: with the constant $2\ln2\,\Theta(F)$ of the text, through the exact formula of \cref{lem:slater}(a),
+and, by a shorter argument that never computes the spectrum of $\rho_A$, with the constant $2$ in place of $2\ln2$.
+The quasi-free density matrix $\rhoqf{C}$ of \cref{lem:quasifree}(a) is not defined in Lean; the reduced state of a
+Slater determinant is identified through its entropy and the law of $N_A$.  Four proofs take a different route from
+the text.
 \begin{itemize}
 \item \Cref{lem:green} is replaced by the Poisson identity
 $\det(E-A_B)\,\varphi(x)=\det(E-A_{[x+1,b]})\,\varphi(a-1)+\det(E-A_{[a,x-1]})\,\varphi(b+1)$, valid
@@ -138,7 +154,7 @@ the transport bounds of \cite{JSBS2003} behind \cref{thm:dimer}, and the percola
 region;
 \item the infinite-volume statements other than those listed above: \cref{thm:infvol}(a),(c),(d),(e),
 \cref{cor:ECinfvol} for the full correlator $Q^X$, \cref{thm:EC}(ii) and \cref{prop:dimerimbalance}(iii);
-\item in two dimensions, \cref{thm:2dmap}(c),(d) (planar boxes and tori) and
-\cref{prop:2dlaws}(c)(iii),(iv);
+\item \cref{lem:quasifree}(a) and \cref{lem:annealed}(iii);
+\item in two dimensions, \cref{thm:2dmap}(c),(d) (planar boxes and tori);
 \item remarks, conjectures and numerics.
 \end{itemize}
