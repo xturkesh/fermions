@@ -1,2 +1,116 @@
+% ---------------------------------------------------------------------------
+% Section: Discussion and open problems
+% ---------------------------------------------------------------------------
+% Section-local macros (identical to the definitions in sections/main.tex and sections/numerics.tex).
+\providecommand{\Sfm}{S_{f}}
+
 \section{Discussion and open problems}\label{sec:discussion}
-Stub.
+
+For the model of \cite{SKKM2017}, disorder-free localization is annealed Anderson localization for a binary
+potential, made exact by the duality and by the exact sector averaging.  The proofs show that localization is a
+property of the pair formed by the Hamiltonian and the sector law induced by the initial state.  The i.i.d.\ law of
+the $z$-polarized state localizes (\cref{sec:main}); the dimer law of \cref{sec:dimer} delocalizes for $0<2|h|<J$;
+the clean sector $q\equiv1$ is ballistic (\cref{rem:gaussproj}); and typical single sectors localize, as the area
+law for definite-charge states shows (\cref{thm:arealaw}(c)).  We list the main open problems.
+
+\paragraph{Interacting matter is MBL with binary disorder.}
+The free structure of the matter is special, but the exactness of the sector average is not.
+
+\begin{remark}[Interacting matter]\label{rem:interacting}
+Following \cite{SKKM2017b}, add a density interaction to \eqref{eq:H}:
+$H_\Delta:=H+\Delta\sum_{j=1}^{N-1}(2n_j-1)(2n_{j+1}-1)$, $\Delta\in\R$.  The interaction is a function of the
+occupations, so it commutes with every $G_j$, and $U^\dagger n_jU=n_j$ by \cref{thm:duality}(c).  Hence
+\[
+  U^\dagger H_\Delta U=\sum_q\Bigl(\dGamma(\hq)-h\sum_jq_j+\Delta\sum_{j=1}^{N-1}(2n_j-1)(2n_{j+1}-1)\Bigr)\otimes\ket q\bra q .
+\]
+The proof of \cref{cor:sector}(a),(b) uses only that $U^\dagger HU$ is block diagonal in $q$, so it applies verbatim:
+for $\Psi_0=\ket{\uparrow\cdots\uparrow}_z\otimes\psi$, every gauge-invariant expectation value, at any number of times,
+is the average over i.i.d.\ Bernoulli charges of the corresponding expectation value in the interacting chain of
+sector $q$.  With the Jordan--Wigner transformation $S^z_j=n_j-\frac12$, $S^+_j=c_j^\dagger\prod_{k<j}(-1)^{n_k}$, so
+that $c_j^\dagger c_{j+1}=S^+_jS^-_{j+1}$, this chain is
+\[
+  -J\sum_{j=1}^{N-1}\bigl(S^+_jS^-_{j+1}+S^-_jS^+_{j+1}\bigr)+4\Delta\sum_{j=1}^{N-1}S^z_jS^z_{j+1}+2h\sum_{j=1}^Nq_jS^z_j,
+\]
+the XXZ chain in the binary random field $2hq_j$ of \cite[Eq.~(5)]{SKKM2017b}; the constants cancel exactly.
+\end{remark}
+
+So, for these initial states, disorder-free MBL in the interacting gauge theory \emph{is} MBL of the XXZ chain
+with an i.i.d.\ field taking two values, for expectation values of gauge-invariant observables.  This problem is
+outside the existing rigorous frameworks: Imbrie \cite{Imbrie2016} assumes random couplings with bounded probability
+densities, together with his assumption of limited level attraction, and the results of \cite{DHMP2023,DGHP2024}
+assume i.i.d.\ fields uniformly distributed on an interval.  Binary disorder is qualitatively different: exact
+resonances occur with positive density.  For instance, any two sites with equal charges are exactly degenerate at
+zeroth order in $J$, and the effective couplings between such sites depend only on the local pattern of charges,
+which takes finitely many values; the slow, coherent oscillations of the imbalance in \cref{rem:num-oscillations}
+are attributed to such resonances.  MBL with binary or
+discrete disorder has been studied numerically \cite{Andraschko2014,Tang2015,Janarek2018}, and the general debate
+about MBL \cite{Suntajs2020,SelsPolkovnikov2021,Abanin2021challenges,DeRoeckHuveneers2017,Morningstar2022}
+applies to it.  A proof of disorder-free MBL in the interacting model would therefore include a proof of MBL for a
+binary random field, which we regard as a hard open problem.  In the free case these difficulties are absent
+because one-dimensional Anderson localization with Bernoulli potential is under control (\cref{sec:onebody}).
+
+\paragraph{Growth of the full entanglement.}
+The full entanglement of the superposed state is, up to $\ln2$, the entanglement of a coherent superposition of
+$2^N$ sector evolutions (\cref{prop:entropies}(a)).  \Cref{lem:duhamel} shows that two sectors that differ only at
+distance $\ge R$ from a site evolve indistinguishably near that site up to times of order $e^{\eta R}/|h|$.  This is
+the picture of local integrals of motion in MBL, with two differences: here the integrals of motion, the charges, are
+exact and strictly local, and their influence is transmitted by free fermions.  It suggests
+$\Sfull(t)\simeq\ln t$ (Conjecture~\ref{conj:logent}), in line with the logarithmic spreading of out-of-time-ordered
+correlators found in \cite{SKKM2019} and with our exact data for $N=10$ (\cref{rem:main-conjnum}).  A proof needs a
+decoupling argument for superpositions of exponentially many sectors that is uniform in $N$; continuity bounds for
+the entropy are too weak (\cref{sec:main:conj}).  The mixed entropies $\Smix$ and $\Sfm$ are of a different nature:
+$\Smix-\SG$ is the Holevo information of the ensemble $\{2^{-N},\rho^q_A(t)\}$, i.e.\ classical information about the
+charges, and we conjecture a volume law for its time average (Conjecture~\ref{conj:volmix}).
+
+\paragraph{Gauge-field observables and Loschmidt echoes.}
+The gauge field $\sigma^z_{b_j}$ is not gauge invariant.  By \eqref{eq:loschmidt} its expectation value is a sector
+average of phases times Loschmidt amplitudes $\langle\psi_{q'}(t),\psi_q(t)\rangle$ between configurations that differ by
+a local flip of the potential, and each amplitude is an $M\times M$ determinant for an $M$-particle Fock state.  In
+the ensemble of definite-charge states this expectation vanishes identically (\cref{rem:superposition-main}), so it
+distinguishes the superposition from the ensemble, as do the R\'enyi entropies measured in \cite{Gyawali2024}.
+Heuristically, by \cref{lem:duhamel} the fermions at distance $R$ from the flip contribute to the decay of the amplitude
+only after times of order $e^{\eta R}/|h|$, so that at time $t$ about $\eta^{-1}\ln(|h|t)$ of them have dephased.  This
+suggests a slow decay of the amplitudes, a localized analogue of Anderson's orthogonality catastrophe
+\cite{Anderson1967}, driven by the same mechanism as Conjecture~\ref{conj:logent}; Smith et al.\ \cite{SKKM2019} proposed a
+Loschmidt-echo protocol as a probe of the spreading of correlations.  Rigorous bounds on these amplitudes, on average and for typical
+sectors, are open.
+
+\paragraph{Two dimensions.}
+In two dimensions the exact mapping and the sector laws are under control (\cref{thm:2dmap,prop:2dlaws}), but the
+one-body input is not (\cref{sec:2d:status}).  Three problems stand out: (i) a sector-averaged, dynamical
+localization bound for the two-dimensional Anderson model with Bernoulli potential at large disorder, where the
+energy windows excluded in \cite{LiL2022} carry almost all the spectral weight of isolated sites; (ii) any
+localization result for binary random $\pi$-flux, whose chiral point sits at the inner band edges for the
+checkerboard state (\cref{prop:2dlaws}(c)); (iii) control beyond the time scale $|h|/J^2$, where cluster
+confinement turns into a quantum-percolation problem (\cref{rem:clusterstop}).  For Majorana matter, binary gauge
+disorder is expected not to localize (\cref{rem:majorana}), so localization in two dimensions cannot be taken for
+granted even for free matter.
+
+\paragraph{Random-walk potentials.}
+In the standard $\Z_2$ gauge theory, with a single-link electric term, one charge moves in a random-walk potential
+anchored at the boundary link, and several charges interact through rank-dependent potentials
+(\cref{rem:randomwalk}).  For one charge on the half-line, almost surely there is no absolutely continuous spectrum, by the
+half-line form of a theorem of Simon and Spencer \cite{SimonSpencer1989} quoted in \cref{rem:randomwalk}; pure point
+spectrum and dynamical localization are open, since the potential
+is not stationary and the integer increments produce exactly degenerate wells.  The many-charge problem is not free,
+and its localization is open as well.
+
+\paragraph{Number entropy as a diagnostic.}
+The number entropy has been used to probe residual particle transport in MBL systems
+\cite{Lukin2019,KUFS2020}.  Our model is an exactly solvable case in which $\SN$ is bounded uniformly in time
+(\cref{thm:numberentropy}) while, numerically, $\Sfull$ grows over several decades of time (\cref{fig:entropies}).  In the $\Z_2$ theory the
+Gauss law fixes only the parity of the charge in an interval, by \eqref{eq:Z2parity}, so the bound on $\SN$ is a
+consequence of localization and not of kinematics.  In $U(1)$ theories with quantum links, by contrast, $\SN$ is
+capped by the Gauss law in every sector (\cref{prop:gausscap}), and with Wilson links its average over cuts is bounded
+by energy conservation (\cref{prop:wilson}).  Number-entropy diagnostics in lattice gauge theories should therefore be
+compared with these caps; moreover, $\SN$ bounds $\Sfull$, $\Smix$ and $\Sfm$ from below, but not the conditional
+entanglement $\SG$ (\cref{prop:entropies}(c), \cref{rem:main-SGSN}).
+
+\paragraph{Further problems.}
+(i) Explicit constants in \cref{thm:EC}, which would follow from explicit large-deviation constants (\cref{rem:rate}).
+(ii) An infinite-volume version of \cref{thm:imbalance}, and a lower bound on $\inf_tI(t)$ rather than on the time
+average (\cref{rem:main-imbalance}).  (iii) Localization for the biased product states of \cref{rem:biased}, whose
+sector law is a non-i.i.d.\ block factor.  (iv) An (EC)-type bound for the dimer law when $2|h|>J$, and the cases
+$2|h|=J$ and $2|h|=\sqrt2J$ (\cref{rem:dimerstrong}).  (v) The ring variant (\cref{rem:ringEC}).  (vi) Perturbations
+that break gauge invariance give dynamics to the charges; localization can then at best be prethermal, and the
+elementary bounds and the prethermalization results discussed in \cref{rem:adhh} are a starting point.

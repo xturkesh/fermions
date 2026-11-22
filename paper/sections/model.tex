@@ -298,7 +298,7 @@ conjugating with $U$ gives \eqref{eq:dressed}.  The CAR and oddness are preserve
 $U$; $c_j$ commutes with $\taux{k}$, so $\cdr_j$ commutes with $G_k$ by (a); and
 $\cdr_j^\dagger\cdr_j=Un_jU^\dagger=n_j$ by (c).  For $x<y$ the strings
 $\prod_{k\ge x}\szb{k}\prod_{k\ge y}\szb{k}=\prod_{x\le k<y}\szb{k}$ combine and commute with the
-$f$'s.  \eqref{eq:Hdressed} is $U(\eqref{eq:dualH})U^\dagger$, using
+$f$'s.  \eqref{eq:Hdressed} follows by conjugating \eqref{eq:dualH} with $U$, using
 $U\taux{j}(-1)^{n_j}U^\dagger=G_j(-1)^{n_j}$ and $U(\one\otimes\ket{q}\bra{q})U^\dagger=P_q$.
 
 \emph{(e).}  The first identity follows from \eqref{eq:dualH}.  For a self-adjoint $A$, both sides of
@@ -473,9 +473,9 @@ the matter parity and the background charge of $A$.  It is a single classical bi
 the bound $\ln2$.
 
 \begin{lemma}[Two-block pinching]\label{lem:pinching}
-Let $P^++P^-=\one$ be orthogonal projections on a finite-dimensional space and
-$\mathcal{P}(\sigma):=P^+\sigma P^++P^-\sigma P^-$.  Then $S(\sigma)\le S(\mathcal{P}(\sigma))\le S(\sigma)+\ln2$
-for every density matrix $\sigma$.
+Let $P^+$, $P^-$ be orthogonal projections on a finite-dimensional space with $P^++P^-=\one$, and let
+$\mathcal{P}(\sigma):=P^+\sigma P^++P^-\sigma P^-$.  Then
+$S(\sigma)\le S(\mathcal{P}(\sigma))\le S(\sigma)+\ln2$ for every density matrix $\sigma$.
 \end{lemma}
 
 This is standard (a pinching into $k$ blocks raises the entropy by at most $\ln k$); we include the
@@ -594,10 +594,10 @@ polynomial in $c_x,c_x^\dagger$; in particular $f_x^\dagger(\prod_{x\le k<y}\szb
 \item the electric field and energy: $\sxb{j}\mapsto(\prod_{k\le j}q_k)(-1)^{N_{\le j}}$ and
 $\sxb{j-1}\sxb{j}\mapsto q_j(-1)^{n_j}$, together with their products.
 \end{itemize}
-For a Fock state $\psi=\ket{n}$ with occupied set $\{s_1<\dots<s_M\}$, write $u_q(t):=\e^{-\ii t\hq}$.
-Then $\langle\psi_q(t),c_x^\dagger c_y\psi_q(t)\rangle=\sum_{a=1}^M\overline{u_q(t)_{xs_a}}\,u_q(t)_{ys_a}$, and
+For a Fock state $\psi=\ket{n}$ with occupied set $\{s_1<\dots<s_M\}$, write $U_q(t):=\e^{-\ii t\hq}$ (a unitary $N\times N$ matrix; the subscript distinguishes it from the duality unitary $U$).
+Then $\langle\psi_q(t),c_x^\dagger c_y\psi_q(t)\rangle=\sum_{a=1}^M\overline{U_q(t)_{xs_a}}\,U_q(t)_{ys_a}$, and
 \begin{equation}\label{eq:stringdet}
-  \langle\psi_q(t),(-1)^{N_{\le j}}\psi_q(t)\rangle=\det\bigl[(u_q(t)^*R_ju_q(t))_{s_as_b}\bigr]_{a,b=1}^M,
+  \langle\psi_q(t),(-1)^{N_{\le j}}\psi_q(t)\rangle=\det\bigl[(U_q(t)^*R_jU_q(t))_{s_as_b}\bigr]_{a,b=1}^M,
   \qquad R_j:=\diag\bigl((-1)^{\one[x\le j]}\bigr)_{x=1}^N .
 \end{equation}
 \item \emph{The gauge field $\szb{j}$ is not sector diagonal.}  It anticommutes with $G_j$ and
@@ -608,7 +608,7 @@ $G_{j+1}$ (with $G_N$ only, if $j=N$), and
 \end{equation}
 where $q^{[j]}$ is $q$ with $q_j$ and $q_{j+1}$ flipped ($q_N$ only, if $j=N$), so that
 $\sum_kq_k-\sum_kq'_k=2(q_j+q_{j+1})$ (resp.\ $2q_N$).  For Fock $\psi$,
-$\langle\psi_{q'}(t),\psi_q(t)\rangle=\det[(u_{q'}(t)^*u_q(t))_{s_as_b}]_{a,b=1}^M$.  Thus gauge-field
+$\langle\psi_{q'}(t),\psi_q(t)\rangle=\det[(U_{q'}(t)^*U_q(t))_{s_as_b}]_{a,b=1}^M$.  Thus gauge-field
 observables are Loschmidt echoes between sectors that differ by a local flip of the potential, and
 the sector-dependent phase in \eqref{eq:loschmidt} cannot be omitted.
 \end{enumerate}
@@ -629,8 +629,8 @@ and only $q'=q$ contributes.  For the multi-time formula,
 $U^\dagger O_i(t_i)U=\sum_qO_{i,q}(t_i)\otimes\ket{q}\bra{q}$ by \cref{thm:duality}(e); the phases cancel
 because $O_i$ is block diagonal.
 (c) Gauge invariance and the $O_q$ follow from \cref{thm:duality}(c),(d) and \cref{lem:gauss}.  The
-determinant formulas follow from $\psi_q(t)=c^\dagger(u_qe_{s_1})\cdots c^\dagger(u_qe_{s_M})\ket0$
-(with $u_q=u_q(t)$), from $(-1)^{N_{\le j}}=\Gamma(R_j)$, and from
+determinant formulas follow from $\psi_q(t)=c^\dagger(U_qe_{s_1})\cdots c^\dagger(U_qe_{s_M})\ket0$
+(with $U_q=U_q(t)$), from $(-1)^{N_{\le j}}=\Gamma(R_j)$, and from
 \[
   \bigl\langle c^\dagger(v_1)\cdots c^\dagger(v_M)\ket0,\,c^\dagger(w_1)\cdots c^\dagger(w_M)\ket0\bigr\rangle
   =\det[\langle v_a,w_b\rangle]_{a,b=1}^M .
@@ -694,7 +694,8 @@ one has, with all amplitudes positive,
   U^\dagger\Psi_0=2^{-M/2}\sum_{\eta\in\{\pm1\}^M}\ket{n}\otimes\ket{\eta_1,\eta_1,\eta_2,\eta_2,\dots,\eta_M,\eta_M}.
 \end{equation}
 The sector law is the \emph{random dimer law}: i.i.d.\ equal pairs $(q_{2k-1},q_{2k})=(\eta_k,\eta_k)$,
-$\eta_k$ i.i.d.\ uniform.  The same CDW matter state sits in every sector.
+$\eta_k$ i.i.d.\ uniform.  The same CDW matter state sits in every sector.  (\Cref{prop:dimerlaw} extends this
+to general Fock matter and identifies the states with $d_k\equiv1$.)
 \end{enumerate}
 \end{lemma}
 

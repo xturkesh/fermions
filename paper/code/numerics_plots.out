@@ -1,9 +1,9 @@
 === S_N - S_G, N=10, h=J (exact; fine grid step 0.005 on [0.05,12]) ===
   positive on [0.05, 2.575]; max 0.1135 at t = 1.400; sign changes near t = 2.575, 2.930, 3.630, 4.250, 5.225; max |S_N - S_G| between first and last change = 0.0431; negative for all grid t > 5.230: True
 === S_N - S_G, N=256, lambda=1.0 (400 sectors, 30 times per decade on [1e-2, 1e2]) ===
-  > 2 SE at all grid times in [0.0251, 0.0681]; max = 1.687e-10(6.5e-12) at t = 0.063; sign changes between grid points: 0.0681-0.0736; max |S_N - S_G| in that window = 0.0000; < -2 SE for all grid t >= 0.0736: True
+  > 2 SE at all grid times in [0.0251, 0.0681] (grid times Jt >= 0.02 only); max = 1.687e-10(6.5e-12) at t = 0.063; sign changes between grid points: 0.0681-0.0736; max |S_N - S_G| in that window = 0.0000; < -2 SE for all grid t >= 0.0736: True
 === S_N - S_G, N=256, lambda=2.0 (400 sectors, 30 times per decade on [1e-2, 1e2]) ===
-  > 2 SE at all grid times in [0.0147, 2.3263]; max = 1.240e-01(1.1e-02) at t = 1.468; sign changes between grid points: 2.51-2.71, 3.16-3.41, 3.41-3.69, 4.3-4.64, 5.01-5.41; max |S_N - S_G| in that window = 0.0435; < -2 SE for all grid t >= 5.41: True
+  > 2 SE at all grid times in [0.0200, 2.3263] (grid times Jt >= 0.02 only); max = 1.240e-01(1.1e-02) at t = 1.468; sign changes between grid points: 2.51-2.71, 3.16-3.41, 3.41-3.69, 4.3-4.64, 5.01-5.41; max |S_N - S_G| in that window = 0.0435; < -2 SE for all grid t >= 5.41: True
 === imbalance: Ibar(N) +- SE, kappa_N +- SE (max over all intervals), lower bounds of thm:imbalance ===
     bounds use kappa_N + 2 SE; khat = max_N (kappa_N + 2 SE); kthm = 2 Sigma_1(F_emp) with F_emp from N=400
   lambda=0.25: Ibar N=100,200,400: 0.00782(0.00010)  0.00556(0.00005)  0.00433(0.00003) | kappa_N: 17.97(0.02)  29.29(0.03)  43.22(0.03)

@@ -95,7 +95,9 @@ definite-charge initial states, $\Sfull=S(\rho^q_A)$ to $1.2\times10^{-14}$, as 
 \item \texttt{numerics\_entropies\_small.py}: the exact data for $N=10$ and the checks against exact
 diagonalization;
 \item \texttt{numerics\_entropies\_large.py}: the sector averages for $N\ge64$ in \cref{fig:entropies};
-\item \texttt{numerics\_plots.py}: the figures, and the derived numbers quoted in this section.
+\item \texttt{numerics\_plots.py}: the figures, and the derived numbers quoted in this section;
+\item \texttt{numerics\_early\_times.py}: the early-time expansion of the variance of $N_A$ and the comparison of
+$\SN-\SG$ with its leading order, quoted in \cref{sec:numerics:entropies}.
 \end{itemize}
 Their outputs are the files \texttt{numerics\_*.out} in the same directory, and the data are in
 \texttt{code/data}.  All random seeds are fixed.  The complete set of runs takes about
@@ -104,7 +106,7 @@ $40$ minutes on two cores.
 % ----------------------------------------------------------------------------
 \subsection{Memory of the density wave}\label{sec:numerics:imbalance}
 
-\begin{figure}[t]
+\begin{figure}[tbp]
 \centering
 \includegraphics[width=\textwidth]{figs/imbalance.pdf}
 \caption{Memory of the charge-density wave, for $\Psi_0=\ket{\uparrow\cdots\uparrow}_z\otimes\psicdw$ and $J=1$.
@@ -120,7 +122,7 @@ $\kaphat=\max_N(\kappa_N+2\,\mathrm{SE})$ (dashed).  See \cref{tab:numerics-imba
 \label{fig:imbalance}
 \end{figure}
 
-\begin{table}[t]
+\begin{table}[tbp]
 \centering
 \small
 \setlength{\tabcolsep}{3pt}
@@ -220,7 +222,7 @@ cannot test the uniformity in $N$, and for $\lambda\le0.5$ they are not yet conv
 % ----------------------------------------------------------------------------
 \subsection{Entanglement and number entropy}\label{sec:numerics:entropies}
 
-\begin{figure}[t]
+\begin{figure}[tbp]
 \centering
 \includegraphics[width=\textwidth]{figs/entropies.pdf}
 \caption{Entropies of the half chain after the quench from $\ket{\uparrow\cdots\uparrow}_z\otimes\psicdw$, $J=1$.

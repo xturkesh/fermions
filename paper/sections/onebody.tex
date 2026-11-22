@@ -60,16 +60,16 @@ Hermitian matrix $k$ on $\ell^2(\Lambda)$ is
 and we write $Q^\Lambda:=Q_{A_\Lambda}$ and $Q^{[1,N]}_q:=Q_{\hq}$.
 
 \begin{lemma}[Normalization]\label{lem:normalization}
-Let $\lambda=2h/J$ and let $U$ be the diagonal matrix with entries $(-1)^x$, $x=1,\dots,N$.  Then
-$U\hq U^{-1}=J\,A_{[1,N]}$.  Consequently
+Let $\lambda=2h/J$ and let $\Gamma:=\diag((-1)^x)_{x=1}^N$ (as in \cref{thm:imbalance}; not to be confused
+with the second quantization $\Gamma(\cdot)$ of \cref{sec:model}).  Then $\Gamma\hq\Gamma^{-1}=J\,A_{[1,N]}$.  Consequently
 $Q^{[1,N]}_q(x,y)=Q^{[1,N]}(x,y)$ for all $x,y$ and every $q$.  Moreover, the joint law of
 $(Q^\Lambda(x,y))_{x,y\in\Lambda}$ is the same for $\lambda$ and $-\lambda$.
 \end{lemma}
 
 \begin{proof}
-$U$ is diagonal and $(U(-\Delta_N)U^{-1})_{x,x\pm1}=-(-1)^x(-1)^{x\pm1}=1$, while $U\diag(q)U^{-1}=\diag(q)$;
-hence $U\hq U^{-1}=J(\Delta_N+\lambda\diag(q))$.  For Borel $f$, $f(\hq)=U^{-1}\tilde f(A_{[1,N]})U$ with
-$\tilde f(E):=f(JE)$, and $|(U^{-1}MU)_{xy}|=|M_{xy}|$ for diagonal unitary $U$.  As $f$ ranges over the
+$\Gamma$ is diagonal and $(\Gamma(-\Delta_N)\Gamma^{-1})_{x,x\pm1}=-(-1)^x(-1)^{x\pm1}=1$, while $\Gamma\diag(q)\Gamma^{-1}=\diag(q)$;
+hence $\Gamma\hq\Gamma^{-1}=J(\Delta_N+\lambda\diag(q))$.  For Borel $f$, $f(\hq)=\Gamma^{-1}\tilde f(A_{[1,N]})\Gamma$ with
+$\tilde f(E):=f(JE)$, and $|(\Gamma^{-1}M\Gamma)_{xy}|=|M_{xy}|$ for the diagonal unitary $\Gamma$.  As $f$ ranges over the
 Borel functions with $|f|\le1$, so does $\tilde f$.  The last claim holds because $-q$ has the same law as $q$.
 \end{proof}
 
@@ -755,7 +755,7 @@ $\gamma_\lambda(E)\asymp\lambda^2$ in the bulk of the band, i.e.\ a localization
 $\lambda^{-2}$.  We do not use or prove this.
 \end{remark}
 
-\begin{figure}[t]
+\begin{figure}[tbp]
 \centering
 \includegraphics[width=\textwidth]{figs/correlator.pdf}
 \caption{Sector-averaged eigenfunction correlator $\E_qQ^{[1,N]}_q(x,x+d)$ of

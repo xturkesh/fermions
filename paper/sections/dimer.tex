@@ -77,7 +77,7 @@ $q(\eta):=(\eta_1,\eta_1,\eta_2,\eta_2,\dots,\eta_M,\eta_M)\in\{\pm1\}^N$.
 $\norm{P_q\Psidim(n)}^2=2^{-M}$ if $q=q(\eta)$ for some $\eta$, and $\norm{P_q\Psidim(n)}^2=0$
 otherwise.  The sector law is the \emph{random dimer law} $\mudim$: $(q_{2k-1},q_{2k})=(\eta_k,\eta_k)$
 with $\eta_1,\dots,\eta_M$ i.i.d.\ uniform on $\{\pm1\}$.  Every sector in its support carries the
-matter state $\ket{n}$, with the same positive amplitude.
+matter state $\ket{n}$, with the same positive amplitude.  (For $n=\ncdw$ this is \eqref{eq:dimerstate}.)
 \item \emph{(Neutral dimers.)}  $\prod_{j\le2k}G_j\,\Psidim(n)=\Psidim(n)$ and
 $G_{2k-1}G_{2k}\,\Psidim(n)=\Psidim(n)$ for $k=1,\dots,M$.
 \item \emph{(Dressed fermions.)}  Let $s_1<\dots<s_m$ be the occupied sites of $n$.  Then
@@ -108,12 +108,11 @@ On $\ket{n}\otimes\chi_\xi$ the operator $G_{2k-1}G_{2k}$ acts as the number $d_
 \end{proposition}
 
 \begin{proof}
-(e) Since $\langle\pm|\uparrow\rangle=2^{-1/2}$, $\chi_\xi=2^{-M/2}\sum_\epsilon\ket{x^\epsilon}_\sigma$, where
-$x^\epsilon_{b_{2k-1}}:=\epsilon_k$ and $x^\epsilon_{b_{2k}}:=\xi_{2k}$.  By \eqref{eq:U},
-$U^\dagger(\ket{n}\otimes\ket{x}_\sigma)=\ket{n,q(n,x)}$, with $q(n,x)$ given by \eqref{eq:qofx}.  For
-$x=x^\epsilon$ (and $x_{b_0}=1=\xi_0$), \eqref{eq:qofx} gives
-$q_{2k-1}=\xi_{2k-2}(-1)^{n_{2k-1}}\epsilon_k=s_k\epsilon_k$ and $q_{2k}=\epsilon_k(-1)^{n_{2k}}\xi_{2k}=d_ks_k\epsilon_k$,
-because $d_ks_k=(-1)^{n_{2k}}\xi_{2k}$.  The map $\epsilon\mapsto\eta:=(s_k\epsilon_k)_k$ is a bijection of
+(e) The first statement is \cref{lem:productlaw}(a) with the signs of its proof of (e) made explicit.
+Since $\langle\pm|\uparrow\rangle=2^{-1/2}$, $\chi_\xi=2^{-M/2}\sum_\epsilon\ket{x^\epsilon}_\sigma$ with
+$x^\epsilon_{b_{2k-1}}:=\epsilon_k$ and $x^\epsilon_{b_{2k}}:=\xi_{2k}$, and \eqref{eq:qofx} (with $x_{b_0}=1=\xi_0$) gives
+$q_{2k-1}=s_k\epsilon_k$ and $q_{2k}=(-1)^{n_{2k}}\xi_{2k}\epsilon_k=d_ks_k\epsilon_k$, as in the proof of
+\cref{lem:productlaw}(e) with $y_k=\epsilon_k$.  The map $\epsilon\mapsto\eta:=(s_k\epsilon_k)_k$ is a bijection of
 $\{\pm1\}^M$, so it preserves the uniform measure; by \cref{thm:duality}(a), $U^\dagger P_qU=\one\otimes\ket{q}\bra{q}$,
 so the weight of $q$ is $2^{-M}\#\{\epsilon:q^\epsilon=q\}$.  This identifies the sector law.  If $d_k=-1$
 for some $k$, then $q_{2k}=-q_{2k-1}$ on the whole support, an event of $\mudim$-probability zero; if
@@ -635,7 +634,9 @@ $\hq/J=-\Delta_N+\lambda\diag(q)$ with eigenvalue $E$,
   (\lambda^2-E^2)\sum_{x=1}^N(-1)^x\varphi(x)^2=\varphi(N)^2-\varphi(1)^2 .
 \end{equation}
 \item The limit $\bar I_N:=\lim_{T\to\infty}T^{-1}\int_0^TI_N(t)\,\dd t$ exists, and
-$\bar I_N=\Edim\frac1N\sum_\alpha a_\alpha^2$, where $a_\alpha:=\langle\varphi_\alpha,\Gamma\varphi_\alpha\rangle$
+\[
+  \bar I_N=\Edim\frac1N\sum_\alpha a_\alpha^2,\qquad a_\alpha:=\langle\varphi_\alpha,\Gamma\varphi_\alpha\rangle,
+\]
 for a real orthonormal eigenbasis $(\varphi_\alpha)$ of $\hq$.
 \item $\lim_{N\to\infty}\bar I_N=0$.
 \end{enumerate}
@@ -808,7 +809,7 @@ stationary, modulated by the deterministic signs $(-1)^{n_j}$.  We do not attemp
 Markov-type potentials cover this case, so its status is open.
 \end{remark}
 
-\begin{figure}[t]
+\begin{figure}[tbp]
 \centering
 \includegraphics[width=\textwidth]{figs/dimer.pdf}
 \caption{A single dressed fermion in the dimer state $\Psi^x=\cdr^\dagger_x\Omdim$ versus the i.i.d.\ law of
@@ -867,8 +868,8 @@ For the $z$-polarized state of \cite{SKKM2017} the charges are i.i.d., and
 Theorem~\ref{thm:EC} gives uniform, sector-averaged dynamical localization for every $h\neq0$
 (\cref{sec:main}).  For the dimer states, which differ only in the orientation of the even links,
 the charges come in neutral pairs.  For $0<2|h|<J$ transport is then at least diffusive in every
-sector and superdiffusive on average (\cref{thm:dimer}), and for every $h\neq0$ the CDW imbalance
-relaxes to zero (\cref{prop:dimerimbalance}).  In the language of disordered systems, the initial state
+sector and superdiffusive on average (\cref{thm:dimer}), and for every $h\neq0$ the infinite-time
+average of the CDW imbalance vanishes in the thermodynamic limit (\cref{prop:dimerimbalance}).  In the language of disordered systems, the initial state
 selects the statistics of the effective disorder.  Correlations of the dimer type are known to produce
 anomalous, superdiffusive transport \cite{DWP1990,JSBS2003}, although the spectrum remains almost surely
 pure point \cite{DeBievreGerminet2000} (\cref{rem:dimerstrong}(iii)).  The strictly gauge-invariant sector $q\equiv1$ is not

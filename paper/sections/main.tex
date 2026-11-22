@@ -384,8 +384,10 @@ $\sup_t\E_q$: in a typical sector the dressed fermion stays localized for all ti
 (ii) By \cref{lem:productlaw}(c), \cref{thm:transport} holds verbatim for every $\sigma^z$-product gauge
 state $\ket{s}_z$ in place of $\ket{\uparrow\cdots\uparrow}_z$.  For any gauge state whose sector law
 has density at most $K$ with respect to the uniform law (e.g.\ $K=2$ for the open chain,
-\cref{prop:variants}(i)), all bounds hold with an extra factor $K$ (for Fock $\psi$ every sector carries
-$\ket n$ up to a phase, by \cref{lem:productlaw}(b)).  For the dimer law of \cref{lem:productlaw}(e) and
+\cref{prop:variants}(i)), all bounds of \cref{thm:transport} hold with an extra factor $K$ (for Fock $\psi$ every
+sector carries $\ket n$ up to a phase, by \cref{lem:productlaw}(b)).  This uses that they are upper bounds on
+averages of non-negative sector functionals (\cref{rem:productlaws}(c)); lower bounds, such as
+\cref{thm:imbalance}, do not transfer in this way.  For the dimer law of \cref{lem:productlaw}(e) and
 $0<2|h|<J$, the moment bound (b) fails uniformly in $N$, and so does the analogue of
 Hypothesis~\ref{hyp:EC} (\cref{thm:dimer}(d)).
 (iii) Hypothesis~\ref{hyp:EC} enters only through \eqref{eq:hypEC} and its consequences
@@ -670,8 +672,9 @@ $\E_qN^{-1}\sum_\alpha a_\alpha^2=0.190469$ to $10^{-8}$.  With $\kappa_N$ compu
 intervals ($300$ sectors), $N=64$: $\lambda=0.5,1,2,4,-1.8$ give $\Ibar=0.023,0.082,0.173,0.247,0.158$,
 $\kappa_N=9.0,4.6,2.4,2.1,2.5$, and the best of the two bounds \eqref{eq:main-Ibound} is $6\times10^{-4}$,
 $1.7\times10^{-3}$, $3.9\times10^{-3}$, $6.9\times10^{-3}$ and $3.5\times10^{-3}$, respectively.  So the
-rigorous bounds are valid but small.  For $\lambda\le0.5$ the convergence in $N$ is slow: $\E\Ibar=0.0241$,
-$0.0198$, $0.0172$, $0.0165$ for $N=50,100,200,400$.  See also \cref{fig:imbalance}.
+rigorous bounds are valid but small.  For $\lambda\le0.5$ the convergence in $N$ is slow: at $\lambda=0.5$,
+$\Ibar=0.0241$ for $N=50$ ($400$ sectors), and $\Ibar=0.01968(14)$, $0.01732(9)$, $0.01596(6)$ for $N=100,200,400$
+($2000$ sectors; \cref{tab:numerics-imbalance}).  See also \cref{fig:imbalance}.
 \end{remark}
 
 \subsection{Entanglement}\label{sec:main:entanglement}
@@ -1072,7 +1075,11 @@ is finite.  Next, $|K^\Z_q(t)_{xy}|\le\sum_{z\in\Z}Q^\Z_q(x,z)Q^\Z_q(y,z)$ for a
 $\E[Q^\Z_q(x,z)Q^\Z_q(y,z)]\le\FZ(\max\{|x-z|,|y-z|\})$ because $Q^\Z_q\le1$.  The counting of
 \cref{lem:annealed}(i),(iii) gives $\E\sup_tS^\Z_q(t)\le2\ln2\cdot2\Theta(\FZ)$.
 
-For $A_M$: by \cref{thm:arealaw}(a), $S(\rho^q_{A_M}(t))\le2\ln2\sum_{x\le m<y;\,x,y\in\Lambda_M}|K^{(M)}_q(t)_{xy}|$.  We have
+For $A_M$: by \cref{thm:arealaw}(a),
+\[
+  S(\rho^q_{A_M}(t))\le2\ln2\sum_{x\le m<y;\,x,y\in\Lambda_M}|K^{(M)}_q(t)_{xy}| .
+\]
+We have
 $|K^{(M)}_{q,xy}|\le\sum_zw(|x-z|)w(|y-z|)\le e^{2c}\sum_{n\ge|x-y|}(2c)^n/n!=:k(|x-y|)$, since distinct $z$ give distinct
 pairs $(|x-z|,|y-z|)$ with sum at least $|x-y|$.  Moreover $\sum_dd\,k(d)<\infty$.  By Step 1 and dominated convergence,
 the right side converges, uniformly in $q$, to $2\ln2\sum_{x\le m<y}|K^\Z_q(t)_{xy}|$, whose expectation is at most

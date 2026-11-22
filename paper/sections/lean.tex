@@ -3,7 +3,7 @@
 % ---------------------------------------------------------------------------
 \section{Formal verification in Lean}\label{app:lean}
 
-The finite-volume results of this paper are formalized in the proof assistant Lean~4 with the
+Most of the finite-volume results of this paper are formalized in the proof assistant Lean~4 with the
 Mathlib library (both at version 4.36.0), in the directory \texttt{lean/} of the repository that
 accompanies the paper.  This appendix describes what the formalization contains, what it assumes,
 and where it deviates from the text.
@@ -106,15 +106,18 @@ for $s=+$); (b) \texttt{sector\_average\_xpol}, \texttt{xpol\_summand\_gauge}; (
 \end{itemize}
 
 \paragraph{Deviations.}  Sites and links are indexed from $0$.  The constants of
-\cref{thm:numberentropy}, \cref{thm:arealaw} and \cref{thm:EC} appear as existential quantifiers, with
-values depending only on $J$, $h$ and the profile $F$ (resp.\ on $|\lambda|$).  The Lean area law
-has the constant $2$ in place of $2\ln2$.  Three proofs take a different route from the text.
+\cref{thm:numberentropy}, \cref{thm:arealaw}, \cref{thm:imbalance}(iv) and \cref{thm:EC} appear as existential
+quantifiers, with values depending only on $J$, $h$ and the profile $F$ (resp.\ on $|\lambda|$).  The Lean area law
+has the constant $2$ in place of $2\ln2$.  Four proofs take a different route from the text.
 \begin{itemize}
 \item \Cref{lem:green} is replaced by the Poisson identity
 $\det(E-A_B)\,\varphi(x)=\det(E-A_{[x+1,b]})\,\varphi(a-1)+\det(E-A_{[a,x-1]})\,\varphi(b+1)$, valid
 for every solution of the eigenvalue equation on $B=[a,b]$ (a Wronskian argument).
 \item \Cref{lem:entry} uses only the vector form \eqref{eq:LDTvec} of the large-deviation estimate:
 the norm of the product is bounded through its action on two basis vectors.
+\item In \cref{thm:imbalance}(iv) the anticoncentration step uses the elementary fourth-moment bound of
+\cref{rem:main-imbalance}(i), on blocks of length $3m^2$, instead of Szarek's inequality, together with a different
+bound on $\kappa_N$; the Lean statement is the positivity of the time average, uniformly in $N$.
 \item In \cref{prop:cluster}(b) the generator $S$ is obtained from the anticommutator equation
 $\Gamma h^0S+S\Gamma h^0=\Gamma h^1$ with $\Gamma=\operatorname{sgn}(h)\diag(q)$, so that
 $[h^0,S]=h^1$ and $\norm S\le\norm{h^1}/g$, using $\Gamma h^0\ge g/2$.  The mean value inequality

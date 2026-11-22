@@ -5,6 +5,7 @@
 \usepackage{bm}
 \usepackage{graphicx}
 \usepackage[margin=1in]{geometry}
+\usepackage[section]{placeins}
 \usepackage[expansion=false]{microtype}
 \usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
 \usepackage{enumitem}
@@ -50,7 +51,12 @@
 \input{sections/discussion}
 
 \appendix
+% Long Lean identifiers cannot be hyphenated; set the appendix ragged right.
+\begingroup
+\raggedright
 \input{sections/lean}
+\par
+\endgroup
 
 \bibliographystyle{unsrt}
 \bibliography{refs}

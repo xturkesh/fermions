@@ -323,14 +323,16 @@ def summary_crossings():
         t = d["times"]
         y = d["SN_N256"] - d["SG_N256"]
         e = d["DNG_se_N256"]
-        sig = (y > 2 * e) & (t > 0)
+        # For Jt < 0.02 the computed differences are of the order of the rounding errors of the eigenvalues of
+        # P_A K_q(t) P_A that are close to 0 or 1 (about 1e-12 in total) and are not reliable; see the text.
+        sig = (y > 2 * e) & (t >= 0.0199)
         i0 = int(np.argmax(sig))
         i1 = i0
         while i1 + 1 < len(t) and sig[i1 + 1]:
             i1 += 1
         ch = np.nonzero((np.sign(y[1:]) != np.sign(y[:-1])) & (t[1:] > 0.05))[0]
         line = (f"=== S_N - S_G, N=256, lambda={lam} (400 sectors, 30 times per decade on [1e-2, 1e2]) ===\n"
-                f"  > 2 SE at all grid times in [{t[i0]:.4f}, {t[i1]:.4f}]; max = {y.max():.3e}({e[np.argmax(y)]:.1e}) at t = "
+                f"  > 2 SE at all grid times in [{t[i0]:.4f}, {t[i1]:.4f}] (grid times Jt >= 0.02 only); max = {y.max():.3e}({e[np.argmax(y)]:.1e}) at t = "
                 f"{t[np.argmax(y)]:.3f}; sign changes between grid points: "
                 + ", ".join(f"{t[i]:.3g}-{t[i + 1]:.3g}" for i in ch))
         if len(ch):
