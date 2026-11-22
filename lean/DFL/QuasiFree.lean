@@ -16,6 +16,23 @@ For a matrix `C` on `ℓ²(Fin L)` let `Γ(C)` be its second quantization on the
   `Tr(ρ[C] z^{N}) = det(1 + (z - 1) C)` (`trace_qfState_zN`).
 * `lem:slater`(a): the reduced state of a Slater determinant on any region `R` is the quasi-free state with symbol
   `C_R` (`rdmF_eq_qfState`), after relabelling the modes of `R` increasingly by `Fin |R|`.
+
+## Proof outline (auxiliary lemmas in `DFL.QuasiFreeAux`)
+
+1. `secondQ_mulVec_slaterAlt`: `Γ(C) c†(w_1) ⋯ c†(w_m)|0⟩ = c†(Cw_1) ⋯ c†(Cw_m)|0⟩` (both sides are alternating
+   maps agreeing on sorted basis tuples), so `Γ(C)` multiplies a Slater determinant of eigenvectors by the product
+   of the eigenvalues.
+2. `sum_list_eq_xiOp`, `sum_ann_cre_eq`: the inner sums of `ρ[C]` are `Ξ_j = Ξ_1^j` with
+   `Ξ_1(Y) = ∑_x c_x Y c†_x = ∑_i c(v_i) Y c†(v_i)` for any orthonormal basis `v`; on a Slater determinant `|s⟩` of
+   eigenvectors, `Ξ_j(Γ(C))|s⟩ = ∏_k ν_{s_k} S_j(s)|s⟩` (`xiOp_mulVec_slat`), where `S_j(U)` (`sFun`) is the `j`-th
+   derivative at `0` of `∏_{i ∉ U} (1 + ν_i X)`, so Taylor's formula gives the inclusion–exclusion identity
+   `∑_j (-1)^j/j! S_j(U) = ∏_{i ∉ U} (1 - ν_i)` (`sum_sFun`).
+3. `qfState_eq_conj`: in the orthonormal Slater basis `|T⟩` of any orthonormal eigenbasis, `ρ[C] = W diag(w) W†`
+   with `w_T = ∏_{i ∈ T} ν_i ∏_{i ∉ T} (1 - ν_i)`; this gives (a), (b) (product law, `sum_negMulLog_prod_sel`).
+4. `rdmF_slater_sum`, `prodSel_embR`: `ρ_R = ∑_σ μ_σ |X_σ⟩⟨X_σ|` (from `SlaterBulkAux`), transported to `Fin |R|`
+   (the increasing relabelling preserves the Jordan–Wigner strings); `qfState_eq_sum_prodSel` identifies this
+   mixture with `ρ[C_R]` in an eigenbasis of `C_R` adapted to the canonical orbitals (`exists_adapted_basis`, an
+   orthonormal extension of the normalized nonzero restricted orbitals).
 -/
 
 open Matrix Finset
@@ -778,6 +795,661 @@ theorem trace_qfState_zN (C : Matrix (Fin L) (Fin L) ℂ) (hC : C.IsHermitian) (
     Matrix.mul_assoc, Matrix.mul_assoc, hWW, Matrix.mul_one, diagonal_mul_diagonal,
     trace_diagonal]
 
+namespace QuasiFreeAux
+
+open SlaterExactAux SlaterGeneralAux SlaterBulkAux
+
+/-! ### Relabelling the modes of a region -/
+
+section Transport
+
+variable {N : ℕ} (R : Finset (Fin N))
+
+/-- The configuration of `Λ` equal to `n` (relabelled by `R.orderIsoOfFin`) on `R` and empty outside. -/
+def embR (n : Cfg R.card) : Cfg N :=
+  (splitR R).symm (fun a : R => n ((R.orderIsoOfFin rfl).symm a), 0)
+
+/-- `embR n` takes the value `n i` at the `i`-th site of `R`. -/
+lemma embR_apply_mem (n : Cfg R.card) (i : Fin R.card) :
+    embR R n (((R.orderIsoOfFin rfl) i : R) : Fin N) = n i := by
+  rw [embR, splitR_symm_mem R _ _ _ ((R.orderIsoOfFin rfl) i).2]
+  show n ((R.orderIsoOfFin rfl).symm ⟨_, _⟩) = n i
+  rw [Subtype.coe_eta, OrderIso.symm_apply_apply]
+
+/-- `embR n` is empty outside `R`. -/
+lemma embR_apply_not_mem (n : Cfg R.card) (x : Fin N) (hx : x ∉ R) : embR R n x = 0 := by
+  rw [embR, splitR_symm_not_mem R _ _ x hx]
+  rfl
+
+/-- Every site of `R` is the image of its relabelling. -/
+lemma exists_orderIso_eq (x : Fin N) (hx : x ∈ R) :
+    ∃ j, (((R.orderIsoOfFin rfl) j : R) : Fin N) = x :=
+  ⟨(R.orderIsoOfFin rfl).symm ⟨x, hx⟩, by simp⟩
+
+/-- Updating a site of `R` commutes with `embR`. -/
+lemma embR_update (n : Cfg R.card) (i : Fin R.card) (b : ZMod 2) :
+    Function.update (embR R n) (((R.orderIsoOfFin rfl) i : R) : Fin N) b =
+      embR R (Function.update n i b) := by
+  funext x
+  by_cases hx : x ∈ R
+  · obtain ⟨j, rfl⟩ := exists_orderIso_eq R x hx
+    rw [embR_apply_mem]
+    by_cases hij : j = i
+    · subst hij; simp
+    · have hne : (((R.orderIsoOfFin rfl) j : R) : Fin N) ≠ (((R.orderIsoOfFin rfl) i : R) : Fin N) :=
+        fun h => hij ((R.orderIsoOfFin rfl).injective (Subtype.ext h))
+      rw [Function.update_of_ne hne, embR_apply_mem, Function.update_of_ne hij]
+  · have hne : x ≠ (((R.orderIsoOfFin rfl) i : R) : Fin N) :=
+      fun h => hx (h ▸ ((R.orderIsoOfFin rfl) i).2)
+    rw [Function.update_of_ne hne, embR_apply_not_mem R _ x hx, embR_apply_not_mem R _ x hx]
+
+/-- The relabelling is increasing, so it preserves the Jordan–Wigner strings. -/
+lemma jwPar_embR (n : Cfg R.card) (i : Fin R.card) :
+    jwPar (embR R n) (((R.orderIsoOfFin rfl) i : R) : Fin N) = jwPar n i := by
+  unfold jwPar
+  rw [Finset.sum_filter, Finset.sum_filter,
+    ← Finset.sum_subset (Finset.subset_univ R) (fun x _ hx => by
+      rw [embR_apply_not_mem R n x hx, ite_self]),
+    ← Finset.sum_coe_sort R, ← (R.orderIsoOfFin rfl).toEquiv.sum_comp]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  have hlt : ((((R.orderIsoOfFin rfl) j : R) : Fin N) < (((R.orderIsoOfFin rfl) i : R) : Fin N)) ↔
+      j < i := Subtype.coe_lt_coe.trans (R.orderIsoOfFin rfl).lt_iff_lt
+  simp only [OrderIso.coe_toEquiv]
+  rw [embR_apply_mem]
+  exact if_congr hlt rfl rfl
+
+/-- `c_x†` for `x ∈ R` corresponds to `c_i†` on the relabelled modes. -/
+lemma cre_embR (i : Fin R.card) (Y : Cfg N → ℂ) (n : Cfg R.card) :
+    (cplx (cre (((R.orderIsoOfFin rfl) i : R) : Fin N)) *ᵥ Y) (embR R n) =
+      (cplx (cre i) *ᵥ (fun n' => Y (embR R n'))) n := by
+  rw [AreaLawAux.cre_mulVec_apply, AreaLawAux.cre_mulVec_apply, embR_apply_mem, jwPar_embR,
+    embR_update]
+
+/-- `c†(w)` for `w` supported in `R` corresponds to `c†(w ∘ ι)` on the relabelled modes. -/
+lemma crOp_embR (w : Fin N → ℂ) (hw : ∀ x ∉ R, w x = 0) (Y : Cfg N → ℂ) (n : Cfg R.card) :
+    (crOp w *ᵥ Y) (embR R n) =
+      (crOp (fun i => w (((R.orderIsoOfFin rfl) i : R) : Fin N)) *ᵥ (fun n' => Y (embR R n'))) n := by
+  rw [crOp_mulVec_eq, crOp_mulVec_eq]
+  simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
+  rw [← Finset.sum_subset (Finset.subset_univ R) (fun x _ hx => by rw [hw x hx, zero_mul]),
+    ← Finset.sum_coe_sort R, ← (R.orderIsoOfFin rfl).toEquiv.sum_comp]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  simp only [OrderIso.coe_toEquiv]
+  rw [cre_embR]
+
+/-- `embR n` is the vacuum iff `n` is. -/
+lemma embR_eq_zero_iff (n : Cfg R.card) : embR R n = 0 ↔ n = 0 := by
+  constructor
+  · intro h
+    funext i
+    rw [← embR_apply_mem R n i, h]
+    rfl
+  · rintro rfl
+    funext x
+    by_cases hx : x ∈ R
+    · obtain ⟨j, rfl⟩ := exists_orderIso_eq R x hx
+      rw [embR_apply_mem]; rfl
+    · rw [embR_apply_not_mem R _ x hx]; rfl
+
+/-- Products of creation operators of orbitals supported in `R`, relabelled. -/
+lemma prodSel_embR : ∀ {M : ℕ} (a : Fin M → Fin N → ℂ), (∀ k, ∀ x ∉ R, a k x = 0) →
+    ∀ (σ : Fin M → Bool) (n : Cfg R.card),
+    prodSel a σ (embR R n) = prodSel (fun k i => a k (((R.orderIsoOfFin rfl) i : R) : Fin N)) σ n
+  | 0, _, _, σ, n => by
+    rw [prodSel_zero, prodSel_zero]
+    have h0 : fockCfg (∅ : Finset (Fin N)) = 0 := by funext x; simp [fockCfg]
+    have h0' : fockCfg (∅ : Finset (Fin R.card)) = 0 := by funext x; simp [fockCfg]
+    simp only [fockVec, Pi.single_apply, h0, h0', embR_eq_zero_iff]
+  | M + 1, a, ha, σ, n => by
+    rw [prodSel_succ, prodSel_succ]
+    have ih : ∀ n', prodSel (fun k => a k.succ) (fun k => σ k.succ) (embR R n') =
+        prodSel (fun k i => a k.succ (((R.orderIsoOfFin rfl) i : R) : Fin N))
+          (fun k => σ k.succ) n' :=
+      fun n' => prodSel_embR (fun k => a k.succ) (fun k => ha k.succ) (fun k => σ k.succ) n'
+    split_ifs
+    · rw [crOp_embR R _ (ha 0)]
+      congr 2
+      funext n'
+      exact ih n'
+    · rw [Matrix.one_mulVec, Matrix.one_mulVec]
+      exact ih n
+
+end Transport
+
+/-! ### The reduced state of a Slater determinant as a mixture -/
+
+/-- **The reduced density matrix of a Slater determinant** (from the proof of
+`SlaterBulkAux.slater_core_bulk`): `ρ_R = ∑_σ μ_σ |X_σ⟩⟨X_σ|`, `X_σ = ∏_{σ k} c†(P_R w_k) |0⟩`. -/
+lemma rdmF_slater_sum {N : ℕ} (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsSymm) (S : Finset (Fin N))
+    (t : ℝ) (R : Finset (Fin N)) :
+    ∃ (M : ℕ) (Φ : Matrix (Fin N) (Fin M) ℂ) (ν : Fin M → ℝ),
+      corrMat A S t = Φ * Φᴴ ∧
+      (∀ k l, ∑ x ∈ R, star (Φ x k) * Φ x l = if k = l then (ν k : ℂ) else 0) ∧
+      ∀ α α', rdmF R (evo (dGamma A) t *ᵥ fockVec S) α α' =
+        ∑ σ : Fin M → Bool, ((∏ k, if σ k then 1 else 1 - ν k : ℝ) : ℂ) *
+          (prodSel (fun k x => if x ∈ R then Φ x k else 0) σ ((splitR R).symm (α, 0)) *
+            star (prodSel (fun k x => if x ∈ R then Φ x k else 0) σ ((splitR R).symm (α', 0)))) := by
+  obtain ⟨M, Φ, c, ν, hc, hψ, hC, h1, h2⟩ := slater_setup_gen A hA S t R
+  refine ⟨M, Φ, ν, hC, h1, ?_⟩
+  set a : Fin M → Fin N → ℂ := fun k x => if x ∈ R then Φ x k else 0 with ha_def
+  set b : Fin M → Fin N → ℂ := fun k x => if x ∈ R then 0 else Φ x k with hb_def
+  have dbb : ∀ k l, star (b k) ⬝ᵥ b l = if k = l then ((1 - ν k : ℝ) : ℂ) else 0 := by
+    intro k l
+    rw [← h2 k l]
+    have e : ∀ x, star (b k) x * b l x =
+        if x ∈ univ \ R then star (Φ x k) * Φ x l else 0 := by
+      intro x; by_cases hx : x ∈ R <;> simp [hb_def, hx]
+    simp only [dotProduct, e, Finset.sum_ite_mem, Finset.univ_inter]
+  obtain ⟨s, hs, hexp⟩ := slater_expand_gen R (fun k x => Φ x k)
+  set X : (Fin M → Bool) → Cfg N → ℂ := fun σ => prodSel a σ with hX_def
+  set Y : (Fin M → Bool) → Cfg N → ℂ := fun σ => prodSel b (fun k => !σ k) with hY_def
+  set ψ := evo (dGamma A) t *ᵥ fockVec S with hψ_def
+  have hψ' : ψ = ∑ σ, (c * s σ) • ftens R (X σ) (Y σ) := by
+    rw [hψ, hexp, Finset.smul_sum]
+    simp only [smul_smul]
+    rfl
+  have hcs : ∀ σ, ‖c * s σ‖ = 1 := fun σ => by rw [norm_mul, hc, hs, one_mul]
+  set μ : (Fin M → Bool) → ℝ := fun σ => ∏ k, (if σ k then 1 else 1 - ν k) with hμ_def
+  have hYg : ∀ σ τ, star (Y τ) ⬝ᵥ Y σ = if σ = τ then (μ σ : ℂ) else 0 := by
+    intro σ τ
+    have hg := gram_prodSel b _ dbb (fun k => !τ k) (fun k => !σ k)
+    by_cases h : σ = τ
+    · subst h
+      rw [hY_def]
+      simp only [hg, ite_true, hμ_def]
+      push_cast
+      refine Finset.prod_congr rfl fun k _ => ?_
+      cases σ k <;> simp
+    · have h' : (fun k => !τ k) ≠ (fun k => !σ k) := by
+        intro h'; apply h; funext k; have := congrFun h' k; simpa using this.symm
+      rw [hY_def]
+      simp only [hg, h, h', ite_false]
+  have hYn : ∀ σ, IsNumR R 0 (Y σ) := fun σ =>
+    isNumR_prodSel_zero R b (fun k x hx => by simp [hb_def, hx]) _
+  have hv : ∀ α β, ψ ((splitR R).symm (α, β)) = (reorderSign R α β : ℂ) *
+      ∑ σ, (c * s σ) * (X σ ((splitR R).symm (α, 0)) * Y σ ((splitR R).symm (0, β))) := by
+    intro α β
+    rw [hψ', Finset.sum_apply, Finset.mul_sum]
+    refine Finset.sum_congr rfl fun σ _ => ?_
+    rw [Pi.smul_apply, smul_eq_mul, ftens_splitR_symm]
+    ring
+  have hYh : ∀ σ τ, ∑ β, star (Y τ ((splitR R).symm (0, β))) * Y σ ((splitR R).symm (0, β)) =
+      if σ = τ then (μ σ : ℂ) else 0 := by
+    intro σ τ; rw [← dot_eq_sum_out R _ _ (hYn τ), hYg]
+  exact fun α α' => rdmF_eq_sum R ψ (fun σ => c * s σ) (fun σ α => X σ ((splitR R).symm (α, 0)))
+    (fun σ β => Y σ ((splitR R).symm (0, β))) (fun σ => (μ σ : ℂ)) hv hcs hYh α α'
+
+
+/-! ### The abstract identity `∑_σ μ_σ |P_σ⟩⟨P_σ| = ρ[∑_k |u_k⟩⟨u_k|]` -/
+
+/-- An orthonormal family of `L` vectors in `ℂ^L` is complete. -/
+lemma comp_of_orth {L : ℕ} (v : Fin L → Fin L → ℂ)
+    (hv : ∀ i j, star (v i) ⬝ᵥ v j = if i = j then 1 else 0) (x y : Fin L) :
+    ∑ i, star (v i x) * v i y = if x = y then 1 else 0 := by
+  set V : Matrix (Fin L) (Fin L) ℂ := Matrix.of fun x i => v i x with hV
+  have h1 : Vᴴ * V = 1 := by
+    refine Matrix.ext fun i j => ?_
+    rw [Matrix.mul_apply, Matrix.one_apply, ← hv i j]
+    simp [hV, dotProduct, conjTranspose_apply]
+  have h2 : V * Vᴴ = 1 := (Matrix.mul_eq_one_comm_of_equiv (Equiv.refl _)).mp h1
+  have h := congrFun (congrFun h2 y) x
+  rw [Matrix.mul_apply, Matrix.one_apply] at h
+  simp only [hV, conjTranspose_apply, of_apply] at h
+  calc ∑ i, star (v i x) * v i y = ∑ i, v i y * star (v i x) :=
+        Finset.sum_congr rfl fun i _ => mul_comm _ _
+    _ = if y = x then 1 else 0 := h
+    _ = if x = y then 1 else 0 := by
+        by_cases hxy : x = y
+        · subst hxy; simp
+        · simp [hxy, Ne.symm hxy]
+
+/-- A mixture of rank-one operators acting on a vector. -/
+lemma mulVec_sum_rankOne {ι κ : Type*} [Fintype ι] [Fintype κ] (c : κ → ℂ) (P : κ → ι → ℂ)
+    (φ : ι → ℂ) :
+    (Matrix.of fun n n' => ∑ σ, c σ * (P σ n * star (P σ n'))) *ᵥ φ =
+      ∑ σ, (c σ * (star (P σ) ⬝ᵥ φ)) • P σ := by
+  funext n
+  simp only [mulVec, dotProduct, of_apply, Finset.sum_apply, Pi.smul_apply, smul_eq_mul,
+    Finset.sum_mul, Finset.mul_sum, Pi.star_apply]
+  rw [Finset.sum_comm]
+  exact Finset.sum_congr rfl fun σ _ => Finset.sum_congr rfl fun n' _ => by ring
+
+/-- `∑_k |u_k⟩⟨u_k|` acting on a vector. -/
+lemma mulVec_sum_proj {M ℓ : ℕ} (u : Fin M → Fin ℓ → ℂ) (w : Fin ℓ → ℂ) :
+    (Matrix.of fun i j => ∑ k, u k i * star (u k j)) *ᵥ w = ∑ k, (star (u k) ⬝ᵥ w) • u k := by
+  funext i
+  simp only [mulVec, dotProduct, of_apply, Finset.sum_apply, Pi.smul_apply, smul_eq_mul,
+    Finset.sum_mul, Pi.star_apply]
+  rw [Finset.sum_comm]
+  exact Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun j _ => by ring
+
+/-- Products of selected creation operators are Slater determinants of the selected orbitals. -/
+lemma prodSel_eq_slaterAlt {K : ℕ} : ∀ {M : ℕ} (w : Fin M → Fin K → ℂ) (σ : Fin M → Bool),
+    ∃ (m : ℕ) (s : Fin m → Fin M), Function.Injective s ∧
+      (∀ k, σ k = true ↔ k ∈ univ.image s) ∧ prodSel w σ = slaterAlt K m (fun j => w (s j))
+  | 0, w, σ => ⟨0, Fin.elim0, fun i => i.elim0, fun k => k.elim0, by
+      rw [prodSel_zero, slaterAlt_apply]; simp⟩
+  | M + 1, w, σ => by
+    obtain ⟨m, s, hs, hσ, hP⟩ := prodSel_eq_slaterAlt (fun k => w k.succ) (fun k => σ k.succ)
+    rw [prodSel_succ, hP]
+    by_cases h0 : σ 0 = true
+    · refine ⟨m + 1, Fin.cons 0 (fun j => (s j).succ), ?_, ?_, ?_⟩
+      · rw [Fin.cons_injective_iff]
+        exact ⟨fun ⟨j, hj⟩ => Fin.succ_ne_zero _ hj, fun a b h => hs (Fin.succ_injective _ h)⟩
+      · intro k
+        refine Fin.cases ?_ (fun k => ?_) k
+        · simp only [h0, true_iff]
+          exact mem_image.mpr ⟨0, mem_univ _, rfl⟩
+        · rw [hσ k]
+          simp only [mem_image, mem_univ, true_and, Fin.exists_fin_succ, Fin.cons_zero,
+            Fin.cons_succ]
+          constructor
+          · rintro ⟨j, hj⟩; exact Or.inr ⟨j, by rw [hj]⟩
+          · rintro (h | ⟨j, hj⟩)
+            · exact absurd h.symm (Fin.succ_ne_zero k)
+            · exact ⟨j, Fin.succ_injective _ hj⟩
+      · rw [ite_eq_left h0, slaterAlt_succ]
+        simp only [Fin.cons_zero, Fin.cons_succ]
+    · refine ⟨m, fun j => (s j).succ, fun a b h => hs (Fin.succ_injective _ h), ?_, ?_⟩
+      · intro k
+        refine Fin.cases ?_ (fun k => ?_) k
+        · simp only [mem_image, mem_univ, true_and]
+          constructor
+          · intro h; exact absurd h h0
+          · rintro ⟨j, hj⟩; exact absurd hj (Fin.succ_ne_zero _)
+        · rw [hσ k]
+          simp only [mem_image, mem_univ, true_and]
+          exact ⟨fun ⟨j, hj⟩ => ⟨j, by rw [hj]⟩, fun ⟨j, hj⟩ => ⟨j, Fin.succ_injective _ hj⟩⟩
+      · rw [ite_eq_right h0, one_mulVec]
+
+/-- Changing the length argument of `orderEmbOfFin` in a Slater basis vector. -/
+lemma slat_orderEmb_cast {L : ℕ} (v : Fin L → Fin L → ℂ) (T : Finset (Fin L)) {m : ℕ}
+    (h : T.card = m) : slat v (T.orderEmbOfFin h) = bvec v T := by
+  subst h; rfl
+
+/-- A Slater determinant of distinct basis orbitals is `±` the Slater basis vector. -/
+lemma slat_eq_smul_bvec {L : ℕ} (v : Fin L → Fin L → ℂ) {m : ℕ} (t : Fin m → Fin L)
+    (ht : Function.Injective t) :
+    ∃ ε : ℂ, star ε * ε = 1 ∧ slat v t = ε • bvec v (univ.image t) := by
+  set τ := Tuple.sort t
+  have hmono : StrictMono (t ∘ τ) :=
+    (Tuple.monotone_sort t).strictMono_of_injective (ht.comp τ.injective)
+  have hc : (univ.image t).card = m := by
+    rw [card_image_of_injective _ ht, card_univ, Fintype.card_fin]
+  have hs := Finset.orderEmbOfFin_unique hc (fun x => mem_image_of_mem t (mem_univ (τ x))) hmono
+  have h1 : slat v t = Equiv.Perm.sign τ • slat v (fun x => t (τ x)) :=
+    (slaterAlt L m).map_congr_perm _ τ
+  rw [hs, slat_orderEmb_cast] at h1
+  rcases Int.units_eq_one_or (Equiv.Perm.sign τ) with h | h
+  · exact ⟨1, by simp, by rw [h1, h, one_smul, one_smul]⟩
+  · exact ⟨-1, by simp, by rw [h1, h]; simp⟩
+
+
+/-- **Adapted eigenbasis**: for orthogonal `u_k` with `‖u_k‖² = ν_k`, an orthonormal basis `v` of `ℂ^ℓ`
+containing the normalized nonzero `u_k` (at the indices `π k`), with the eigenvalues `λ` of
+`∑_k |u_k⟩⟨u_k|` (`λ_{π k} = ν_k`, `λ = 0` off the range of `π`). -/
+lemma exists_adapted_basis {M ℓ : ℕ} (u : Fin M → Fin ℓ → ℂ) (ν : Fin M → ℝ)
+    (hu : ∀ k l, star (u k) ⬝ᵥ u l = if k = l then (ν k : ℂ) else 0) :
+    ∃ (v : Fin ℓ → Fin ℓ → ℂ) (lam : Fin ℓ → ℝ) (π : {k : Fin M // ν k ≠ 0} → Fin ℓ),
+      (∀ i j, star (v i) ⬝ᵥ v j = if i = j then 1 else 0) ∧ Function.Injective π ∧
+      (∀ k : {k : Fin M // ν k ≠ 0}, u k = ((√(ν k) : ℝ) : ℂ) • v (π k)) ∧
+      (∀ k : {k : Fin M // ν k ≠ 0}, lam (π k) = ν k) ∧
+      (∀ i, (∀ k, π k ≠ i) → lam i = 0) := by
+  classical
+  have hν0 : ∀ k, 0 ≤ ν k := fun k => by
+    have h := hu k k
+    rw [ite_eq_left rfl, AreaLawAux.star_dotProduct_self] at h
+    have h' : AreaLawAux.nsq (u k) = ν k := by exact_mod_cast h
+    rw [← h']
+    exact AreaLawAux.nsq_nonneg _
+  have hsq : ∀ k, ν k ≠ 0 → ((√(ν k) : ℝ) : ℂ) ≠ 0 := fun k hk => by
+    have : 0 < √(ν k) := Real.sqrt_pos.mpr (lt_of_le_of_ne (hν0 k) (Ne.symm hk))
+    exact_mod_cast this.ne'
+  set g : Fin M → Fin ℓ → ℂ := fun k => (((√(ν k) : ℝ) : ℂ))⁻¹ • u k with hg
+  have hug : ∀ k, ν k ≠ 0 → u k = ((√(ν k) : ℝ) : ℂ) • g k := fun k hk => by
+    rw [hg, smul_smul, mul_inv_cancel₀ (hsq k hk), one_smul]
+  have hgo : ∀ k l, ν k ≠ 0 → ν l ≠ 0 → star (g k) ⬝ᵥ g l = if k = l then 1 else 0 := by
+    intro k l hk hl
+    simp only [hg, star_smul, smul_dotProduct, dotProduct_smul, hu, smul_eq_mul]
+    split_ifs with hkl
+    · subst hkl
+      have h1 : ((√(ν k) : ℝ) : ℂ) * ((√(ν k) : ℝ) : ℂ) = (ν k : ℂ) := by
+        rw [← Complex.ofReal_mul, Real.mul_self_sqrt (hν0 k)]
+      rw [Complex.star_def, map_inv₀, Complex.conj_ofReal, ← h1]
+      field_simp [hsq k hk]
+    · simp
+  set m := Fintype.card {k : Fin M // ν k ≠ 0} with hm_def
+  set fam0 : {k : Fin M // ν k ≠ 0} → EuclideanSpace ℂ (Fin ℓ) := fun k => WithLp.toLp 2 (g k)
+    with hfam0_def
+  have hfam0 : Orthonormal ℂ fam0 := by
+    rw [orthonormal_iff_ite]
+    intro k l
+    rw [EuclideanSpace.inner_eq_star_dotProduct, dotProduct_comm]
+    simp only [hfam0_def, WithLp.ofLp_toLp]
+    rw [hgo k l k.2 l.2]
+    exact if_congr Subtype.ext_iff.symm rfl rfl
+  have hm : m ≤ ℓ := by
+    have := hfam0.linearIndependent.fintype_card_le_finrank
+    rwa [finrank_euclideanSpace_fin] at this
+  set eJ := Fintype.equivFin {k : Fin M // ν k ≠ 0} with heJ
+  set π : {k : Fin M // ν k ≠ 0} → Fin ℓ := fun k => Fin.castLE hm (eJ k) with hπ_def
+  have hπ : Function.Injective π := fun a b h => eJ.injective (Fin.castLE_injective hm h)
+  have hπk : ∀ k, (⟨(π k).val, (eJ k).isLt⟩ : Fin m) = eJ k := fun k => Fin.ext rfl
+  set fam : Fin ℓ → EuclideanSpace ℂ (Fin ℓ) := fun i =>
+    if h : i.val < m then fam0 (eJ.symm ⟨i.val, h⟩) else 0 with hfam_def
+  have hfam : Orthonormal ℂ ({i : Fin ℓ | i.val < m}.domRestrict fam) := by
+    rw [orthonormal_iff_ite]
+    rintro ⟨i, hi⟩ ⟨j, hj⟩
+    have hi' : i.val < m := hi
+    have hj' : j.val < m := hj
+    simp only [Set.domRestrict_apply, hfam_def, dite_eq_left hi', dite_eq_left hj']
+    rw [orthonormal_iff_ite.mp hfam0]
+    refine if_congr ⟨fun h => ?_, fun h => ?_⟩ rfl rfl
+    · have h2 := eJ.symm.injective h
+      simp only [Fin.mk.injEq] at h2
+      exact Subtype.ext (Fin.ext h2)
+    · cases h; rfl
+  obtain ⟨b, hb⟩ := hfam.exists_orthonormalBasis_extension_of_card_eq (by simp)
+  refine ⟨fun i => (b i).ofLp, fun i => if h : i.val < m then ν (eJ.symm ⟨i.val, h⟩).val else 0,
+    π, ?_, hπ, ?_, ?_, ?_⟩
+  · intro i j
+    have h := orthonormal_iff_ite.mp b.orthonormal i j
+    rw [EuclideanSpace.inner_eq_star_dotProduct] at h
+    rw [dotProduct_comm]
+    exact h
+  · intro k
+    have hk : (π k).val < m := (eJ k).isLt
+    have h1 : b (π k) = fam (π k) := hb (π k) hk
+    have h2 : fam (π k) = fam0 k := by
+      simp only [hfam_def, dite_eq_left hk]
+      rw [hπk, Equiv.symm_apply_apply]
+    simp only [h1, h2, hfam0_def, WithLp.ofLp_toLp]
+    exact hug k k.2
+  · intro k
+    have hk : (π k).val < m := (eJ k).isLt
+    simp only [dite_eq_left hk]
+    rw [hπk, Equiv.symm_apply_apply]
+  · intro i hi
+    dsimp only
+    split_ifs with h
+    · exfalso
+      refine hi (eJ.symm ⟨i.val, h⟩) (Fin.ext ?_)
+      simp [hπ_def]
+    · rfl
+
+/-- The adapted basis is an eigenbasis of `∑_k |u_k⟩⟨u_k|`. -/
+lemma adapted_eig {M ℓ : ℕ} (u : Fin M → Fin ℓ → ℂ) (ν : Fin M → ℝ) (v : Fin ℓ → Fin ℓ → ℂ)
+    (lam : Fin ℓ → ℝ) (π : {k : Fin M // ν k ≠ 0} → Fin ℓ)
+    (hv : ∀ i j, star (v i) ⬝ᵥ v j = if i = j then 1 else 0) (hπ : Function.Injective π)
+    (hup : ∀ k : {k : Fin M // ν k ≠ 0}, u k = ((√(ν k) : ℝ) : ℂ) • v (π k))
+    (hu0 : ∀ k, ν k = 0 → u k = 0) (hν0 : ∀ k, 0 ≤ ν k)
+    (hlamπ : ∀ k : {k : Fin M // ν k ≠ 0}, lam (π k) = ν k)
+    (hlam0 : ∀ i, (∀ k, π k ≠ i) → lam i = 0) (i : Fin ℓ) :
+    (Matrix.of fun i j => ∑ k, u k i * star (u k j)) *ᵥ v i = (lam i : ℂ) • v i := by
+  classical
+  rw [mulVec_sum_proj]
+  have hterm : ∀ k, (star (u k) ⬝ᵥ v i) • u k =
+      (if h : ν k = 0 then 0 else if π ⟨k, h⟩ = i then (ν k : ℂ) else 0) • v i := by
+    intro k
+    by_cases hk : ν k = 0
+    · rw [dite_eq_left hk, hu0 k hk, smul_zero, zero_smul]
+    · rw [dite_eq_right hk, hup ⟨k, hk⟩, star_smul, smul_dotProduct, hv]
+      split_ifs with h
+      · subst h
+        have h1 : ((√(ν k) : ℝ) : ℂ) * ((√(ν k) : ℝ) : ℂ) = (ν k : ℂ) := by
+          rw [← Complex.ofReal_mul, Real.mul_self_sqrt (hν0 k)]
+        rw [smul_smul, Complex.star_def, Complex.conj_ofReal, smul_eq_mul, mul_one, h1]
+      · simp
+  simp only [hterm, ← Finset.sum_smul]
+  congr 1
+  by_cases hi : ∃ k0, π k0 = i
+  · obtain ⟨k0, rfl⟩ := hi
+    rw [hlamπ, Finset.sum_eq_single k0.val]
+    · rw [dite_eq_right k0.2, ite_eq_left rfl]
+    · intro k _ hk
+      split_ifs with h1 h2
+      · rfl
+      · exact absurd (congrArg Subtype.val (hπ h2)) hk
+      · rfl
+    · intro h; exact absurd (mem_univ _) h
+  · push Not at hi
+    rw [hlam0 i hi, Complex.ofReal_zero]
+    refine Finset.sum_eq_zero fun k _ => ?_
+    split_ifs with h1 h2
+    · rfl
+    · exact absurd h2 (hi _)
+    · rfl
+
+
+open Classical in
+/-- The weight of `|T⟩⟨T|` contributed by the term `σ` of the mixture `∑_σ μ_σ |P_σ⟩⟨P_σ|`. -/
+noncomputable def coefQ {M ℓ : ℕ} (ν : Fin M → ℝ) (π : {k : Fin M // ν k ≠ 0} → Fin ℓ)
+    (T : Finset (Fin ℓ)) (σ : Fin M → Bool) : ℂ :=
+  if (∀ k, σ k = true → ν k ≠ 0) ∧
+      (univ.filter (fun k : {k : Fin M // ν k ≠ 0} => σ k.val = true)).image π = T then
+    ((∏ k, if σ k then ν k else 1 - ν k : ℝ) : ℂ)
+  else 0
+
+/-- Membership in the image set of `coefQ`. -/
+lemma mem_image_filter {M ℓ : ℕ} (ν : Fin M → ℝ) (π : {k : Fin M // ν k ≠ 0} → Fin ℓ)
+    (σ : Fin M → Bool) (i : Fin ℓ) :
+    i ∈ (univ.filter (fun k : {k : Fin M // ν k ≠ 0} => σ k.val = true)).image π ↔
+      ∃ k : {k : Fin M // ν k ≠ 0}, σ k.val = true ∧ π k = i := by
+  simp only [mem_image, mem_filter, mem_univ, true_and]
+
+/-- The term `σ` of the mixture, applied to the basis vector `|T⟩` of the adapted basis. -/
+lemma term_eq_coefQ {M ℓ : ℕ} (u : Fin M → Fin ℓ → ℂ) (ν : Fin M → ℝ) (v : Fin ℓ → Fin ℓ → ℂ)
+    (π : {k : Fin M // ν k ≠ 0} → Fin ℓ)
+    (hv : ∀ i j, star (v i) ⬝ᵥ v j = if i = j then 1 else 0) (hπ : Function.Injective π)
+    (hup : ∀ k : {k : Fin M // ν k ≠ 0}, u k = ((√(ν k) : ℝ) : ℂ) • v (π k))
+    (hu0 : ∀ k, ν k = 0 → u k = 0) (hν0 : ∀ k, 0 ≤ ν k) (σ : Fin M → Bool)
+    (T : Finset (Fin ℓ)) :
+    (((∏ k, if σ k then 1 else 1 - ν k : ℝ) : ℂ) * (star (prodSel u σ) ⬝ᵥ bvec v T)) •
+        prodSel u σ = coefQ ν π T σ • bvec v T := by
+  classical
+  obtain ⟨m', s, hs, hσs, hP⟩ := prodSel_eq_slaterAlt u σ
+  unfold coefQ
+  by_cases hsel : ∀ k, σ k = true → ν k ≠ 0
+  · have hsJ : ∀ j, ν (s j) ≠ 0 := fun j =>
+      hsel (s j) ((hσs (s j)).mpr (mem_image_of_mem s (mem_univ j)))
+    set tt : Fin m' → Fin ℓ := fun j => π ⟨s j, hsJ j⟩ with htt_def
+    have htt : Function.Injective tt := fun a b h => hs (congrArg Subtype.val (hπ h))
+    have hP2 : prodSel u σ = ((∏ j, √(ν (s j)) : ℝ) : ℂ) • slat v tt := by
+      rw [hP, slat, Complex.ofReal_prod]
+      have e : (fun j => u (s j)) = fun j => ((√(ν (s j)) : ℝ) : ℂ) • v (tt j) :=
+        funext fun j => hup ⟨s j, hsJ j⟩
+      rw [e, AlternatingMap.map_smul_univ]
+    obtain ⟨ε, hε, hslat⟩ := slat_eq_smul_bvec v tt htt
+    have hmem : ∀ i, i ∈ univ.image tt ↔ ∃ k : {k : Fin M // ν k ≠ 0}, σ k.val = true ∧ π k = i := by
+      intro i
+      simp only [mem_image, mem_univ, true_and]
+      constructor
+      · rintro ⟨j, rfl⟩
+        exact ⟨⟨s j, hsJ j⟩, (hσs (s j)).mpr (mem_image_of_mem s (mem_univ j)), rfl⟩
+      · rintro ⟨k, hk, rfl⟩
+        obtain ⟨j, -, hj⟩ := mem_image.mp ((hσs k.val).mp hk)
+        exact ⟨j, by simp only [htt_def]; congr 1; exact Subtype.ext hj⟩
+    have hiffT : (univ.filter (fun k : {k : Fin M // ν k ≠ 0} => σ k.val = true)).image π = T ↔
+        univ.image tt = T := by
+      simp only [Finset.ext_iff, mem_image_filter, hmem]
+    have hprodR : (∏ k, if σ k then 1 else 1 - ν k) * ∏ j, ν (s j) =
+        ∏ k, if σ k then ν k else 1 - ν k := by
+      have h1 : ∏ j, ν (s j) = ∏ k, if σ k then ν k else 1 := by
+        rw [← Finset.prod_image (fun a _ b _ h => hs h)]
+        have h2 : univ.image s = univ.filter (fun k => σ k = true) := by
+          ext k; simp only [mem_filter, mem_univ, true_and]; exact (hσs k).symm
+        rw [h2, Finset.prod_filter]
+      rw [h1, ← Finset.prod_mul_distrib]
+      exact Finset.prod_congr rfl fun k _ => by cases σ k <;> simp
+    have hcc : ((∏ j, √(ν (s j)) : ℝ) : ℂ) * ((∏ j, √(ν (s j)) : ℝ) : ℂ) = ((∏ j, ν (s j) : ℝ) : ℂ) := by
+      rw [← Complex.ofReal_mul, ← Finset.prod_mul_distrib]
+      congr 1
+      exact Finset.prod_congr rfl fun j _ => Real.mul_self_sqrt (hν0 _)
+    have hsc : star ((∏ j, √(ν (s j)) : ℝ) : ℂ) = ((∏ j, √(ν (s j)) : ℝ) : ℂ) :=
+      Complex.conj_ofReal _
+    rw [hP2, hslat, star_smul, star_smul, smul_dotProduct, smul_dotProduct, bvec_orth hv, smul_smul,
+      smul_smul, hsc]
+    by_cases hT : univ.image tt = T
+    · rw [ite_eq_left hT, ite_eq_left ⟨hsel, hiffT.mpr hT⟩, hT]
+      congr 1
+      simp only [smul_eq_mul, mul_one]
+      calc _ = ((∏ k, if σ k then 1 else 1 - ν k : ℝ) : ℂ) *
+            (((∏ j, √(ν (s j)) : ℝ) : ℂ) * ((∏ j, √(ν (s j)) : ℝ) : ℂ)) * (star ε * ε) := by
+            ring
+        _ = ((∏ k, if σ k then ν k else 1 - ν k : ℝ) : ℂ) := by
+            rw [hcc, hε, mul_one, ← Complex.ofReal_mul, hprodR]
+    · rw [ite_eq_right hT, ite_eq_right (fun h => hT (hiffT.mp h.2))]
+      simp
+  · push Not at hsel
+    obtain ⟨k, hk1, hk2⟩ := hsel
+    obtain ⟨j, -, hj⟩ := mem_image.mp ((hσs k).mp hk1)
+    have hP0 : prodSel u σ = 0 := by
+      rw [hP]
+      exact (slaterAlt ℓ m').map_coord_zero j (by simp only [hj, hu0 k hk2])
+    rw [hP0, smul_zero, ite_eq_right (fun h => h.1 k hk1 hk2), zero_smul]
+
+/-- **The weights match**: `∑_σ (weight of |T⟩⟨T| in term σ) = w_T` for the adapted eigenvalues. -/
+lemma sum_coefQ {M ℓ : ℕ} (ν : Fin M → ℝ) (lam : Fin ℓ → ℝ) (π : {k : Fin M // ν k ≠ 0} → Fin ℓ)
+    (hπ : Function.Injective π) (hlamπ : ∀ k, lam (π k) = ν k)
+    (hlam0 : ∀ i, (∀ k, π k ≠ i) → lam i = 0) (T : Finset (Fin ℓ)) :
+    ∑ σ, coefQ ν π T σ = wT (fun i => (lam i : ℂ)) T := by
+  classical
+  by_cases hT : ∀ i ∈ T, ∃ k, π k = i
+  · set σT : Fin M → Bool := fun k => decide (∃ h : ν k ≠ 0, π ⟨k, h⟩ ∈ T) with hσT
+    have hσTk : ∀ k : {k : Fin M // ν k ≠ 0}, σT k.val = true ↔ π k ∈ T := by
+      intro k
+      simp only [hσT, decide_eq_true_iff]
+      exact ⟨fun ⟨_, h⟩ => h, fun h => ⟨k.2, h⟩⟩
+    have hiff : ∀ σ, ((∀ k, σ k = true → ν k ≠ 0) ∧
+        (univ.filter (fun k : {k : Fin M // ν k ≠ 0} => σ k.val = true)).image π = T) ↔
+          σ = σT := by
+      intro σ
+      constructor
+      · rintro ⟨hsel, himg⟩
+        funext k
+        by_cases hk : ν k = 0
+        · have h1 : σ k = false := by
+            cases h : σ k
+            · rfl
+            · exact absurd hk (hsel k h)
+          have h2 : σT k = false := by
+            simp only [hσT, decide_eq_false_iff_not]
+            rintro ⟨h, -⟩
+            exact h hk
+          rw [h1, h2]
+        · have h3 : σ k = true ↔ π ⟨k, hk⟩ ∈ T := by
+            rw [← himg, mem_image_filter]
+            constructor
+            · intro h; exact ⟨⟨k, hk⟩, h, rfl⟩
+            · rintro ⟨k', hk', hπk⟩
+              have := congrArg Subtype.val (hπ hπk)
+              simp only at this
+              rw [← this]
+              exact hk'
+          exact Bool.eq_iff_iff.mpr (h3.trans (hσTk ⟨k, hk⟩).symm)
+      · rintro rfl
+        refine ⟨fun k hk => ?_, ?_⟩
+        · simp only [hσT, decide_eq_true_iff] at hk
+          exact hk.1
+        · ext i
+          rw [mem_image_filter]
+          constructor
+          · rintro ⟨k, hk, rfl⟩
+            exact (hσTk k).mp hk
+          · intro hi
+            obtain ⟨k, rfl⟩ := hT i hi
+            exact ⟨k, (hσTk k).mpr hi, rfl⟩
+    have hc : ∀ σ, coefQ ν π T σ =
+        if σ = σT then ((∏ k, if σT k then ν k else 1 - ν k : ℝ) : ℂ) else 0 := by
+      intro σ
+      unfold coefQ
+      by_cases h : σ = σT
+      · subst h
+        rw [ite_eq_left ((hiff _).mpr rfl), ite_eq_left rfl]
+      · rw [ite_eq_right (fun h' => h ((hiff σ).mp h')), ite_eq_right h]
+    rw [Finset.sum_congr rfl fun σ _ => hc σ, Finset.sum_ite_eq' univ σT, ite_eq_left (mem_univ _),
+      wT_real]
+    congr 1
+    have hL : ∏ k, (if σT k then ν k else 1 - ν k) =
+        ∏ k : {k : Fin M // ν k ≠ 0}, (if π k ∈ T then ν k else 1 - ν k) := by
+      rw [← Finset.prod_filter_mul_prod_filter_not univ (fun k => ν k ≠ 0)]
+      have h1 : ∏ k ∈ univ.filter (fun k => ¬ ν k ≠ 0), (if σT k then ν k else 1 - ν k) = 1 := by
+        refine Finset.prod_eq_one fun k hk => ?_
+        have hk' : ν k = 0 := by simpa using (mem_filter.mp hk).2
+        have h2 : σT k = false := by
+          simp only [hσT, decide_eq_false_iff_not]
+          rintro ⟨h, -⟩
+          exact h hk'
+        rw [h2]
+        simp [hk']
+      rw [h1, mul_one, Finset.prod_subtype (p := fun k : Fin M => ν k ≠ 0)
+        (univ.filter (fun k => ν k ≠ 0)) (fun k => by simp)]
+      refine Finset.prod_congr rfl fun k _ => ?_
+      by_cases hk : π k ∈ T
+      · rw [ite_eq_left ((hσTk k).mpr hk), ite_eq_left hk]
+      · rw [ite_eq_right (fun h => hk ((hσTk k).mp h)), ite_eq_right hk]
+    have hR : ∏ i, (if i ∈ T then lam i else 1 - lam i) =
+        ∏ k : {k : Fin M // ν k ≠ 0}, (if π k ∈ T then ν k else 1 - ν k) := by
+      rw [← Finset.prod_mul_prod_compl (univ.image π)]
+      have h1 : ∏ i ∈ (univ.image π)ᶜ, (if i ∈ T then lam i else 1 - lam i) = 1 := by
+        refine Finset.prod_eq_one fun i hi => ?_
+        have hi' : ∀ k, π k ≠ i := fun k hk =>
+          (mem_compl.mp hi) (mem_image.mpr ⟨k, mem_univ _, hk⟩)
+        have hiT : i ∉ T := fun h => by
+          obtain ⟨k, hk⟩ := hT i h
+          exact hi' k hk
+        rw [ite_eq_right hiT, hlam0 i hi', sub_zero]
+      rw [h1, mul_one, Finset.prod_image (fun a _ b _ h => hπ h)]
+      exact Finset.prod_congr rfl fun k _ => by rw [hlamπ]
+    rw [hL, hR]
+  · push Not at hT
+    obtain ⟨i0, hi0T, hi0⟩ := hT
+    have h0 : ∀ σ, coefQ ν π T σ = 0 := by
+      intro σ
+      unfold coefQ
+      rw [ite_eq_right]
+      rintro ⟨-, h⟩
+      rw [← h, mem_image_filter] at hi0T
+      obtain ⟨k, -, hk⟩ := hi0T
+      exact hi0 k hk
+    rw [Finset.sum_congr rfl fun σ _ => h0 σ, Finset.sum_const_zero, wT]
+    symm
+    refine Finset.prod_eq_zero (mem_univ i0) ?_
+    rw [ite_eq_left hi0T, hlam0 i0 hi0, Complex.ofReal_zero]
+
+/-- **Reduced states of Slater determinants are quasi-free** (abstract form, paper: proof of
+Lemma `lem:slater`(a)): for orthogonal `u_k` with `‖u_k‖² = ν_k`,
+`∑_σ μ_σ |P_σ⟩⟨P_σ| = ρ[∑_k |u_k⟩⟨u_k|]`, `P_σ = ∏_{σ k} c†(u_k) |0⟩`. -/
+theorem qfState_eq_sum_prodSel {M ℓ : ℕ} (u : Fin M → Fin ℓ → ℂ) (ν : Fin M → ℝ)
+    (hu : ∀ k l, star (u k) ⬝ᵥ u l = if k = l then (ν k : ℂ) else 0) :
+    qfState (Matrix.of fun i j => ∑ k, u k i * star (u k j)) =
+      Matrix.of fun n n' => ∑ σ : Fin M → Bool, ((∏ k, if σ k then 1 else 1 - ν k : ℝ) : ℂ) *
+        (prodSel u σ n * star (prodSel u σ n')) := by
+  classical
+  have hν0 : ∀ k, 0 ≤ ν k := fun k => by
+    have h := hu k k
+    rw [ite_eq_left rfl, AreaLawAux.star_dotProduct_self] at h
+    have h' : AreaLawAux.nsq (u k) = ν k := by exact_mod_cast h
+    rw [← h']
+    exact AreaLawAux.nsq_nonneg _
+  have hu0 : ∀ k, ν k = 0 → u k = 0 := fun k hk => by
+    have h := hu k k
+    rw [ite_eq_left rfl, AreaLawAux.star_dotProduct_self, hk] at h
+    have h' : AreaLawAux.nsq (u k) = 0 := by exact_mod_cast h
+    funext x
+    have h2 := (Finset.sum_eq_zero_iff_of_nonneg (fun x _ => by positivity)).mp h' x (mem_univ x)
+    simpa using h2
+  obtain ⟨v, lam, π, hv, hπ, hup, hlamπ, hlam0⟩ := exists_adapted_basis u ν hu
+  have hCv := adapted_eig u ν v lam π hv hπ hup hu0 hν0 hlamπ hlam0
+  rw [qfState_eq_conj hv (comp_of_orth v hv) hCv]
+  symm
+  refine eq_of_mulVec_bvec hv _ _ fun T => ?_
+  rw [mulVec_sum_rankOne]
+  simp only [term_eq_coefQ u ν v π hv hπ hup hu0 hν0, ← Finset.sum_smul]
+  rw [sum_coefQ ν lam π hπ hlamπ hlam0 T]
+
+end QuasiFreeAux
+
 /-- **Reduced states of Slater determinants are quasi-free** (paper: Lemma `lem:slater`(a), `ρ_A = ρ[C_A]`): for any
 region `R`, relabelled increasingly by `Fin |R|`. -/
 theorem rdmF_eq_qfState {N : ℕ} (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsSymm) (S : Finset (Fin N)) (t : ℝ)
@@ -786,6 +1458,31 @@ theorem rdmF_eq_qfState {N : ℕ} (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsSym
         (fun n : Cfg R.card => fun a : R => n ((R.orderIsoOfFin rfl).symm a))
         (fun n : Cfg R.card => fun a : R => n ((R.orderIsoOfFin rfl).symm a)) =
       qfState ((corrR A S t R).submatrix (fun i => (R.orderIsoOfFin rfl) i) (fun i => (R.orderIsoOfFin rfl) i)) := by
-  sorry
+  obtain ⟨M, Φ, ν, hC, h1, hρ⟩ := rdmF_slater_sum A hA S t R
+  set u : Fin M → Fin R.card → ℂ := fun k i => Φ (((R.orderIsoOfFin rfl) i : R) : Fin N) k
+    with hu_def
+  have hu : ∀ k l, star (u k) ⬝ᵥ u l = if k = l then (ν k : ℂ) else 0 := by
+    intro k l
+    rw [← h1 k l, ← Finset.sum_coe_sort R, ← (R.orderIsoOfFin rfl).toEquiv.sum_comp]
+    simp only [dotProduct, Pi.star_apply, hu_def, OrderIso.coe_toEquiv]
+  have hCu : (corrR A S t R).submatrix (fun i => (R.orderIsoOfFin rfl) i)
+      (fun i => (R.orderIsoOfFin rfl) i) = Matrix.of fun i j => ∑ k, u k i * star (u k j) := by
+    refine Matrix.ext fun i j => ?_
+    simp [corrR, hC, Matrix.mul_apply, conjTranspose_apply, hu_def]
+  have hu' : (fun k i => (fun k x => if x ∈ R then Φ x k else 0) k
+      (((R.orderIsoOfFin rfl) i : R) : Fin N)) = u := by
+    funext k i
+    simp [hu_def]
+  rw [hCu, qfState_eq_sum_prodSel u ν hu]
+  refine Matrix.ext fun n n' => ?_
+  rw [submatrix_apply, hρ, of_apply]
+  refine Finset.sum_congr rfl fun σ _ => ?_
+  have e1 := prodSel_embR R (fun k x => if x ∈ R then Φ x k else 0)
+    (fun k x hx => by simp [hx]) σ n
+  have e2 := prodSel_embR R (fun k x => if x ∈ R then Φ x k else 0)
+    (fun k x hx => by simp [hx]) σ n'
+  rw [hu'] at e1 e2
+  simp only [embR] at e1 e2
+  rw [e1, e2]
 
 end DFL
