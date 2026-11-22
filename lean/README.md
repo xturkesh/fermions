@@ -85,6 +85,7 @@ No `axiom` is introduced anywhere.
 | Lemma `lem:propagation`(b), Corollary `cor:ECinfvol` (propagator form) and Theorem `thm:infvol`(b) (infinite volume: `U^ℤ_q(t)` as the exponential series of the tridiagonal `h^ℤ_q`, i.i.d. charges on `ℤ`; `E sup_t \|U^ℤ_q(t)_{xy}\| ≤ F(\|x-y\|)`, one-particle density, moments, transported charge) | `tendsto_evoZ`, `lintegral_iSup_UZ_le`, `infvol_propagator_of_ldt`, `tendsto_density_one`, `moments_UZ`, `abs_transportM_le`, `transport_tendsto` | `InfVol.lean`, `InfVolTransport.lean` |
 | Theorem `thm:infvol`(e) (bulk intervals `A`: the law of `N_A` in `Ψ^{(M)}(t)` converges to `p_t = E PB(ν(K^ℤ_q(t)\|_A))`, `S_N^{(M)}(t) → H(p_t)`, and `H(p_t) ≤ ½ ln(2πe(2Θ(F) + 4Σ'₁(F)² + 1/12))`) | `KZ`, `KZA`, `pZ`, `tendsto_numDistM`, `tendsto_numberEntropyM`, `numberEntropyZ_le` | `InfVolNumber.lean` |
 | Theorem `thm:infvol`(c) (Lieb–Robinson bound for volume-independent Majorana expansions on `X ⊂ ℤ` and observables localized in `Y`, uniformly in `M`, hence for the `limsup`) | `majListM`, `infvol_LR` | `InfVolLR.lean` |
+| Theorem `thm:infvol`(d) (bulk intervals: `S^{(M)}_q(t) → S^ℤ_q(t) = ∑_i h(ν_i(K^ℤ_q(t)\|_A))` uniformly in `q`; convergence of `S_G^{(M)}(t)`; `E sup_t S^ℤ_q(t) ≤ 4 ln 2 Θ(F)`; half-infinite regions `[-M, m]`: `E S ≤ 2 ln 2 Θ(F)` for every `M`) | `entM`, `entZ`, `tendstoUniformly_entM`, `tendsto_SGM`, `lintegral_iSup_entZ_le`, `areaLaw_halfInfinite` | `InfVolArea.lean` |
 | Proposition `prop:nocritical`(i),(ii),(iv) (hypotheses of Furstenberg's theorem; no critical energies) | `transferT_mul_inv`, `transferT_commutator`, `transferT_not_commute`, `unipotent_pow_unbounded`, `no_finite_invariant_lines` | `Furstenberg.lean` |
 | Remark `rem:randomwalk` (one charge of the standard ℤ₂ LGT in a random-walk potential) | `Hstd_dual_oneP`, `partialSum_bijective` | `RandomWalk.lean` |
 | Proposition `prop:dimerlaw` (dimer sector law; Definition `def:dimerstate`, for the CDW dimer state) | `dimerInit_dual`, `card_isDimer`, `sector_average_dimer` | `Dimer.lean` |
@@ -108,14 +109,14 @@ No `axiom` is introduced anywhere.
 
 ## Verification
 
-`lake build` compiles all 68 modules (about 35,200 lines) without `sorry`; there is no `axiom`,
+`lake build` compiles all 69 modules (about 35,800 lines) without `sorry`; there is no `axiom`,
 `admit`, `native_decide` or `implemented_by` in the library. The script `CheckAxioms.lean` walks
 through every theorem declared in a `DFL` module (including private helper lemmas) and collects the
 axioms it depends on:
 
 ```
 lake env lean CheckAxioms.lean
-# checked 3828 theorems in DFL modules; with non-standard axioms: 0
+# checked 3879 theorems in DFL modules; with non-standard axioms: 0
 ```
 
 i.e. every theorem depends only on Lean's standard axioms `propext`, `Classical.choice` and
@@ -176,8 +177,7 @@ lake env lean Check.lean
   dimer (`thm:dimer`(b),(c), and (d) for `1/2 < p ≤ 1`), and the percolation estimate of Li–Liang
   used in `prop:cluster`(c) (entering `cluster_avg` as the probability that the cluster leaves the
   region).
-- Infinite-volume statements beyond the one-body propagator, the Lieb–Robinson bound and the number entropy:
-  `thm:infvol`(a),(d) (the quasi-free limit state and the area-law limits),
+- `thm:infvol`(a) (the quasi-free limit state of local gauge-invariant observables),
   `cor:ECinfvol` for the full correlator `Q^X` (Borel functional calculus on `ℓ²(X)`; the
   propagator bound is formalized), part (iii) of `prop:dimerimbalance` and the density of states of
   the dimer model (`lem:dimerdos`), which need spectral measures on `ℓ²(ℤ)`; `prop:LR`(d) (no
