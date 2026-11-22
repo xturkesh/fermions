@@ -82,8 +82,9 @@ $\Z$: \texttt{tendsto\_evoZ}, \texttt{lintegral\_iSup\_UZ\_le}, \texttt{infvol\_
 \texttt{NumberEntropyBulk}); \cref{thm:infvol}(c), uniformly in $M$: \texttt{infvol\_LR} (\texttt{InfVolLR});
 \cref{thm:infvol}(d): \texttt{tendstoUniformly\_entM}, \texttt{tendsto\_SGM}, \texttt{lintegral\_iSup\_entZ\_le},
 \texttt{areaLaw\_halfInfinite} (\texttt{InfVolArea}, with \texttt{lgt\_areaLaw\_bulk} of \texttt{SlaterBulk}).
-\item \cref{cor:ECinfvol} for $X=\Z$ and the full correlator $Q^\Z$, with $f(A_\Z)$ defined by the continuous functional
-calculus on $\ell^2(\Z)$: \texttt{exists\_isAZ}, \texttt{lintegral\_corrQZ\_le} (\texttt{ECInfVolQ}).
+\item \cref{cor:ECinfvol} for the full correlator $Q^X$, $X\in\{\Z,\N\}$, with $f(A_X)$ defined by the continuous
+functional calculus on $\ell^2(X)$: \texttt{exists\_isAZ}, \texttt{lintegral\_corrQZ\_le}, \texttt{exists\_isAN},
+\texttt{lintegral\_corrQN\_le} (\texttt{ECInfVolQ}, \texttt{ECInfVolQN}).
 \item \cref{prop:nocritical}(i),(ii),(iv): \texttt{unipotent\_pow\_unbounded},
 \texttt{no\_finite\_invariant\_lines}, \texttt{transferT\_commutator} (\texttt{Furstenberg}).
 \item \cref{thm:transport}(a)--(d), with the constants of the text: \texttt{dressed\_anticomm\_t},
@@ -188,7 +189,7 @@ the transport bounds of \cite{JSBS2003} behind \cref{thm:dimer}(b),(c) and (d) f
 \cite{LiL2022}, which enters \texttt{cluster\_avg} as the probability that the cluster leaves the
 region;
 \item the infinite-volume statements other than those listed above: \cref{thm:infvol}(a),
-\cref{cor:ECinfvol} for $X=\N$, \cref{prop:dimerimbalance}(iii) and \cref{lem:dimerdos};
+\cref{prop:dimerimbalance}(iii) and \cref{lem:dimerdos};
 \item \cref{lem:quasifree}(a);
 \item remarks, conjectures and numerics.
 \end{itemize}
