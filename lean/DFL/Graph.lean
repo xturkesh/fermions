@@ -329,6 +329,310 @@ theorem dGamma_hq (J h : ℝ) (q : Cfg N) :
       (-J) • ∑ e, G.hopE e + (2 * h) • diagonal (fun n => ∑ i, sgn (q i) * occ (n i)) := by
   rw [FinGraph.hq, dGamma_add, dGamma_smul, dGamma_smul, dGamma_adj, dGamma_diagonal]
 
+/-! ### The intertwiner `V` -/
+
+/-- The (real, rectangular) intertwiner `V |n, q⟩ = ∑_{x : n + ∂x = q} |n, x⟩`: the entry
+`((n, x), b)` is `1` iff `b = (n, n + ∂x)`. -/
+private def Vmat : Matrix (Cfg N × Cfg M) (Cfg N × Cfg N) ℝ :=
+  fun a b => if b = (a.1, a.1 + G.bdry a.2) then 1 else 0
+
+/-- Right multiplication by `V`. -/
+private lemma mul_Vmat_apply (A : Matrix (Cfg N × Cfg M) (Cfg N × Cfg M) ℝ)
+    (a : Cfg N × Cfg M) (n0 q : Cfg N) :
+    (A * G.Vmat) a (n0, q) = ∑ x1, if q = n0 + G.bdry x1 then A a (n0, x1) else 0 := by
+  rw [Matrix.mul_apply, Fintype.sum_prod_type]
+  simp only [Vmat, Prod.mk.injEq, mul_ite, mul_one, mul_zero]
+  rw [Finset.sum_eq_single n0]
+  · simp
+  · intro n1 _ hn1
+    apply Finset.sum_eq_zero
+    intro x1 _
+    rw [ite_eq_right]
+    rintro ⟨h1, -⟩
+    exact hn1 h1.symm
+  · simp
+
+/-- Left multiplication by `V`. -/
+private lemma Vmat_mul_apply (B : Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℝ) (n : Cfg N)
+    (x : Cfg M) (b : Cfg N × Cfg N) :
+    (G.Vmat * B) (n, x) b = B (n, n + G.bdry x) b := by
+  rw [Matrix.mul_apply]
+  simp only [Vmat, ite_mul, one_mul, zero_mul]
+  rw [Finset.sum_ite_eq']
+  simp
+
+/-- The hopping terms intertwine with `V`: a hop along `e` maps the fibre `n + ∂x = q` onto the
+fibre `n' + ∂x = q` by `x ↦ x + δ_e`. -/
+private lemma hop_Vmat (e : Fin M) :
+    (G.hopE e ⊗ₖ G.szE e) * G.Vmat =
+      G.Vmat * (G.hopE e ⊗ₖ (1 : Matrix (Cfg N) (Cfg N) ℝ)) := by
+  ext ⟨n, x⟩ ⟨n0, q⟩
+  rw [mul_Vmat_apply, Vmat_mul_apply, kronecker_apply, Matrix.one_apply]
+  simp only [kronecker_apply, szE_apply, mul_ite, mul_one, mul_zero]
+  rw [Finset.sum_eq_single (x + Pi.single e 1)]
+  · rw [ite_eq_left (rfl : x + Pi.single e 1 = x + Pi.single e 1)]
+    by_cases hn : G.hopE e n n0 = 0
+    · simp [hn]
+    · have hs := G.hopE_support e hn
+      subst hs
+      rw [bdry_add]
+      have e1 : n0 + (G.bdry x + G.bdry (Pi.single e 1)) =
+          n0 + G.bdry (Pi.single e 1) + G.bdry x := by abel
+      rw [e1]
+      by_cases hq : q = n0 + G.bdry (Pi.single e 1) + G.bdry x
+      · rw [ite_eq_left hq, ite_eq_left hq.symm]
+      · rw [ite_eq_right hq, ite_eq_right (Ne.symm hq)]
+  · intro x1 _ hx1
+    simp [hx1]
+  · simp
+
+/-- The star terms intertwine with `V`: on the fibre `n + ∂x = q`,
+`∏_{e ∋ i} σˣ_e = sgn(q_i + n_i)`. -/
+private lemma star_Vmat (i : Fin N) :
+    ((1 : Matrix (Cfg N) (Cfg N) ℝ) ⊗ₖ G.star i) * G.Vmat =
+      G.Vmat * diagonal (fun b : Cfg N × Cfg N => sgn (b.2 i + b.1 i)) := by
+  ext ⟨n, x⟩ ⟨n0, q⟩
+  rw [mul_Vmat_apply, Vmat_mul_apply, one_kron_star]
+  simp only [diagonal_apply, Prod.mk.injEq]
+  rw [Finset.sum_eq_single x]
+  · by_cases hn : n = n0
+    · subst n0
+      by_cases hq : q = n + G.bdry x
+      · subst q
+        simp only [and_self, ite_true, Pi.add_apply]
+        congr 1
+        rw [add_comm (n i), add_assoc, z2_add_self, add_zero]
+      · simp [hq, Ne.symm hq]
+    · simp [hn]
+  · intro x1 _ hx1
+    simp [Ne.symm hx1]
+  · simp
+
+/-- The dual Hamiltonian on (occupations × charges), before the identification of its blocks
+with the sector Hamiltonians. -/
+private def dualHam (J h : ℝ) : Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℝ :=
+  (-J) • ∑ e, G.hopE e ⊗ₖ (1 : Matrix (Cfg N) (Cfg N) ℝ) -
+    h • ∑ i, diagonal (fun b : Cfg N × Cfg N => sgn (b.2 i + b.1 i))
+
+/-- **Intertwining**: `H V = V H_dual`. -/
+private lemma ham_mul_Vmat (J h : ℝ) : G.ham J h * G.Vmat = G.Vmat * G.dualHam J h := by
+  simp only [ham, dualHam, Matrix.sub_mul, Matrix.mul_sub, Matrix.smul_mul, Matrix.mul_smul,
+    Matrix.sum_mul, Matrix.mul_sum, hop_Vmat, star_Vmat]
+
+/-- The dual Hamiltonian is block diagonal, with the sector Hamiltonians `dΓ(h_q) - h ∑ q_i` as
+blocks. -/
+private lemma dualHam_eq (J h : ℝ) :
+    G.dualHam J h = blockDiagonal (fun q => dGamma (G.hq J h q) -
+      (h * ∑ i, sgn (q i)) • (1 : Matrix (Cfg N) (Cfg N) ℝ)) := by
+  ext ⟨n, q⟩ ⟨n0, q0⟩
+  rw [blockDiagonal_apply, dGamma_hq]
+  simp only [dualHam, Matrix.sub_apply, Matrix.add_apply, Matrix.smul_apply, Matrix.sum_apply,
+    kronecker_apply, diagonal_apply, Matrix.one_apply, Prod.mk.injEq, smul_eq_mul]
+  by_cases hq : q = q0
+  · subst q0
+    by_cases hn : n = n0
+    · subst n0
+      simp only [and_self, ite_true, mul_one]
+      have e : ∀ i, sgn (q i + n i) = sgn (q i) - 2 * (sgn (q i) * occ (n i)) := by
+        intro i; rw [sgn_add, sgn_eq_one_sub_two_occ (n i)]; ring
+      simp only [e, Finset.sum_sub_distrib, ← Finset.mul_sum]
+      ring
+    · simp [hn]
+  · simp [hq]
+
+/-! ### Admissible pairs -/
+
+/-- Indicator of the admissible pairs `(n, q)`, i.e. `q ∈ n + im ∂`. -/
+private def Pmat : Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℝ :=
+  diagonal (fun b => if b.2 ∈ G.sectors b.1 then 1 else 0)
+
+/-- Changing the occupations by a boundary does not change the reachable sectors. -/
+private lemma sectors_add_bdry (n : Cfg N) (y : Cfg M) :
+    G.sectors (n + G.bdry y) = G.sectors n := by
+  ext q
+  simp only [sectors, Finset.mem_image, Finset.mem_univ, true_and]
+  constructor
+  · rintro ⟨x, rfl⟩
+    exact ⟨y + x, by rw [bdry_add, add_assoc]⟩
+  · rintro ⟨x, rfl⟩
+    exact ⟨x - y, by rw [bdry_sub]; abel⟩
+
+/-- The hopping terms preserve the admissible pairs. -/
+private lemma hop_comm_Pmat (e : Fin M) :
+    (G.hopE e ⊗ₖ (1 : Matrix (Cfg N) (Cfg N) ℝ)) * G.Pmat =
+      G.Pmat * (G.hopE e ⊗ₖ (1 : Matrix (Cfg N) (Cfg N) ℝ)) := by
+  ext ⟨n, q⟩ ⟨n0, q0⟩
+  rw [Pmat, mul_diagonal, diagonal_mul, kronecker_apply, Matrix.one_apply]
+  by_cases hn : G.hopE e n n0 = 0
+  · simp [hn]
+  · have hs := G.hopE_support e hn
+    subst hs
+    by_cases hq : q = q0
+    · subst q0
+      simp only [sectors_add_bdry]
+      ring
+    · simp [hq]
+
+/-- Diagonal matrices commute with `P`. -/
+private lemma diagonal_comm_Pmat (f : Cfg N × Cfg N → ℝ) :
+    diagonal f * G.Pmat = G.Pmat * diagonal f := by
+  rw [Pmat, diagonal_mul_diagonal, diagonal_mul_diagonal]
+  congr 1
+  funext b
+  ring
+
+/-- The dual Hamiltonian preserves the admissible pairs. -/
+private lemma dualHam_comm_Pmat (J h : ℝ) :
+    G.dualHam J h * G.Pmat = G.Pmat * G.dualHam J h := by
+  simp only [dualHam, Matrix.sub_mul, Matrix.mul_sub, Matrix.smul_mul, Matrix.mul_smul,
+    Matrix.sum_mul, Matrix.mul_sum, hop_comm_Pmat, diagonal_comm_Pmat]
+
+/-! ### Exponentials of intertwined matrices -/
+
+/-- The exponential series of a complex matrix. -/
+private lemma hasSum_exp_matrix {ι : Type*} [Fintype ι] [DecidableEq ι] (A : Matrix ι ι ℂ) :
+    HasSum (fun k : ℕ => ((k.factorial : ℂ)⁻¹) • A ^ k) (NormedSpace.exp A) := by
+  open scoped Matrix.Norms.Operator in exact NormedSpace.exp_series_hasSum_exp' A
+
+/-- If `A W = W B` then `exp A W = W exp B` (for a rectangular `W`). -/
+private lemma exp_mul_eq_mul_exp {ι κ : Type*} [Fintype ι] [DecidableEq ι] [Fintype κ]
+    [DecidableEq κ] {A : Matrix ι ι ℂ} {B : Matrix κ κ ℂ} {W : Matrix ι κ ℂ}
+    (h : A * W = W * B) : NormedSpace.exp A * W = W * NormedSpace.exp B := by
+  have hpow : ∀ k : ℕ, A ^ k * W = W * B ^ k := by
+    intro k
+    induction k with
+    | zero => simp
+    | succ k ih =>
+      rw [pow_succ, pow_succ, Matrix.mul_assoc, h, ← Matrix.mul_assoc, ih, Matrix.mul_assoc]
+  have h1 := (hasSum_exp_matrix A).map (Matrix.addMonoidHomMulRight W)
+    (continuous_id.matrix_mul continuous_const)
+  have h2 := (hasSum_exp_matrix B).map (Matrix.addMonoidHomMulLeft W)
+    (continuous_const.matrix_mul continuous_id)
+  have e : (⇑(Matrix.addMonoidHomMulRight W) ∘ fun k : ℕ => ((k.factorial : ℂ)⁻¹) • A ^ k) =
+      (⇑(Matrix.addMonoidHomMulLeft W) ∘ fun k : ℕ => ((k.factorial : ℂ)⁻¹) • B ^ k) := by
+    funext k
+    simp only [Function.comp_apply, Matrix.addMonoidHomMulRight_apply,
+      Matrix.addMonoidHomMulLeft_apply, Matrix.smul_mul, Matrix.mul_smul, hpow]
+  rw [e] at h1
+  exact h1.unique h2
+
+/-- If `A W = W B` (real matrices) then `e^{-itA} W = W e^{-itB}`. -/
+private lemma evo_mul_eq_mul_evo {ι κ : Type*} [Fintype ι] [DecidableEq ι] [Fintype κ]
+    [DecidableEq κ] {A : Matrix ι ι ℝ} {B : Matrix κ κ ℝ} {W : Matrix ι κ ℝ}
+    (h : A * W = W * B) (t : ℝ) :
+    evo A t * W.map (fun r => (r : ℂ)) = W.map (fun r => (r : ℂ)) * evo B t := by
+  unfold evo
+  apply exp_mul_eq_mul_exp
+  rw [Matrix.smul_mul, Matrix.mul_smul]
+  congr 1
+  have := congrArg (fun X => X.map Complex.ofRealHom) h
+  simp only [Matrix.map_mul] at this
+  exact this
+
+/-! ### States and expectations -/
+
+/-- Applying the complexified `V`. -/
+private lemma Vc_mulVec_apply (φ : Cfg N × Cfg N → ℂ) (n : Cfg N) (x : Cfg M) :
+    (G.Vmat.map (fun r => (r : ℂ)) *ᵥ φ) (n, x) = φ (n, n + G.bdry x) := by
+  simp only [mulVec, dotProduct, Matrix.map_apply, Vmat]
+  rw [Finset.sum_eq_single (n, n + G.bdry x)]
+  · simp
+  · intro b _ hb
+    simp [hb]
+  · simp
+
+/-- Applying the complexified `P`. -/
+private lemma Pc_mulVec_apply (φ : Cfg N × Cfg N → ℂ) (b : Cfg N × Cfg N) :
+    (G.Pmat.map (fun r => (r : ℂ)) *ᵥ φ) b = if b.2 ∈ G.sectors b.1 then φ b else 0 := by
+  rw [Pmat, diagonal_map (by simp), mulVec_diagonal]
+  split_ifs <;> simp
+
+/-- Matrix–vector product with a block-diagonal matrix, block by block. -/
+private lemma blockDiagonal_mulVec_apply {m o : Type*} [Fintype m] [Fintype o] [DecidableEq o]
+    (Mb : o → Matrix m m ℂ) (v : m × o → ℂ) (i : m) (k : o) :
+    (blockDiagonal Mb *ᵥ v) (i, k) = (Mb k *ᵥ fun j => v (j, k)) i := by
+  simp only [mulVec, dotProduct, blockDiagonal_apply', Fintype.sum_prod_type]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  simp [ite_mul]
+
+/-- Multiplying the state by `z` multiplies expectations by `|z|²`. -/
+private lemma expect_smul {ι : Type*} [Fintype ι] (Mx : Matrix ι ι ℂ) (z : ℂ) (v : ι → ℂ) :
+    expect Mx (z • v) = (Star.star z * z) * expect Mx v := by
+  unfold expect
+  rw [mulVec_smul, star_smul, smul_dotProduct, dotProduct_smul, smul_eq_mul, smul_eq_mul]
+  ring
+
+/-- Expectation of a (complexified) real diagonal observable. -/
+private lemma expect_cplx_diagonal {ι : Type*} [Fintype ι] [DecidableEq ι] (f : ι → ℝ)
+    (v : ι → ℂ) : expect (cplx (diagonal f)) v = ∑ a, Star.star (v a) * ((f a : ℂ) * v a) := by
+  unfold expect cplx
+  rw [diagonal_map (by simp)]
+  simp only [dotProduct, Pi.star_apply, mulVec_diagonal]
+
+/-- `|2^{-M/2}|² = 2^{-M}`. -/
+private lemma norm_sq_prefactor :
+    Star.star ((((Real.sqrt 2) ^ M : ℝ) : ℂ)⁻¹) * (((Real.sqrt 2) ^ M : ℝ) : ℂ)⁻¹ =
+      (1 / 2 ^ M : ℂ) := by
+  rw [star_inv₀, Complex.star_def, Complex.conj_ofReal, ← mul_inv, ← Complex.ofReal_mul,
+    ← mul_pow, Real.mul_self_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
+  push_cast
+  ring
+
+/-- The number `|ker ∂|` of edge configurations with zero boundary. -/
+private def kerCard : ℕ := (univ.filter (fun x : Cfg M => G.bdry x = 0)).card
+
+/-- All nonempty fibres of `x ↦ n + ∂x` have `|ker ∂|` elements. -/
+private lemma fibre_card {n q : Cfg N} (hq : q ∈ G.sectors n) :
+    (univ.filter (fun x : Cfg M => n + G.bdry x = q)).card = G.kerCard := by
+  obtain ⟨x0, -, rfl⟩ := Finset.mem_image.1 hq
+  have h1 : univ.filter (fun x : Cfg M => n + G.bdry x = n + G.bdry x0) =
+      univ.filter (fun x => G.bdryHom x = G.bdryHom x0) := by
+    apply Finset.filter_congr
+    intro x _
+    simp [bdryHom]
+  have h2 : univ.filter (fun x : Cfg M => G.bdry x = 0) =
+      univ.filter (fun x => G.bdryHom x = G.bdryHom 0) := by
+    apply Finset.filter_congr
+    intro x _
+    simp [bdryHom, bdry_zero]
+  rw [kerCard, h1, h2]
+  exact AddMonoidHom.card_fiber_eq_of_mem_range _ ⟨x0, rfl⟩ ⟨0, rfl⟩
+
+/-- `|n + im ∂| · |ker ∂| = 2^M`: the fibres partition the edge configurations. -/
+private lemma card_sectors_mul_kerCard (n : Cfg N) :
+    (G.sectors n).card * G.kerCard = 2 ^ M := by
+  have h := Finset.card_eq_sum_card_image (fun x : Cfg M => n + G.bdry x) univ
+  rw [Finset.card_univ, Fintype.card_fun, ZMod.card, Fintype.card_fin,
+    show univ.image (fun x : Cfg M => n + G.bdry x) = G.sectors n from rfl] at h
+  rw [h, Finset.sum_congr rfl (fun q hq => G.fibre_card hq), Finset.sum_const, smul_eq_mul]
+
+/-- Expectation of `D ⊗ 1` in the state `V φ`, for `φ` supported on the admissible pairs. -/
+private lemma expect_Vc (d : Cfg N → ℝ) (φ : Cfg N × Cfg N → ℂ)
+    (hsupp : ∀ n' q, q ∉ G.sectors n' → φ (n', q) = 0) :
+    expect (cplx (diagonal d ⊗ₖ (1 : Matrix (Cfg M) (Cfg M) ℝ)))
+        (G.Vmat.map (fun r => (r : ℂ)) *ᵥ φ) =
+      (G.kerCard : ℂ) * ∑ q, ∑ n', Star.star (φ (n', q)) * ((d n' : ℂ) * φ (n', q)) := by
+  have hD : diagonal d ⊗ₖ (1 : Matrix (Cfg M) (Cfg M) ℝ) =
+      diagonal (fun p : Cfg N × Cfg M => d p.1) := by
+    rw [← diagonal_one, diagonal_kronecker_diagonal]
+    simp
+  rw [hD, expect_cplx_diagonal, Fintype.sum_prod_type]
+  conv_rhs => rw [Finset.sum_comm, Finset.mul_sum]
+  refine Finset.sum_congr rfl (fun n' _ => ?_)
+  simp only [Vc_mulVec_apply]
+  have hcomp : ∑ x : Cfg M,
+        Star.star (φ (n', n' + G.bdry x)) * ((d n' : ℂ) * φ (n', n' + G.bdry x)) =
+      ∑ q ∈ G.sectors n', (univ.filter (fun x : Cfg M => n' + G.bdry x = q)).card •
+        (Star.star (φ (n', q)) * ((d n' : ℂ) * φ (n', q))) :=
+    Finset.sum_comp (fun q => Star.star (φ (n', q)) * ((d n' : ℂ) * φ (n', q)))
+      (fun x => n' + G.bdry x)
+  rw [hcomp, Finset.mul_sum, ← Finset.sum_subset (Finset.subset_univ (G.sectors n'))]
+  · refine Finset.sum_congr rfl (fun q hq => ?_)
+    rw [G.fibre_card hq, nsmul_eq_mul]
+  · intro q _ hq
+    rw [hsupp n' q hq]
+    simp
+
 /-- **Exact sector averaging on any graph** (paper: Theorem `thm:2dmap`, `σᶻ`-polarized gauge
 states): for Fock matter `|n⟩` and every matter observable `D` diagonal in the occupations, at every
 time the LGT expectation is the uniform average over the reachable charge sectors `q ∈ n + im ∂` of
@@ -338,7 +642,82 @@ theorem sector_average_matter (J h : ℝ) (n : Cfg N) (d : Cfg N → ℝ) (t : �
         (evo (G.ham J h) t *ᵥ G.initZ (Pi.single n 1)) =
       (1 / ((G.sectors n).card : ℂ)) * ∑ q ∈ G.sectors n,
         expect (cplx (diagonal d)) (evo (dGamma (G.hq J h q)) t *ᵥ Pi.single n 1) := by
-  sorry
+  -- the dual initial state `w = ∑_{q ∈ n + im ∂} |n, q⟩` and its evolution `φ`
+  set w : Cfg N × Cfg N → ℂ :=
+    fun b => if b.2 ∈ G.sectors n then (Pi.single n 1 : Cfg N → ℂ) b.1 else 0 with hw
+  set φ : Cfg N × Cfg N → ℂ := evo (G.dualHam J h) t *ᵥ w with hφ
+  -- the LGT initial state is `2^{-M/2} V w`
+  have hinit : G.initZ (Pi.single n 1) =
+      (((Real.sqrt 2) ^ M : ℝ) : ℂ)⁻¹ • (G.Vmat.map (fun r => (r : ℂ)) *ᵥ w) := by
+    funext ⟨n', x⟩
+    rw [Pi.smul_apply, Vc_mulVec_apply, smul_eq_mul]
+    simp only [initZ, hw]
+    by_cases hn : n' = n
+    · subst n'
+      have hmem : n + G.bdry x ∈ G.sectors n := Finset.mem_image_of_mem _ (Finset.mem_univ x)
+      rw [ite_eq_left hmem]
+    · simp [hn]
+  -- the LGT state at time `t` is `2^{-M/2} V φ`
+  have hstate : evo (G.ham J h) t *ᵥ G.initZ (Pi.single n 1) =
+      (((Real.sqrt 2) ^ M : ℝ) : ℂ)⁻¹ • (G.Vmat.map (fun r => (r : ℂ)) *ᵥ φ) := by
+    rw [hinit, mulVec_smul, mulVec_mulVec, evo_mul_eq_mul_evo (G.ham_mul_Vmat J h) t,
+      ← mulVec_mulVec]
+  -- `φ` is supported on the admissible pairs
+  have hsupp : ∀ n' q, q ∉ G.sectors n' → φ (n', q) = 0 := by
+    have hPw : G.Pmat.map (fun r => (r : ℂ)) *ᵥ w = w := by
+      funext ⟨n', q⟩
+      rw [Pc_mulVec_apply]
+      simp only [hw]
+      by_cases hn : n' = n
+      · subst n'
+        split_ifs <;> rfl
+      · simp [hn]
+    have hPφ : G.Pmat.map (fun r => (r : ℂ)) *ᵥ φ = φ := by
+      rw [hφ, mulVec_mulVec, ← evo_mul_eq_mul_evo (G.dualHam_comm_Pmat J h) t, ← mulVec_mulVec,
+        hPw]
+    intro n' q hq
+    rw [← hPφ, Pc_mulVec_apply, ite_eq_right hq]
+  -- `φ` in terms of the sector evolutions
+  have hφq : ∀ n' q, φ (n', q) = if q ∈ G.sectors n then
+      (evo (dGamma (G.hq J h q) - (h * ∑ i, sgn (q i)) • (1 : Matrix (Cfg N) (Cfg N) ℝ)) t *ᵥ
+        Pi.single n 1) n' else 0 := by
+    intro n' q
+    rw [hφ, dualHam_eq, evo_blockDiagonal]
+    simp only [blockDiagonal_mulVec_apply]
+    split_ifs with hq
+    · have h1 : (fun j => w (j, q)) = Pi.single n 1 := by
+        funext j
+        simp [hw, hq]
+      rw [h1]
+    · have h0 : (fun j => w (j, q)) = 0 := by
+        funext j
+        simp [hw, hq]
+      rw [h0, mulVec_zero]
+      rfl
+  have hsum : ∑ q, ∑ n', Star.star (φ (n', q)) * ((d n' : ℂ) * φ (n', q)) =
+      ∑ q ∈ G.sectors n,
+        expect (cplx (diagonal d)) (evo (dGamma (G.hq J h q)) t *ᵥ Pi.single n 1) := by
+    rw [← Finset.sum_subset (Finset.subset_univ (G.sectors n))]
+    · refine Finset.sum_congr rfl (fun q hq => ?_)
+      rw [← expect_evo_sub_smul_one (dGamma (G.hq J h q)) (h * ∑ i, sgn (q i)),
+        expect_cplx_diagonal]
+      refine Finset.sum_congr rfl (fun n' _ => ?_)
+      rw [hφq, ite_eq_left hq]
+    · intro q _ hq
+      apply Finset.sum_eq_zero
+      intro n' _
+      rw [hφq, ite_eq_right hq]
+      simp
+  rw [hstate, expect_smul, norm_sq_prefactor, G.expect_Vc d φ hsupp, hsum, ← mul_assoc]
+  congr 1
+  -- the prefactor: `2^{-M} |ker ∂| = 1 / |n + im ∂|`
+  have hcard : ((G.sectors n).card : ℂ) * (G.kerCard : ℂ) = 2 ^ M := by
+    exact_mod_cast G.card_sectors_mul_kerCard n
+  have h2 : ((G.sectors n).card : ℂ) * (G.kerCard : ℂ) ≠ 0 := by
+    rw [hcard]
+    exact pow_ne_zero _ two_ne_zero
+  have hK : (G.kerCard : ℂ) ≠ 0 := right_ne_zero_of_mul h2
+  rw [← hcard, one_div, mul_inv, mul_assoc, inv_mul_cancel₀ hK, mul_one, one_div]
 
 end FinGraph
 

@@ -57,13 +57,16 @@ lemma cplx_mul' {ι : Type*} [Fintype ι] [DecidableEq ι] (A B : Matrix ι ι �
     cplx (A * B) = cplx A * cplx B := by
   ext i j; simp [cplx, Matrix.mul_apply]
 
+/-- The conjugate transpose of a complexified real matrix is its transpose. -/
 lemma cplx_conjTranspose' {ι : Type*} [Fintype ι] [DecidableEq ι] (A : Matrix ι ι ℝ) :
     (cplx A)ᴴ = cplx Aᵀ := by
   ext i j; simp [cplx, Matrix.conjTranspose_apply]
 
+/-- `(c_x)† = c_x†` for the complexified operators. -/
 lemma cplx_ann_conjTranspose (x : Fin N) : (cplx (ann x))ᴴ = cplx (cre x) := by
   rw [cplx_conjTranspose']; rfl
 
+/-- `(c_x†)† = c_x` for the complexified operators. -/
 lemma cplx_cre_conjTranspose (x : Fin N) : (cplx (cre x))ᴴ = cplx (ann x) := by
   rw [cplx_conjTranspose']; rfl
 
@@ -80,8 +83,6 @@ def crLin : (Fin N → ℂ) →ₗ[ℂ] Matrix (Cfg N) (Cfg N) ℂ where
   toFun := crOp
   map_add' v w := by simp [crOp, add_smul, Finset.sum_add_distrib]
   map_smul' c w := by simp [crOp, Finset.smul_sum, smul_smul]
-
-lemma crLin_apply (w : Fin N → ℂ) : crLin w = crOp w := rfl
 
 /-- `c†(w)² = 0`. -/
 lemma crOp_mul_self (w : Fin N → ℂ) : crOp w * crOp w = 0 := by
@@ -120,6 +121,7 @@ def slaterAlt (N M : ℕ) : (Fin N → ℂ) [⋀^Fin M]→ₗ[ℂ] (Cfg N → �
   ((vacLin (N := N)).comp (crAlg (N := N)).toLinearMap).compAlternatingMap
     (ExteriorAlgebra.ιMulti ℂ M)
 
+/-- `slaterAlt` is the ordered product of creation operators applied to the vacuum. -/
 lemma slaterAlt_apply {M : ℕ} (w : Fin M → Fin N → ℂ) :
     slaterAlt N M w = (List.ofFn fun k => crOp (w k)).prod *ᵥ fockVec ∅ := by
   simp only [slaterAlt, LinearMap.compAlternatingMap_apply, LinearMap.comp_apply,
@@ -218,42 +220,58 @@ def nsq {α : Type*} [Fintype α] (v : α → ℂ) : ℝ := ∑ a, ‖v a‖ ^ 2
 /-- `ℓ²` norm of a vector. -/
 def l2 {α : Type*} [Fintype α] (v : α → ℂ) : ℝ := √(nsq v)
 
+/-- The squared norm is nonnegative. -/
 lemma nsq_nonneg {α : Type*} [Fintype α] (v : α → ℂ) : 0 ≤ nsq v :=
   Finset.sum_nonneg fun _ _ => by positivity
 
+/-- The norm is nonnegative. -/
 lemma l2_nonneg {α : Type*} [Fintype α] (v : α → ℂ) : 0 ≤ l2 v := Real.sqrt_nonneg _
 
+/-- `⟨v, v⟩ = ‖v‖²`. -/
 lemma star_dotProduct_self {α : Type*} [Fintype α] (v : α → ℂ) :
     star v ⬝ᵥ v = ((nsq v : ℝ) : ℂ) := by
   simp only [dotProduct, Pi.star_apply, nsq, Complex.ofReal_sum, Complex.ofReal_pow]
   refine Finset.sum_congr rfl fun a _ => ?_
   rw [Complex.star_def, Complex.conj_mul']
 
+/-- `⟨Mv, Mv⟩ = ⟨v, M†M v⟩`. -/
 lemma star_mulVec_dotProduct {α : Type*} [Fintype α] (M : Matrix α α ℂ) (v : α → ℂ) :
     star (M *ᵥ v) ⬝ᵥ (M *ᵥ v) = star v ⬝ᵥ ((Mᴴ * M) *ᵥ v) := by
   rw [Matrix.star_mulVec, Matrix.dotProduct_mulVec (star v ᵥ* Mᴴ) M v, Matrix.vecMul_vecMul,
     Matrix.dotProduct_mulVec (star v) (Mᴴ * M) v]
 
+/-- Unitary matrices preserve the norm. -/
 lemma nsq_mulVec_unitary {α : Type*} [Fintype α] [DecidableEq α] (W : Matrix α α ℂ) (hW : Wᴴ * W = 1)
     (v : α → ℂ) : nsq (W *ᵥ v) = nsq v := by
   have h := star_mulVec_dotProduct W v
   rw [hW, Matrix.one_mulVec, star_dotProduct_self, star_dotProduct_self] at h
   exact_mod_cast h
 
+/-- `‖c v‖² = |c|² ‖v‖²`. -/
 lemma nsq_smul {α : Type*} [Fintype α] (c : ℂ) (v : α → ℂ) : nsq (c • v) = ‖c‖ ^ 2 * nsq v := by
   simp [nsq, Finset.mul_sum, mul_pow]
 
+/-- `‖c v‖ = |c| ‖v‖`. -/
 lemma l2_smul {α : Type*} [Fintype α] (c : ℂ) (v : α → ℂ) : l2 (c • v) = ‖c‖ * l2 v := by
   rw [l2, nsq_smul, Real.sqrt_mul (by positivity), Real.sqrt_sq (norm_nonneg _), l2]
+
+/-- A basis vector has norm one. -/
+lemma nsq_pi_single {α : Type*} [Fintype α] [DecidableEq α] (c : α) :
+    nsq (Pi.single c (1 : ℂ) : α → ℂ) = 1 := by
+  have : ∀ y : α, ‖(Pi.single c (1 : ℂ) : α → ℂ) y‖ ^ 2 = if y = c then 1 else 0 := by
+    intro y; simp only [Pi.single_apply]; split_ifs <;> simp
+  simp [nsq, this]
 
 /-! ### The CAR bound `‖c†(w) ψ‖ ≤ ‖w‖ ‖ψ‖` -/
 
 lemma crOp_conjTranspose (w : Fin N → ℂ) : (crOp w)ᴴ = ∑ x, star (w x) • cplx (ann x) := by
   simp [crOp, Matrix.conjTranspose_sum, Matrix.conjTranspose_smul, cplx_cre_conjTranspose]
 
+/-- Complexification maps `1` to `1`. -/
 lemma cplx_one' {ι : Type*} [Fintype ι] [DecidableEq ι] : cplx (1 : Matrix ι ι ℝ) = 1 := by
   simp [cplx]
 
+/-- CAR for `c†(w)`: `c(w̄) c†(w) + c†(w) c(w̄) = ‖w‖²`. -/
 lemma crOp_CAR (w : Fin N → ℂ) :
     (crOp w)ᴴ * crOp w + crOp w * (crOp w)ᴴ =
       ((nsq w : ℝ) : ℂ) • (1 : Matrix (Cfg N) (Cfg N) ℂ) := by
@@ -284,6 +302,7 @@ lemma crOp_CAR (w : Fin N → ℂ) :
         refine congrArg (· • (1 : Matrix (Cfg N) (Cfg N) ℂ)) (Finset.sum_congr rfl fun a _ => ?_)
         rw [Complex.star_def, Complex.conj_mul']
 
+/-- `‖c†(w) ψ‖² ≤ ‖w‖² ‖ψ‖²`. -/
 lemma nsq_crOp_mulVec_le (w : Fin N → ℂ) (ψ : Cfg N → ℂ) :
     nsq (crOp w *ᵥ ψ) ≤ nsq w * nsq ψ := by
   have h1 := star_mulVec_dotProduct (crOp w) ψ
@@ -297,6 +316,7 @@ lemma nsq_crOp_mulVec_le (w : Fin N → ℂ) (ψ : Cfg N → ℂ) :
   have h4 : nsq (crOp w *ᵥ ψ) + nsq ((crOp w)ᴴ *ᵥ ψ) = nsq w * nsq ψ := by exact_mod_cast h3
   linarith [nsq_nonneg ((crOp w)ᴴ *ᵥ ψ)]
 
+/-- `‖c†(w) ψ‖ ≤ ‖w‖ ‖ψ‖`. -/
 lemma l2_crOp_mulVec_le (w : Fin N → ℂ) (ψ : Cfg N → ℂ) :
     l2 (crOp w *ᵥ ψ) ≤ l2 w * l2 ψ := by
   rw [l2, l2, l2, ← Real.sqrt_mul (nsq_nonneg w)]
@@ -309,11 +329,13 @@ section Heis
 variable (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsSymm) (t : ℝ)
 include hA
 
+/-- Heisenberg relation in the form `c_x W = W ∑_y U_{xy} c_y`. -/
 lemma ann_mul_evo (x : Fin N) :
     cplx (ann x) * evo (dGamma A) t = evo (dGamma A) t * ∑ y, evo A t x y • cplx (ann y) := by
   rw [← heisenberg_ann A hA x t]
   simp only [← mul_assoc, evo_unitary' _ (dGamma_isSymm A hA) t, one_mul]
 
+/-- `W c_z† = c†(U e_z) W`: the propagator maps creation operators to rotated ones. -/
 lemma evo_mul_cre (z : Fin N) :
     evo (dGamma A) t * cplx (cre z) = crOp (fun x => evo A t x z) * evo (dGamma A) t := by
   have hW1 := evo_unitary _ (dGamma_isSymm A hA) t
@@ -345,6 +367,7 @@ lemma evo_mul_cre (z : Fin N) :
   _ = (W * Wᴴ) * crOp (fun x => U x z) * W := by simp only [mul_assoc]
   _ = crOp (fun x => U x z) * W := by rw [hW2, one_mul]
 
+/-- `W` intertwines products of creation operators with products of rotated ones. -/
 lemma evo_mul_prod {M : ℕ} (z : Fin M → Fin N) :
     evo (dGamma A) t * (List.ofFn fun k => cplx (cre (z k))).prod =
       (List.ofFn fun k => crOp (fun x => evo A t x (z k))).prod * evo (dGamma A) t := by
@@ -354,6 +377,7 @@ lemma evo_mul_prod {M : ℕ} (z : Fin M → Fin N) :
     rw [List.ofFn_succ, List.ofFn_succ, List.prod_cons, List.prod_cons, ← mul_assoc,
       evo_mul_cre A hA t, mul_assoc, ih (fun k => z k.succ), mul_assoc]
 
+/-- The propagator maps the vacuum to a phase times the vacuum. -/
 lemma evo_vac : ∃ c : ℂ, ‖c‖ = 1 ∧ evo (dGamma A) t *ᵥ fockVec ∅ = c • fockVec ∅ := by
   set ψ := evo (dGamma A) t *ᵥ fockVec (∅ : Finset (Fin N)) with hψ
   have hann : ∀ x, cplx (ann x) *ᵥ ψ = 0 := by
@@ -364,11 +388,7 @@ lemma evo_vac : ∃ c : ℂ, ‖c‖ = 1 ∧ evo (dGamma A) t *ᵥ fockVec ∅ =
   refine ⟨ψ (fockCfg ∅), ?_, eq_smul_vac_of_ann ψ hann⟩
   have h1 : nsq ψ = nsq (fockVec (∅ : Finset (Fin N))) :=
     nsq_mulVec_unitary _ (evo_unitary _ (dGamma_isSymm A hA) t) _
-  have hv : nsq (fockVec (∅ : Finset (Fin N))) = 1 := by
-    have : ∀ x : Cfg N, ‖(fockVec (∅ : Finset (Fin N))) x‖ ^ 2 =
-        if x = fockCfg ∅ then 1 else 0 := by
-      intro x; simp only [fockVec, Pi.single_apply]; split_ifs <;> simp
-    simp [nsq, this]
+  have hv : nsq (fockVec (∅ : Finset (Fin N))) = 1 := nsq_pi_single _
   have h2 : nsq ψ = ‖ψ (fockCfg ∅)‖ ^ 2 * nsq (fockVec (∅ : Finset (Fin N))) := by
     conv_lhs => rw [eq_smul_vac_of_ann ψ hann]
     rw [nsq_smul]
@@ -377,6 +397,7 @@ lemma evo_vac : ∃ c : ℂ, ‖c‖ = 1 ∧ evo (dGamma A) t *ᵥ fockVec ∅ =
 
 end Heis
 
+/-- `|{a} ∪ s⟩ = c_a† |s⟩` when `a` lies to the left of every site of `s`. -/
 lemma fockVec_insert (a : Fin N) (s : Finset (Fin N)) (h : ∀ x ∈ s, a < x) :
     fockVec (insert a s) = cplx (cre a) *ᵥ fockVec s := by
   have ha : a ∉ s := fun h' => lt_irrefl a (h a h')
@@ -412,6 +433,7 @@ lemma fockVec_insert (a : Fin N) (s : Finset (Fin N)) (h : ∀ x ∈ s, a < x) :
     · simp
     · rfl
 
+/-- Every Fock vector is an ordered product of creation operators applied to the vacuum. -/
 lemma fockVec_eq_prod (S : Finset (Fin N)) :
     ∃ (M : ℕ) (z : Fin M → Fin N), Function.Injective z ∧ (∀ x, x ∈ S ↔ ∃ k, z k = x) ∧
       fockVec S = (List.ofFn fun k => cplx (cre (z k))).prod *ᵥ fockVec ∅ := by
@@ -461,8 +483,10 @@ def inL (a : Fin ℓ) : Fin N := ⟨a.val, lt_of_lt_of_le a.isLt hℓ⟩
 /-- The site `b` of the right part, as a site of the chain. -/
 def inR (b : Fin (N - ℓ)) : Fin N := ⟨ℓ + b.val, by omega⟩
 
+/-- The left part of the split configuration. -/
 lemma splitCfg_fst (n : Cfg N) (a : Fin ℓ) : (splitCfg ℓ hℓ n).1 a = n (inL ℓ hℓ a) := rfl
 
+/-- The right part of the split configuration. -/
 lemma splitCfg_snd (n : Cfg N) (b : Fin (N - ℓ)) : (splitCfg ℓ hℓ n).2 b = n (inR ℓ hℓ b) :=
   rfl
 
@@ -473,6 +497,7 @@ lemma sum_fin_split {M : Type*} [AddCommMonoid M] (f : Fin N → M) :
   rw [← (finCongr h).symm.sum_comp f, Fin.sum_univ_add]
   rfl
 
+/-- A sum over the left segment, reindexed by `Fin ℓ`. -/
 lemma sum_segment {M : Type*} [AddCommMonoid M] (f : Fin N → M) :
     ∑ x ∈ segment ℓ, f x = ∑ a : Fin ℓ, f (inL ℓ hℓ a) := by
   rw [segment, Finset.sum_filter, sum_fin_split ℓ hℓ]
@@ -480,6 +505,7 @@ lemma sum_segment {M : Type*} [AddCommMonoid M] (f : Fin N → M) :
   have h2 : ∀ b : Fin (N - ℓ), ¬ (inR ℓ hℓ b).val < ℓ := fun b => by simp [inR]
   simp only [h1, h2, ite_true, ite_false, Finset.sum_const_zero, add_zero]
 
+/-- A sum over the complement of the left segment, reindexed by `Fin (N - ℓ)`. -/
 lemma sum_compl_segment {M : Type*} [AddCommMonoid M] (f : Fin N → M) :
     ∑ x ∈ univ \ segment ℓ, f x = ∑ b : Fin (N - ℓ), f (inR ℓ hℓ b) := by
   have hs : (univ \ segment ℓ : Finset (Fin N)) = univ.filter (fun x => ¬ x.val < ℓ) := by
@@ -490,15 +516,19 @@ lemma sum_compl_segment {M : Type*} [AddCommMonoid M] (f : Fin N → M) :
   simp only [h1, h2, not_true_eq_false, not_false_eq_true, ite_true, ite_false,
     Finset.sum_const_zero, zero_add]
 
+/-- `inL` is injective. -/
 lemma inL_injective : Function.Injective (inL ℓ hℓ) := by
   intro a a' h; simpa [inL, Fin.ext_iff] using h
 
+/-- `inR` is injective. -/
 lemma inR_injective : Function.Injective (inR ℓ hℓ) := by
   intro b b' h; simpa [inR, Fin.ext_iff] using h
 
+/-- Left and right sites are distinct. -/
 lemma inL_ne_inR (a : Fin ℓ) (b : Fin (N - ℓ)) : inL ℓ hℓ a ≠ inR ℓ hℓ b := by
   intro h; have := congrArg Fin.val h; simp [inL, inR] at this; omega
 
+/-- Updating a left site only updates the left part of the split configuration. -/
 lemma splitCfg_update_inL (n : Cfg N) (a : Fin ℓ) (v : ZMod 2) :
     splitCfg ℓ hℓ (Function.update n (inL ℓ hℓ a) v) =
       (Function.update (splitCfg ℓ hℓ n).1 a v, (splitCfg ℓ hℓ n).2) := by
@@ -506,6 +536,7 @@ lemma splitCfg_update_inL (n : Cfg N) (a : Fin ℓ) (v : ZMod 2) :
   · simp only [splitCfg_fst, Function.update_apply, (inL_injective ℓ hℓ).eq_iff]
   · simp only [splitCfg_snd, Function.update_apply, (inL_ne_inR ℓ hℓ a i).symm, ite_false]
 
+/-- Updating a right site only updates the right part of the split configuration. -/
 lemma splitCfg_update_inR (n : Cfg N) (b : Fin (N - ℓ)) (v : ZMod 2) :
     splitCfg ℓ hℓ (Function.update n (inR ℓ hℓ b) v) =
       ((splitCfg ℓ hℓ n).1, Function.update (splitCfg ℓ hℓ n).2 b v) := by
@@ -513,6 +544,7 @@ lemma splitCfg_update_inR (n : Cfg N) (b : Fin (N - ℓ)) (v : ZMod 2) :
   · simp only [splitCfg_fst, Function.update_apply, inL_ne_inR ℓ hℓ i b, ite_false]
   · simp only [splitCfg_snd, Function.update_apply, (inR_injective ℓ hℓ).eq_iff]
 
+/-- The Jordan–Wigner string of a left site only sees the left part. -/
 lemma jwPar_inL (n : Cfg N) (a : Fin ℓ) :
     jwPar n (inL ℓ hℓ a) = jwPar (splitCfg ℓ hℓ n).1 a := by
   unfold jwPar
@@ -523,6 +555,7 @@ lemma jwPar_inL (n : Cfg N) (a : Fin ℓ) :
     intro a'; simp only [Fin.lt_def, inL]
   simp only [h2, ite_false, Finset.sum_const_zero, add_zero, h1, splitCfg_fst]
 
+/-- The Jordan–Wigner string of a right site is the left parity plus the right string. -/
 lemma jwPar_inR (n : Cfg N) (b : Fin (N - ℓ)) :
     jwPar n (inR ℓ hℓ b) = (∑ i, (splitCfg ℓ hℓ n).1 i) + jwPar (splitCfg ℓ hℓ n).2 b := by
   unfold jwPar
@@ -533,11 +566,13 @@ lemma jwPar_inR (n : Cfg N) (b : Fin (N - ℓ)) :
     intro b'; simp only [Fin.lt_def, inR]; omega
   simp only [h1, ite_true, h2, splitCfg_fst, splitCfg_snd]
 
+/-- `(-1)^{a+b} = (-1)^a (-1)^b`. -/
 lemma sgn_add (a b : ZMod 2) : sgn (a + b) = sgn a * sgn b := by
   have h01 : ∀ c : ZMod 2, c = 0 ∨ c = 1 := by decide
   have h11 : (1 + 1 : ZMod 2) = 0 := by decide
   rcases h01 a with rfl | rfl <;> rcases h01 b with rfl | rfl <;> simp [sgn, h11]
 
+/-- Every site is either a left site or a right site. -/
 lemma fin_cases_split (x : Fin N) : (∃ a, inL ℓ hℓ a = x) ∨ (∃ b, inR ℓ hℓ b = x) := by
   by_cases h : x.val < ℓ
   · exact Or.inl ⟨⟨x.val, h⟩, Fin.ext rfl⟩
@@ -550,6 +585,7 @@ def tens (X : Cfg ℓ → ℂ) (Y : Cfg (N - ℓ) → ℂ) : Cfg N → ℂ :=
 /-- Parity sign `(-1)^{N}` of a configuration. -/
 def parC {K : ℕ} (a : Cfg K) : ℂ := ((sgn (∑ i, a i) : ℝ) : ℂ)
 
+/-- A left creation operator acts on the left factor of a product vector. -/
 lemma cre_tens_inL (a : Fin ℓ) (X : Cfg ℓ → ℂ) (Y : Cfg (N - ℓ) → ℂ) :
     cplx (cre (inL ℓ hℓ a)) *ᵥ tens ℓ hℓ X Y = tens ℓ hℓ (cplx (cre a) *ᵥ X) Y := by
   funext n
@@ -559,6 +595,7 @@ lemma cre_tens_inL (a : Fin ℓ) (X : Cfg ℓ → ℂ) (Y : Cfg (N - ℓ) → �
   · simp only [h, ite_true]; ring
   · simp only [h, ite_false, zero_mul]
 
+/-- A right creation operator acts on the right factor, with the parity of the left factor. -/
 lemma cre_tens_inR (b : Fin (N - ℓ)) (X : Cfg ℓ → ℂ) (Y : Cfg (N - ℓ) → ℂ) :
     cplx (cre (inR ℓ hℓ b)) *ᵥ tens ℓ hℓ X Y =
       tens ℓ hℓ (fun a => parC a * X a) (cplx (cre b) *ᵥ Y) := by
@@ -570,17 +607,20 @@ lemma cre_tens_inR (b : Fin (N - ℓ)) (X : Cfg ℓ → ℂ) (Y : Cfg (N - ℓ) 
   · simp only [h, ite_true]; ring
   · simp only [h, ite_false, mul_zero]
 
+/-- `⊗` is linear in the left factor. -/
 lemma tens_sum_smul_left {ι : Type*} (s : Finset ι) (c : ι → ℂ) (X : ι → Cfg ℓ → ℂ)
     (Y : Cfg (N - ℓ) → ℂ) :
     tens ℓ hℓ (∑ i ∈ s, c i • X i) Y = ∑ i ∈ s, c i • tens ℓ hℓ (X i) Y := by
   funext n; simp [tens, Finset.sum_apply, Finset.sum_mul, mul_assoc]
 
+/-- `⊗` is linear in the right factor. -/
 lemma tens_sum_smul_right {ι : Type*} (s : Finset ι) (c : ι → ℂ) (X : Cfg ℓ → ℂ)
     (Y : ι → Cfg (N - ℓ) → ℂ) :
     tens ℓ hℓ X (∑ i ∈ s, c i • Y i) = ∑ i ∈ s, c i • tens ℓ hℓ X (Y i) := by
   funext n; simp only [tens, Finset.sum_apply, Pi.smul_apply, smul_eq_mul, Finset.mul_sum]
   exact Finset.sum_congr rfl fun i _ => by ring
 
+/-- `c†(v) Z = ∑_x v_x c_x† Z`. -/
 lemma crOp_mulVec_eq {K : ℕ} (v : Fin K → ℂ) (Z : Cfg K → ℂ) :
     crOp v *ᵥ Z = ∑ x, v x • (cplx (cre x) *ᵥ Z) := by
   simp [crOp, Matrix.sum_mulVec, Matrix.smul_mulVec]
@@ -594,6 +634,7 @@ lemma crOp_tens (w : Fin N → ℂ) (X : Cfg ℓ → ℂ) (Y : Cfg (N - ℓ) →
     tens_sum_smul_right]
   simp only [cre_tens_inL, cre_tens_inR]
 
+/-- The vacuum is the product of the vacua of the two parts. -/
 lemma tens_vac : tens ℓ hℓ (fockVec ∅) (fockVec ∅) = fockVec (∅ : Finset (Fin N)) := by
   funext n
   have h0 : ∀ {K : ℕ}, fockCfg (∅ : Finset (Fin K)) = 0 := by
@@ -617,16 +658,15 @@ lemma tens_vac : tens ℓ hℓ (fockVec ∅) (fockVec ∅) = fockVec (∅ : Fins
     · simp [h1, show ¬ (splitCfg ℓ hℓ n).2 = 0 from fun h2 => hn ⟨h1, h2⟩]
     · simp [h1]
 
+/-- Multiplying by the parity sign does not change the norm. -/
 lemma l2_parC_mul {K : ℕ} (X : Cfg K → ℂ) : l2 (fun a => parC a * X a) = l2 X := by
   have h : ∀ a : Cfg K, ‖parC a‖ = 1 := by
     intro a; simp only [parC, sgn]; split_ifs <;> simp
   simp [l2, nsq, h]
 
+/-- The vacuum has norm one. -/
 lemma l2_fockVec_empty {K : ℕ} : l2 (fockVec (∅ : Finset (Fin K))) = 1 := by
-  have : ∀ x : Cfg K, ‖(fockVec (∅ : Finset (Fin K))) x‖ ^ 2 =
-      if x = fockCfg ∅ then 1 else 0 := by
-    intro x; simp only [fockVec, Pi.single_apply]; split_ifs <;> simp
-  simp [l2, nsq, this]
+  rw [l2, fockVec, nsq_pi_single, Real.sqrt_one]
 
 /-- **Product decomposition of a Slater determinant** across the cut: the determinant is a sum
 of product vectors whose total cross norm is at most `∏_k (‖P_A w_k‖ + ‖P_B w_k‖)`. -/
@@ -733,11 +773,13 @@ lemma bessel_on {ι κ : Type*} [Fintype ι] [Fintype κ] [DecidableEq κ] (u : 
   refine le_of_eq_of_le (Finset.sum_congr rfl fun k _ => ?_) hb
   rw [dotProduct_comm]
 
+/-- `⟨Mv, Mw⟩ = ⟨v, M†M w⟩` for rectangular `M`. -/
 lemma star_mulVec_dotProduct_mulVec {α β : Type*} [Fintype α] [Fintype β] (M : Matrix β α ℂ)
     (v w : α → ℂ) : star (M *ᵥ v) ⬝ᵥ (M *ᵥ w) = star v ⬝ᵥ ((Mᴴ * M) *ᵥ w) := by
   rw [Matrix.star_mulVec, Matrix.dotProduct_mulVec (star v ᵥ* Mᴴ) M w, Matrix.vecMul_vecMul,
     Matrix.dotProduct_mulVec (star v) (Mᴴ * M) w]
 
+/-- `|⟨x, y⟩| = |⟨y, x⟩|`. -/
 lemma norm_star_dotProduct_comm {α : Type*} [Fintype α] (x y : α → ℂ) :
     ‖star x ⬝ᵥ y‖ = ‖star y ⬝ᵥ x‖ := by
   rw [← norm_star (star x ⬝ᵥ y)]
@@ -745,6 +787,7 @@ lemma norm_star_dotProduct_comm {α : Type*} [Fintype α] (x y : α → ℂ) :
   simp only [dotProduct, star_sum, star_mul', Pi.star_apply, star_star]
   exact Finset.sum_congr rfl fun a _ => mul_comm _ _
 
+/-- Complex conjugation preserves the norm. -/
 lemma nsq_star {α : Type*} [Fintype α] (x : α → ℂ) : nsq (star x) = nsq x := by
   simp [nsq]
 
@@ -846,12 +889,11 @@ lemma sum_sqrt_eigenvalues_le {α β J : Type*} [Fintype α] [DecidableEq α] [F
           norm_num
 
 /-- **Entropy of a sum of product vectors**: for a unit vector `v = ∑_j X_j ⊗ Y_j`,
-`S(ρ_A) ≤ 2 log ∑_j ‖X_j‖ ‖Y_j‖`. -/
+`S(ρ_A) ≤ 2 log B` whenever `∑_j ‖X_j‖ ‖Y_j‖ ≤ B`. -/
 lemma vonNeumann_rdm_le (ℓ : ℕ) (hℓ : ℓ ≤ N) (v : Cfg N → ℂ) (hv : nsq v = 1) {J : Type*}
     [Fintype J] (X : J → Cfg ℓ → ℂ) (Y : J → Cfg (N - ℓ) → ℂ)
-    (hdec : v = ∑ j, tens ℓ hℓ (X j) (Y j)) :
-    vonNeumann (rdm ℓ hℓ v) (rdm_isHermitian ℓ hℓ v) ≤
-      2 * Real.log (∑ j, l2 (X j) * l2 (Y j)) := by
+    (hdec : v = ∑ j, tens ℓ hℓ (X j) (Y j)) (B : ℝ) (hB : ∑ j, l2 (X j) * l2 (Y j) ≤ B) :
+    vonNeumann (rdm ℓ hℓ v) (rdm_isHermitian ℓ hℓ v) ≤ 2 * Real.log B := by
   set Ψ : Matrix (Cfg ℓ) (Cfg (N - ℓ)) ℂ :=
     Matrix.of fun a b => v ((splitCfg ℓ hℓ).symm (a, b)) with hΨdef
   have hρΨ : rdm ℓ hℓ v = Ψ * Ψᴴ := by
@@ -887,8 +929,275 @@ lemma vonNeumann_rdm_le (ℓ : ℕ) (hℓ : ℓ ≤ N) (v : Cfg N → ℂ) (hv :
     linarith
   calc vonNeumann (rdm ℓ hℓ v) hρ = ∑ i, Real.negMulLog (hρ.eigenvalues i) := rfl
     _ ≤ 2 * Real.log (∑ i, √(hρ.eigenvalues i)) := hR
-    _ ≤ 2 * Real.log (∑ j, l2 (X j) * l2 (Y j)) :=
-        mul_le_mul_of_nonneg_left (Real.log_le_log hpos hN) (by norm_num)
+    _ ≤ 2 * Real.log B :=
+        mul_le_mul_of_nonneg_left (Real.log_le_log hpos (hN.trans hB)) (by norm_num)
+
+/-! ### Canonical orbitals -/
+
+/-- **Canonical orbitals**: a unitary change of basis of the occupied orbitals that makes the
+overlap matrices of their restrictions to `R` and to its complement diagonal. -/
+lemma canonical_orbitals {M : ℕ} (Φ : Matrix (Fin N) (Fin M) ℂ) (hΦ : Φᴴ * Φ = 1)
+    (R : Finset (Fin N)) :
+    ∃ V : Matrix (Fin M) (Fin M) ℂ, V ∈ Matrix.unitaryGroup (Fin M) ℂ ∧ ∃ ν : Fin M → ℝ,
+      (∀ k l, ∑ x ∈ R, star ((Φ * V) x k) * (Φ * V) x l = if k = l then (ν k : ℂ) else 0) ∧
+      (∀ k l, ∑ x ∈ univ \ R, star ((Φ * V) x k) * (Φ * V) x l =
+        if k = l then ((1 - ν k : ℝ) : ℂ) else 0) := by
+  classical
+  set P : Matrix (Fin N) (Fin N) ℂ := diagonal (fun x => if x ∈ R then 1 else 0) with hPdef
+  have hP : Pᴴ = P := by
+    rw [hPdef, Matrix.diagonal_conjTranspose]
+    congr 1; funext x; by_cases hx : x ∈ R <;> simp [hx]
+  set G := Φᴴ * P * Φ with hGdef
+  have hG : G.IsHermitian := by
+    unfold Matrix.IsHermitian
+    rw [hGdef, Matrix.conjTranspose_mul, Matrix.conjTranspose_mul, hP,
+      Matrix.conjTranspose_conjTranspose, Matrix.mul_assoc]
+  set U := hG.eigenvectorUnitary with hU
+  set V : Matrix (Fin M) (Fin M) ℂ := (U : Matrix (Fin M) (Fin M) ℂ) with hV
+  have hV1 : star V * V = 1 := Unitary.coe_star_mul_self U
+  have hV2 : V * star V = 1 := Unitary.coe_mul_star_self U
+  have hspec : G = V * diagonal (RCLike.ofReal ∘ hG.eigenvalues) * star V := by
+    have := hG.spectral_theorem
+    rwa [Unitary.conjStarAlgAut_apply] at this
+  have hD : star V * G * V = diagonal (RCLike.ofReal ∘ hG.eigenvalues) := by
+    conv_lhs => rw [hspec]
+    simp only [← Matrix.mul_assoc, hV1, Matrix.one_mul]
+    rw [Matrix.mul_assoc, hV1, Matrix.mul_one]
+  have hstar : (Φ * V)ᴴ = star V * Φᴴ := by
+    rw [Matrix.conjTranspose_mul, Matrix.star_eq_conjTranspose]
+  have hA : (Φ * V)ᴴ * P * (Φ * V) = diagonal (RCLike.ofReal ∘ hG.eigenvalues) := by
+    rw [hstar, ← hD, hGdef]
+    simp only [Matrix.mul_assoc]
+  have hB : (Φ * V)ᴴ * (Φ * V) = 1 := by
+    rw [hstar, Matrix.mul_assoc, ← Matrix.mul_assoc Φᴴ, hΦ, Matrix.one_mul, hV1]
+  have eA : ∀ k l, ((Φ * V)ᴴ * P * (Φ * V)) k l =
+      ∑ x ∈ R, star ((Φ * V) x k) * (Φ * V) x l := by
+    intro k l
+    rw [Matrix.mul_apply]
+    simp only [hPdef, Matrix.mul_diagonal, Matrix.conjTranspose_apply, mul_ite, mul_one,
+      mul_zero, ite_mul, zero_mul]
+    rw [Finset.sum_ite_mem, Finset.univ_inter]
+  have eB : ∀ k l, ((Φ * V)ᴴ * (Φ * V)) k l = ∑ x, star ((Φ * V) x k) * (Φ * V) x l := by
+    intro k l
+    rw [Matrix.mul_apply]
+    simp only [Matrix.conjTranspose_apply]
+  refine ⟨V, U.2, hG.eigenvalues, fun k l => ?_, fun k l => ?_⟩
+  · rw [← eA, hA, Matrix.diagonal_apply]
+    rfl
+  · have h1 := eB k l
+    rw [hB, Matrix.one_apply] at h1
+    have h2 : ∑ x ∈ R, star ((Φ * V) x k) * (Φ * V) x l = if k = l then (hG.eigenvalues k : ℂ) else 0 := by
+      rw [← eA, hA, Matrix.diagonal_apply]
+      rfl
+    have h3 := Finset.sum_add_sum_compl R (fun x => star ((Φ * V) x k) * (Φ * V) x l)
+    rw [Finset.compl_eq_univ_sdiff] at h3
+    have h4 : ∑ x ∈ univ \ R, star ((Φ * V) x k) * (Φ * V) x l =
+        (if k = l then 1 else 0) - (if k = l then (hG.eigenvalues k : ℂ) else 0) := by
+      rw [h1, ← h2, ← h3]; ring
+    rw [h4]
+    split_ifs <;> push_cast <;> ring
+
+/-- The vector `x ↦ [x ∈ T] c u(x)`. -/
+def rvec (T : Finset (Fin N)) (c : ℂ) (u : Fin N → ℂ) : Fin N → ℂ :=
+  fun x => if x ∈ T then c * u x else 0
+
+/-- Inner product of two vectors restricted to `T`. -/
+lemma rvec_dot (T : Finset (Fin N)) (c c' : ℂ) (u u' : Fin N → ℂ) :
+    star (rvec T c u) ⬝ᵥ rvec T c' u' = star c * c' * ∑ x ∈ T, star (u x) * u' x := by
+  calc star (rvec T c u) ⬝ᵥ rvec T c' u'
+      = ∑ x, if x ∈ T then star c * c' * (star (u x) * u' x) else 0 := by
+        refine Finset.sum_congr rfl fun x _ => ?_
+        simp only [rvec, Pi.star_apply]
+        split_ifs
+        · rw [star_mul']; ring
+        · simp
+    _ = star c * c' * ∑ x ∈ T, star (u x) * u' x := by
+        rw [Finset.sum_ite_mem, Finset.univ_inter, Finset.mul_sum]
+
+/-- Inner product of a restricted vector with a basis vector. -/
+lemma rvec_dot_single (T : Finset (Fin N)) (c : ℂ) (u : Fin N → ℂ) (x : Fin N) :
+    star (rvec T c u) ⬝ᵥ Pi.single x 1 = star (rvec T c u x) := by
+  simp [dotProduct, Pi.single_apply]
+
+/-- `∑_k √(ν_k(1-ν_k)) ≤ ∑_{x ∈ R, y ∉ R} |C_xy|` for canonical orbitals (`C = Φ'Φ'†`). -/
+lemma sum_sqrt_nu_le {M : ℕ} (Φ' : Matrix (Fin N) (Fin M) ℂ) (R : Finset (Fin N))
+    (ν : Fin M → ℝ)
+    (h1 : ∀ k l, ∑ x ∈ R, star (Φ' x k) * Φ' x l = if k = l then (ν k : ℂ) else 0)
+    (h2 : ∀ k l, ∑ x ∈ univ \ R, star (Φ' x k) * Φ' x l =
+      if k = l then ((1 - ν k : ℝ) : ℂ) else 0) :
+    ∑ k, √(ν k * (1 - ν k)) ≤ ∑ x ∈ R, ∑ y ∈ univ \ R, ‖(Φ' * Φ'ᴴ) x y‖ := by
+  classical
+  have hdiag : ∀ (T : Finset (Fin N)) (k : Fin M),
+      ∑ x ∈ T, star (Φ' x k) * Φ' x k = ((∑ x ∈ T, ‖Φ' x k‖ ^ 2 : ℝ) : ℂ) := by
+    intro T k; push_cast
+    refine Finset.sum_congr rfl fun x _ => ?_
+    rw [Complex.star_def, Complex.conj_mul']
+  have hν : ∀ k, ν k = ∑ x ∈ R, ‖Φ' x k‖ ^ 2 := by
+    intro k; have := h1 k k; rw [ite_eq_left rfl, hdiag] at this; exact_mod_cast this.symm
+  have hν' : ∀ k, 1 - ν k = ∑ x ∈ univ \ R, ‖Φ' x k‖ ^ 2 := by
+    intro k; have := h2 k k; rw [ite_eq_left rfl, hdiag] at this; exact_mod_cast this.symm
+  have hν0 : ∀ k, 0 ≤ ν k := fun k => (hν k).symm ▸ Finset.sum_nonneg fun _ _ => by positivity
+  have hν1 : ∀ k, 0 ≤ 1 - ν k := fun k =>
+    (hν' k).symm ▸ Finset.sum_nonneg fun _ _ => by positivity
+  set K := univ.filter (fun k => 0 < ν k ∧ 0 < 1 - ν k) with hK
+  set c : Fin M → ℂ := fun k => ((√(ν k) : ℝ) : ℂ)⁻¹ with hc
+  set d : Fin M → ℂ := fun k => ((√(1 - ν k) : ℝ) : ℂ)⁻¹ with hd
+  set a : Fin M → Fin N → ℂ := fun k => rvec R (c k) (fun x => Φ' x k) with ha
+  set b : Fin M → Fin N → ℂ := fun k => rvec (univ \ R) (d k) (fun x => Φ' x k) with hb
+  have hcs : ∀ k, star (c k) = c k := fun k => by
+    simp only [hc, star_inv₀, Complex.star_def, Complex.conj_ofReal]
+  have hds : ∀ k, star (d k) = d k := fun k => by
+    simp only [hd, star_inv₀, Complex.star_def, Complex.conj_ofReal]
+  have hcc : ∀ k ∈ K, c k * c k * (ν k : ℂ) = 1 := by
+    intro k hk
+    simp only [hK, Finset.mem_filter, Finset.mem_univ, true_and] at hk
+    have hs : ((√(ν k) : ℝ) : ℂ) ≠ 0 := by exact_mod_cast (Real.sqrt_pos.mpr hk.1).ne'
+    have hl : ((ν k : ℝ) : ℂ) = ((√(ν k) : ℝ) : ℂ) * ((√(ν k) : ℝ) : ℂ) := by
+      rw [← Complex.ofReal_mul, Real.mul_self_sqrt (hν0 k)]
+    rw [hl, hc]; field_simp
+  have hdd : ∀ k ∈ K, d k * d k * ((1 - ν k : ℝ) : ℂ) = 1 := by
+    intro k hk
+    simp only [hK, Finset.mem_filter, Finset.mem_univ, true_and] at hk
+    have hs : ((√(1 - ν k) : ℝ) : ℂ) ≠ 0 := by exact_mod_cast (Real.sqrt_pos.mpr hk.2).ne'
+    have hl : ((1 - ν k : ℝ) : ℂ) = ((√(1 - ν k) : ℝ) : ℂ) * ((√(1 - ν k) : ℝ) : ℂ) := by
+      rw [← Complex.ofReal_mul, Real.mul_self_sqrt (hν1 k)]
+    rw [hl, hd]; field_simp
+  have ha_orth : ∀ k ∈ K, ∀ l ∈ K, star (a k) ⬝ᵥ a l = if k = l then 1 else 0 := by
+    intro k hk l _
+    simp only [ha, rvec_dot, h1, hcs]
+    split_ifs with h
+    · subst h; rw [hcc k hk]
+    · simp
+  have hb_orth : ∀ k ∈ K, ∀ l ∈ K, star (b k) ⬝ᵥ b l = if k = l then 1 else 0 := by
+    intro k hk l _
+    simp only [hb, rvec_dot, h2, hds]
+    split_ifs with h
+    · subst h; rw [hdd k hk]
+    · simp
+  have ha_b : ∀ x, ∑ k ∈ K, ‖a k x‖ ^ 2 ≤ 1 := by
+    intro x
+    have := bessel_on a K ha_orth (Pi.single x 1)
+    rw [nsq_pi_single] at this
+    refine le_of_eq_of_le (Finset.sum_congr rfl fun k _ => ?_) this
+    rw [ha, rvec_dot_single, norm_star]
+  have hb_b : ∀ y, ∑ k ∈ K, ‖b k y‖ ^ 2 ≤ 1 := by
+    intro y
+    have := bessel_on b K hb_orth (Pi.single y 1)
+    rw [nsq_pi_single] at this
+    refine le_of_eq_of_le (Finset.sum_congr rfl fun k _ => ?_) this
+    rw [hb, rvec_dot_single, norm_star]
+  have hC : ∀ x y, (Φ' * Φ'ᴴ) x y = ∑ m, Φ' x m * star (Φ' y m) := by
+    intro x y; simp [Matrix.mul_apply, Matrix.conjTranspose_apply]
+  have hsum : ∀ k, ∑ x ∈ R, ∑ y ∈ univ \ R, star (Φ' x k) * (Φ' * Φ'ᴴ) x y * Φ' y k =
+      (ν k : ℂ) * ((1 - ν k : ℝ) : ℂ) := by
+    intro k
+    calc ∑ x ∈ R, ∑ y ∈ univ \ R, star (Φ' x k) * (Φ' * Φ'ᴴ) x y * Φ' y k
+        = ∑ x ∈ R, ∑ y ∈ univ \ R, ∑ m, (star (Φ' x k) * Φ' x m) * (star (Φ' y m) * Φ' y k) := by
+          refine Finset.sum_congr rfl fun x _ => Finset.sum_congr rfl fun y _ => ?_
+          rw [hC, Finset.mul_sum, Finset.sum_mul]
+          exact Finset.sum_congr rfl fun m _ => by ring
+      _ = ∑ x ∈ R, ∑ m, ∑ y ∈ univ \ R, (star (Φ' x k) * Φ' x m) * (star (Φ' y m) * Φ' y k) :=
+          Finset.sum_congr rfl fun x _ => Finset.sum_comm
+      _ = ∑ m, ∑ x ∈ R, ∑ y ∈ univ \ R, (star (Φ' x k) * Φ' x m) * (star (Φ' y m) * Φ' y k) :=
+          Finset.sum_comm
+      _ = ∑ m, (∑ x ∈ R, star (Φ' x k) * Φ' x m) * (∑ y ∈ univ \ R, star (Φ' y m) * Φ' y k) :=
+          Finset.sum_congr rfl fun m _ => (Finset.sum_mul_sum _ _ _ _).symm
+      _ = ∑ m, (if k = m then (ν k : ℂ) else 0) * (if m = k then ((1 - ν m : ℝ) : ℂ) else 0) := by
+          simp only [h1, h2]
+      _ = (ν k : ℂ) * ((1 - ν k : ℝ) : ℂ) := by
+          rw [Finset.sum_eq_single k]
+          · simp
+          · intro m _ hm; simp [Ne.symm hm, hm]
+          · simp
+  have hkey : ∀ k ∈ K, ∑ x ∈ R, ∑ y ∈ univ \ R, star (a k x) * (Φ' * Φ'ᴴ) x y * b k y =
+      ((√(ν k * (1 - ν k)) : ℝ) : ℂ) := by
+    intro k hk
+    have e : ∀ x ∈ R, ∀ y ∈ univ \ R, star (a k x) * (Φ' * Φ'ᴴ) x y * b k y =
+        (c k * d k) * (star (Φ' x k) * (Φ' * Φ'ᴴ) x y * Φ' y k) := by
+      intro x hx y hy
+      simp only [ha, hb, rvec, hx, hy, ite_true, star_mul', hcs]
+      ring
+    rw [Finset.sum_congr rfl fun x hx => Finset.sum_congr rfl fun y hy => e x hx y hy]
+    simp_rw [← Finset.mul_sum]
+    rw [hsum k]
+    simp only [hK, Finset.mem_filter, Finset.mem_univ, true_and] at hk
+    have hs1 : ((√(ν k) : ℝ) : ℂ) ≠ 0 := by exact_mod_cast (Real.sqrt_pos.mpr hk.1).ne'
+    have hs2 : ((√(1 - ν k) : ℝ) : ℂ) ≠ 0 := by exact_mod_cast (Real.sqrt_pos.mpr hk.2).ne'
+    have hl1 : ((ν k : ℝ) : ℂ) = ((√(ν k) : ℝ) : ℂ) * ((√(ν k) : ℝ) : ℂ) := by
+      rw [← Complex.ofReal_mul, Real.mul_self_sqrt (hν0 k)]
+    have hl2 : ((1 - ν k : ℝ) : ℂ) = ((√(1 - ν k) : ℝ) : ℂ) * ((√(1 - ν k) : ℝ) : ℂ) := by
+      rw [← Complex.ofReal_mul, Real.mul_self_sqrt (hν1 k)]
+    rw [Real.sqrt_mul (hν0 k), Complex.ofReal_mul, hl1, hl2, hc, hd]
+    field_simp
+  have hzero : ∀ k ∉ K, √(ν k * (1 - ν k)) = 0 := by
+    intro k hk
+    simp only [hK, Finset.mem_filter, Finset.mem_univ, true_and, not_and_or, not_lt] at hk
+    rcases hk with h | h
+    · rw [le_antisymm h (hν0 k), zero_mul, Real.sqrt_zero]
+    · rw [le_antisymm h (hν1 k), mul_zero, Real.sqrt_zero]
+  calc ∑ k, √(ν k * (1 - ν k)) = ∑ k ∈ K, √(ν k * (1 - ν k)) := by
+        symm; apply Finset.sum_subset (Finset.subset_univ K)
+        intro k _ hk; exact hzero k hk
+    _ = ∑ k ∈ K, ‖∑ x ∈ R, ∑ y ∈ univ \ R, star (a k x) * (Φ' * Φ'ᴴ) x y * b k y‖ := by
+        refine Finset.sum_congr rfl fun k hk => ?_
+        rw [hkey k hk, Complex.norm_real, Real.norm_of_nonneg (Real.sqrt_nonneg _)]
+    _ ≤ ∑ k ∈ K, ∑ x ∈ R, ∑ y ∈ univ \ R, ‖a k x‖ * ‖(Φ' * Φ'ᴴ) x y‖ * ‖b k y‖ := by
+        refine Finset.sum_le_sum fun k _ => (norm_sum_le _ _).trans
+          (Finset.sum_le_sum fun x _ => (norm_sum_le _ _).trans (le_of_eq ?_))
+        refine Finset.sum_congr rfl fun y _ => ?_
+        rw [norm_mul, norm_mul, norm_star]
+    _ = ∑ x ∈ R, ∑ y ∈ univ \ R, ‖(Φ' * Φ'ᴴ) x y‖ * ∑ k ∈ K, ‖a k x‖ * ‖b k y‖ := by
+        rw [Finset.sum_comm]
+        refine Finset.sum_congr rfl fun x _ => ?_
+        rw [Finset.sum_comm]
+        refine Finset.sum_congr rfl fun y _ => ?_
+        rw [Finset.mul_sum]
+        exact Finset.sum_congr rfl fun k _ => by ring
+    _ ≤ ∑ x ∈ R, ∑ y ∈ univ \ R, ‖(Φ' * Φ'ᴴ) x y‖ * 1 := by
+        refine Finset.sum_le_sum fun x _ => Finset.sum_le_sum fun y _ =>
+          mul_le_mul_of_nonneg_left ?_ (norm_nonneg _)
+        have h3 : ∑ k ∈ K, ‖a k x‖ * ‖b k y‖ ≤
+            ∑ k ∈ K, (‖a k x‖ ^ 2 + ‖b k y‖ ^ 2) / 2 :=
+          Finset.sum_le_sum fun k _ => by nlinarith [sq_nonneg (‖a k x‖ - ‖b k y‖)]
+        rw [← Finset.sum_div, Finset.sum_add_distrib] at h3
+        linarith [ha_b x, hb_b y]
+    _ = ∑ x ∈ R, ∑ y ∈ univ \ R, ‖(Φ' * Φ'ᴴ) x y‖ := by simp
+
+/-- `log(√ν + √(1-ν)) ≤ √(ν(1-ν))`. -/
+lemma log_sqrt_add_sqrt_le (ν : ℝ) (h0 : 0 ≤ ν) (h1 : 0 ≤ 1 - ν) :
+    Real.log (√ν + √(1 - ν)) ≤ √(ν * (1 - ν)) := by
+  have hsq : (√ν + √(1 - ν)) ^ 2 = 1 + 2 * (√ν * √(1 - ν)) := by
+    nlinarith [Real.sq_sqrt h0, Real.sq_sqrt h1]
+  have hs : 0 < √ν + √(1 - ν) := by
+    by_contra hneg
+    have h : √ν + √(1 - ν) = 0 :=
+      le_antisymm (not_lt.mp hneg) (add_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _))
+    rw [h] at hsq
+    nlinarith [mul_nonneg (Real.sqrt_nonneg ν) (Real.sqrt_nonneg (1 - ν))]
+  have hlog := Real.log_le_sub_one_of_pos (pow_pos hs 2)
+  rw [Real.log_pow, hsq] at hlog
+  rw [Real.sqrt_mul h0]
+  push_cast at hlog
+  linarith
+
+/-- `√ν + √(1-ν) > 0` for `ν ≥ 0`. -/
+lemma sqrt_add_sqrt_pos (ν : ℝ) (h0 : 0 ≤ ν) : 0 < √ν + √(1 - ν) := by
+  rcases eq_or_lt_of_le h0 with h | h
+  · rw [← h]; simp
+  · have := Real.sqrt_pos.mpr h
+    exact add_pos_of_pos_of_nonneg this (Real.sqrt_nonneg _)
+
+/-- `(c X) ⊗ Y = c (X ⊗ Y)`. -/
+lemma tens_smul_left (ℓ : ℕ) (hℓ : ℓ ≤ N) (c : ℂ) (X : Cfg ℓ → ℂ) (Y : Cfg (N - ℓ) → ℂ) :
+    tens ℓ hℓ (c • X) Y = c • tens ℓ hℓ X Y := by
+  funext n; simp [tens, mul_assoc]
+
+/-- A list sum as a sum over the positions of the list. -/
+lemma list_sum_eq_sum_fin {α β : Type*} [AddCommMonoid β] (L : List α) (f : α → β) :
+    (L.map f).sum = ∑ j : Fin L.length, f (L.get j) := by
+  conv_lhs => rw [← List.ofFn_get L]
+  rw [List.map_ofFn, List.sum_ofFn]
+  rfl
 
 end AreaLawAux
 
@@ -901,7 +1210,98 @@ theorem vonNeumann_slater_le (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsSymm) (S
     vonNeumann (rdm ℓ hℓ (evo (dGamma A) t *ᵥ fockVec S))
         (rdm_isHermitian ℓ hℓ _) ≤
       2 * ∑ x ∈ segment ℓ, ∑ y ∈ univ \ segment ℓ, ‖corrMat A S t x y‖ := by
-  sorry
+  classical
+  -- the evolved Fock state is a Slater determinant of the orbitals `U e_z`, `z ∈ S`
+  obtain ⟨M, z, c, hz, hzS, hc, hv⟩ := evo_fockVec_eq A hA t S
+  set Φ : Matrix (Fin N) (Fin M) ℂ := Matrix.of fun x k => evo A t x (z k) with hΦdef
+  have hΦ : Φᴴ * Φ = 1 := by
+    ext k l
+    have h := congrFun (congrFun (evo_unitary A hA t) (z k)) (z l)
+    simp only [Matrix.mul_apply, Matrix.conjTranspose_apply, Matrix.one_apply] at h ⊢
+    simp only [hΦdef, Matrix.of_apply]
+    rw [h]
+    exact if_congr hz.eq_iff rfl rfl
+  have hC : ∀ x y, corrMat A S t x y = (Φ * Φᴴ) x y := by
+    intro x y
+    rw [corrMat, Matrix.mul_apply, Matrix.mul_apply]
+    simp only [Matrix.mul_diagonal, Matrix.conjTranspose_apply, mul_ite, mul_one, mul_zero,
+      ite_mul, zero_mul, hΦdef, Matrix.of_apply]
+    rw [Finset.sum_ite_mem, Finset.univ_inter]
+    have hS : S = Finset.univ.image z := by
+      ext x; simp [hzS x]
+    rw [hS, Finset.sum_image (fun k _ l _ h => hz h)]
+  -- canonical orbitals
+  obtain ⟨V, hVu, ν, h1, h2⟩ := canonical_orbitals Φ hΦ (segment ℓ)
+  have hV1 : star V * V = 1 := Matrix.mem_unitaryGroup_iff'.mp hVu
+  have hV2 : V * star V = 1 := Matrix.mem_unitaryGroup_iff.mp hVu
+  have hCC : (Φ * V) * (Φ * V)ᴴ = Φ * Φᴴ := by
+    rw [Matrix.conjTranspose_mul, Matrix.mul_assoc, ← Matrix.mul_assoc V,
+      ← Matrix.star_eq_conjTranspose, hV2, Matrix.one_mul]
+  have hdet : ‖V.det‖ = 1 := by
+    have h := congrArg Matrix.det hV1
+    rw [Matrix.det_mul, Matrix.star_eq_conjTranspose, Matrix.det_conjTranspose, Matrix.det_one,
+      Complex.star_def, Complex.conj_mul'] at h
+    have h' : ‖V.det‖ ^ 2 = 1 := by exact_mod_cast h
+    exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) two_ne_zero).mp h'
+  have hdet0 : V.det ≠ 0 := by
+    intro h0; rw [h0, norm_zero] at hdet; exact zero_ne_one hdet
+  set c' : ℂ := c * (V.det)⁻¹ with hc'def
+  have hc' : ‖c'‖ = 1 := by rw [hc'def, norm_mul, norm_inv, hc, hdet]; norm_num
+  have hv' : evo (dGamma A) t *ᵥ fockVec S = c' • slaterAlt N M (fun k x => (Φ * V) x k) := by
+    rw [hv, slaterAlt_mul Φ V, smul_smul, hc'def, mul_assoc, inv_mul_cancel₀ hdet0, mul_one]
+    rfl
+  -- product decomposition across the cut
+  obtain ⟨L, hL, hLn⟩ := slater_decomp ℓ hℓ (fun k x => (Φ * V) x k)
+  have hvn : nsq (evo (dGamma A) t *ᵥ fockVec S) = 1 := by
+    rw [nsq_mulVec_unitary _ (evo_unitary _ (dGamma_isSymm A hA) t), fockVec, nsq_pi_single]
+  have hdec : evo (dGamma A) t *ᵥ fockVec S =
+      ∑ j : Fin L.length, tens ℓ hℓ (c' • (L.get j).1) (L.get j).2 := by
+    rw [hv', hL, list_sum_eq_sum_fin, Finset.smul_sum]
+    exact Finset.sum_congr rfl fun j _ => (tens_smul_left ℓ hℓ c' _ _).symm
+  have hsq : ∀ (T : Finset (Fin N)) (k : Fin M), ∑ x ∈ T, star ((Φ * V) x k) * (Φ * V) x k =
+      ((∑ x ∈ T, ‖(Φ * V) x k‖ ^ 2 : ℝ) : ℂ) := by
+    intro T k
+    push_cast
+    exact Finset.sum_congr rfl fun x _ => by rw [Complex.star_def, Complex.conj_mul']
+  have hνA : ∀ k, ν k = ∑ x ∈ segment ℓ, ‖(Φ * V) x k‖ ^ 2 := by
+    intro k
+    have h := h1 k k
+    rw [ite_eq_left rfl, hsq] at h
+    exact_mod_cast h.symm
+  have hνB : ∀ k, 1 - ν k = ∑ x ∈ univ \ segment ℓ, ‖(Φ * V) x k‖ ^ 2 := by
+    intro k
+    have h := h2 k k
+    rw [ite_eq_left rfl, hsq] at h
+    exact_mod_cast h.symm
+  have hlA : ∀ k, l2 (fun a => (Φ * V) (inL ℓ hℓ a) k) = √(ν k) := by
+    intro k
+    rw [l2, nsq, hνA k, sum_segment ℓ hℓ (fun x => ‖(Φ * V) x k‖ ^ 2)]
+  have hlB : ∀ k, l2 (fun b => (Φ * V) (inR ℓ hℓ b) k) = √(1 - ν k) := by
+    intro k
+    rw [l2, nsq, hνB k, sum_compl_segment ℓ hℓ (fun x => ‖(Φ * V) x k‖ ^ 2)]
+  have hν0 : ∀ k, 0 ≤ ν k := fun k => by
+    rw [hνA k]; exact Finset.sum_nonneg fun _ _ => by positivity
+  have hν1 : ∀ k, 0 ≤ 1 - ν k := fun k => by
+    rw [hνB k]; exact Finset.sum_nonneg fun _ _ => by positivity
+  have hB : ∑ j : Fin L.length, l2 (c' • (L.get j).1) * l2 (L.get j).2 ≤
+      ∏ k, (√(ν k) + √(1 - ν k)) := by
+    simp only [l2_smul, hc', one_mul]
+    rw [← list_sum_eq_sum_fin L (fun p => l2 p.1 * l2 p.2)]
+    refine hLn.trans (le_of_eq ?_)
+    exact Finset.prod_congr rfl fun k _ => by rw [hlA k, hlB k]
+  have hent := vonNeumann_rdm_le ℓ hℓ _ hvn (fun j => c' • (L.get j).1) (fun j => (L.get j).2)
+    hdec _ hB
+  have hlog : Real.log (∏ k, (√(ν k) + √(1 - ν k))) ≤ ∑ k, √(ν k * (1 - ν k)) := by
+    rw [Real.log_prod (fun k _ => (sqrt_add_sqrt_pos (ν k) (hν0 k)).ne')]
+    exact Finset.sum_le_sum fun k _ => log_sqrt_add_sqrt_le (ν k) (hν0 k) (hν1 k)
+  have hnu := sum_sqrt_nu_le (Φ * V) (segment ℓ) ν h1 h2
+  rw [hCC] at hnu
+  calc _ ≤ 2 * Real.log (∏ k, (√(ν k) + √(1 - ν k))) := hent
+    _ ≤ 2 * ∑ k, √(ν k * (1 - ν k)) := mul_le_mul_of_nonneg_left hlog (by norm_num)
+    _ ≤ 2 * ∑ x ∈ segment ℓ, ∑ y ∈ univ \ segment ℓ, ‖(Φ * Φᴴ) x y‖ :=
+        mul_le_mul_of_nonneg_left hnu (by norm_num)
+    _ = 2 * ∑ x ∈ segment ℓ, ∑ y ∈ univ \ segment ℓ, ‖corrMat A S t x y‖ := by
+        simp only [hC]
 
 namespace AreaLawAux
 
@@ -911,10 +1311,12 @@ lemma avgQ_mono' {f g : Cfg N → ℝ} (h : ∀ q, f q ≤ g q) : avgQ f ≤ avg
   unfold avgQ
   exact mul_le_mul_of_nonneg_left (Finset.sum_le_sum fun q _ => h q) (by positivity)
 
+/-- Averaging commutes with finite sums. -/
 lemma avgQ_sum' {ι : Type*} (s : Finset ι) (f : ι → Cfg N → ℝ) :
     avgQ (fun q => ∑ i ∈ s, f i q) = ∑ i ∈ s, avgQ (f i) := by
   unfold avgQ; rw [Finset.sum_comm, Finset.mul_sum]
 
+/-- Averaging commutes with multiplication by constants. -/
 lemma avgQ_const_mul' (c : ℝ) (f : Cfg N → ℝ) : avgQ (fun q => c * f q) = c * avgQ f := by
   unfold avgQ; rw [← Finset.mul_sum]; ring
 

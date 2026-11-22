@@ -24,7 +24,7 @@ Proof outline (auxiliary lemmas in `DFL.CutLocalAux`):
   and the von Neumann entropies coincide (`vonNeumann_conj_isometry`).
 -/
 
-open Matrix Finset NormedSpace
+open Matrix Finset
 
 noncomputable section
 
@@ -55,6 +55,8 @@ def xprodInit (ξ n : Cfg N) : Cfg N × Cfg N → ℂ :=
   prodInit (fun j x => if x = ξ j then 1 else 0) (Pi.single n 1)
 
 namespace CutLocalAux
+
+open NormedSpace
 
 /-! ### Splitting configurations -/
 
@@ -206,10 +208,10 @@ lemma xprodInit_eq (ξ n : Cfg N) : xprodInit ξ n = Pi.single (n, ξ) 1 := by
   rw [Finset.prod_boole]
   by_cases h1 : n' = n <;> by_cases h2 : x' = ξ
   · subst h1; subst h2; simp
-  · have : ¬ ∀ i ∈ univ, x' i = ξ i := fun h => h2 (funext fun i => h i (mem_univ i))
-    simp [h1, this, Pi.single_apply, h2]
-  · simp [h1, Pi.single_apply]
-  · simp [h1, Pi.single_apply]
+  · simp [h1, h2]
+    exact Function.ne_iff.mp h2
+  · simp [h1]
+  · simp [h1]
 
 /-- In the dual frame, the evolved state lives in the single charge sector `q = chargeOf n ξ`. -/
 lemma evo_xprodInit_apply' (J h : ℝ) (ξ n : Cfg N) (t : ℝ) (n' x' : Cfg N) :
@@ -226,9 +228,9 @@ lemma evo_xprodInit_apply' (J h : ℝ) (ξ n : Cfg N) (t : ℝ) (n' x' : Cfg N) 
   rw [e1, hU, blockDiagonal_apply']
   by_cases hc : chargeOf n' x' = chargeOf n ξ
   · have hx : x' = linkOf n' (chargeOf n ξ) := by rw [← hc, linkOf_chargeOf]
-    simp only [hc, hx, ite_true]
+    rw [ite_eq_left hc, ite_eq_left hx, hc]
   · have hx : x' ≠ linkOf n' (chargeOf n ξ) := fun hx => hc (by rw [hx, chargeOf_linkOf])
-    simp only [hc, hx, ite_false]
+    rw [ite_eq_right hc, ite_eq_right hx]
 
 /-- The exponential of a scalar matrix is a scalar matrix. -/
 lemma exp_smul_one {ι : Type*} [Fintype ι] [DecidableEq ι] (d : ℂ) :
@@ -284,7 +286,7 @@ lemma isoMat_conjTranspose_mul (g : ι → ι') : (isoMat g)ᴴ * isoMat g = 1 :
   simp only [Matrix.mul_apply, conjTranspose_apply, isoMat, Fintype.sum_prod_type]
   by_cases hij : i = j
   · subst hij
-    simp [ite_and, Finset.sum_ite_eq', Finset.sum_ite_eq]
+    simp [ite_and, Finset.sum_ite_eq']
   · rw [Matrix.one_apply_ne hij]
     refine Finset.sum_eq_zero fun a _ => Finset.sum_eq_zero fun b _ => ?_
     by_cases h1 : a = i ∧ b = g i
@@ -292,6 +294,7 @@ lemma isoMat_conjTranspose_mul (g : ι → ι') : (isoMat g)ᴴ * isoMat g = 1 :
       simp [h2]
     · simp [h1]
 
+omit [Fintype ι'] in
 /-- Entries of `V ρ V†` for `V = isoMat g`. -/
 lemma isoMat_conj_apply (g : ι → ι') (ρ : Matrix ι ι ℂ) (a : ι) (b : ι') (a' : ι) (b' : ι') :
     (isoMat g * ρ * (isoMat g)ᴴ) (a, b) (a', b') =
@@ -318,6 +321,20 @@ lemma vonNeumann_congr {κ : Type*} [Fintype κ] [DecidableEq κ] {ρ σ : Matri
   subst h
   rfl
 
+/-- The entropy functional evaluated on `a` zeros and the values `e`. -/
+lemma sum_map_roots {κ : Type*} [Fintype κ] (a : ℕ) (e : κ → ℝ) :
+    ((a • ({0} : Multiset ℂ) + Multiset.map (RCLike.ofReal ∘ e) univ.val).map
+      (fun z => Real.negMulLog (RCLike.re z))).sum = ∑ i, Real.negMulLog (e i) := by
+  rw [Multiset.map_add, Multiset.sum_add, Multiset.map_nsmul, Multiset.sum_nsmul,
+    Multiset.map_singleton, Multiset.sum_singleton, map_zero, Real.negMulLog_zero, smul_zero,
+    zero_add, Multiset.map_map]
+  have : ((fun z : ℂ => Real.negMulLog (RCLike.re z)) ∘ (RCLike.ofReal ∘ e)) =
+      fun i => Real.negMulLog (e i) := by
+    funext i
+    simp
+  rw [this]
+  rfl
+
 /-- If the characteristic polynomials agree up to powers of `X` (i.e. the nonzero eigenvalues
 agree with multiplicity), then the von Neumann entropies agree. -/
 lemma vonNeumann_eq_of_charpoly {κ : Type*} [Fintype κ] [DecidableEq κ] (σ : Matrix κ κ ℂ)
@@ -333,8 +350,8 @@ lemma vonNeumann_eq_of_charpoly {κ : Type*} [Fintype κ] [DecidableEq κ] (σ :
     Polynomial.roots_X_pow, hσ.roots_charpoly_eq_eigenvalues,
     hρ.roots_charpoly_eq_eigenvalues] at hr
   have := congrArg (fun s : Multiset ℂ => (s.map (fun z => Real.negMulLog (RCLike.re z))).sum) hr
-  simpa [vonNeumann, Multiset.map_nsmul, Real.negMulLog_zero, Finset.sum_eq_multiset_sum,
-    Function.comp_def] using this
+  simp only [sum_map_roots] at this
+  exact this
 
 /-- Conjugating by an isometry does not change the von Neumann entropy. -/
 lemma vonNeumann_conj_isometry {κ : Type*} [Fintype κ] [DecidableEq κ] (V : Matrix κ ι ℂ)
@@ -357,16 +374,24 @@ lemma sum_delta {κ : Type*} [Fintype κ] [DecidableEq κ] (P Q : Prop) [Decidab
     rw [star_mul', show w * u * (star w * star v) = (w * star w) * (u * star v) by ring, hw,
       one_mul]
   by_cases huv : u * star v = 0
-  · have h0 : ∀ δ : κ,
-        (if P ∧ δ = L₁ then w * u else 0) * star (if Q ∧ δ = L₂ then w * v else 0) = 0 := by
-      intro δ
-      split_ifs <;> simp [hwuv, huv]
-    simp only [h0, Finset.sum_const_zero, huv, ite_self]
+  · rw [huv, ite_self]
+    refine Finset.sum_eq_zero fun δ _ => ?_
+    by_cases h1 : P ∧ δ = L₁
+    · by_cases h2 : Q ∧ δ = L₂
+      · rw [ite_eq_left h1, ite_eq_left h2, hwuv, huv]
+      · rw [ite_eq_right h2, star_zero, mul_zero]
+    · rw [ite_eq_right h1, zero_mul]
   · obtain rfl := hL huv
     rw [Finset.sum_eq_single L₁]
-    · by_cases hP : P <;> by_cases hQ : Q <;> simp [hP, hQ, hwuv]
+    · by_cases hP : P
+      · by_cases hQ : Q
+        · rw [ite_eq_left ⟨hP, rfl⟩, ite_eq_left ⟨hQ, rfl⟩, ite_eq_left ⟨hP, hQ⟩, hwuv]
+        · rw [ite_eq_right (show ¬ (Q ∧ L₁ = L₁) from fun h => hQ h.1),
+            ite_eq_right (show ¬ (P ∧ Q) from fun h => hQ h.2), star_zero, mul_zero]
+      · rw [ite_eq_right (show ¬ (P ∧ L₁ = L₁) from fun h => hP h.1),
+          ite_eq_right (show ¬ (P ∧ Q) from fun h => hP h.1), zero_mul]
     · intro δ _ hδ
-      simp [hδ]
+      rw [ite_eq_right (fun h => hδ h.2), zero_mul]
     · simp
 
 /-- The occupations of `A` determine the link labels of `A`: `L_A(α)`. -/
@@ -432,11 +457,11 @@ lemma rdmLGT_evo_xprod (J h : ℝ) (ξ n : Cfg N) (t : ℝ) (ℓ : ℕ) (hℓ : 
   simp only [hγ]
   by_cases hc : β = linkA ℓ hℓ q α ∧ β' = linkA ℓ hℓ q α'
   · simp only [hc, and_self, ite_true, rdm]
+    rfl
   · simp only [hc, ite_false, Finset.sum_const_zero]
 
 end CutLocalAux
 
-open CutLocalAux in
 /-- **Definite-charge states** (paper: Lemma `lem:cutlocal`(c), Theorem `thm:arealaw`(c)): the full
 matter + gauge entanglement of the evolved LGT state equals the entanglement of the free-fermion
 state of the sector `q = chargeOf n ξ`. -/
@@ -444,10 +469,10 @@ theorem vonNeumann_rdmLGT_xprod (J h : ℝ) (ξ n : Cfg N) (t : ℝ) (ℓ : ℕ)
     vonNeumann (rdmLGT ℓ hℓ (evo (H J h) t *ᵥ xprodInit ξ n)) (rdmLGT_isHermitian ℓ hℓ _) =
       vonNeumann (rdm ℓ hℓ (evo (dGamma (hq J h (chargeOf n ξ))) t *ᵥ Pi.single n 1))
         (rdm_isHermitian ℓ hℓ _) := by
-  have hEq := rdmLGT_evo_xprod J h ξ n t ℓ hℓ
+  have hEq := CutLocalAux.rdmLGT_evo_xprod J h ξ n t ℓ hℓ
   have hσ := hEq ▸ rdmLGT_isHermitian ℓ hℓ (evo (H J h) t *ᵥ xprodInit ξ n)
-  rw [vonNeumann_congr _ hσ hEq]
-  exact vonNeumann_conj_isometry _ (isoMat_conjTranspose_mul _) _ _ _
+  rw [CutLocalAux.vonNeumann_congr _ hσ hEq]
+  exact CutLocalAux.vonNeumann_conj_isometry _ (CutLocalAux.isoMat_conjTranspose_mul _) _ _ _
 
 /-- The Fock configuration of the occupied set of `n` is `n`. -/
 private lemma fockCfg_occupied (n : Cfg N) : fockCfg (univ.filter (fun x => n x = 1)) = n := by

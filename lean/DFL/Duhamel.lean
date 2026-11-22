@@ -17,7 +17,7 @@ Proof strategy (no integrals): for `f(r) = U_q(s - r) U_{q'}(r) δ_z` we have
 the mean value inequality between `r = 0` and `r = s`.
 -/
 
-open Matrix Finset NormedSpace
+open Matrix Finset
 
 noncomputable section
 
@@ -33,6 +33,8 @@ def colNorm (U : Matrix (Fin N) (Fin N) ℂ) (z : Fin N) : ℝ :=
   ‖(WithLp.toLp 2 (fun x => U x z) : EuclideanSpace ℂ (Fin N))‖
 
 namespace DuhamelAux
+
+open NormedSpace
 
 variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 
@@ -207,7 +209,6 @@ lemma norm_deriv_le (J h : ℝ) (q : Cfg N) (D : Finset (Fin N)) (z : Fin N) (s 
 
 end DuhamelAux
 
-open DuhamelAux in
 /-- **Duhamel bound** (deterministic): if `q'` is `q` flipped on `D`, then
 `‖(U_q(s) - U_{q'}(s)) δ_z‖ ≤ 4|h| |s| ∑_{x ∈ D} Q_{q'}(x, z)`. -/
 theorem colNorm_evo_sub_le (J h : ℝ) (q : Cfg N) (D : Finset (Fin N)) (z : Fin N) (s : ℝ) :
@@ -218,17 +219,18 @@ theorem colNorm_evo_sub_le (J h : ℝ) (q : Cfg N) (D : Finset (Fin N)) (z : Fin
   set B := hq J h (flipOn D q) with hB
   set C := 4 * |h| * ∑ x ∈ D, corrQ B (hq_isHermitian J h (flipOn D q)) x z with hC
   have key := Convex.norm_image_sub_le_of_norm_hasDerivWithin_le
-    (f := fun r : ℝ => colL z (evo A (s - r) * evo B r)) (s := Set.univ) (x := 0) (y := s)
-    (fun r _ => (hasDerivAt_col A B s r z).hasDerivWithinAt)
-    (fun r _ => norm_deriv_le J h q D z s r) convex_univ trivial trivial
-  simp only [sub_zero, evo_zero, Matrix.mul_one, Matrix.one_mul, sub_self] at key
-  have hcol : colNorm (evo A s - evo B s) z = ‖colL z (evo B s) - colL z (evo A s)‖ := by
-    rw [colNorm, ← map_sub, colL_apply, ← norm_neg, ← WithLp.toLp_neg]
+    (f := fun r : ℝ => DuhamelAux.colL z (evo A (s - r) * evo B r)) (s := Set.univ) (x := 0)
+    (y := s) (fun r _ => (DuhamelAux.hasDerivAt_col A B s r z).hasDerivWithinAt)
+    (fun r _ => DuhamelAux.norm_deriv_le J h q D z s r) convex_univ trivial trivial
+  simp only [sub_zero, DuhamelAux.evo_zero, Matrix.mul_one, Matrix.one_mul, sub_self] at key
+  have hcol : colNorm (evo A s - evo B s) z =
+      ‖DuhamelAux.colL z (evo B s) - DuhamelAux.colL z (evo A s)‖ := by
+    rw [colNorm, ← map_sub, DuhamelAux.colL_apply, ← norm_neg, ← WithLp.toLp_neg]
     congr 2
     funext x
     simp
   rw [hcol]
-  calc ‖colL z (evo B s) - colL z (evo A s)‖ ≤ C * ‖s‖ := key
+  calc ‖DuhamelAux.colL z (evo B s) - DuhamelAux.colL z (evo A s)‖ ≤ C * ‖s‖ := key
     _ = 4 * |h| * |s| * ∑ x ∈ D, corrQ B (hq_isHermitian J h (flipOn D q)) x z := by
       rw [hC, Real.norm_eq_abs]
       ring
