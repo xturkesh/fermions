@@ -211,6 +211,223 @@ lemma norm_evo_sq_le_corrQ (J h : ℝ) (q : Cfg N) (t : ℝ) (x z : Fin N) :
   have h2 := norm_evo_le_corrQ (hq J h q) (hq_isHermitian J h q) t x z
   nlinarith
 
+
+section Unitary
+
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+
+/-- Expectation of a complexified real diagonal matrix: `⟨v, diag(d) v⟩ = ∑ d_i |v_i|²`. -/
+lemma expect_cplx_diagonal (d : ι → ℝ) (v : ι → ℂ) :
+    expect (cplx (diagonal d)) v = ((∑ i, d i * Complex.normSq (v i) : ℝ) : ℂ) := by
+  have hc : cplx (diagonal d) = diagonal (fun i => (d i : ℂ)) := by
+    unfold cplx; exact Matrix.diagonal_map (by simp)
+  rw [expect, hc]
+  simp only [dotProduct, mulVec_diagonal, Pi.star_apply, Complex.ofReal_sum, Complex.ofReal_mul]
+  refine Finset.sum_congr rfl (fun i _ => ?_)
+  rw [Complex.normSq_eq_conj_mul_self]
+  simp only [Complex.star_def]
+  ring
+
+omit [DecidableEq ι] in
+/-- `∑ |v_i|² = star v ⬝ᵥ v`. -/
+lemma sum_normSq_eq_dotProduct (w : ι → ℂ) :
+    ((∑ i, Complex.normSq (w i) : ℝ) : ℂ) = star w ⬝ᵥ w := by
+  simp only [Complex.ofReal_sum, dotProduct, Pi.star_apply]
+  refine Finset.sum_congr rfl (fun i _ => ?_)
+  rw [Complex.normSq_eq_conj_mul_self]
+  rfl
+
+/-- An isometry preserves `∑ |v_i|²`. -/
+lemma sum_normSq_mulVec (U : Matrix ι ι ℂ) (hU : Uᴴ * U = 1) (v : ι → ℂ) :
+    ∑ i, Complex.normSq ((U *ᵥ v) i) = ∑ i, Complex.normSq (v i) := by
+  have h1 : star (U *ᵥ v) ⬝ᵥ (U *ᵥ v) = star v ⬝ᵥ v := by
+    rw [star_mulVec, dotProduct_mulVec, vecMul_vecMul, hU, vecMul_one]
+  exact_mod_cast (sum_normSq_eq_dotProduct (U *ᵥ v)).trans
+    (h1.trans (sum_normSq_eq_dotProduct v).symm)
+
+/-- Rows of a unitary matrix are normalized. -/
+lemma sum_normSq_row (U : Matrix ι ι ℂ) (hU : U * Uᴴ = 1) (x : ι) :
+    ∑ z, Complex.normSq (U x z) = 1 := by
+  have h := congrFun (congrFun hU x) x
+  simp only [one_apply_eq] at h
+  have : ((∑ z, Complex.normSq (U x z) : ℝ) : ℂ) = 1 := by
+    rw [← h, Complex.ofReal_sum]
+    refine Finset.sum_congr rfl (fun z _ => ?_)
+    rw [← Complex.mul_conj]
+    rfl
+  exact_mod_cast this
+
+/-- Columns of a unitary matrix are normalized. -/
+lemma sum_normSq_col (U : Matrix ι ι ℂ) (hU : Uᴴ * U = 1) (z : ι) :
+    ∑ x, Complex.normSq (U x z) = 1 := by
+  have h := congrFun (congrFun hU z) z
+  simp only [one_apply_eq] at h
+  have : ((∑ x, Complex.normSq (U x z) : ℝ) : ℂ) = 1 := by
+    rw [← h, Complex.ofReal_sum]
+    refine Finset.sum_congr rfl (fun x _ => ?_)
+    rw [Complex.normSq_eq_conj_mul_self]
+    rfl
+  exact_mod_cast this
+
+end Unitary
+
+/-- `⟨n_x⟩` of an evolved Fock state, as a real sum over configurations. -/
+lemma sum_occ_normSq (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsSymm) (S : Finset (Fin N))
+    (x : Fin N) (t : ℝ) :
+    ∑ n, occ (n x) * Complex.normSq ((evo (dGamma A) t *ᵥ fockVec S) n) =
+      ∑ z ∈ S, Complex.normSq (evo A t x z) := by
+  have := density A hA S x t
+  rw [expect_cplx_diagonal] at this
+  exact_mod_cast this
+
+/-- `⟨N_R⟩` of an evolved Fock state: `∑_{x ∈ R} ∑_{z ∈ S} |U_{xz}|²`. -/
+lemma sum_count_normSq (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsSymm) (S R : Finset (Fin N))
+    (t : ℝ) :
+    ∑ n, count R n * Complex.normSq ((evo (dGamma A) t *ᵥ fockVec S) n) =
+      ∑ x ∈ R, ∑ z ∈ S, Complex.normSq (evo A t x z) := by
+  simp only [count, Finset.sum_mul]
+  rw [Finset.sum_comm]
+  exact Finset.sum_congr rfl (fun x _ => sum_occ_normSq A hA S x t)
+
+/-- The evolved Fock state is normalized. -/
+lemma sum_normSq_evo_fock (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsSymm)
+    (S : Finset (Fin N)) (t : ℝ) :
+    ∑ n, Complex.normSq ((evo (dGamma A) t *ᵥ fockVec S) n) = 1 := by
+  rw [sum_normSq_mulVec _ (evo_unitary _ (dGamma_isSymm A hA) t), fockVec,
+    Finset.sum_eq_single (fockCfg S) (fun n _ hn => by rw [Pi.single_eq_of_ne hn, map_zero])
+      (fun h => absurd (mem_univ _) h), Pi.single_eq_same, map_one]
+
+/-- LGT expectation of a diagonal matter observable, as a Bernoulli average of sector sums. -/
+lemma lgt_expect_diag_re (J h : ℝ) (ψ : Cfg N → ℂ) (d : Cfg N → ℝ) (t : ℝ) :
+    (expect (matter (diagonal d)) (lgtState J h ψ t)).re =
+      avgQ (fun q => ∑ n, d n * Complex.normSq ((evo (dGamma (hq J h q)) t *ᵥ ψ) n)) := by
+  rw [matter, sector_average_matter]
+  simp_rw [expect_cplx_diagonal]
+  exact re_avg _
+
+/-- Sector expectation of `N_R` in an evolved Fock state. -/
+lemma expect_numOp_re (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsSymm) (S R : Finset (Fin N))
+    (t : ℝ) :
+    (expect (cplx (numOp R)) (evo (dGamma A) t *ᵥ fockVec S)).re =
+      ∑ x ∈ R, ∑ z ∈ S, Complex.normSq (evo A t x z) := by
+  rw [numOp, expect_cplx_diagonal, Complex.ofReal_re, sum_count_normSq A hA S R t]
+
+/-- **Deviation of the mean particle number** for a symmetric unitary `U`:
+`|∑_{x ∈ R, z ∈ S} |U_{xz}|² - |S ∩ R|| ≤ ∑_{x ∈ R, z ∉ R} |U_{xz}|²`. -/
+lemma abs_mean_sub_le_symm (U : Matrix (Fin N) (Fin N) ℂ) (hU : Uᴴ * U = 1) (hT : Uᵀ = U)
+    (S R : Finset (Fin N)) :
+    |∑ x ∈ R, ∑ z ∈ S, Complex.normSq (U x z) - ((S ∩ R).card : ℝ)| ≤
+      ∑ x ∈ R, ∑ z ∈ univ \ R, Complex.normSq (U x z) := by
+  have ha : ∀ x z, 0 ≤ Complex.normSq (U x z) := fun x z => Complex.normSq_nonneg _
+  have hsym : ∀ x z, U x z = U z x := fun x z => by
+    have := congrFun (congrFun hT z) x
+    rwa [transpose_apply] at this
+  have hcol : ∀ z,
+      ∑ x ∈ R, Complex.normSq (U x z) + ∑ x ∈ univ \ R, Complex.normSq (U x z) = 1 := by
+    intro z
+    rw [add_comm, Finset.sum_sdiff (subset_univ R)]
+    exact sum_normSq_col U hU z
+  set D := ∑ x ∈ R, ∑ z ∈ univ \ R, Complex.normSq (U x z) with hD
+  set a := ∑ z ∈ S \ R, ∑ x ∈ R, Complex.normSq (U x z) with ha_def
+  set b := ∑ z ∈ S ∩ R, ∑ x ∈ univ \ R, Complex.normSq (U x z) with hb_def
+  have hab : ∑ x ∈ R, ∑ z ∈ S, Complex.normSq (U x z) - ((S ∩ R).card : ℝ) = a - b := by
+    rw [Finset.sum_comm, ← Finset.sum_inter_add_sum_sdiff S R]
+    have h1 : ∑ z ∈ S ∩ R, ∑ x ∈ R, Complex.normSq (U x z) = ((S ∩ R).card : ℝ) - b := by
+      rw [show ((S ∩ R).card : ℝ) = ∑ z ∈ S ∩ R, (1 : ℝ) by simp, hb_def,
+        ← Finset.sum_sub_distrib]
+      exact Finset.sum_congr rfl fun z _ => by linarith [hcol z]
+    rw [h1]
+    ring
+  have ha0 : 0 ≤ a := Finset.sum_nonneg fun z _ => Finset.sum_nonneg fun x _ => ha x z
+  have hb0 : 0 ≤ b := Finset.sum_nonneg fun z _ => Finset.sum_nonneg fun x _ => ha x z
+  have haD : a ≤ D := by
+    calc a ≤ ∑ z ∈ univ \ R, ∑ x ∈ R, Complex.normSq (U x z) :=
+          Finset.sum_le_sum_of_subset_of_nonneg (Finset.sdiff_subset_sdiff (subset_univ S) le_rfl)
+            (fun z _ _ => Finset.sum_nonneg fun x _ => ha x z)
+      _ = D := Finset.sum_comm
+  have hbD : b ≤ D := by
+    calc b ≤ ∑ z ∈ R, ∑ x ∈ univ \ R, Complex.normSq (U x z) :=
+          Finset.sum_le_sum_of_subset_of_nonneg Finset.inter_subset_right
+            (fun z _ _ => Finset.sum_nonneg fun x _ => ha x z)
+      _ = D := Finset.sum_congr rfl fun z _ => Finset.sum_congr rfl fun x _ => by rw [hsym]
+  rw [hab, abs_sub_le_iff]
+  constructor <;> linarith
+
+/-! #### Counting lemmas -/
+
+/-- Bounding `∑_{a ∈ s} g(φ a)` by the cardinalities of the fibres of `φ`. -/
+lemma sum_comp_le_of_card_fiber {α : Type*} (s : Finset α) (φ : α → ℕ) (M : ℕ)
+    (hφ : ∀ a ∈ s, φ a < M) (c : ℕ → ℝ)
+    (hc : ∀ d, ((s.filter (fun a => φ a = d)).card : ℝ) ≤ c d)
+    (g : ℕ → ℝ) (hg : ∀ d, 0 ≤ g d) :
+    ∑ a ∈ s, g (φ a) ≤ ∑ d ∈ range M, c d * g d := by
+  rw [← Finset.sum_fiberwise_of_maps_to' (t := range M) (fun a ha => mem_range.2 (hφ a ha))]
+  refine Finset.sum_le_sum (fun d _ => ?_)
+  rw [Finset.sum_const, nsmul_eq_mul]
+  exact mul_le_mul_of_nonneg_right (hc d) (hg d)
+
+/-- At most `d` pairs `(x, y)` with `x ≤ m < y` are at distance `d`. -/
+lemma card_cross_fiber_le (m d : ℕ) :
+    (((leftOf (N := N) m ×ˢ (univ \ leftOf m)).filter
+      (fun p : Fin N × Fin N => Nat.dist p.1.val p.2.val = d)).card : ℝ) ≤ d := by
+  have h : ((leftOf (N := N) m ×ˢ (univ \ leftOf m)).filter
+      (fun p : Fin N × Fin N => Nat.dist p.1.val p.2.val = d)).card ≤ (range d).card := by
+    apply Finset.card_le_card_of_injOn (fun p : Fin N × Fin N => m - p.1.val)
+    · intro p hp
+      simp only [leftOf, coe_filter, mem_product, mem_filter, mem_univ, true_and, Finset.mem_sdiff,
+        Set.mem_ofPred_eq] at hp
+      simp only [coe_range, Set.mem_Iio]
+      unfold Nat.dist at hp
+      omega
+    · intro p hp p' hp' hpp'
+      simp only [leftOf, coe_filter, mem_product, mem_filter, mem_univ, true_and, Finset.mem_sdiff,
+        Set.mem_ofPred_eq] at hp hp'
+      simp only at hpp'
+      unfold Nat.dist at hp hp'
+      ext <;> omega
+  rw [card_range] at h
+  exact_mod_cast h
+
+/-- **Crossing pairs**: `∑_{x ≤ m < y} g(|x - y|) ≤ ∑_d d g(d)`. -/
+lemma sum_cross_le (g : ℕ → ℝ) (hg : ∀ d, 0 ≤ g d)
+    (hs : Summable (fun d : ℕ => (d : ℝ) * g d)) (m : ℕ) :
+    ∑ x ∈ leftOf (N := N) m, ∑ y ∈ univ \ leftOf (N := N) m, g (Nat.dist x.val y.val) ≤
+      ∑' d : ℕ, (d : ℝ) * g d := by
+  rw [← Finset.sum_product' (f := fun x y : Fin N => g (Nat.dist x.val y.val))]
+  calc _ ≤ ∑ d ∈ range N, (d : ℝ) * g d :=
+        sum_comp_le_of_card_fiber _ (fun p : Fin N × Fin N => Nat.dist p.1.val p.2.val) N
+          (fun p _ => by have := p.1.isLt; have := p.2.isLt; unfold Nat.dist; omega)
+          (fun d => d) (card_cross_fiber_le m) g hg
+    _ ≤ _ := hs.sum_le_tsum _ (fun d _ => mul_nonneg (Nat.cast_nonneg d) (hg d))
+
+/-! #### Consequences of Hypothesis (EC) -/
+
+/-- Summability of `d ↦ d F(d)`. -/
+lemma ec_summable_mul {J h : ℝ} {F : ℕ → ℝ} (hEC : EC J h F) :
+    Summable (fun d : ℕ => (d : ℝ) * F d) :=
+  hEC.summable.of_nonneg_of_le (fun d => mul_nonneg (Nat.cast_nonneg d) (hEC.nonneg d))
+    (fun d => mul_le_mul_of_nonneg_right
+      (by nlinarith [(Nat.cast_nonneg d : (0 : ℝ) ≤ d)]) (hEC.nonneg d))
+
+/-- Summability of `d ↦ d √F(d)`. -/
+lemma ec_summable_mul_sqrt {J h : ℝ} {F : ℕ → ℝ} (hEC : EC J h F) :
+    Summable (fun d : ℕ => (d : ℝ) * √(F d)) :=
+  hEC.summable_sqrt.of_nonneg_of_le (fun d => mul_nonneg (Nat.cast_nonneg d) (Real.sqrt_nonneg _))
+    (fun d => mul_le_mul_of_nonneg_right
+      (by nlinarith [(Nat.cast_nonneg d : (0 : ℝ) ≤ d)]) (Real.sqrt_nonneg _))
+
+/-- `E ∑_{x ≤ m < z} Q(x, z) ≤ Σ₁(F)`. -/
+lemma avgQ_cross_corrQ_le {J h : ℝ} {F : ℕ → ℝ} (hEC : EC J h F) (m : ℕ) :
+    avgQ (fun q : Cfg N => ∑ x ∈ leftOf m, ∑ z ∈ univ \ leftOf m,
+      corrQ (hq J h q) (hq_isHermitian J h q) x z) ≤ sigma1 F := by
+  calc _ = ∑ x ∈ leftOf (N := N) m, ∑ z ∈ univ \ leftOf (N := N) m,
+        avgQ (fun q : Cfg N => corrQ (hq J h q) (hq_isHermitian J h q) x z) := by
+        rw [avgQ_sum]
+        exact Finset.sum_congr rfl fun x _ => avgQ_sum _ _
+    _ ≤ ∑ x ∈ leftOf (N := N) m, ∑ z ∈ univ \ leftOf (N := N) m, F (Nat.dist x.val z.val) :=
+        Finset.sum_le_sum fun x _ => Finset.sum_le_sum fun z _ => hEC.bound N x z
+    _ ≤ sigma1 F := sum_cross_le F hEC.nonneg (ec_summable_mul hEC) m
+
 end TransportSharpAux
 
 open TransportSharpAux
@@ -355,14 +572,19 @@ theorem sector_transport_le (J h : ℝ) (q : Cfg N) (S : Finset (Fin N)) (m : �
     |(expect (cplx (numOp (leftOf m))) (evo (dGamma (hq J h q)) t *ᵥ fockVec S)).re -
         ((S ∩ leftOf m).card : ℝ)| ≤
       ∑ x ∈ leftOf m, ∑ z ∈ univ \ leftOf m, ‖evo (hq J h q) t x z‖ ^ 2 := by
-  sorry
+  rw [expect_numOp_re _ (hq_isSymm J h q)]
+  refine (abs_mean_sub_le_symm _ (evo_unitary _ (hq_isSymm J h q) t)
+    (evo_transpose _ (hq_isSymm J h q) t) S _).trans (le_of_eq ?_)
+  simp only [Complex.normSq_eq_norm_sq]
 
 /-- `E_q sup_t |⟨N_{≤m}⟩_{q,t} - s_m| ≤ Σ₁(F)` (paper: eq. `eq:main-transport`). -/
 theorem avg_sup_transport_le (J h : ℝ) {F : ℕ → ℝ} (hEC : EC J h F) (S : Finset (Fin N)) (m : ℕ) :
     avgQ (fun q : Cfg N => ⨆ t : ℝ,
       |(expect (cplx (numOp (leftOf m))) (evo (dGamma (hq J h q)) t *ᵥ fockVec S)).re -
         ((S ∩ leftOf m).card : ℝ)|) ≤ sigma1 F := by
-  sorry
+  refine (avgQ_mono fun q => ciSup_le fun t => ?_).trans (avgQ_cross_corrQ_le hEC m)
+  exact (sector_transport_le J h q S m t).trans (Finset.sum_le_sum fun x _ =>
+    Finset.sum_le_sum fun z _ => norm_evo_sq_le_corrQ J h q t x z)
 
 /-- **Bounded transport with the constant of the paper** (paper: eq. `eq:main-transport`):
 `|⟨Ψ(t), N_{≤m} Ψ(t)⟩ - s_m| ≤ Σ₁(F)`. -/
@@ -370,7 +592,12 @@ theorem lgt_transport_sharp (J h : ℝ) {F : ℕ → ℝ} (hEC : EC J h F) (S : 
     (t : ℝ) :
     |(expect (matter (numOp (leftOf m))) (lgtState J h (fockVec S) t)).re -
         ((S ∩ leftOf m).card : ℝ)| ≤ sigma1 F := by
-  sorry
+  rw [numOp, lgt_expect_diag_re, ← avgQ_sub_const]
+  refine (abs_avgQ_le _).trans ((avgQ_mono fun q => ?_).trans (avgQ_cross_corrQ_le hEC m))
+  have h1 := sector_transport_le J h q S m t
+  rw [numOp, expect_cplx_diagonal, Complex.ofReal_re] at h1
+  exact h1.trans (Finset.sum_le_sum fun x _ =>
+    Finset.sum_le_sum fun z _ => norm_evo_sq_le_corrQ J h q t x z)
 
 /-- **Second moment of the transported charge** (paper: eq. `eq:main-transport2`):
 `⟨Ψ(t), (N_{≤m} - s_m)² Ψ(t)⟩ ≤ Θ(F) + Σ'₁(F)²`. -/

@@ -79,7 +79,7 @@ lemma update_add_one_eq (x : Cfg N) (j : Fin N) :
   funext k
   by_cases hk : k = j
   · subst hk; simp [fockCfg]
-  · simp [fockCfg, hk, Function.update_of_ne hk]
+  · simp [fockCfg, hk]
 
 /-- Emptying an occupied site: `Function.update n j 0 = n + 1_{{j}}` if `n j = 1`. -/
 lemma update_zero_eq {n : Cfg N} {j : Fin N} (hn : n j = 1) :
@@ -87,13 +87,13 @@ lemma update_zero_eq {n : Cfg N} {j : Fin N} (hn : n j = 1) :
   funext k
   by_cases hk : k = j
   · subst hk; simp [fockCfg, hn, GaussLawAux.zmod2_one_add_one]
-  · simp [fockCfg, hk, Function.update_of_ne hk]
+  · simp [fockCfg, hk]
 
 /-- The product of two flips is the flip of the symmetric difference. -/
 lemma flipSet_mul (T T' : Finset (Fin N)) : flipSet T * flipSet T' = flipSet (symmDiff T T') := by
   ext y' y
   simp only [flipSet, Matrix.mul_apply, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq',
-    Finset.mem_univ, if_true]
+    Finset.mem_univ, ite_true]
   rw [add_assoc, fockCfg_add, symmDiff_comm]
 
 /-- Flips are symmetric. -/
@@ -101,8 +101,8 @@ lemma flipSet_transpose (T : Finset (Fin N)) : (flipSet T)ᵀ = flipSet T := by
   ext y' y
   simp only [transpose_apply, flipSet]
   by_cases h : y' = y + fockCfg T
-  · rw [if_pos h, if_pos ((cfg_eq_add_comm _ _ _).1 h)]
-  · rw [if_neg h, if_neg (fun h' => h ((cfg_eq_add_comm _ _ _).2 h'))]
+  · rw [ite_eq_left h, ite_eq_left ((cfg_eq_add_comm _ _ _).1 h)]
+  · rw [ite_eq_right h, ite_eq_right (fun h' => h ((cfg_eq_add_comm _ _ _).2 h'))]
 
 /-- The empty flip is the identity. -/
 lemma flipSet_empty : flipSet (∅ : Finset (Fin N)) = 1 := by
@@ -172,15 +172,15 @@ lemma delta_tail (j : Fin N) :
     (fun k => prevLink (fockCfg (tailOf j)) k + fockCfg (tailOf j) k) = fockCfg {j} := by
   funext k
   simp only [prevLink, fockCfg, tailOf, Finset.mem_singleton, Finset.mem_filter, Finset.mem_univ,
-    true_and]
-  split_ifs <;> simp_all [Fin.ext_iff, Fin.le_def, GaussLawAux.zmod2_one_add_one] <;> omega
+    true_and, Fin.le_def, Fin.ext_iff]
+  split_ifs <;> simp_all [GaussLawAux.zmod2_one_add_one] <;> omega
 
 /-- Support of `c_j† c_{j'}` for `j ≠ j'`: `n_j ≠ n_{j'}` and `n' = n ∘ swap j j'`. -/
 lemma cre_mul_ann_ne_zero {j j' : Fin N} (hjj' : j ≠ j') {n' n : Cfg N}
     (h : (cre j * ann j') n' n ≠ 0) : n j ≠ n j' ∧ n' = n ∘ Equiv.swap j j' := by
   rw [FreeDynAux.mul_ann_apply, FreeDynAux.cre_apply] at h
   by_cases h1 : n j' = 1
-  · rw [if_pos h1] at h
+  · rw [ite_eq_left h1] at h
     by_cases h2 : Function.update n j' 0 j = 0 ∧
         n' = Function.update (Function.update n j' 0) j 1
     · obtain ⟨h2, rfl⟩ := h2
@@ -193,8 +193,8 @@ lemma cre_mul_ann_ne_zero {j j' : Fin N} (hjj' : j ≠ j') {n' n : Cfg N}
         · subst hkj'; simp [Function.update_of_ne hkj, h2]
         · simp [Function.update_of_ne hkj, Function.update_of_ne hkj',
             Equiv.swap_apply_of_ne_of_ne hkj hkj']
-    · rw [if_neg h2, mul_zero] at h; exact absurd rfl h
-  · rw [if_neg h1] at h; exact absurd rfl h
+    · rw [ite_eq_right h2, mul_zero] at h; exact absurd rfl h
+  · rw [ite_eq_right h1] at h; exact absurd rfl h
 
 end DualityFullAux
 
@@ -219,7 +219,7 @@ theorem ann_dual (j : Fin N) :
     congr 1
     simp only [Matrix.one_apply, flipSet, linkOf_eq_iff, update_zero_eq hn, chargeOf_add_left,
       chargeOf_linkOf]
-  · have : ann j n' n = 0 := by rw [FreeDynAux.ann_apply, if_neg ha]
+  · have : ann j n' n = 0 := by rw [FreeDynAux.ann_apply, ite_eq_right ha]
     rw [this, zero_mul, zero_mul]
 
 /-- `U† σᶻ_{b_j} U = τᶻ_j τᶻ_{j+1}` (`τᶻ_N := 1`). -/
@@ -233,7 +233,7 @@ theorem sz_dual (j : Fin N) :
     congr 1
     rw [sz_eq_flipSet]
     simp only [flipSet, linkOf_eq_iff, chargeOf_add_right, chargeOf_linkOf, delta_single]
-  · simp [Matrix.one_apply, hn]
+  · simp [hn]
 
 /-- `U† (∏_{k ≥ j} σᶻ_{b_k}) U = τᶻ_j`. -/
 theorem szTail_dual (j : Fin N) :
@@ -245,7 +245,7 @@ theorem szTail_dual (j : Fin N) :
   · subst hn
     congr 1
     simp only [flipSet, linkOf_eq_iff, chargeOf_add_right, chargeOf_linkOf, delta_tail]
-  · simp [Matrix.one_apply, hn]
+  · simp [hn]
 
 /-- `U† σˣ_{b_j} U = ∏_{k ≤ j} τˣ_k (-1)^{n_k}`. -/
 theorem sx_dual (j : Fin N) :
