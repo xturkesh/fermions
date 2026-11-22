@@ -75,16 +75,259 @@ def initZ (_G : FinGraph N M) (ψ : Cfg N → ℂ) : Cfg N × Cfg M → ℂ :=
 /-- The charge configurations reachable from the occupation `n`: `n + im ∂`. -/
 def sectors (n : Cfg N) : Finset (Cfg N) := univ.image (fun x => n + G.bdry x)
 
+/-! ### Auxiliary lemmas: `ZMod 2`, signs and occupations -/
+
+/-- Every element of `ZMod 2` is `0` or `1`. -/
+private lemma z2_cases (a : ZMod 2) : a = 0 ∨ a = 1 := by
+  revert a; decide
+
+/-- `1 + 1 = 0` in `ZMod 2`. -/
+private lemma z2_one_add_one : (1 : ZMod 2) + 1 = 0 := by decide
+
+/-- `a + a = 0` in `ZMod 2`. -/
+private lemma z2_add_self (a : ZMod 2) : a + a = 0 := by
+  revert a; decide
+
+/-- `sgn` turns addition in `ZMod 2` into multiplication. -/
+private lemma sgn_add (a b : ZMod 2) : sgn (a + b) = sgn a * sgn b := by
+  rcases z2_cases a with rfl | rfl <;> rcases z2_cases b with rfl | rfl <;>
+    simp [sgn, z2_one_add_one]
+
+/-- `(-1)^a = 1 - 2a` for `a ∈ {0, 1}`. -/
+private lemma sgn_eq_one_sub_two_occ (a : ZMod 2) : sgn a = 1 - 2 * occ a := by
+  rcases z2_cases a with rfl | rfl <;> norm_num [sgn, occ]
+
+/-! ### Auxiliary lemmas: fermionic matrix elements -/
+
+/-- Matrix elements of `c_a† c_b`. -/
+private lemma cre_mul_ann_apply (a b : Fin N) (n' n : Cfg N) :
+    (cre a * ann b) n' n =
+      if n b = 1 ∧ n' a = 1 ∧ Function.update n b 0 = Function.update n' a 0 then
+        sgn (jwPar n' a) * sgn (jwPar n b) else 0 := by
+  simp only [cre, Matrix.mul_apply, Matrix.transpose_apply, ann]
+  rw [Finset.sum_eq_single (Function.update n b 0)]
+  · by_cases h1 : n b = 1 <;> by_cases h2 : n' a = 1 <;>
+      by_cases h3 : Function.update n b 0 = Function.update n' a 0 <;> simp [h1, h2, h3]
+  · intro m _ hm
+    simp [hm]
+  · simp
+
+/-- Two configurations with the same value at `x` that agree after emptying `x` are equal. -/
+private lemma eq_of_update_eq {x : Fin N} {n n' : Cfg N} (hx : n' x = n x)
+    (h : Function.update n x 0 = Function.update n' x 0) : n' = n := by
+  funext k
+  by_cases hk : k = x
+  · subst hk; exact hx
+  · have := congrFun h k
+    simpa [Function.update_of_ne hk] using this.symm
+
+/-- `c_x† c_x` is the diagonal occupation operator. -/
+private lemma cre_mul_ann_self (x : Fin N) : cre x * ann x = diagonal (fun n => occ (n x)) := by
+  ext n' n
+  rw [cre_mul_ann_apply, diagonal_apply]
+  by_cases hn : n x = 1
+  · by_cases h' : n' x = 1 ∧ Function.update n x 0 = Function.update n' x 0
+    · have : n' = n := eq_of_update_eq (h'.1.trans hn.symm) h'.2
+      subst this
+      have hs : sgn (jwPar n' x) * sgn (jwPar n' x) = 1 := by
+        unfold sgn; split_ifs <;> norm_num
+      simp [hn, hs, occ]
+    · have : n' ≠ n := by rintro rfl; exact h' ⟨hn, rfl⟩
+      simp only [hn, true_and, h', this, ite_false]
+  · have h0 : n x = 0 := (z2_cases _).resolve_right hn
+    by_cases h' : n' = n <;> simp [h', h0, occ]
+
+/-- Support of `c_a† c_b` for `a ≠ b`: a nonzero entry `(n', n)` has `n' = n + δ_a + δ_b`. -/
+private lemma cre_mul_ann_support {a b : Fin N} (hab : a ≠ b) {n' n : Cfg N}
+    (h : (cre a * ann b) n' n ≠ 0) (i : Fin N) :
+    n' i = n i + if a = i ∨ b = i then 1 else 0 := by
+  rw [cre_mul_ann_apply] at h
+  split_ifs at h with hc
+  · obtain ⟨hb, ha, hu⟩ := hc
+    have hua := congrFun hu a
+    have hub := congrFun hu b
+    rw [Function.update_of_ne hab, Function.update_self] at hua
+    rw [Function.update_self, Function.update_of_ne hab.symm] at hub
+    by_cases hia : a = i
+    · subst hia
+      simp [hua, ha]
+    · by_cases hib : b = i
+      · subst hib
+        simp [← hub, hb, z2_one_add_one]
+      · have hui := congrFun hu i
+        rw [Function.update_of_ne (Ne.symm hib), Function.update_of_ne (Ne.symm hia)] at hui
+        simp [hia, hib, hui]
+  · exact absurd rfl h
+
+/-! ### Auxiliary lemmas: the boundary map and the edge terms -/
+
+/-- `∂` is additive. -/
+private lemma bdry_add (x y : Cfg M) : G.bdry (x + y) = G.bdry x + G.bdry y := by
+  funext i
+  simp only [bdry, Pi.add_apply, Finset.sum_add_distrib]
+
+/-- `∂ 0 = 0`. -/
+private lemma bdry_zero : G.bdry 0 = 0 := by
+  funext i
+  simp [bdry]
+
+/-- The boundary map as an additive homomorphism. -/
+private def bdryHom : Cfg M →+ Cfg N where
+  toFun := G.bdry
+  map_zero' := bdry_zero G
+  map_add' := bdry_add G
+
+/-- `∂` commutes with subtraction. -/
+private lemma bdry_sub (x y : Cfg M) : G.bdry (x - y) = G.bdry x - G.bdry y :=
+  map_sub (bdryHom G) x y
+
+/-- `∂` of a single edge. -/
+private lemma bdry_single (e : Fin M) (i : Fin N) :
+    G.bdry (Pi.single e 1) i = if G.src e = i ∨ G.tgt e = i then 1 else 0 := by
+  unfold bdry
+  rw [Finset.sum_pi_single']
+  simp
+
+/-- Support of the edge hopping: a nonzero entry `(n', n)` has `n' = n + ∂ δ_e`. -/
+private lemma hopE_support (e : Fin M) {n' n : Cfg N} (h : G.hopE e n' n ≠ 0) :
+    n' = n + G.bdry (Pi.single e 1) := by
+  funext i
+  rw [Pi.add_apply, bdry_single]
+  rw [hopE, Matrix.add_apply] at h
+  by_cases h1 : (cre (G.src e) * ann (G.tgt e)) n' n = 0
+  · rw [h1, zero_add] at h
+    rw [cre_mul_ann_support (G.src_ne_tgt e).symm h i]
+    exact congrArg _ (if_congr or_comm rfl rfl)
+  · exact cre_mul_ann_support (G.src_ne_tgt e) h1 i
+
+/-- Flipping the label of `e` is adding `δ_e`. -/
+private lemma update_add_one (x : Cfg M) (e : Fin M) :
+    Function.update x e (x e + 1) = x + Pi.single e 1 := by
+  funext k
+  by_cases hk : k = e
+  · subst hk; simp
+  · simp [hk]
+
+/-- Flipping twice is the identity. -/
+private lemma add_single_add_single (x : Cfg M) (e : Fin M) :
+    x + Pi.single e 1 + Pi.single e 1 = x := by
+  rw [add_assoc, ← Pi.single_add, z2_one_add_one, Pi.single_zero, add_zero]
+
+/-- Matrix elements of `σᶻ_e`. -/
+private lemma szE_apply (e : Fin M) (x' x : Cfg M) :
+    G.szE e x' x = if x = x' + Pi.single e 1 then 1 else 0 := by
+  unfold szE
+  rw [update_add_one]
+  refine if_congr ⟨?_, ?_⟩ rfl rfl
+  · rintro rfl; rw [add_single_add_single]
+  · rintro rfl; rw [add_single_add_single]
+
+/-- The star terms `1 ⊗ ∏ σˣ` are diagonal. -/
+private lemma one_kron_star (i : Fin N) :
+    (1 : Matrix (Cfg N) (Cfg N) ℝ) ⊗ₖ G.star i =
+      diagonal (fun p : Cfg N × Cfg M => sgn (G.bdry p.2 i)) := by
+  rw [FinGraph.star, ← diagonal_one, diagonal_kronecker_diagonal]
+  simp
+
+/-! ### Gauss law -/
+
+/-- The Gauss operators commute with each hopping term. -/
+private lemma gaussOp_comm_hop (i : Fin N) (e : Fin M) :
+    G.gaussOp i * (G.hopE e ⊗ₖ G.szE e) = (G.hopE e ⊗ₖ G.szE e) * G.gaussOp i := by
+  ext ⟨n', x'⟩ ⟨n, x⟩
+  rw [gaussOp, diagonal_mul, mul_diagonal, kronecker_apply, szE_apply]
+  by_cases hx : x = x' + Pi.single e 1
+  · by_cases hn : G.hopE e n' n = 0
+    · simp [hn]
+    · have hs := G.hopE_support e hn
+      subst hx hs
+      simp only [Pi.add_apply, bdry_add, sgn_add, ite_true, mul_one]
+      ring
+  · simp [hx]
+
+/-- The Gauss operators commute with each star term. -/
+private lemma gaussOp_comm_star (i i' : Fin N) :
+    G.gaussOp i * ((1 : Matrix (Cfg N) (Cfg N) ℝ) ⊗ₖ G.star i') =
+      ((1 : Matrix (Cfg N) (Cfg N) ℝ) ⊗ₖ G.star i') * G.gaussOp i := by
+  rw [one_kron_star, gaussOp, diagonal_mul_diagonal, diagonal_mul_diagonal]
+  congr 1
+  funext p
+  ring
+
 /-- The Gauss operators commute with the Hamiltonian. -/
 theorem gaussOp_comm_ham (J h : ℝ) (i : Fin N) :
     G.gaussOp i * G.ham J h = G.ham J h * G.gaussOp i := by
-  sorry
+  simp only [ham, Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_smul, Matrix.smul_mul,
+    Matrix.mul_sum, Matrix.sum_mul, gaussOp_comm_hop, gaussOp_comm_star]
+
+/-! ### Second quantization -/
+
+/-- `dΓ` is additive. -/
+private lemma dGamma_add (A B : Matrix (Fin N) (Fin N) ℝ) :
+    dGamma (A + B) = dGamma A + dGamma B := by
+  simp only [dGamma, Matrix.add_apply, add_smul, Finset.sum_add_distrib]
+
+/-- `dΓ` is homogeneous. -/
+private lemma dGamma_smul (c : ℝ) (A : Matrix (Fin N) (Fin N) ℝ) :
+    dGamma (c • A) = c • dGamma A := by
+  simp only [dGamma, Matrix.smul_apply, smul_eq_mul, mul_smul, Finset.smul_sum]
+
+/-- Second quantization of a diagonal one-body matrix. -/
+private lemma dGamma_diagonal (d : Fin N → ℝ) :
+    dGamma (diagonal d) = diagonal (fun n => ∑ x, d x * occ (n x)) := by
+  have e : ∀ x, ∑ y, diagonal d x y • (cre x * ann y) = d x • diagonal (fun n => occ (n x)) := by
+    intro x
+    rw [Finset.sum_eq_single x]
+    · rw [diagonal_apply_eq, cre_mul_ann_self]
+    · intro y _ hy; rw [diagonal_apply_ne _ (Ne.symm hy), zero_smul]
+    · simp
+  simp only [dGamma, e]
+  ext n' n
+  simp only [Matrix.sum_apply, Matrix.smul_apply, diagonal_apply, smul_eq_mul]
+  split_ifs <;> simp
+
+/-- The adjacency matrix as a sum over the edges. -/
+private lemma adj_apply_eq_sum (i j : Fin N) :
+    G.adj i j = ∑ e, ((if G.src e = i ∧ G.tgt e = j then 1 else 0) +
+      (if G.tgt e = i ∧ G.src e = j then 1 else 0)) := by
+  rw [adj, Finset.natCast_card_filter]
+  refine Finset.sum_congr rfl (fun e _ => ?_)
+  by_cases h1 : G.src e = i ∧ G.tgt e = j
+  · have h2 : ¬ (G.tgt e = i ∧ G.src e = j) := by
+      rintro ⟨h3, -⟩
+      exact G.src_ne_tgt e (h1.1.trans h3.symm)
+    rw [ite_eq_left (Or.inl h1), ite_eq_left h1, ite_eq_right h2, add_zero]
+  · by_cases h2 : G.tgt e = i ∧ G.src e = j
+    · rw [ite_eq_left (Or.inr h2), ite_eq_right h1, ite_eq_left h2, zero_add]
+    · rw [ite_eq_right (not_or.2 ⟨h1, h2⟩), ite_eq_right h1, ite_eq_right h2, add_zero]
+
+/-- Second quantization of the adjacency matrix is the sum of the edge hoppings. -/
+private lemma dGamma_adj : dGamma G.adj = ∑ e, G.hopE e := by
+  have e1 : ∀ i j, G.adj i j • (cre i * ann j) =
+      ∑ e, ((if G.src e = i ∧ G.tgt e = j then cre i * ann j else 0) +
+        (if G.tgt e = i ∧ G.src e = j then cre i * ann j else 0)) := by
+    intro i j
+    rw [adj_apply_eq_sum, Finset.sum_smul]
+    refine Finset.sum_congr rfl (fun e _ => ?_)
+    rw [add_smul]
+    split_ifs <;> simp
+  have e2 : ∀ e, G.hopE e = ∑ i, ∑ j,
+      ((if G.src e = i ∧ G.tgt e = j then cre i * ann j else 0) +
+        (if G.tgt e = i ∧ G.src e = j then cre i * ann j else 0)) := by
+    intro e
+    simp only [Finset.sum_add_distrib, ite_and, Finset.sum_ite_irrel, Finset.sum_const_zero,
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true, hopE]
+  simp only [dGamma, e1, e2]
+  symm
+  rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl (fun i _ => ?_)
+  rw [Finset.sum_comm]
 
 /-- `dΓ(h_q)` in terms of the edge hoppings. -/
 theorem dGamma_hq (J h : ℝ) (q : Cfg N) :
     dGamma (G.hq J h q) =
       (-J) • ∑ e, G.hopE e + (2 * h) • diagonal (fun n => ∑ i, sgn (q i) * occ (n i)) := by
-  sorry
+  rw [FinGraph.hq, dGamma_add, dGamma_smul, dGamma_smul, dGamma_adj, dGamma_diagonal]
 
 /-- **Exact sector averaging on any graph** (paper: Theorem `thm:2dmap`, `σᶻ`-polarized gauge
 states): for Fock matter `|n⟩` and every matter observable `D` diagonal in the occupations, at every

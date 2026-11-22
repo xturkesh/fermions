@@ -903,6 +903,218 @@ theorem vonNeumann_slater_le (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsSymm) (S
       2 * ∑ x ∈ segment ℓ, ∑ y ∈ univ \ segment ℓ, ‖corrMat A S t x y‖ := by
   sorry
 
+namespace AreaLawAux
+
+/-! ### Averages over charge sectors -/
+
+lemma avgQ_mono' {f g : Cfg N → ℝ} (h : ∀ q, f q ≤ g q) : avgQ f ≤ avgQ g := by
+  unfold avgQ
+  exact mul_le_mul_of_nonneg_left (Finset.sum_le_sum fun q _ => h q) (by positivity)
+
+lemma avgQ_sum' {ι : Type*} (s : Finset ι) (f : ι → Cfg N → ℝ) :
+    avgQ (fun q => ∑ i ∈ s, f i q) = ∑ i ∈ s, avgQ (f i) := by
+  unfold avgQ; rw [Finset.sum_comm, Finset.mul_sum]
+
+lemma avgQ_const_mul' (c : ℝ) (f : Cfg N → ℝ) : avgQ (fun q => c * f q) = c * avgQ f := by
+  unfold avgQ; rw [← Finset.mul_sum]; ring
+
+/-- Cauchy–Schwarz for averages: `E[√a √b] ≤ √(E a) √(E b)`. -/
+lemma avgQ_sqrt_mul_sqrt_le (a b : Cfg N → ℝ) (ha : ∀ q, 0 ≤ a q) (hb : ∀ q, 0 ≤ b q) :
+    avgQ (fun q => √(a q) * √(b q)) ≤ √(avgQ a) * √(avgQ b) := by
+  unfold avgQ
+  have h := Real.sum_sqrt_mul_sqrt_le univ ha hb
+  have hc : (0 : ℝ) ≤ 1 / 2 ^ N := by positivity
+  calc (1 / 2 ^ N : ℝ) * ∑ q, √(a q) * √(b q)
+      ≤ (1 / 2 ^ N : ℝ) * (√(∑ q, a q) * √(∑ q, b q)) := mul_le_mul_of_nonneg_left h hc
+    _ = √((1 / 2 ^ N : ℝ) * ∑ q, a q) * √((1 / 2 ^ N : ℝ) * ∑ q, b q) := by
+        rw [Real.sqrt_mul hc, Real.sqrt_mul hc, mul_mul_mul_comm, Real.mul_self_sqrt hc]
+
+/-! ### Counting pairs across the cut -/
+
+lemma sum_le_tsum_injOn {ι : Type*} (s : Finset ι) (k : ι → ℕ) (hk : Set.InjOn k s)
+    (f : ℕ → ℝ) (hf0 : ∀ n, 0 ≤ f n) (hf : Summable f) : ∑ i ∈ s, f (k i) ≤ ∑' n, f n := by
+  classical
+  rw [← Finset.sum_image hk]
+  exact hf.sum_le_tsum _ (fun n _ => hf0 n)
+
+/-- `∑_x f(|x - z|) ≤ 2 ∑_d f(d)`. -/
+lemma sum_dist_le (f : ℕ → ℝ) (hf0 : ∀ n, 0 ≤ f n) (hf : Summable f) (z : Fin N) :
+    ∑ x : Fin N, f (Nat.dist x.val z.val) ≤ 2 * ∑' n, f n := by
+  rw [← Finset.sum_filter_add_sum_filter_not univ (fun x : Fin N => x.val ≤ z.val)]
+  have h1 : ∑ x ∈ univ.filter (fun x : Fin N => x.val ≤ z.val), f (Nat.dist x.val z.val) ≤
+      ∑' n, f n := by
+    have e : ∀ x ∈ univ.filter (fun x : Fin N => x.val ≤ z.val),
+        f (Nat.dist x.val z.val) = f (z.val - x.val) := by
+      intro x hx
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hx
+      rw [Nat.dist_eq_sub_of_le hx]
+    rw [Finset.sum_congr rfl e]
+    refine sum_le_tsum_injOn _ (fun x : Fin N => z.val - x.val) ?_ f hf0 hf
+    intro x hx y hy hxy
+    simp only [Finset.coe_filter, Finset.mem_univ, true_and, Set.mem_ofPred_eq] at hx hy
+    exact Fin.ext (by simp only at hxy; omega)
+  have h2 : ∑ x ∈ univ.filter (fun x : Fin N => ¬ x.val ≤ z.val), f (Nat.dist x.val z.val) ≤
+      ∑' n, f n := by
+    have e : ∀ x ∈ univ.filter (fun x : Fin N => ¬ x.val ≤ z.val),
+        f (Nat.dist x.val z.val) = f (x.val - z.val) := by
+      intro x hx
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hx
+      rw [Nat.dist_eq_sub_of_le_right (by omega)]
+    rw [Finset.sum_congr rfl e]
+    refine sum_le_tsum_injOn _ (fun x : Fin N => x.val - z.val) ?_ f hf0 hf
+    intro x hx y hy hxy
+    simp only [Finset.coe_filter, Finset.mem_univ, true_and, Set.mem_ofPred_eq] at hx hy
+    exact Fin.ext (by simp only at hxy; omega)
+  linarith
+
+/-- Summability of `1/(d+1)²`. -/
+lemma summable_inv_succ_sq : Summable (fun d : ℕ => 1 / ((d : ℝ) + 1) ^ 2) := by
+  have h := (summable_nat_add_iff 1).mpr (Real.summable_one_div_nat_pow.mpr one_lt_two)
+  refine h.congr fun d => ?_
+  push_cast; ring
+
+/-- Uniform bound on the cut sum `∑_{x<ℓ≤y} ∑_z g(|x-z|) g(|y-z|)`. -/
+lemma cut_sum_le (g : ℕ → ℝ) (hg0 : ∀ d, 0 ≤ g d)
+    (hφ : Summable (fun d : ℕ => ((d : ℝ) + 1) ^ 2 * g d)) (ℓ : ℕ) :
+    ∑ x ∈ segment (N := N) ℓ, ∑ y ∈ univ \ segment (N := N) ℓ, ∑ z : Fin N,
+        g (Nat.dist x.val z.val) * g (Nat.dist y.val z.val) ≤
+      8 * (∑' d, g d) * (∑' d : ℕ, ((d : ℝ) + 1) ^ 2 * g d) *
+        (∑' d : ℕ, 1 / ((d : ℝ) + 1) ^ 2) := by
+  set φ : ℕ → ℝ := fun d => ((d : ℝ) + 1) ^ 2 * g d with hφdef
+  have hφ0 : ∀ d, 0 ≤ φ d := fun d => mul_nonneg (by positivity) (hg0 d)
+  have hgφ : ∀ d, g d ≤ φ d := fun d => by
+    have : (1 : ℝ) ≤ ((d : ℝ) + 1) ^ 2 := by nlinarith [(Nat.cast_nonneg d : (0 : ℝ) ≤ d)]
+    simpa [hφdef] using mul_le_mul_of_nonneg_right this (hg0 d)
+  have hgs : Summable g := Summable.of_nonneg_of_le hg0 hgφ hφ
+  set Sg := ∑' d, g d with hSg
+  set Sφ := ∑' d, φ d with hSφ
+  set Z := ∑' d : ℕ, 1 / ((d : ℝ) + 1) ^ 2 with hZ
+  have hSg0 : 0 ≤ Sg := tsum_nonneg hg0
+  have hSφ0 : 0 ≤ Sφ := tsum_nonneg hφ0
+  -- weighted decay: `g d ≤ φ d / (m+1)^2` for `m ≤ d`
+  have hdecay : ∀ m d : ℕ, m ≤ d → g d ≤ φ d / ((m : ℝ) + 1) ^ 2 := by
+    intro m d hmd
+    rw [le_div_iff₀ (by positivity)]
+    have : ((m : ℝ) + 1) ^ 2 ≤ ((d : ℝ) + 1) ^ 2 := by
+      have : (m : ℝ) ≤ d := by exact_mod_cast hmd
+      nlinarith
+    simpa [hφdef, mul_comm] using mul_le_mul_of_nonneg_left this (hg0 d)
+  -- rewrite as a sum over `z`
+  have e : ∑ x ∈ segment (N := N) ℓ, ∑ y ∈ univ \ segment (N := N) ℓ, ∑ z : Fin N,
+        g (Nat.dist x.val z.val) * g (Nat.dist y.val z.val) =
+      ∑ z : Fin N, (∑ x ∈ segment (N := N) ℓ, g (Nat.dist x.val z.val)) *
+        (∑ y ∈ univ \ segment (N := N) ℓ, g (Nat.dist y.val z.val)) := by
+    calc _ = ∑ x ∈ segment (N := N) ℓ, ∑ z : Fin N, ∑ y ∈ univ \ segment (N := N) ℓ,
+          g (Nat.dist x.val z.val) * g (Nat.dist y.val z.val) :=
+          Finset.sum_congr rfl fun x _ => Finset.sum_comm
+      _ = ∑ z : Fin N, ∑ x ∈ segment (N := N) ℓ, ∑ y ∈ univ \ segment (N := N) ℓ,
+          g (Nat.dist x.val z.val) * g (Nat.dist y.val z.val) := Finset.sum_comm
+      _ = _ := Finset.sum_congr rfl fun z _ => (Finset.sum_mul_sum _ _ _ _).symm
+  rw [e, ← Finset.sum_filter_add_sum_filter_not univ (fun z : Fin N => z.val < ℓ)]
+  -- the full sums are bounded by `2 Sg` resp. `2 Sφ`
+  have hA : ∀ z : Fin N, ∑ x ∈ segment (N := N) ℓ, g (Nat.dist x.val z.val) ≤ 2 * Sg := fun z =>
+    (Finset.sum_le_sum_of_subset_of_nonneg (Finset.subset_univ _) (fun _ _ _ => hg0 _)).trans
+      (sum_dist_le g hg0 hgs z)
+  have hB : ∀ z : Fin N, ∑ y ∈ univ \ segment (N := N) ℓ, g (Nat.dist y.val z.val) ≤ 2 * Sg := fun z =>
+    (Finset.sum_le_sum_of_subset_of_nonneg (Finset.subset_univ _) (fun _ _ _ => hg0 _)).trans
+      (sum_dist_le g hg0 hgs z)
+  -- left `z`: the `y`-sum decays
+  have hBl : ∀ z : Fin N, z.val < ℓ → ∑ y ∈ univ \ segment (N := N) ℓ, g (Nat.dist y.val z.val) ≤
+      2 * Sφ * (1 / (((ℓ - z.val : ℕ) : ℝ) + 1) ^ 2) := by
+    intro z hz
+    calc ∑ y ∈ univ \ segment (N := N) ℓ, g (Nat.dist y.val z.val)
+        ≤ ∑ y ∈ univ \ segment (N := N) ℓ, φ (Nat.dist y.val z.val) / (((ℓ - z.val : ℕ) : ℝ) + 1) ^ 2 := by
+          refine Finset.sum_le_sum fun y hy => hdecay _ _ ?_
+          simp only [segment, Finset.mem_sdiff, Finset.mem_univ, Finset.mem_filter, true_and,
+            not_lt] at hy
+          rw [Nat.dist_eq_sub_of_le_right (by omega)]
+          omega
+      _ = (∑ y ∈ univ \ segment (N := N) ℓ, φ (Nat.dist y.val z.val)) *
+            (1 / (((ℓ - z.val : ℕ) : ℝ) + 1) ^ 2) := by
+          rw [Finset.sum_mul]; exact Finset.sum_congr rfl fun y _ => by ring
+      _ ≤ 2 * Sφ * (1 / (((ℓ - z.val : ℕ) : ℝ) + 1) ^ 2) := by
+          refine mul_le_mul_of_nonneg_right ?_ (by positivity)
+          exact (Finset.sum_le_sum_of_subset_of_nonneg (Finset.subset_univ _)
+            (fun _ _ _ => hφ0 _)).trans (sum_dist_le φ hφ0 hφ z)
+  -- right `z`: the `x`-sum decays
+  have hAr : ∀ z : Fin N, ¬ z.val < ℓ → ∑ x ∈ segment (N := N) ℓ, g (Nat.dist x.val z.val) ≤
+      2 * Sφ * (1 / (((z.val - ℓ + 1 : ℕ) : ℝ) + 1) ^ 2) := by
+    intro z hz
+    calc ∑ x ∈ segment (N := N) ℓ, g (Nat.dist x.val z.val)
+        ≤ ∑ x ∈ segment (N := N) ℓ, φ (Nat.dist x.val z.val) / (((z.val - ℓ + 1 : ℕ) : ℝ) + 1) ^ 2 := by
+          refine Finset.sum_le_sum fun x hx => hdecay _ _ ?_
+          simp only [segment, Finset.mem_filter, Finset.mem_univ, true_and] at hx
+          rw [Nat.dist_eq_sub_of_le (by omega)]
+          omega
+      _ = (∑ x ∈ segment (N := N) ℓ, φ (Nat.dist x.val z.val)) *
+            (1 / (((z.val - ℓ + 1 : ℕ) : ℝ) + 1) ^ 2) := by
+          rw [Finset.sum_mul]; exact Finset.sum_congr rfl fun y _ => by ring
+      _ ≤ 2 * Sφ * (1 / (((z.val - ℓ + 1 : ℕ) : ℝ) + 1) ^ 2) := by
+          refine mul_le_mul_of_nonneg_right ?_ (by positivity)
+          exact (Finset.sum_le_sum_of_subset_of_nonneg (Finset.subset_univ _)
+            (fun _ _ _ => hφ0 _)).trans (sum_dist_le φ hφ0 hφ z)
+  have hZl : ∑ z ∈ univ.filter (fun z : Fin N => z.val < ℓ),
+      (1 / (((ℓ - z.val : ℕ) : ℝ) + 1) ^ 2) ≤ Z := by
+    refine sum_le_tsum_injOn _ (fun z : Fin N => ℓ - z.val) ?_ (fun d => 1 / ((d : ℝ) + 1) ^ 2)
+      (fun d => by positivity) summable_inv_succ_sq
+    intro x hx y hy hxy
+    simp only [Finset.coe_filter, Finset.mem_univ, true_and, Set.mem_ofPred_eq] at hx hy
+    exact Fin.ext (by simp only at hxy; omega)
+  have hZr : ∑ z ∈ univ.filter (fun z : Fin N => ¬ z.val < ℓ),
+      (1 / (((z.val - ℓ + 1 : ℕ) : ℝ) + 1) ^ 2) ≤ Z := by
+    refine sum_le_tsum_injOn _ (fun z : Fin N => z.val - ℓ + 1) ?_
+      (fun d => 1 / ((d : ℝ) + 1) ^ 2) (fun d => by positivity) summable_inv_succ_sq
+    intro x hx y hy hxy
+    simp only [Finset.coe_filter, Finset.mem_univ, true_and, Set.mem_ofPred_eq] at hx hy
+    exact Fin.ext (by simp only at hxy; omega)
+  have hl : ∑ z ∈ univ.filter (fun z : Fin N => z.val < ℓ),
+      (∑ x ∈ segment (N := N) ℓ, g (Nat.dist x.val z.val)) *
+        (∑ y ∈ univ \ segment (N := N) ℓ, g (Nat.dist y.val z.val)) ≤ 4 * Sg * Sφ * Z := by
+    calc _ ≤ ∑ z ∈ univ.filter (fun z : Fin N => z.val < ℓ),
+          (2 * Sg) * (2 * Sφ * (1 / (((ℓ - z.val : ℕ) : ℝ) + 1) ^ 2)) := by
+          refine Finset.sum_le_sum fun z hz => ?_
+          simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hz
+          exact mul_le_mul (hA z) (hBl z hz) (Finset.sum_nonneg fun _ _ => hg0 _) (by positivity)
+      _ = 4 * Sg * Sφ * ∑ z ∈ univ.filter (fun z : Fin N => z.val < ℓ),
+          (1 / (((ℓ - z.val : ℕ) : ℝ) + 1) ^ 2) := by
+          rw [Finset.mul_sum]; exact Finset.sum_congr rfl fun z _ => by ring
+      _ ≤ 4 * Sg * Sφ * Z := mul_le_mul_of_nonneg_left hZl (by positivity)
+  have hr : ∑ z ∈ univ.filter (fun z : Fin N => ¬ z.val < ℓ),
+      (∑ x ∈ segment (N := N) ℓ, g (Nat.dist x.val z.val)) *
+        (∑ y ∈ univ \ segment (N := N) ℓ, g (Nat.dist y.val z.val)) ≤ 4 * Sg * Sφ * Z := by
+    calc _ ≤ ∑ z ∈ univ.filter (fun z : Fin N => ¬ z.val < ℓ),
+          (2 * Sφ * (1 / (((z.val - ℓ + 1 : ℕ) : ℝ) + 1) ^ 2)) * (2 * Sg) := by
+          refine Finset.sum_le_sum fun z hz => ?_
+          simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hz
+          exact mul_le_mul (hAr z hz) (hB z) (Finset.sum_nonneg fun _ _ => hg0 _) (by positivity)
+      _ = 4 * Sg * Sφ * ∑ z ∈ univ.filter (fun z : Fin N => ¬ z.val < ℓ),
+          (1 / (((z.val - ℓ + 1 : ℕ) : ℝ) + 1) ^ 2) := by
+          rw [Finset.mul_sum]; exact Finset.sum_congr rfl fun z _ => by ring
+      _ ≤ 4 * Sg * Sφ * Z := mul_le_mul_of_nonneg_left hZr (by positivity)
+  linarith
+
+/-- Entries of the correlation matrix: `|C_xy| ≤ ∑_z |U_xz| |U_yz|`. -/
+lemma norm_corrMat_le (A : Matrix (Fin N) (Fin N) ℝ) (S : Finset (Fin N)) (t : ℝ) (x y : Fin N) :
+    ‖corrMat A S t x y‖ ≤ ∑ z, ‖evo A t x z‖ * ‖evo A t y z‖ := by
+  rw [corrMat, Matrix.mul_apply]
+  simp only [Matrix.mul_diagonal, Matrix.conjTranspose_apply]
+  refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun z _ => ?_)
+  rw [norm_mul, norm_mul, norm_star]
+  have : ‖(if z ∈ S then (1 : ℂ) else 0)‖ ≤ 1 := by split_ifs <;> simp
+  rw [mul_right_comm]
+  exact mul_le_of_le_one_right (mul_nonneg (norm_nonneg _) (norm_nonneg _)) this
+
+/-- `|U_xz| ≤ √Q(x,z)` (entries are bounded by `1` and by the eigenfunction correlator). -/
+lemma norm_evo_le_sqrt_corrQ (J h : ℝ) (q : Cfg N) (t : ℝ) (x z : Fin N) :
+    ‖evo (hq J h q) t x z‖ ≤ √(corrQ (hq J h q) (hq_isHermitian J h q) x z) := by
+  have h1 := norm_evo_le_corrQ (hq J h q) (hq_isHermitian J h q) t x z
+  have h2 := norm_evo_le_one (hq J h q) (hq_isSymm J h q) t x z
+  rw [← Real.sqrt_sq (norm_nonneg (evo (hq J h q) t x z))]
+  refine Real.sqrt_le_sqrt ?_
+  nlinarith [norm_nonneg (evo (hq J h q) t x z)]
+
+end AreaLawAux
+
 /-- **Area law for the charge-conditioned entanglement** `S_G` (paper: Theorem `thm:arealaw`):
 under Hypothesis (EC), the Bernoulli average over charge sectors of the entanglement entropy of a
 left segment is bounded uniformly in time, volume, segment length and occupied set. -/
@@ -911,6 +1123,38 @@ theorem lgt_areaLaw (J h : ℝ) {F : ℕ → ℝ} (hEC : EC J h F) :
       avgQ (fun q : Cfg N =>
         vonNeumann (rdm ℓ hℓ (evo (dGamma (hq J h q)) t *ᵥ fockVec S))
           (rdm_isHermitian ℓ hℓ _)) ≤ K := by
-  sorry
+  set g : ℕ → ℝ := fun d => √(F d) with hg
+  have hg0 : ∀ d, 0 ≤ g d := fun d => Real.sqrt_nonneg _
+  refine ⟨2 * (8 * (∑' d, g d) * (∑' d : ℕ, ((d : ℝ) + 1) ^ 2 * g d) *
+    (∑' d : ℕ, 1 / ((d : ℝ) + 1) ^ 2)), fun N ℓ hℓ S t => ?_⟩
+  set Q : Cfg N → Fin N → Fin N → ℝ := fun q x z => corrQ (hq J h q) (hq_isHermitian J h q) x z
+    with hQ
+  have hQ0 : ∀ q x z, 0 ≤ Q q x z := fun q x z => corrQ_nonneg _ _ x z
+  have hpt : ∀ q : Cfg N, vonNeumann (rdm ℓ hℓ (evo (dGamma (hq J h q)) t *ᵥ fockVec S))
+      (rdm_isHermitian ℓ hℓ _) ≤
+      2 * ∑ x ∈ segment ℓ, ∑ y ∈ univ \ segment ℓ, ∑ z, √(Q q x z) * √(Q q y z) := by
+    intro q
+    refine (vonNeumann_slater_le (hq J h q) (hq_isSymm J h q) S t ℓ hℓ).trans ?_
+    refine mul_le_mul_of_nonneg_left (Finset.sum_le_sum fun x _ => Finset.sum_le_sum fun y _ => ?_)
+      (by norm_num)
+    refine (norm_corrMat_le _ S t x y).trans (Finset.sum_le_sum fun z _ => ?_)
+    exact mul_le_mul (norm_evo_le_sqrt_corrQ J h q t x z) (norm_evo_le_sqrt_corrQ J h q t y z)
+      (norm_nonneg _) (Real.sqrt_nonneg _)
+  calc _ ≤ avgQ (fun q : Cfg N =>
+        2 * ∑ x ∈ segment ℓ, ∑ y ∈ univ \ segment ℓ, ∑ z, √(Q q x z) * √(Q q y z)) :=
+        avgQ_mono' hpt
+    _ = 2 * ∑ x ∈ segment ℓ, ∑ y ∈ univ \ segment ℓ, ∑ z,
+          avgQ (fun q : Cfg N => √(Q q x z) * √(Q q y z)) := by
+        rw [avgQ_const_mul', avgQ_sum']
+        simp_rw [avgQ_sum']
+    _ ≤ 2 * ∑ x ∈ segment ℓ, ∑ y ∈ univ \ segment ℓ, ∑ z : Fin N,
+          g (Nat.dist x.val z.val) * g (Nat.dist y.val z.val) := by
+        refine mul_le_mul_of_nonneg_left (Finset.sum_le_sum fun x _ => Finset.sum_le_sum
+          fun y _ => Finset.sum_le_sum fun z _ => ?_) (by norm_num)
+        refine (avgQ_sqrt_mul_sqrt_le _ _ (fun q => hQ0 q x z) (fun q => hQ0 q y z)).trans ?_
+        exact mul_le_mul (Real.sqrt_le_sqrt (hEC.bound N x z))
+          (Real.sqrt_le_sqrt (hEC.bound N y z)) (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
+    _ ≤ _ := mul_le_mul_of_nonneg_left (cut_sum_le g hg0 hEC.summable_sqrt ℓ) (by norm_num)
+
 
 end DFL
