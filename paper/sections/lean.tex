@@ -103,6 +103,10 @@ and (d): \texttt{no\_uniform\_LR\_nn}, \texttt{no\_uniform\_LR\_anticomm}, \text
 \texttt{avgPar\_imbInf\_uniform} (\texttt{OpenImbalance}).
 \item \cref{lem:intentropy,thm:numberentropy}: \texttt{massey}, \texttt{lgt\_numberEntropy\_sharp},
 \texttt{avg\_sup\_sector\_numberEntropy\_le} (\texttt{Entropy}, \texttt{TransportSharp}).
+\item \cref{lem:quasifree}: \texttt{secondQ}, \texttt{qfState}, \texttt{qfState\_eq\_prod},
+\texttt{uniformContinuousOn\_qfState}, \texttt{qfState\_posSemidef}, \texttt{trace\_qfState}, \texttt{vonNeumann\_qfState},
+\texttt{trace\_qfState\_zN}; $\rho_A=\rhoqf{C_A}$ of \cref{lem:slater}(a) for any region: \texttt{rdmF\_eq\_qfState}
+(\texttt{QuasiFree}).
 \item \cref{lem:slater}, and \cref{lem:quasifree}(b) for the reduced states of Slater determinants on left
 segments: \texttt{vonNeumann\_rdm\_slater} ($S(\rho_A)=\sum_i\bent(\nu_i)$), \texttt{numDist\_slater},
 \texttt{genfun\_slater}, \texttt{sum\_sqrt\_eig\_le} (\texttt{SlaterExact}); the law of $N_R$ for arbitrary regions $R$:
@@ -166,8 +170,7 @@ are formalized with the constants of the text.  The constants of \cref{thm:imbal
 existential quantifiers, with values depending only on $J$, $h$ and the profile $F$ (resp.\ on $|\lambda|$).  The area law is
 formalized twice: with the constant $2\ln2\,\Theta(F)$ of the text, through the exact formula of \cref{lem:slater}(a),
 and, by a shorter argument that never computes the spectrum of $\rho_A$, with the constant $2$ in place of $2\ln2$.
-The quasi-free density matrix $\rhoqf{C}$ of \cref{lem:quasifree}(a) is not defined in Lean; the reduced state of a
-Slater determinant is identified through its entropy and the law of $N_A$.  Four proofs take a different route from
+Four proofs take a different route from
 the text.
 \begin{itemize}
 \item \Cref{lem:green} is replaced by the Poisson identity
@@ -192,6 +195,5 @@ the transport bounds of \cite{JSBS2003} behind \cref{thm:dimer}(b),(c) and (d) f
 region;
 \item the infinite-volume statements other than those listed above: \cref{thm:infvol}(a),
 \cref{prop:dimerimbalance}(iii) and \cref{lem:dimerdos};
-\item \cref{lem:quasifree}(a);
 \item remarks, conjectures and numerics.
 \end{itemize}

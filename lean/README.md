@@ -69,6 +69,7 @@ No `axiom` is introduced anywhere.
 | Lemma `lem:slater`(a),(b) and `lem:quasifree`(b) for Slater determinants `Γ(e^{-itA})\|S⟩` and left segments (`S(ρ_A) = ∑_i h(ν_i)`, `ν_i ∈ [0,1]` the eigenvalues of `C_A = P_A K P_A`; `N_A` Poisson-binomial with generating function `det(1 + (z-1) C_A)`; `∑_i √(ν_i(1-ν_i)) ≤ ∑_{x∈A, y∉A} \|K_{xy}\|`) | `corrA_isHermitian`, `eig_corrA_mem`, `vonNeumann_rdm_slater`, `numDist_slater`, `genfun_slater`, `sum_sqrt_eig_le` | `SlaterExact.lean` |
 | Lemma `lem:slater`(a), `lem:quasifree`(b) for **arbitrary regions** `R` (e.g. bulk intervals): `N_R` Poisson-binomial in the eigenvalues of `C_R`, generating function `det(1 + (z-1) C_R)` | `corrR_isHermitian`, `eig_corrR_mem`, `genfun_slater_gen`, `numDist_slater_gen` | `SlaterGeneral.lean` |
 | Lemma `lem:slater`(a),(b) for **arbitrary regions** with the fermionic reduced state (`rdmF`, reordering sign of `𝓕 ≅ 𝓕_R ⊗ 𝓕_B`): `S(ρ_R) = ∑_i h(ν_i)`, `S(ρ_R) ≤ 2 ln 2 ∑_{x∈R, y∉R} \|K_{xy}\|`, agreement with `rdm` for left segments; bulk area law `E_q sup_t S(ρ^q_B(t)) ≤ 4 ln 2 Θ(F)` (finite-volume form of `thm:infvol`(d)) | `rdmF`, `reorderSign`, `vonNeumann_rdmF_slater`, `vonNeumann_rdmF_le`, `vonNeumann_rdmF_segment`, `lgt_areaLaw_bulk` | `SlaterBulk.lean` |
+| Lemma `lem:quasifree` (quasi-free density matrices `ρ[C]` by eq. `eq:main-rhoformula` with the second quantization `Γ(C)`; eigenmode product form; continuity, uniform continuity on `{0 ≤ C ≤ 1}`; density matrix; `S(ρ[C]) = ∑ h(ν_i)`; `Tr(ρ[C] z^N) = det(1 + (z-1)C)`) and `lem:slater`(a) `ρ_A = ρ[C_A]` for any region | `secondQ`, `qfState`, `qfState_eq_prod`, `continuous_qfState`, `uniformContinuousOn_qfState`, `qfState_posSemidef`, `trace_qfState`, `vonNeumann_qfState`, `trace_qfState_zN`, `rdmF_eq_qfState` | `QuasiFree.lean` |
 | Lemma `lem:binent` (`h(ν) ≤ 2 ln 2 √(ν(1-ν))`, equality iff `ν ∈ {0, ½, 1}`) | `binEntropy_le_two_log_two_sqrt`, `binEntropy_eq_two_log_two_sqrt_iff` | `BinEntropy.lean` |
 | Lemma `lem:annealed`(i),(ii) (first bound) and Theorem `thm:arealaw`(a),(b) **with the constants of the paper**: `S(ρ_A) ≤ 2 ln 2 ∑_{x∈A, y∉A} \|K_{xy}\|`, `E_q sup_t S(ρ^q_A(t)) ≤ 2 ln 2 Θ(F) ≤ 8 ln 2 M_2(F)` | `annealed_K`, `annealed_cut`, `vonNeumann_slater_sharp`, `lgt_areaLaw_sharp`, `thetaF_le`, `lgt_areaLaw_sharp_of_ldt` | `AreaLawSharp.lean` |
 | Lemma `lem:annealed`(ii) (remaining bounds) and (iii) (bulk intervals: constants `2Θ(F)`, `2Σ₁(F)`, `4Σ'₁(F)²`) | `annealed_cut_Q`, `annealed_cut_Q_sq`, `annealed_ivl_K`, `annealed_ivl_Q`, `annealed_ivl_Q_sq` | `AnnealedInterval.lean` |
@@ -111,14 +112,14 @@ No `axiom` is introduced anywhere.
 
 ## Verification
 
-`lake build` compiles all 72 modules (about 37,400 lines) without `sorry`; there is no `axiom`,
+`lake build` compiles all 73 modules (about 38,900 lines) without `sorry`; there is no `axiom`,
 `admit`, `native_decide` or `implemented_by` in the library. The script `CheckAxioms.lean` walks
 through every theorem declared in a `DFL` module (including private helper lemmas) and collects the
 axioms it depends on:
 
 ```
 lake env lean CheckAxioms.lean
-# checked 4106 theorems in DFL modules; with non-standard axioms: 0
+# checked 4248 theorems in DFL modules; with non-standard axioms: 0
 ```
 
 i.e. every theorem depends only on Lean's standard axioms `propext`, `Classical.choice` and
@@ -152,9 +153,8 @@ lake env lean Check.lean
   √(1-ν_k))` by a product decomposition of the Slater determinant in canonical orbitals, and
   `log(√ν + √(1-ν)) ≤ √(ν(1-ν))`. `SlaterExact.lean`, `BinEntropy.lean` and `AreaLawSharp.lean` follow the
   paper: the Schmidt decomposition across the cut gives `S(ρ_A) = ∑_i h(ν_i)` exactly, and with
-  `lem:binent` the constant of the paper, `2 ln 2 Θ(F)`. The reduced state is identified through its
-  entropy and the law of `N_A` (the quasi-free density matrix `ρ_C` of `lem:quasifree`(a) is not
-  defined in Lean).
+  `lem:binent` the constant of the paper, `2 ln 2 Θ(F)`. `QuasiFree.lean` identifies the reduced state
+  with the quasi-free density matrix: `ρ_A = ρ[C_A]`.
 - **Constants.** `TransportSharp.lean` and `AreaLawSharp.lean` state transport, number entropy and the
   area law with the explicit constants of the paper (`Σ₁(F)`, `Θ(F) + Σ'₁(F)²`, `2 ln 2 Θ(F)`). The
   earlier versions in `Main.lean` and `AreaLaw.lean` have weaker or existential constants (transport
