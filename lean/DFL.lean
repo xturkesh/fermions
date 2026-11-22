@@ -55,3 +55,5 @@ import DFL.DimerTransfer
 import DFL.DimerTL
 import DFL.DualitySpectrum
 import DFL.AnnealedInterval
+import DFL.SlaterGeneral
+import DFL.NumberEntropyBulk
