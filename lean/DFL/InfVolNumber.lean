@@ -42,7 +42,7 @@ def KZA (J h : ℝ) (q n : CfgZ) (t : ℝ) (a b : ℤ) : Matrix (Set.Icc a b) (S
 theorem KZA_isHermitian (J h : ℝ) (q n : CfgZ) (t : ℝ) (a b : ℤ) : (KZA J h q n t a b).IsHermitian := by
   ext x y
   simp only [Matrix.conjTranspose_apply, KZA, KZ]
-  rw [← tsum_star]
+  rw [tsum_star]
   refine tsum_congr fun s => ?_
   split_ifs
   · rw [star_mul', star_star, mul_comm]
