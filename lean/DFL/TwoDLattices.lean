@@ -289,9 +289,16 @@ def boxPlaq (L₁ L₂ : ℕ) (p : Fin (L₁ - 1) × Fin (L₂ - 1)) : Cfg (boxM
 namespace TwoDLatticesAux
 
 /-- Adjacency is symmetric. -/
-lemma adj_symm (G : FinGraph N M) : Symmetric G.Adj := by
-  rintro i j ⟨e, h⟩
+lemma adj_symm (G : FinGraph N M) {i j : Fin N} (h : G.Adj i j) : G.Adj j i := by
+  obtain ⟨e, h⟩ := h
   exact ⟨e, h.elim (fun h => Or.inr ⟨h.2, h.1⟩) (fun h => Or.inl ⟨h.2, h.1⟩)⟩
+
+/-- Connectedness by paths is symmetric. -/
+lemma reflTransGen_adj_symm (G : FinGraph N M) {i j : Fin N}
+    (h : Relation.ReflTransGen G.Adj i j) : Relation.ReflTransGen G.Adj j i := by
+  induction h with
+  | refl => exact Relation.ReflTransGen.refl
+  | tail _ hbc ih => exact Relation.ReflTransGen.head (adj_symm G hbc) ih
 
 /-- Initial vertex of a box edge. -/
 lemma box_src (L₁ L₂ : ℕ) (e : (Fin (L₁ - 1) × Fin L₂) ⊕ (Fin L₁ × Fin (L₂ - 1))) :
@@ -333,14 +340,14 @@ theorem box_connected (L₁ L₂ : ℕ) : (box L₁ L₂).Connected := by
   have hroot : ∀ (h₁ : 0 < L₁) (h₂ : 0 < L₂) (i : Fin (L₁ * L₂)),
       Relation.ReflTransGen (box L₁ L₂).Adj i (boxVert ⟨0, h₁⟩ ⟨0, h₂⟩) := by
     intro h₁ h₂ i
-    have hi : i = boxVert (finProdFinEquiv.symm i).1 (finProdFinEquiv.symm i).2 := by
-      simp [boxVert]
+    have hi : i = boxVert (finProdFinEquiv.symm i).1 (finProdFinEquiv.symm i).2 :=
+      (Equiv.apply_symm_apply finProdFinEquiv i).symm
     rw [hi]
     exact (hx h₁ _ _ _).trans (hy h₁ h₂ _ _)
   intro i j
   have h₁ : 0 < L₁ := Fin.pos (finProdFinEquiv.symm i).1
   have h₂ : 0 < L₂ := Fin.pos (finProdFinEquiv.symm i).2
-  exact (hroot h₁ h₂ i).trans (Relation.ReflTransGen.symmetric (adj_symm _) (hroot h₁ h₂ j))
+  exact (hroot h₁ h₂ i).trans (reflTransGen_adj_symm _ (hroot h₁ h₂ j))
 
 /-- **First Betti number of the box** (paper: Theorem `thm:2dmap`(c)): `β = (L₁-1)(L₂-1)`. -/
 theorem box_beta (L₁ L₂ : ℕ) (h₁ : 0 < L₁) (h₂ : 0 < L₂) :
@@ -380,9 +387,11 @@ lemma bdry_square (G : FinGraph N M) {e₁ e₂ e₃ e₄ : Fin M} {a b c d : Fi
     (h₃ : G.src e₃ = a ∧ G.tgt e₃ = c) (h₄ : G.src e₄ = b ∧ G.tgt e₄ = d) :
     G.bdry (Pi.single e₁ 1 + Pi.single e₂ 1 + Pi.single e₃ 1 + Pi.single e₄ 1) = 0 := by
   simp only [bdry_add, bdry_single, h₁.1, h₁.2, h₂.1, h₂.2, h₃.1, h₃.2, h₄.1, h₄.2]
-  calc _ = (Pi.single a 1 + Pi.single a 1) + (Pi.single b 1 + Pi.single b 1) +
-        (Pi.single c 1 + Pi.single c 1) + (Pi.single d 1 + Pi.single d 1) := by abel
-    _ = 0 := by simp only [cfg_add_self, add_zero]
+  have h : ∀ x y z w : Cfg N, x + y + (z + w) + (x + z) + (y + w) = 0 := by
+    intro x y z w
+    calc x + y + (z + w) + (x + z) + (y + w) = (x + x) + (y + y) + (z + z) + (w + w) := by abel
+      _ = 0 := by simp only [cfg_add_self, add_zero]
+  exact h _ _ _ _
 
 /-- Evaluating a combination of unit vectors along an injective family. -/
 lemma sum_smul_single_apply_self {α : Type*} [Fintype α] {K : ℕ} (f : α → Fin K)
@@ -392,7 +401,7 @@ lemma sum_smul_single_apply_self {α : Type*} [Fintype α] {K : ℕ} (f : α →
   rw [Finset.sum_apply, Finset.sum_eq_single q]
   · simp
   · intro p _ hpq
-    simp [Pi.single_apply, hf.ne hpq.symm]
+    simp [hf.ne hpq.symm]
   · simp
 
 /-- A combination of unit vectors vanishes at `e` if all coefficients of `e` vanish. -/
@@ -404,7 +413,7 @@ lemma sum_smul_single_apply_eq_zero {α : Type*} [Fintype α] {K : ℕ} (f : α 
   intro p _
   by_cases hp : f p = e
   · simp [h p hp]
-  · simp [Pi.single_apply, Ne.symm hp]
+  · simp [Ne.symm hp]
 
 /-- The bottom edge `(x,y)—(x+1,y)` of a box plaquette. -/
 def boxBot (L₁ L₂ : ℕ) (p : Fin (L₁ - 1) × Fin (L₂ - 1)) : Fin (boxM L₁ L₂) :=
