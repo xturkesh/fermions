@@ -27,13 +27,13 @@ def expect (M : Matrix ι ι ℂ) (v : ι → ℂ) : ℂ := star v ⬝ᵥ (M *�
 
 omit [Fintype ι] [DecidableEq ι] in
 /-- The conjugate transpose of a complexified real matrix is the complexified transpose. -/
-theorem cplx_conjTranspose (A : Matrix ι ι ℝ) : (cplx A)ᴴ = cplx Aᵀ := by
+private theorem cplx_conjTranspose (A : Matrix ι ι ℝ) : (cplx A)ᴴ = cplx Aᵀ := by
   ext i j
   simp [cplx, conjTranspose_apply]
 
 omit [Fintype ι] [DecidableEq ι] in
 /-- The generator `-itA` of `evo` is skew-Hermitian for symmetric `A`. -/
-theorem gen_conjTranspose (A : Matrix ι ι ℝ) (hA : A.IsSymm) (t : ℝ) :
+private theorem gen_conjTranspose (A : Matrix ι ι ℝ) (hA : A.IsSymm) (t : ℝ) :
     ((-(t : ℂ) * Complex.I) • cplx A)ᴴ = -((-(t : ℂ) * Complex.I) • cplx A) := by
   rw [conjTranspose_smul, cplx_conjTranspose, hA.eq, ← neg_smul]
   congr 1
@@ -56,7 +56,8 @@ theorem evo_unitary' (A : Matrix ι ι ℝ) (hA : A.IsSymm) (t : ℝ) :
     add_neg_cancel, exp_zero]
 
 /-- The exponential of a scalar matrix is a scalar matrix. -/
-theorem exp_smul_one (d : ℂ) : exp (d • (1 : Matrix ι ι ℂ)) = exp d • (1 : Matrix ι ι ℂ) := by
+private theorem exp_smul_one (d : ℂ) :
+    exp (d • (1 : Matrix ι ι ℂ)) = exp d • (1 : Matrix ι ι ℂ) := by
   rw [smul_one_eq_diagonal, smul_one_eq_diagonal, Matrix.exp_diagonal]
   congr 1
   ext i
@@ -64,14 +65,14 @@ theorem exp_smul_one (d : ℂ) : exp (d • (1 : Matrix ι ι ℂ)) = exp d • 
 
 omit [DecidableEq ι] in
 /-- Multiplying the state by a scalar `z` multiplies expectations by `|z|²`. -/
-theorem expect_smul (M : Matrix ι ι ℂ) (z : ℂ) (v : ι → ℂ) :
+private theorem expect_smul (M : Matrix ι ι ℂ) (z : ℂ) (v : ι → ℂ) :
     expect M (z • v) = (star z * z) * expect M v := by
   unfold expect
   rw [mulVec_smul, star_smul, smul_dotProduct, dotProduct_smul, smul_eq_mul, smul_eq_mul]
   ring
 
 /-- A phase `e^{iθ}` has modulus one. -/
-theorem star_exp_mul_exp (θ : ℝ) :
+private theorem star_exp_mul_exp (θ : ℝ) :
     star (exp ((θ : ℂ) * Complex.I)) * exp ((θ : ℂ) * Complex.I) = 1 := by
   rw [← Complex.exp_eq_exp_ℂ]
   have h1 : star (Complex.exp ((θ : ℂ) * Complex.I)) = Complex.exp (-((θ : ℂ) * Complex.I)) := by
@@ -102,8 +103,8 @@ theorem expect_evo_sub_smul_one (A : Matrix ι ι ℝ) (c : ℝ) (M : Matrix ι 
   rw [hevo, smul_mulVec, expect_smul, star_exp_mul_exp, one_mul]
 
 /-- The matrix exponential commutes with relabelling the basis by a bijection. -/
-theorem exp_submatrix_equiv {κ : Type*} [Fintype κ] [DecidableEq κ] (X : Matrix ι ι ℂ)
-    (e : κ ≃ ι) : (exp X).submatrix e e = exp (X.submatrix e e) := by
+private theorem exp_submatrix_equiv {κ : Type*} [Fintype κ] [DecidableEq κ]
+    (X : Matrix ι ι ℂ) (e : κ ≃ ι) : (exp X).submatrix e e = exp (X.submatrix e e) := by
   let g := Matrix.reindexAlgEquiv ℚ ℂ e.symm
   have key : ∀ M : Matrix ι ι ℂ, M.submatrix e e = g M := fun M => rfl
   have hg : Continuous g := continuous_id.matrix_submatrix e e
@@ -127,14 +128,14 @@ theorem evo_submatrix {κ : Type*} [Fintype κ] [DecidableEq κ] (A : Matrix ι 
 
 omit [Fintype ι] [DecidableEq ι] in
 /-- The complexification of a block-diagonal matrix is block diagonal. -/
-theorem cplx_blockDiagonal {o : Type*} [Fintype o] [DecidableEq o] (B : o → Matrix ι ι ℝ) :
-    cplx (blockDiagonal B) = blockDiagonal (fun i => cplx (B i)) := by
+private theorem cplx_blockDiagonal {o : Type*} [Fintype o] [DecidableEq o]
+    (B : o → Matrix ι ι ℝ) : cplx (blockDiagonal B) = blockDiagonal (fun i => cplx (B i)) := by
   unfold cplx
   rw [blockDiagonal_map]
   simp
 
 /-- The exponential in a finite product of matrix algebras is computed componentwise. -/
-theorem pi_exp_apply {o : Type*} [Fintype o] (v : o → Matrix ι ι ℂ) (i : o) :
+private theorem pi_exp_apply {o : Type*} [Fintype o] (v : o → Matrix ι ι ℂ) (i : o) :
     exp v i = exp (v i) := by
   open scoped Matrix.Norms.Operator in exact Pi.coe_exp v i
 

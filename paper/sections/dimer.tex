@@ -794,9 +794,10 @@ Markov-type potentials cover this case, so its status is open.
 \caption{A single dressed fermion in the dimer state $\Psi^x=\cdr^\dagger_x\Omdim$ versus the i.i.d.\ law of
 \cite{SKKM2017}, at $h=0.25J$ ($\lambda=0.5$, critical energies present) and $h=0.75J$
 ($\lambda=1.5$, none), with $J=1$.  The one-body dynamics is computed on $\Z$ (no boundary is reached)
-and averaged over $64$ sectors; bands are $\pm2$ standard errors.  (a) Sector-averaged mean-square
-displacement $\langle(X-x)^2\rangle_t=D^{(N)}_2(t;x)$ in the thermodynamic limit.  The grey line is the
-clean sector $q\equiv1$ ($2J^2t^2$, \cref{rem:gaussproj}); the dotted line has slope $3/2$.  (b) The
+and averaged over $64$ sectors.  (a) Sector-averaged mean-square
+displacement $\langle(X-x)^2\rangle_t=D^{(N)}_2(t;x)$ in the thermodynamic limit, with bands of $\pm2$
+standard errors.  The grey line is the clean sector $q\equiv1$ ($2J^2t^2$, \cref{rem:gaussproj}); the
+dotted line has slope $3/2$.  (b) The
 time average $\Mom_2(T)/(JT)$ of \cref{thm:dimer}.  Thin lines are the $64$ individual dimer sectors
 at $h=0.25J$; each stays bounded below, as \cref{prop:dimerlower} asserts for every configuration, and
 their mean grows roughly like $T^{1/2}$ (dotted), consistent with \cref{thm:dimer}(c).  For the
@@ -807,10 +808,26 @@ i.i.d.\ law, and for the dimer law at $h=0.75J$, $\Mom_2(T)$ saturates.  Code:
 
 \begin{remark}[Numerical illustration]\label{rem:dimernumerics}
 \Cref{fig:dimer} shows the sector-averaged mean-square displacement of one dressed fermion for the
-dimer law and the i.i.d.\ law.  The one-body dynamics is computed on $\Z$ by Chebyshev propagation on
-an adaptive window, so no boundary is ever reached; this is the thermodynamic limit of
-\cref{thm:dimer}(b).
-NUMBERS-TO-BE-FILLED
+dimer law and the i.i.d.\ law, at $h=0.25J$ and $h=0.75J$, each averaged over $64$ sectors.  The
+one-body dynamics is computed on $\Z$ by Chebyshev propagation on an adaptive window, which contains
+every site where the wave function exceeds $10^{-18}$.  So no boundary is ever reached (the largest
+window has $3.7\times10^4$ sites), and the data represent the thermodynamic limit of
+\cref{thm:dimer}(b).  The propagation agrees with exact diagonalization to $3\times10^{-15}$, and the
+norm is conserved to $3\times10^{-12}$.
+\begin{itemize}
+\item \emph{Dimer law, $h=0.25J$} ($\lambda=\frac12$, critical energies $\pm\lambda$):
+$\langle(X-x)^2\rangle_t\approx1.3\times10^2$, $5.3\times10^3$, $1.8\times10^5$ and $5.6\times10^6$ at $Jt=10$,
+$10^2$, $10^3$ and $10^4$.  The local exponents over the three decades are $1.62$, $1.52$ and $1.50$, in
+line with the $t^{3/2}$ law of \cite{DWP1990} and with the exponent of \cref{thm:dimer}(c).
+\item \emph{Saturation.}  For the i.i.d.\ law at $h=0.25J$ the same quantity saturates at
+$\approx8.6\times10^2$.  At $h=0.75J$ ($\lambda=1.5$, covered by \cite[Thm.~2.3]{DeBievreGerminet2000},
+\cref{rem:dimerstrong}) it saturates at $\approx50$ for the dimer law and at $\approx25$ for the i.i.d.\ law.
+\item \emph{Time averages.}  In panel (b), $\Mom_2(T)$ is computed from the same data by the trapezoidal
+rule.  On a finite chain this agrees with the exact eigenfunction formula to a relative error of
+$10^{-4}$.  For the dimer law at $h=0.25J$, $\Mom_2(T)/(JT)\approx3.6$, $19$, $72$ and $2.3\times10^2$ at
+$JT=1$, $10$, $10^2$ and $10^3$.  The smallest value over the $64$ sectors is $3.2$, $16$, $62$ and
+$2.1\times10^2$.
+\end{itemize}
 These numbers illustrate \cref{thm:dimer}; they are not used in any proof.  The script
 \texttt{code/dimer\_check.py} also verifies \cref{lem:dimercritical} to $3\times10^{-15}$ for
 $\lambda\in(0,3]$, and the bound \eqref{eq:dimerTbound} on $120$ random configurations, energies and

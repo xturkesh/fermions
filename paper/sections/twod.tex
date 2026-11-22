@@ -1,0 +1,620 @@
+% ---------------------------------------------------------------------------
+% Section: Two dimensions
+% ---------------------------------------------------------------------------
+% Section-local macros (unique names, \providecommand only).
+\providecommand{\TLat}{\mathcal{L}}          % finite graph (V,E)
+\providecommand{\TCyc}{\mathcal{Z}}          % cycle space
+\providecommand{\TFlux}{\Phi}                % flux configurations
+\providecommand{\TGauge}{\Theta}             % gauge group {+-1}^V
+\providecommand{\Tpi}{\pi}                   % fermion parity label
+\providecommand{\Tclus}{\mathcal{C}}         % equal-charge cluster
+
+\section{Two dimensions}\label{sec:2d}
+
+The model of \cite{SKKM2018} is defined on an arbitrary graph.  In this section we prove the exact
+free-fermion mapping on every finite connected graph, with the complete list of superselection labels
+(charges, fluxes through plaquettes and, on a torus, the non-contractible Wilson loops) and the parity
+constraint (\cref{thm:2dmap}).  We then determine the sector laws of two families of product initial
+states (\cref{prop:2dlaws}): $\sigma^z$-polarized links give the two-dimensional Anderson model with
+Bernoulli potential, and $\sigma^x$-polarized links with a checkerboard charge-density wave give binary
+random $\pi$-flux with a staggered potential.  At strong coupling we prove a cluster-confinement estimate,
+valid up to times of order $h/J^2$ (\cref{prop:cluster}), and we explain why it cannot be pushed further.
+Finally we summarize what is (not) known about the two-dimensional one-body problems.  In contrast to one
+dimension, we do \emph{not} obtain sector-averaged localization for any $h$ in two dimensions: the
+required one-body input is not available (\cref{sec:2d:status}).
+
+\subsection{The model on a graph and the exact mapping}\label{sec:2d:model}
+
+\paragraph{Setting.}
+Let $\TLat=(V,E)$ be a finite connected graph without loops; multiple edges are allowed.  Every edge
+$b\in E$ has two distinct endpoints, $\partial b=\{i,j\}$, and we write $b\ni i$ if $i\in\partial b$.
+The sites carry spinless fermions $f_i$, $i\in V$, with Fock space $\cF_V$, $n_i=f_i^\dagger f_i$ and
+$N_f=\sum_in_i$; after fixing an enumeration of $V$, the occupation basis $\ket n$, $n\in\{0,1\}^V$, is
+defined by the ordering convention \eqref{eq:occbasis}, and we write $\abs n:=\sum_in_i$.  We denote by
+$\cF_V^{(\Tpi)}$, $\Tpi=\pm1$, the eigenspaces of the fermion parity $(-1)^{N_f}$.  The edges carry spins
+$\frac12$; $\ket s_z$, $s\in\{\pm1\}^E$, is the $\sigma^z$-basis, and $\ket{n,s}:=\ket n\otimes\ket s_z$.
+For $J>0$ and $h\in\R\setminus\{0\}$ let
+\begin{equation}\label{eq:H2d}
+  H_\TLat:=-J\sum_{b\in E,\ \partial b=\{i,j\}}\sigma^z_b\bigl(f_i^\dagger f_j+f_j^\dagger f_i\bigr)
+  -h\sum_{i\in V}A_i,\qquad A_i:=\prod_{b\ni i}\sigma^x_b ,
+\end{equation}
+and define the Gauss operators and Wilson loops
+\begin{equation}\label{eq:G2d}
+  G_i:=(-1)^{n_i}A_i\quad(i\in V),\qquad W_\gamma:=\prod_{b\in\gamma}\sigma^z_b\quad(\gamma\in\TCyc(\TLat)).
+\end{equation}
+Here $\TCyc(\TLat)$ is the \emph{cycle space}: the set of edge sets $\gamma\subset E$ such that every
+vertex is an endpoint of an even number of edges of $\gamma$.  It is a vector space over $\mathbb F_2$
+under symmetric difference.  \eqref{eq:H2d} is \cite[Eqs.~(1)--(2)]{SKKM2018} with $J_{jk}\equiv J$ and
+$h_j\equiv h$ (their sum over $\langle jk\rangle$ contains both orientations); $G_i$ is their conserved
+charge $\hat q_i=(-1)^{\hat n_i}\hat A_i$, and $W_\gamma$ is their plaquette operator $\hat B_p$ when $\gamma$
+is a plaquette and their Wilson loop $\hat\Gamma_n$ (their Eq.~(6)) when $\gamma$ winds around a torus.  For
+the square lattice with open boundaries the $A_i$ of boundary sites are the ``incomplete stars'' of
+\cite[Fig.~1]{SKKM2018}.  On a path with $N$ sites and $N-1$ links, \eqref{eq:H2d} is the ``open'' chain
+of \cref{rem:boundary}(d); the boundary link of \cref{sec:model} is a one-dimensional device that we do
+not use here.
+
+\paragraph{Fluxes, gauge transformations, one-body operators.}
+Let $\beta:=\abs E-\abs V+1$.  A \emph{flux configuration} is a group homomorphism
+$\varphi:\TCyc(\TLat)\to\{\pm1\}$; they form a group $\TFlux(\TLat)$.  A sign configuration
+$s\in\{\pm1\}^E$ has the flux $\varphi_s(\gamma):=\prod_{b\in\gamma}s_b$.  The gauge group
+$\TGauge:=\{\pm1\}^V$ acts on sign configurations by $(\theta\cdot s)_b:=\theta_i\theta_js_b$ for
+$\partial b=\{i,j\}$.  For $q\in\{\pm1\}^V$ and $s\in\{\pm1\}^E$ we define on $\ell^2(V)$
+\begin{equation}\label{eq:hqs}
+  K_s:=-J\sum_{b\in E,\ \partial b=\{i,j\}}s_b\bigl(\ket i\bra j+\ket j\bra i\bigr),\qquad
+  h_{q,s}:=K_s+2h\,\diag(q),
+\end{equation}
+the hopping operator with binary $\pi$-fluxes $\varphi_s$ and the binary potential $\pm2h$.  With
+$D_\theta:=\diag(\theta)$ one has $D_\theta h_{q,s}D_\theta=h_{q,\theta\cdot s}$, so by
+\cref{lem:2dgauge}(i) the spectrum of $h_{q,s}$ and the moduli $\abs{f(h_{q,s})_{xy}}$ depend on $s$ only
+through $\varphi_s$.  As in \cref{sec:model}, $\dGamma(a):=\sum_{x,y\in V}a_{xy}f_x^\dagger f_y$, and
+$\Gamma(u)$ is the second quantization of a unitary $u$.
+
+\begin{lemma}[Fluxes and gauge orbits]\label{lem:2dgauge}
+\leavevmode
+\begin{enumerate}[label=(\roman*)]
+\item For $s,s'\in\{\pm1\}^E$: $\varphi_s=\varphi_{s'}$ if and only if $s'=\theta\cdot s$ for some
+$\theta\in\TGauge$, and $\theta$ is then unique up to a global sign.
+\item Let $T\subset E$ be a spanning tree.  For $b\in E\setminus T$ let $\gamma_b$ be the edge set
+consisting of $b$ and the path in $T$ joining the endpoints of $b$.  Then
+$\{\gamma_b:b\in E\setminus T\}$ is a basis of $\TCyc(\TLat)$; in particular
+$\dim_{\mathbb F_2}\TCyc(\TLat)=\beta$ and $\abs{\TFlux(\TLat)}=2^\beta$.
+\item The map $s\mapsto\varphi_s$ is onto $\TFlux(\TLat)$, and each fibre
+$O_\varphi:=\{s:\varphi_s=\varphi\}$ is a $\TGauge$-orbit with $2^{\abs V-1}$ elements.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(ii) Each $\gamma_b$ is a cycle (every vertex of a simple closed path has degree $2$), and $\gamma_b$ is the
+only one of these sets containing the non-tree edge $b$; hence they are linearly independent.  Given
+$\gamma\in\TCyc$, the set $\gamma':=\gamma\,\triangle\,\triangle_{b\in\gamma\setminus T}\gamma_b$ is a cycle
+contained in $T$.  A non-empty edge set in a tree has a vertex of degree one (an endpoint of a longest
+path in it), so $\gamma'=\emptyset$, and $\gamma=\triangle_{b\in\gamma\setminus T}\gamma_b$.  Since
+$\abs T=\abs V-1$, $\dim\TCyc=\abs{E\setminus T}=\beta$; a homomorphism to $\{\pm1\}$ is determined by
+its arbitrary values on a basis, so $\abs{\TFlux}=2^\beta$.
+
+(i) If $s'=\theta\cdot s$ and $\gamma\in\TCyc$, then
+$\varphi_{s'}(\gamma)=\varphi_s(\gamma)\prod_{i\in V}\theta_i^{d_\gamma(i)}=\varphi_s(\gamma)$, where the
+degree $d_\gamma(i)$ of $i$ in $\gamma$ is even.  Conversely let $\varphi_s=\varphi_{s'}$ and $r:=ss'$
+(pointwise), so that $\varphi_r\equiv1$.  Fix a root $v_0$ and define $\theta_v:=\prod_{b\in T(v_0,v)}r_b$,
+the product over the tree path from $v_0$ to $v$.  For an edge $b$ with $\partial b=\{i,j\}$, if $b\in T$
+then $T(v_0,i)\triangle T(v_0,j)=\{b\}$; if $b\notin T$ then $T(v_0,i)\triangle T(v_0,j)\triangle\{b\}=\gamma_b$.
+In both cases $r_b=\prod_{T(v_0,i)\triangle T(v_0,j)}r=\theta_i\theta_j$ (use $r^2=1$ and
+$\varphi_r(\gamma_b)=1$), i.e.\ $s'=\theta\cdot s$.  If $\theta\cdot s=\theta'\cdot s$, then
+$(\theta\theta')_i=(\theta\theta')_j$ for every edge, so $\theta\theta'$ is constant because $\TLat$ is
+connected.
+
+(iii) Given $\varphi$, set $s_b:=1$ for $b\in T$ and $s_b:=\varphi(\gamma_b)$ for $b\notin T$; then
+$\varphi_s=\varphi$ on the basis of (ii), hence everywhere.  By (i) the fibres are orbits, and the
+stabilizer of every $s$ is $\{\pm(1,\dots,1)\}$, so each orbit has $2^{\abs V}/2$ elements.
+\end{proof}
+
+\begin{theorem}[Exact mapping on graphs; planar boxes and tori]\label{thm:2dmap}
+Let $\TLat=(V,E)$ be a finite connected graph without loops.
+\begin{enumerate}[label=(\alph*)]
+\item The $G_i$ ($i\in V$) and $W_\gamma$ ($\gamma\in\TCyc(\TLat)$) are self-adjoint unitaries; they commute
+with each other, with $N_f$ and with $H_\TLat$; and
+\begin{equation}\label{eq:2dparity}
+  \prod_{i\in V}G_i=(-1)^{N_f}.
+\end{equation}
+\item For $q\in\{\pm1\}^V$ and $\varphi\in\TFlux(\TLat)$ let $P_{q,\varphi}$ be the joint spectral projection
+onto $\{G_i=q_i\ \forall i,\ W_\gamma=\varphi(\gamma)\ \forall\gamma\}$, and let $\Tpi_q:=\prod_iq_i$.  Then
+$\sum_{q,\varphi}P_{q,\varphi}=\one$, $\operatorname{rank}P_{q,\varphi}=2^{\abs V-1}$ for \emph{every}
+$(q,\varphi)$, and $(-1)^{N_f}P_{q,\varphi}=\Tpi_qP_{q,\varphi}$.  For every $s$ with $\varphi_s=\varphi$ there
+is a unitary $V_{q,s}:\cF_V^{(\Tpi_q)}\to\operatorname{Ran}P_{q,\varphi}$ which maps each $\ket n$ to a joint
+eigenvector of the $n_i$ with the same eigenvalues, and such that, on $\cF_V^{(\Tpi_q)}$,
+\begin{equation}\label{eq:2ddict}
+  V_{q,s}^*\,\sigma^z_bf_i^\dagger f_j\,V_{q,s}=s_b\,f_i^\dagger f_j\quad(\partial b=\{i,j\}),\qquad
+  V_{q,s}^*A_iV_{q,s}=q_i(-1)^{n_i},
+\end{equation}
+and consequently
+\begin{equation}\label{eq:2dsector}
+  V_{q,s}^*\,H_\TLat\,V_{q,s}=\Bigl(\dGamma(h_{q,s})-h\sum_{i\in V}q_i\Bigr)\Big|_{\cF_V^{(\Tpi_q)}} .
+\end{equation}
+For $\theta\in\TGauge$, $V_{q,\theta\cdot s}=q(\theta)\,V_{q,s}\,\Gamma(D_\theta)$ with
+$q(\theta):=\prod_{i:\theta_i=-1}q_i$.
+\item \emph{Planar box.}  Let $\TLat$ be the box $\{1,\dots,L_1\}\times\{1,\dots,L_2\}$ with nearest-neighbour
+edges, and let the plaquettes $p$ be its unit squares, with boundaries $\partial p$ and $W_p:=W_{\partial p}$.
+Then $\beta=(L_1-1)(L_2-1)$, and $\{\partial p\}_p$ is a basis of $\TCyc(\TLat)$.  Hence the sectors are
+labelled by $(q,(W_p)_p)\in\{\pm1\}^V\times\{\pm1\}^{\#\text{plaquettes}}$, all $2^{\abs V+\beta}$ labels
+occur, and in the sector $(q,(W_p))$ the matter consists of free fermions with the binary potential $2hq_i$
+and the binary $\pi$-flux $W_p=\prod_{b\in\partial p}s_b\in\{\pm1\}$ through $p$, restricted to the parity
+sector $(-1)^{N_f}=\prod_iq_i$.
+\item \emph{Torus.}  Let $\TLat$ be the torus $(\Z/L_1\Z)\times(\Z/L_2\Z)$, $L_1,L_2\ge3$, with
+nearest-neighbour edges, plaquettes $p$ as in (c), and let $\gamma_1$ (resp.\ $\gamma_2$) be the set of
+horizontal edges of the row $\{y=0\}$ (resp.\ the vertical edges of the column $\{x=0\}$).  Then
+$\beta=L_1L_2+1$, $\prod_pW_p=\one$, and $\{\partial p:p\neq p_0\}\cup\{\gamma_1,\gamma_2\}$ is a basis of
+$\TCyc(\TLat)$ for any fixed plaquette $p_0$.  Hence the sectors are labelled by $q$, the plaquette fluxes
+$(W_p)_p$ subject to $\prod_pW_p=1$, and the two non-contractible Wilson loops $W_{\gamma_1},W_{\gamma_2}$,
+which are independent labels; all $2^{\abs V+\beta}$ labels occur, and in $h_{q,s}$ the non-contractible
+loops act as $\Z_2$ twists of the boundary conditions in the two directions.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+For $\theta\in\TGauge$ let $V_\theta:=\{i:\theta_i=-1\}$, $q(\theta):=\prod_{i\in V_\theta}q_i$,
+$\varepsilon_n(\theta):=\prod_{i\in V_\theta}(-1)^{n_i}$ and $\mathcal G_\theta:=\prod_{i\in V_\theta}G_i$.
+Since $\sigma^x$ flips $\sigma^z$-eigenstates and $\TLat$ has no loops, $A_i\ket{n,s}=\ket{n,\theta^{(i)}\cdot s}$,
+where $\theta^{(i)}$ equals $-1$ at $i$ only.  Hence
+\begin{equation}\label{eq:Gtheta}
+  \mathcal G_\theta\ket{n,s}=\varepsilon_n(\theta)\,\ket{n,\theta\cdot s}\qquad(\theta\in\TGauge).
+\end{equation}
+
+(a) $G_i$ and $W_\gamma$ are products of commuting self-adjoint unitaries.  The $G_i$ are built from the
+mutually commuting operators $\sigma^x_b$ and $(-1)^{n_k}$; the $W_\gamma$ are diagonal in the basis
+$\ket{n,s}$, so they commute with each other, with $N_f$ and with every $(-1)^{n_k}$; and
+$A_iW_\gamma=(-1)^{d_\gamma(i)}W_\gamma A_i=W_\gamma A_i$ because the degree $d_\gamma(i)$ is even.  The
+electric term commutes with all $\sigma^x_b$, $(-1)^{n_k}$ and $W_\gamma$.  Let
+$T_b:=\sigma^z_b(f_i^\dagger f_j+f_j^\dagger f_i)$, $\partial b=\{i,j\}$.  It commutes with every
+$W_\gamma$.  It anticommutes with $A_k$ iff $b\ni k$, and with $(-1)^{n_k}$ iff $k\in\{i,j\}$ (because
+$(-1)^{n_i}f_i^\dagger=-f_i^\dagger(-1)^{n_i}$ and $(-1)^{n_i}$ commutes with $f_j$, $j\ne i$); so it
+commutes with each $G_k=(-1)^{n_k}A_k$.  Everything commutes with $N_f$.  Finally
+$\prod_iG_i=(-1)^{N_f}\prod_iA_i=(-1)^{N_f}\prod_{b\in E}(\sigma^x_b)^2=(-1)^{N_f}$, since every edge has
+exactly two endpoints.
+
+(b) \emph{Step 1: joint eigenvectors.}  Let $P_q:=\prod_i\frac12(\one+q_iG_i)=2^{-\abs V}\sum_{\theta\in\TGauge}q(\theta)\mathcal G_\theta$.
+By \eqref{eq:Gtheta}, $P_q\ket{n,s}=2^{-\abs V}\sum_\theta q(\theta)\varepsilon_n(\theta)\ket{n,\theta\cdot s}$.  The
+elements $\theta$ and $-\theta$ give the same vector $\ket{n,\theta\cdot s}$, and
+$q(-\theta)\varepsilon_n(-\theta)=\Tpi_q(-1)^{\abs n}q(\theta)\varepsilon_n(\theta)$.  Hence $P_q\ket{n,s}=0$ if
+$(-1)^{\abs n}\neq\Tpi_q$, while for $(-1)^{\abs n}=\Tpi_q$
+\begin{equation}\label{eq:Psi2d}
+  \Psi_{n,q,s}:=2^{(\abs V-1)/2}P_q\ket{n,s}
+  =2^{-(\abs V-1)/2}\sum_{[\theta]\in\TGauge/\{\pm1\}}q(\theta)\varepsilon_n(\theta)\,\ket{n,\theta\cdot s},
+\end{equation}
+where the summand depends only on the class $[\theta]=\{\theta,-\theta\}$.  By \cref{lem:2dgauge}(i),(iii),
+$[\theta]\mapsto\theta\cdot s$ is a bijection onto the orbit $O_{\varphi_s}$, so \eqref{eq:Psi2d} is a normalized
+sum of $2^{\abs V-1}$ orthonormal vectors with unimodular coefficients: $\Psi_{n,q,s}$ is a unit vector.  It
+satisfies $G_i\Psi_{n,q,s}=q_i\Psi_{n,q,s}$ (as $G_iP_q=q_iP_q$), $W_\gamma\Psi_{n,q,s}=\varphi_s(\gamma)\Psi_{n,q,s}$
+(every $\ket{n,\theta\cdot s}$ has flux $\varphi_s$), and it is an eigenvector of every occupation operator, with
+the same eigenvalues as $\ket n$.
+
+\emph{Step 2: orthonormal bases.}  Fix $\varphi$ and $s\in O_\varphi$.  Since the $W_\gamma$ are diagonal in the
+basis $\ket{n,s'}$, their joint eigenspace with eigenvalues $\varphi$ is spanned by $\{\ket{n,s'}:s'\in O_\varphi\}$.
+The joint eigenvalues of the commuting self-adjoint unitaries $(W_\gamma)_\gamma$ form a homomorphism
+$\gamma\mapsto\varphi(\gamma)$, because $W_{\gamma\triangle\gamma'}=W_\gamma W_{\gamma'}$; hence
+$\sum_{q,\varphi}P_{q,\varphi}=\one$.  As $P_q$ commutes with the $W_\gamma$, $\operatorname{Ran}P_{q,\varphi}$ is
+spanned by the vectors $P_q\ket{n,\theta\cdot s}$, $\theta\in\TGauge$.  By \eqref{eq:Gtheta},
+$\ket{n,\theta\cdot s}=\varepsilon_n(\theta)\mathcal G_\theta\ket{n,s}$, and $P_q\mathcal G_\theta=q(\theta)P_q$, so
+\begin{equation}\label{eq:Psigauge}
+  P_q\ket{n,\theta\cdot s}=q(\theta)\varepsilon_n(\theta)\,P_q\ket{n,s}.
+\end{equation}
+Therefore $\{\Psi_{n,q,s}:(-1)^{\abs n}=\Tpi_q\}$ spans $\operatorname{Ran}P_{q,\varphi}$; it is orthonormal because
+distinct $n$ give orthogonal vectors.  This proves $\operatorname{rank}P_{q,\varphi}=2^{\abs V-1}$ and
+$(-1)^{N_f}=\Tpi_q$ on $\operatorname{Ran}P_{q,\varphi}$, and $V_{q,s}\ket n:=\Psi_{n,q,s}$ defines a unitary
+$\cF_V^{(\Tpi_q)}\to\operatorname{Ran}P_{q,\varphi}$.  By \eqref{eq:Psigauge},
+$\Psi_{n,q,\theta\cdot s}=q(\theta)\varepsilon_n(\theta)\Psi_{n,q,s}$, which is the stated change of representative,
+since $\Gamma(D_\theta)\ket n=\varepsilon_n(\theta)\ket n$.
+
+\emph{Step 3: the Hamiltonian.}  Since $A_i=(-1)^{n_i}G_i$, $A_i\Psi_{n,q,s}=q_i(-1)^{n_i}\Psi_{n,q,s}$.  For the
+hopping let $\partial b=\{i,j\}$ and $n_j=1$, $n_i=0$, so that $f_i^\dagger f_j\ket n=\eta\ket{n'}$ with
+$n':=n-e_j+e_i$ and a sign $\eta$ given by \eqref{eq:fsign}; if $n_j=0$ or $n_i=1$ then $f_i^\dagger f_j\ket n=0$.
+As $n'$ and $n$ differ exactly at $i$ and $j$, $\varepsilon_{n'}(\theta)=\theta_i\theta_j\varepsilon_n(\theta)$, and
+$\sigma^z_b\ket{\theta\cdot s}_z=\theta_i\theta_js_b\ket{\theta\cdot s}_z$.  Hence, by \eqref{eq:Psi2d},
+\[
+  \sigma^z_bf_i^\dagger f_j\,\Psi_{n,q,s}
+  =2^{-(\abs V-1)/2}\sum_{[\theta]}q(\theta)\varepsilon_n(\theta)\theta_i\theta_js_b\,\eta\,\ket{n',\theta\cdot s}
+  =s_b\,\eta\,\Psi_{n',q,s},
+\]
+and both sides vanish in the remaining cases.  This is \eqref{eq:2ddict}.  Summing,
+$V_{q,s}^*H_\TLat V_{q,s}=-J\sum_bs_b(f_i^\dagger f_j+f_j^\dagger f_i)-h\sum_iq_i(1-2n_i)$, which is
+\eqref{eq:2dsector}.
+
+(c) The box is connected, $\abs V=L_1L_2$ and $\abs E=(L_1-1)L_2+L_1(L_2-1)$, so $\beta=(L_1-1)(L_2-1)$, the
+number of plaquettes.  Each $\partial p$ is a cycle.  If $\triangle_{p\in P'}\partial p=\emptyset$ for a non-empty set
+$P'$ of plaquettes, pick $p\in P'$ whose lower-left corner has maximal first coordinate; the right edge of $p$
+lies in $\partial p$ and otherwise only in the boundary of the plaquette to the right of $p$, which is not in
+$P'$, so it survives in the symmetric difference, a contradiction.  So the $\partial p$ are $\beta$ independent
+vectors, hence a basis, and $\varphi\mapsto(\varphi(\partial p))_p$ is a bijection
+$\TFlux\to\{\pm1\}^{\#\text{plaquettes}}$.  The rest follows from (b).
+
+(d) For $L_1,L_2\ge3$ the torus is a simple $4$-regular connected graph with $\abs V=L_1L_2$ and $\abs E=2L_1L_2$,
+so $\beta=L_1L_2+1$.  Every edge lies in exactly two plaquettes, so $\triangle_p\partial p=\emptyset$, i.e.\
+$\prod_pW_p=\one$.  If $\triangle_{p\in P'}\partial p=\emptyset$ with $\emptyset\neq P'\neq$ all plaquettes, then,
+the dual torus being connected, some edge lies in a plaquette of $P'$ and in one outside $P'$, and survives:
+a contradiction.  Hence the $\partial p$, $p\ne p_0$, are independent and span the same space $B$ as all
+$\partial p$.  Let $C_1$ be the set of horizontal edges joining $(0,y)$ and $(1,y)$, $y\in\Z/L_2\Z$, and $C_2$
+the set of vertical edges joining $(x,0)$ and $(x,1)$.  The linear forms $\ell_k(\gamma):=\abs{\gamma\cap C_k}\bmod2$
+vanish on every $\partial p$ (a plaquette contains $0$ or $2$ edges of $C_k$), and
+$\ell_1(\gamma_1)=\ell_2(\gamma_2)=1$, $\ell_1(\gamma_2)=\ell_2(\gamma_1)=0$.  Hence $\gamma_1,\gamma_2$ are independent
+modulo $B$, and $\{\partial p:p\ne p_0\}\cup\{\gamma_1,\gamma_2\}$ consists of $L_1L_2+1=\beta$ independent cycles, a
+basis.  Choosing $s$ as in \cref{lem:2dgauge}(iii), $W_{\gamma_1}$ and $W_{\gamma_2}$ are the products of the hopping
+signs around the two non-contractible directions, i.e.\ twisted boundary conditions.
+\end{proof}
+
+\begin{remark}[Comparison with \cite{SKKM2018}]\label{rem:2dSKKM}
+SKKM introduce dual spins by $\hat\tau^z_j=\hat A_j$, $\hat\tau^x_j\hat\tau^x_k=\hat\sigma^z_{jk}$
+\cite[Eq.~(5)]{SKKM2018}, which forces $\hat B_p=1$ and $\hat\Gamma_n=1$; other Wilson-loop sectors are reached by
+modifying the duality along reference lines \cite[Eq.~(19)]{SKKM2018}, and the global constraint
+$\prod_i\hat q_i=(-1)^{\hat N_f}$ is their Eq.~(7).  \Cref{thm:2dmap} treats all sectors at once: the dimension
+count $2^{\abs V}\cdot2^\beta\cdot2^{\abs V-1}=2^{\abs V+\abs E}$ shows that the labels $(q,\varphi)$ exhaust
+$\cH$, every sector $(q,\varphi)$ carries the free-fermion Hamiltonian $\dGamma(h_{q,s})$, $s\in O_\varphi$, on the
+parity sector $\Tpi_q$, and the only constraint is the parity relation \eqref{eq:2dparity}.  Unlike in the chain with a boundary link
+(\cref{lem:gauss}), the charges of a graph without ``dangling'' links can never be independent of the matter
+parity.
+\end{remark}
+
+\subsection{Sector laws of product initial states}\label{sec:2d:laws}
+
+For an operator $O$ on $\cH$ commuting with all $G_i$ and all $W_\gamma$ we write
+$O_{q,s}:=V_{q,s}^*OV_{q,s}$, an operator on $\cF_V^{(\Tpi_q)}$; for every function $F$ of the occupation
+numbers, $F_{q,s}=F$.  We write $\Psi(t):=\e^{-\ii tH_\TLat}\Psi_0$.
+
+\begin{proposition}[Sector laws]\label{prop:2dlaws}
+Let $\TLat$ be as in \cref{thm:2dmap}.
+\begin{enumerate}[label=(\alph*)]
+\item \emph{$\sigma^z$-product links: the Anderson--Bernoulli model.}  Let $\Psi_0=\psi\otimes\ket{s}_z$ with
+$s\in\{\pm1\}^E$ and $\psi\in\cF_V^{(\Tpi)}$ of definite parity $\Tpi$.  Then $P_{q,\varphi}\Psi_0=0$ unless
+$\varphi=\varphi_s$ and $\Tpi_q=\Tpi$, and for these sectors $P_{q,\varphi_s}\Psi_0=2^{-(\abs V-1)/2}\,V_{q,s}\psi$.  So the
+flux is deterministic, the sector law of the charges is uniform on the parity hyperplane $\{q:\prod_iq_i=\Tpi\}$,
+every sector carries the matter state $\psi$, and for every $O$ commuting with all $G_i,W_\gamma$
+\begin{equation}\label{eq:2dlawz}
+  \langle\Psi(t),O\Psi(t)\rangle=2^{1-\abs V}\sum_{q:\ \prod_iq_i=\Tpi}
+  \bigl\langle\Gamma(\e^{-\ii th_{q,s}})\psi,\,O_{q,s}\,\Gamma(\e^{-\ii th_{q,s}})\psi\bigr\rangle .
+\end{equation}
+The law of $q$ has density at most $2$ with respect to the i.i.d.\ Bernoulli$(1/2)$ law.  For the
+$\sigma^z$-polarized state $\ket{\uparrow\cdots\uparrow}_z$, i.e.\ $s=+:=(1,\dots,1)$, all fluxes vanish and the
+one-body operators are the Anderson--Bernoulli operators $h_{q,+}=-J\Delta+2h\diag(q)$, with $\Delta$ the adjacency
+operator of $\TLat$.
+\item \emph{$\sigma^x$-polarized links: random $\pi$-flux.}  Let $\Psi_0=\ket{n^0}\otimes\ket{+\cdots+}$, where
+$\sigma^x_b\ket{+\cdots+}=\ket{+\cdots+}$ for all $b$.  Let $q^0_i:=(-1)^{n^0_i}$.  Then $P_{q,\varphi}\Psi_0=0$
+unless $q=q^0$, and for every $\varphi\in\TFlux(\TLat)$ and every $s\in O_\varphi$,
+$P_{q^0,\varphi}\Psi_0=2^{-\beta/2}\,V_{q^0,s}\ket{n^0}$.  So the charges are deterministic, the flux
+configuration is uniformly distributed on $\TFlux(\TLat)$ (on a box: i.i.d.\ uniform plaquette fluxes; on a
+torus: $(W_p)$ uniform on $\{\prod_pW_p=1\}$, and $W_{\gamma_1},W_{\gamma_2}$ independent and uniform), every sector
+carries the matter state $\ket{n^0}$, and
+\begin{equation}\label{eq:2dlawx}
+  \langle\Psi(t),O\Psi(t)\rangle=2^{-\beta}\sum_{\varphi\in\TFlux}
+  \bigl\langle\Gamma(\e^{-\ii th_{q^0,s^\varphi}})n^0,\,O_{q^0,s^\varphi}\,\Gamma(\e^{-\ii th_{q^0,s^\varphi}})n^0\bigr\rangle ,
+  \qquad s^\varphi\in O_\varphi .
+\end{equation}
+\item \emph{Checkerboard.}  In (b) let $\TLat$ be bipartite with sublattice signs $\epsilon_i\in\{\pm1\}$
+($\epsilon_i=-\epsilon_j$ whenever $\partial b=\{i,j\}$), and $n^0_i=\frac12(1+\epsilon_i)$.  Let
+$\Gamma_\epsilon:=\diag(\epsilon)$.  Then $h_{q^0,s}=K_s-2h\Gamma_\epsilon$ with
+$K_s\Gamma_\epsilon=-\Gamma_\epsilon K_s$, and for every $s$:
+\begin{enumerate}[label=(\roman*)]
+\item $h_{q^0,s}^2=K_s^2+4h^2$;
+\item $\sigma(h_{q^0,s})\subset(-\infty,-2\abs h]\cup[2\abs h,\infty)$, and for every Borel set $B\subset[0,\infty)$,
+$\one_B(\abs{h_{q^0,s}})=\one_{g^{-1}(B)}(\abs{K_s})$ with $g(e):=\sqrt{e^2+4h^2}$.  In particular
+$\one_{\{2\abs h\}}(\abs{h_{q^0,s}})$ is the projection onto $\ker K_s$, and
+$\one_{[2\abs h,\sqrt{4h^2+\delta^2}]}(\abs{h_{q^0,s}})=\one_{[0,\delta]}(\abs{K_s})$ for $\delta\ge0$: the
+chiral point $E=0$ of the random-flux operator $K_s$ is mapped to the inner band edges $\abs E=2\abs h$;
+\item with $R_s:=(K_s^2+4h^2)^{1/2}$, $\e^{-\ii th_{q^0,s}}=\cos(tR_s)-\ii\,h_{q^0,s}R_s^{-1}\sin(tR_s)$;
+\item $(K_s^2)_{ii}=J^2\deg(i)$.  If $\TLat$ is a box in $\Z^2$, $K_s^2$ connects only sites of the same
+sublattice at distance $2$: $(K_s^2)_{ik}=J^2s_{ij}s_{jk}$ if $k=i\pm2e_\mu$ (with midpoint $j$), and
+$(K_s^2)_{ik}=J^2s_{ij_1}s_{j_1k}(1+W_p)$ if $i,k$ are opposite corners of the plaquette $p$ with the other
+corners $j_1,j_2$; here $s_{ij}$ is the sign of the edge joining $i$ and $j$.  Thus the diagonal amplitudes of
+$K_s^2$ vanish across $\pi$-flux plaquettes.
+\end{enumerate}
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(a) $W_\gamma\Psi_0=\varphi_s(\gamma)\Psi_0$ for all $\gamma$, so $P_{q,\varphi}\Psi_0=0$ for $\varphi\neq\varphi_s$.  Write
+$\psi=\sum_n\psi(n)\ket n$ with $(-1)^{\abs n}=\Tpi$.  By Step~1 of the proof of \cref{thm:2dmap},
+$P_q\ket{n,s}=0$ if $\Tpi_q\neq\Tpi$ and $P_q\ket{n,s}=2^{-(\abs V-1)/2}\Psi_{n,q,s}=2^{-(\abs V-1)/2}V_{q,s}\ket n$
+otherwise; sum over $n$.  Since $O$ commutes with all $P_{q,\varphi}$, and $\e^{-\ii tH_\TLat}$ commutes with them,
+\[
+  \langle\Psi(t),O\Psi(t)\rangle=\sum_q\langle P_{q,\varphi_s}\Psi(t),OP_{q,\varphi_s}\Psi(t)\rangle
+  =2^{1-\abs V}\sum_{\Tpi_q=\Tpi}\langle\e^{-\ii tH_q}\psi,O_{q,s}\e^{-\ii tH_q}\psi\rangle,
+\]
+with $H_q:=\dGamma(h_{q,s})-h\sum_iq_i$ by \eqref{eq:2dsector}; the constant drops out, and
+$\e^{-\ii t\dGamma(a)}=\Gamma(\e^{-\ii ta})$.  The uniform law on a hyperplane has density $2$ on its support.
+
+(b) As $\sigma^x_b\ket{+\cdots+}=\ket{+\cdots+}$, $A_i\Psi_0=\Psi_0$, so $G_i\Psi_0=q^0_i\Psi_0$.  Expanding
+$\ket{+\cdots+}=2^{-\abs E/2}\sum_s\ket s_z$, the $W$-eigenspace $\varphi$ receives
+$P_{q^0,\varphi}\Psi_0=2^{-\abs E/2}\sum_{s'\in O_\varphi}\ket{n^0,s'}$.  For every $\theta$,
+\[
+  q^0(\theta)\,\varepsilon_{n^0}(\theta)=\prod_{i\in V_\theta}(-1)^{2n^0_i}=1,
+\]
+so by \eqref{eq:Psi2d} and \cref{lem:2dgauge}(iii),
+$\Psi_{n^0,q^0,s}=2^{-(\abs V-1)/2}\sum_{s'\in O_\varphi}\ket{n^0,s'}$ for every $s\in O_\varphi$.  Hence $P_{q^0,\varphi}\Psi_0=2^{(\abs V-1-\abs E)/2}\Psi_{n^0,q^0,s}=2^{-\beta/2}V_{q^0,s}\ket{n^0}$.
+The uniformity statements on boxes and tori follow from \cref{thm:2dmap}(c),(d), since the coordinates of a
+uniformly distributed element of $\{\pm1\}^k$ with respect to a basis are i.i.d.\ uniform.  Formula
+\eqref{eq:2dlawx} follows as in (a).
+
+(c) Every edge joins opposite sublattices, so $\Gamma_\epsilon K_s\Gamma_\epsilon=-K_s$, and
+$q^0_i=(-1)^{n^0_i}=-\epsilon_i$, so $h_{q^0,s}=K_s-2h\Gamma_\epsilon$.  (i)
+$(K_s-2h\Gamma_\epsilon)^2=K_s^2-2h(K_s\Gamma_\epsilon+\Gamma_\epsilon K_s)+4h^2\Gamma_\epsilon^2=K_s^2+4h^2$.  (ii) By
+(i), $h_{q^0,s}^2\ge4h^2$, which gives the spectral inclusion, and by the functional calculus
+$\abs{h_{q^0,s}}=(K_s^2+4h^2)^{1/2}=g(\abs{K_s})$; hence $\one_B(\abs{h_{q^0,s}})=(\one_B\circ g)(\abs{K_s})
+=\one_{g^{-1}(B)}(\abs{K_s})$.  Take $B=\{2\abs h\}$ and $B=[2\abs h,\sqrt{4h^2+\delta^2}]$, for which
+$g^{-1}(B)=\{0\}$ and $[0,\delta]$.  (iii) For real $E\ne0$, $\e^{-\ii tE}=\cos(t\abs E)-\ii(E/\abs E)\sin(t\abs E)$;
+apply the functional calculus to $h_{q^0,s}$, whose spectrum avoids $(-2\abs h,2\abs h)$, and use
+$\abs{h_{q^0,s}}=R_s$.  (iv) $(K_s^2)_{ik}=J^2\sum_js_{ij}s_{jk}$, summed over the common neighbours $j$ of $i$
+and $k$.  In a box these exist only for $k=i$ ($\deg(i)$ terms equal to $1$), for $k=i\pm2e_\mu$ (one common
+neighbour), and for diagonal pairs, which have the two common neighbours $j_1,j_2$; then
+$s_{ij_2}s_{j_2k}=W_p\,s_{ij_1}s_{j_1k}$ because $W_p=s_{ij_1}s_{j_1k}s_{kj_2}s_{j_2i}$ and $s^2=1$.
+\end{proof}
+
+\begin{remark}[Interpretation]\label{rem:2dlaws}
+\leavevmode
+\begin{enumerate}[label=(\alph*)]
+\item \Cref{prop:2dlaws}(a) is the two-dimensional analogue of \cref{cor:sector}: for $\sigma^z$-polarized
+links all gauge-invariant dynamics is an average over the zero-flux Anderson model $h_{q,+}=-J\Delta+2h\diag(q)$
+with Bernoulli potential, restricted to a parity hyperplane of charge configurations.  This is the setting of
+\cite{SKKM2018}.  A $\sigma^z$-product state with flipped links has the same charge law but a deterministic,
+in general non-zero, flux $\varphi_s$; if $\varphi_s\equiv1$, then $s=\theta\cdot+$ for some $\theta$
+(\cref{lem:2dgauge}), and by \cref{thm:2dmap}(b) the gauge-invariant dynamics is that of the polarized state with
+the matter state $\Gamma(D_\theta)\psi$ (a sign for Fock $\psi$), as in \cref{lem:productlaw}(c).
+\item In \cref{prop:2dlaws}(b) the disorder sits entirely in the fluxes, while the potential
+$2h(-1)^{n^0_i}$ is fixed by the initial matter configuration.  The state $\ket{+\cdots+}$ has $A_i\equiv1$; the
+toric-code ground states considered in \cite[Sect.~I.C]{SKKM2018} are its normalized projections onto single flux
+sectors, in which neither the charges nor the fluxes are random.  For the checkerboard (c), the
+sector-averaged dynamics is a function of the binary random $\pi$-flux operator $K_s$ alone, by (iii); in
+particular every localization question for this initial state is a question about $K_s$ and $K_s^2$.  The
+chiral point $E=0$ of $K_s$, where random-flux and random-hopping models are expected to be critical rather than
+localized (the Gade singularity \cite{Gade1993}), sits at the inner band edges $\abs E=2\abs h$ of
+$h_{q^0,s}$.  We know of no localization theorem for $K_s$ with i.i.d.\ binary fluxes at any energy
+(\cref{sec:2d:status}).
+\end{enumerate}
+\end{remark}
+
+\begin{remark}[Numerical verification]\label{rem:2dED}
+The script
+\begin{center}
+\texttt{code/twod\_check.py}\quad(output: \texttt{code/twod\_check.out})
+\end{center}
+builds $H_\TLat$, the $G_i$ and the $W_\gamma$ from scratch in the basis $\ket{n,s}$ (Jordan--Wigner fermions, no input from the proof).
+\begin{itemize}
+\item \emph{\Cref{thm:2dmap}, sector by sector.}  For the planar $2\times3$ box ($\dim\cH=8192$), the
+$2\times2$ torus (a multigraph with $\beta=5$: three independent plaquettes and two non-contractible loops;
+$\dim\cH=4096$) and the complete graph $K_4$, the joint eigenspaces of all $G_i$ and of the fundamental-cycle
+Wilson loops were computed by diagonalizing a random linear combination of them.  Exactly $2^{\abs V+\beta}$
+sectors occur, each of dimension $\binom{\abs V}{N_f}$ in the $N_f$-particle space if
+$\prod_iq_i=(-1)^{N_f}$ and empty otherwise, and the spectrum of $H_\TLat$ in each of them coincides with that
+of $\dGamma(h_{q,s})-h\sum_iq_i$ with $s$ realizing the measured fluxes, to $2\times10^{-14}$ ($J=1$, $h=0.8$).
+\item \emph{\Cref{prop:2dlaws}(a),(b).}  For the $2\times4$ and $3\times3$ boxes and the $2\times2$ torus, the
+sector weights $\norm{P_{q,\varphi}\Psi_0}^2$ agree with (a) and (b) exactly, and the full time evolution of
+$\langle n_x(t)\rangle$ for $t\le8$ ($h\in\{0.4,1.3\}$; checkerboard and other Fock states, both link
+polarizations) agrees with \eqref{eq:2dlawz}, \eqref{eq:2dlawx} to $3\times10^{-13}$.
+\item \emph{\Cref{prop:2dlaws}(c)} on a $16\times16$ box with random fluxes: (i), (iii) and the entries in (iv) to
+$10^{-12}$, and $\min\abs{\sigma(h_{q^0,s})}\ge2\abs h$.
+\end{itemize}
+\end{remark}
+
+\subsection{Strong coupling: cluster confinement up to times of order \texorpdfstring{$h/J^2$}{h/J²}}\label{sec:2d:strong}
+
+Let $\Lambda\subset\Z^2$ be a box (or $\Lambda=\Z^2$), with nearest-neighbour edges $E(\Lambda)$, and let
+$s\in\{\pm1\}^{E(\Lambda)}$, $q\in\{\pm1\}^\Lambda$ be arbitrary; $h_{q,s}=K_s+2h\diag(q)$ acts on $\ell^2(\Lambda)$ as
+in \eqref{eq:hqs}.  The \emph{equal-charge clusters} are the connected components of the subgraphs of $\Lambda$
+induced on $\{q=+1\}$ and on $\{q=-1\}$; $\Tclus_q(x)$ denotes the cluster containing $x$.  With
+$P_\pm:=\one_{\{q=\pm1\}}$ let
+\begin{equation}\label{eq:h0}
+  h^0_{q,s}:=P_+h_{q,s}P_++P_-h_{q,s}P_-,\qquad h^1_{q,s}:=h_{q,s}-h^0_{q,s}=P_+h_{q,s}P_-+P_-h_{q,s}P_+ ,
+\end{equation}
+i.e.\ $h^0_{q,s}$ is $h_{q,s}$ with the hopping across all bonds joining opposite charges removed.  For
+$x\in\Lambda$ and $R\ge0$ let $B_R(x):=\{y\in\Lambda:\abs{y-x}_\infty\le R\}$.
+
+\begin{proposition}[Cluster confinement at strong coupling]\label{prop:cluster}
+Assume $\abs h>2J$ and set $g:=4\abs h-8J>0$.
+\begin{enumerate}[label=(\alph*)]
+\item $h^0_{q,s}$ leaves $\ell^2(\Tclus)$ invariant for every equal-charge cluster $\Tclus$.
+\item For all $t\in\R$, uniformly in $\Lambda$, $q$ and $s$,
+\begin{equation}\label{eq:clusterbound}
+  \norm{\e^{-\ii th_{q,s}}-\e^{-\ii th^0_{q,s}}}\le\frac{8J}{g}+\frac{48\,\abs t\,J^2}{g} .
+\end{equation}
+Consequently, for every $x\in\Lambda$, $\norm{\one_{\Lambda\setminus\Tclus_q(x)}\e^{-\ii th_{q,s}}\delta_x}\le8J/g+48\abs tJ^2/g$.
+\item Let the law of $q$ have density at most $K$ with respect to the i.i.d.\ Bernoulli$(1/2)$ law on
+$\{\pm1\}^\Lambda$ ($K=1$ for i.i.d.\ charges, $K=2$ for the parity hyperplane of \cref{prop:2dlaws}(a)).
+There is a numerical constant $c_*>0$ such that for all $x\in\Lambda$, $R\ge4$, $t\in\R$ and $s$,
+\begin{equation}\label{eq:clusterprob}
+  \E\,\norm{\one_{\Lambda\setminus B_R(x)}\,\e^{-\ii th_{q,s}}\delta_x}^2
+  \le\Bigl(\frac{8J}{g}+\frac{48\,\abs t\,J^2}{g}\Bigr)^2+2K\,\e^{-c_*(2R+3)} .
+\end{equation}
+\end{enumerate}
+\end{proposition}
+
+The constant $c_*$ is the one of \cite[Prop.~2.2]{LiL2022}, which rests on $p_c^{\rm site}(\Z^2)>\frac12$
+\cite{GrimmettStacey1998} and on the sharpness of the phase transition \cite[Thm.~7.3]{AizenmanBarsky1987};
+we quote it in the proof.  No smallness condition on $J/g$ is needed for (b): the bound is proved for all
+$\abs h>2J$.  It is informative only when its right-hand side is below $2$, which requires $J/g<\frac14$ and
+$\abs t<(2g-8J)/(48J^2)$; in the complementary range (in particular for $J/g\ge\frac14$) it holds trivially,
+since the left-hand side never exceeds $2$.  We made no attempt to optimize the constants $8$ and $48$.
+
+\begin{proof}
+Replacing $(h,q)$ by $(-h,-q)$ changes neither $h_{q,s}$, $h^0_{q,s}$ nor the clusters, and preserves the laws in
+(c); so let $h>0$.  Write $h=h_{q,s}$, $h^0=h^0_{q,s}$, $h^1=h^1_{q,s}$, and let $h^0_\pm:=P_\pm hP_\pm$, regarded as
+operators on $\operatorname{Ran}P_\pm$.
+
+(a) The off-diagonal entries of $h^0$ join nearest neighbours of equal charge only; hence
+$\langle\delta_y,h^0\delta_x\rangle\ne0$ with $x\in\Tclus$ implies $y\in\Tclus$.
+
+(b) \emph{Norms and gap.}  A self-adjoint matrix with entries of modulus at most $J$ and at most four non-zero
+entries in each row has norm at most $4J$ (Schur's test).  This applies to $h^1$ and to $P_\pm K_sP_\pm$, so
+$\norm{h^1}\le4J$, $h^0_+=2h+P_+K_sP_+\ge2h-4J$ and $h^0_-=-2h+P_-K_sP_-\le-2h+4J$; the two spectra are separated
+by $(2h-4J)-(-2h+4J)=g$.
+
+\emph{Sylvester equation.}  Let $Y:=P_+h^1P_-:\operatorname{Ran}P_-\to\operatorname{Ran}P_+$ and
+\[
+  X:=\int_0^\infty\e^{-uh^0_+}\,Y\,\e^{uh^0_-}\,\dd u .
+\]
+The integrand has norm at most $\norm Y\e^{-u(2h-4J)}\e^{u(-2h+4J)}=\norm Y\e^{-ug}$, so the integral converges in
+norm and $\norm X\le\norm Y/g\le\norm{h^1}/g$.  Moreover
+$h^0_+X-Xh^0_-=-\int_0^\infty\frac{\dd}{\dd u}\bigl(\e^{-uh^0_+}Y\e^{uh^0_-}\bigr)\dd u=Y$.  (This is the solution of
+the Sylvester equation for operators with spectra separated by a gap; for general separated spectra
+Bhatia--Davis--McIntosh \cite{BDM1983} give the bound $\frac\pi2\norm Y/g$, and the constant $1$ is available
+here because $\sigma(h^0_-)$ lies entirely below $\sigma(h^0_+)$.)  Let $S:=X-X^*$, an anti-self-adjoint operator
+with $\norm S=\norm X\le\norm{h^1}/g$.  Since $h^1=Y+Y^*$ and
+$X^*h^0_+-h^0_-X^*=(h^0_+X-Xh^0_-)^*=Y^*$, we get $[h^0,S]=h^1$.
+
+\emph{Rotation.}  Let $U:=\e^S$, a unitary with $\norm{U-\one}\le\norm S$ (the spectrum of $S$ is imaginary and
+$\abs{\e^{\ii\vartheta}-1}\le\abs\vartheta$), and $h':=UhU^*$.  From
+$\frac{\dd}{\dd u}\e^{uS}h\e^{-uS}=\e^{uS}[S,h]\e^{-uS}$ and $[S,h]=-[h^0,S]+[S,h^1]=-h^1+[S,h^1]$,
+\[
+  h'=h^0+\int_0^1\bigl(h^1-\e^{uS}h^1\e^{-uS}\bigr)\dd u+\int_0^1\e^{uS}[S,h^1]\e^{-uS}\dd u .
+\]
+As $\norm{h^1-\e^{uS}h^1\e^{-uS}}=\norm{\int_0^u\e^{vS}[S,h^1]\e^{-vS}\dd v}\le u\norm{[S,h^1]}$, we obtain
+$\norm{h'-h^0}\le\frac32\norm{[S,h^1]}\le3\norm S\norm{h^1}\le3\norm{h^1}^2/g$.  No series is involved.
+
+\emph{Propagators.}  $\e^{-\ii th}=U^*\e^{-\ii th'}U$, and for unitaries $W$,
+$\norm{U^*WU-W}\le\norm{U^*W(U-\one)}+\norm{(U^*-\one)W}\le2\norm{U-\one}$.  With Duhamel's formula
+$\norm{\e^{-\ii th'}-\e^{-\ii th^0}}\le\abs t\norm{h'-h^0}$,
+\[
+  \norm{\e^{-\ii th}-\e^{-\ii th^0}}\le\norm{\e^{-\ii th'}-\e^{-\ii th^0}}+\norm{U^*\e^{-\ii th^0}U-\e^{-\ii th^0}}
+  \le\frac{3\abs t\norm{h^1}^2}{g}+\frac{2\norm{h^1}}{g},
+\]
+which gives \eqref{eq:clusterbound} with $\norm{h^1}\le4J$.  By (a), $\e^{-\ii th^0}\delta_x\in\ell^2(\Tclus_q(x))$, so
+$\one_{\Lambda\setminus\Tclus_q(x)}\e^{-\ii th}\delta_x=\one_{\Lambda\setminus\Tclus_q(x)}(\e^{-\ii th}-\e^{-\ii th^0})\delta_x$.
+
+(c) Let $\epsilon(t)$ be the right-hand side of \eqref{eq:clusterbound}.  If $\Tclus_q(x)\subset B_R(x)$, then
+$\norm{\one_{\Lambda\setminus B_R(x)}\e^{-\ii th}\delta_x}\le\epsilon(t)$ by (b); otherwise the norm is at most $1$.
+Hence the left side of \eqref{eq:clusterprob} is at most $\epsilon(t)^2+K\,\Prob_{\rm iid}(\Tclus_q(x)\not\subset B_R(x))$.
+Extend $q$ to an i.i.d.\ field on $\Z^2$; the cluster of $x$ in $\Lambda$ is contained in its cluster in $\Z^2$.
+If the latter contains a point $y$ with $\abs{y-x}_\infty>R$, a path inside the cluster from $x$ to $y$ changes
+$\abs{\cdot-x}_\infty$ by at most one per step, so it reaches the inner boundary
+$\partial^-Q_{2R+3}(x)=\{z:\abs{z-x}_\infty=R+1\}$ of the box $Q_{2R+3}(x)=\{z:\abs{z-x}_\infty\le R+1\}$
+along sites of charge $q_x$.  For $q_x=-1$ this is the event $E^{2R+3}_{\rm per}(x)$ of \cite[Prop.~2.2]{LiL2022}, for the i.i.d.\
+field $V(a):=\bar V\,\frac{1+q_a}2\in\{0,\bar V\}$ with $\Prob[V(a)=0]=\Prob[V(a)=\bar V]=\frac12$.  That proposition
+states that there is a numerical constant $c_*>0$ (called $c_0$ there) with $\Prob[E^l_{\rm per}(b)]<\e^{-c_*l}$ for
+every $l>10$ and $b\in\Z^2$.  For $q_x=+1$ the same bound follows from the symmetry $q\mapsto-q$ of the law.
+With $l=2R+3>10$, i.e.\ $R\ge4$, we obtain $\Prob_{\rm iid}(\Tclus_q(x)\not\subset B_R(x))<2\e^{-c_*(2R+3)}$.
+\end{proof}
+
+\begin{remark}[Meaning for the gauge theory]\label{rem:clusterLGT}
+Combining \cref{prop:cluster}(c) with \cref{prop:2dlaws}(a) (density $K=2$): for $\sigma^z$-polarized links, a
+box $\Lambda$ and a Fock state $\ket n$ with occupied set $S_n$,
+\[
+  \sum_{y:\ \dist(y,S_n)>R}\langle\Psi(t),n_y\Psi(t)\rangle
+  \le\abs{S_n}\Bigl[\Bigl(\frac{8J}{g}+\frac{48\abs tJ^2}{g}\Bigr)^2+4\e^{-c_*(2R+3)}\Bigr],
+\]
+because $\langle\Psi(t),n_y\Psi(t)\rangle=2^{1-\abs V}\sum_{\Tpi_q=\Tpi}\sum_{a\in S_n}\abs{(\e^{-\ii th_{q,+}})_{ya}}^2$ and
+$\dist(y,S_n)>R$ implies $y\notin B_R(a)$ for every $a\in S_n$ (here $\dist$ is the $\ell^\infty$-distance).
+So every particle stays within distance $R$ of its initial position, up to probability
+$O((J/g)^2+(tJ^2/g)^2+\e^{-2c_*R})$, as long as $t\ll g/J^2\sim\abs h/J^2$.  The same holds in every flux
+sector, since \cref{prop:cluster} is uniform in $s$.  In terms of SKKM's discussion \cite[Sect.~I.C]{SKKM2018}:
+at strong coupling the charges, attached to the fermions, are confined to the finite clusters of their own sign.
+\end{remark}
+
+\begin{remark}[Why the argument stops at $t\sim\abs h/J^2$]\label{rem:clusterstop}
+\leavevmode
+\begin{enumerate}[label=(\alph*)]
+\item The leading correction in $h'-h^0$ is $\frac12[S,h^1]=O(J^2/g)$.  It is block diagonal with respect to the
+charges, and to leading order in $J/h$ its $(+,+)$ block is $YY^*/(4h)$, whose entries $J^2\sum_js_{ij}s_{jk}/(4h)$
+couple two sites $i,k$ of equal charge through a common neighbour $j$ of the opposite charge.  These are pairs at
+distance $2$: diagonal next-nearest neighbours, or $k=i\pm2e_\mu$.  On the time scale $g/J^2$ these processes
+connect different first-order clusters.  The relevant geometry is then that of equal-charge sites with
+nearest- \emph{and} next-nearest-neighbour adjacency (the ``$*$-lattice''), and at density $\frac12$ this
+percolates: at $p=\frac12$, infinite $*$-clusters of both signs coexist almost surely \cite{Higuchi1982}; numerically,
+$p_c^{*}=1-p_c^{\rm site}(\Z^2)\approx0.4073<\frac12$ (matching-lattice duality, \cite{Kesten1982}), while
+$p_c^{\rm site}(\Z^2)\approx0.5927>\frac12$.  The classical-percolation mechanism behind \cref{prop:cluster} is therefore
+exhausted at $t\sim g/J^2$.  What remains is a quantum-percolation problem of resonances between cluster
+eigenstates (the effective couplings $J^2/g$ are much smaller than the intra-cluster level spacings, which are of
+order $J$).  Whether it localizes is open; \cite{SKKM2018} discuss a possible quantum-percolation delocalization
+transition.
+\item On the triangular lattice ($p_c^{\rm site}=\frac12$, critical) and on $\Z^3$ ($p_c^{\rm site}\approx0.31<\frac12$),
+the equal-charge clusters at density $\frac12$ are not exponentially small, and even the first step fails.
+\end{enumerate}
+\end{remark}
+
+\begin{remark}[The checkerboard state at strong coupling]\label{rem:checkerstrong}
+For the initial state of \cref{prop:2dlaws}(c) on a box, $q^0=-\epsilon$ alternates, so every equal-charge cluster
+is a single site, $h^0_{q^0,s}=2h\diag(q^0)$, and \cref{prop:cluster}(b) gives
+$\abs{\langle\delta_x,\e^{-\ii th_{q^0,s}}\delta_x\rangle}\ge1-8J/g-48\abs tJ^2/g$ deterministically, in every
+flux sector.  Beyond $t\sim\abs h/J^2$ the dynamics is generated, by \cref{prop:2dlaws}(c)(iii), by
+$R_s=(K_s^2+4h^2)^{1/2}$.  Since $0\le1+\frac y2-\sqrt{1+y}\le\frac{y^2}8$ for $y\ge0$ and $\norm{K_s}\le4J$,
+\[
+  \Bigl\|R_s-2\abs h-\frac{K_s^2}{4\abs h}\Bigr\|\le\frac{\norm{K_s}^4}{64\abs h^3}\le\frac{4J^4}{\abs h^3} .
+\]
+Hence, up to errors $O(\abs tJ^4/\abs h^3)$, the slow dynamics is that of $K_s^2/(4\abs h)$.  By
+\cref{prop:2dlaws}(c)(iv) this is a hopping operator on each sublattice, a square lattice rotated by $45^\circ$
+with spacing $\sqrt2$.  Its bonds of length $2$ always carry amplitudes $\pm J^2/(4\abs h)$, while its diagonal
+bonds carry $\pm J^2/(2\abs h)$ if $W_p=+1$ and vanish if $W_p=-1$.  So the effective problem is a random-sign
+hopping model in which the diagonal bonds are present independently with probability $\frac12$; the on-site terms
+are constant in the bulk.  We do not know whether it localizes.
+\end{remark}
+
+\subsection{Status of the two-dimensional one-body problems}\label{sec:2d:status}
+
+The analogue of \cref{thm:EC} in two dimensions would be a sector-averaged eigenfunction-correlator bound for
+$h_{q,+}$ (Bernoulli potential, zero flux) or for $K_s$ (binary random flux).  Neither is known.  We list what is
+available, in the normalization of \eqref{eq:hqs}.  On $\Z^2$ with $q$ i.i.d.\ and $s\equiv+1$, writing
+$\Delta_{\rm Lap}:=\Delta-4$ for the graph Laplacian of $\Z^2$,
+\begin{equation}\label{eq:2dnormalization}
+  h_{q,+}=J\bigl(-\Delta_{\rm Lap}+\bar V\,v_q\bigr)-4J-2\abs h,\qquad v_q(x):=\tfrac12\bigl(1+\operatorname{sgn}(h)\,q_x\bigr)\in\{0,1\},\quad
+  \bar V:=\frac{4\abs h}J=2\abs\lambda ,
+\end{equation}
+so $h_{q,+}$ is, up to scale and shift, the Anderson--Bernoulli model $-\Delta_{\rm Lap}+\bar Vv$ of
+\cite{DingSmart2020,LiL2022}, with i.i.d.\ fair $v_x\in\{0,1\}$.  (Conjugation by $(-1)^{x_1+x_2}$ maps $\Delta$ to
+$-\Delta$ and, combined with $q\mapsto-q$, maps $h_{q,+}$ to $-h_{-q,+}$, so the law of the spectrum is symmetric.)
+
+\begin{enumerate}[label=(\arabic*)]
+\item \emph{Band edges} (Ding--Smart \cite[Thm.~1.1]{DingSmart2020}).  For $d=2$ and every $\delta>0$ there is
+$\varepsilon>0$ such that, almost surely, $-\Delta_{\rm Lap}+\delta v$ has Anderson localization in $[0,\varepsilon]$:
+every polynomially bounded generalized eigenfunction with energy in $[0,\varepsilon]$ decays exponentially.  By
+\eqref{eq:2dnormalization} and the symmetry above, almost surely $h_{q,+}$ has Anderson localization in windows of
+width $J\varepsilon(2\abs\lambda)$ at both edges $\pm(4J+2\abs h)$ of its spectrum.  This is a spectral statement for
+a part of the spectrum that carries little weight of the spectral measures of the vectors $\delta_x$; it gives no
+dynamical bound for Fock initial states.
+\item \emph{Large disorder} (L.~Li \cite[Thm.~1.1]{LiL2022}).  For $d=2$ and $p=\frac12$ there are finitely many
+energies $\lambda^{(1)},\dots,\lambda^{(n)}\in[0,8]$, Dirichlet eigenvalues of $-\Delta_{\rm Lap}$ restricted to finite
+connected subsets of $\Z^2$, such that for all sufficiently large $\bar V$, almost surely $-\Delta_{\rm Lap}+\bar Vv$
+has Anderson localization in its spectrum outside the windows $[\lambda^{(i)}-\bar V^{-1/4},\lambda^{(i)}+\bar V^{-1/4}]$
+and their images under $x\mapsto\bar V+8-x$.  The excluded energies are of the same nature as the energies of the
+cluster-confined states of \cref{prop:cluster}: for an equal-charge cluster $\Tclus$ of sites with $v=0$,
+$h^0_{q,+}|_\Tclus=J(-\Delta_{\rm Lap})^{\rm Dir}_\Tclus-4J-2\abs h$, so in the variables of \cite{LiL2022} the cluster
+energies are Dirichlet eigenvalues of finite connected sets (those of the sets used in \cite[Def.~2.12]{LiL2022}
+are excluded).  These windows carry a non-vanishing part of the local spectral weight.  For example, let $x$ be a site whose four neighbours have the opposite charge (probability
+$\frac1{16}$), so that $\Tclus_q(x)=\{x\}$, and let $q_x=-\operatorname{sgn}h$.  With $U$, $h'$ as in the proof of
+\cref{prop:cluster} and $I:=[-2\abs h-\delta,-2\abs h+\delta]$, the spectral measure $\mu_x$ of $\delta_x$ for $h_{q,+}$
+satisfies
+\[
+  \mu_x(\R\setminus I)^{1/2}=\norm{\one_{\R\setminus I}(h')U\delta_x}\le\norm{U-\one}+\frac{\norm{(h'+2\abs h)\delta_x}}\delta
+  \le\frac{4J}g+\frac{48J^2}{g\delta},
+\]
+since $h^0\delta_x=-2\abs h\,\delta_x$ and $\norm{h'-h^0}\le48J^2/g$.  For Li's window,
+$\delta=J\bar V^{-1/4}$, the right side is $O((J/\abs h)^{3/4})$.  So, at large $\abs\lambda$, almost all of
+$\mu_x$ lies in an excluded window, and \cite{LiL2022} gives no information about the dynamics started at $x$.
+\item \emph{Binary random $\pi$-flux.}  For $K_s$ with i.i.d.\ uniform plaquette fluxes $W_p\in\{\pm1\}$
+(\cref{prop:2dlaws}(b),(c)), we know of no localization result at any energy.  The Wegner-type estimates of
+\cite{DingSmart2020,LiL2022} rely on eigenvalue variation under changes of the Bernoulli potential at ``free''
+sites; flipping the sign of a hopping amplitude is not a monotone perturbation, and we are not aware of an
+extension to this case.  By
+\cref{prop:2dlaws}(c)(ii), the chiral point of $K_s$ is exactly what matters for the checkerboard initial state
+near $\abs E=2\abs h$.
+\item \emph{No compactly supported eigenstates} (\cref{prop:nocompact} below).  On the square lattice, strict
+localization of an eigenstate in a finite region is impossible for every potential and every flux pattern.  So,
+unlike Aharonov--Bohm caging on the dice lattice at flux $\pi$ \cite{VidalMosseriDoucot1998}, no flux sector can
+produce a trivially localized (flat-band) sector-dependent theorem.
+\end{enumerate}
+
+\begin{proposition}[No compactly supported eigenvectors on $\Z^2$]\label{prop:nocompact}
+Let $a_{xy}\in\C\setminus\{0\}$ for every nearest-neighbour pair $\{x,y\}$ of $\Z^2$, let $V:\Z^2\to\C$, and let
+$(Hu)(x):=\sum_{y\sim x}a_{xy}u(y)+V(x)u(x)$ for finitely supported $u$.  If $u$ is finitely supported and $Hu=Eu$ for
+some $E\in\C$, then $u=0$.  In particular, for no $q$ and no $s$ does $h_{q,s}$ on $\ell^2(\Z^2)$ have a finitely
+supported eigenvector.
+\end{proposition}
+
+\begin{proof}
+Suppose $u\neq0$ and let $S:=\supp u$, a finite set.  Let $m:=\max\{z_1+z_2:z\in S\}$, and among the points $z\in S$
+with $z_1+z_2=m$ choose the one with the largest $z_1$.  Let $y:=z+e_1\notin S$.  Its neighbours are $y+e_1$ and
+$y+e_2$ (coordinate sum $m+2$), $y-e_2=z+e_1-e_2$ (coordinate sum $m$ and first coordinate $z_1+1$), and $y-e_1=z$;
+only $z$ lies in $S$.  The eigenvalue equation at $y$ reads $0=Eu(y)=(Hu)(y)=a_{yz}u(z)\neq0$, a contradiction.
+\end{proof}
+
+\begin{remark}[Majorana matter]\label{rem:majorana}
+If the complex fermions are replaced by Majorana fermions hopping in a static $\Z_2$ gauge field, as in Kitaev's
+honeycomb model \cite{Kitaev2006}, then random flux configurations put the matter in the symmetry class D.  There
+numerical studies find a delocalized ``thermal metal'' \cite{Laumann2012,Self2019}.  So the two-dimensional
+Majorana analogue of the disorder-free localization discussed here is expected to \emph{fail}.  This is a
+statement about numerics and field theory, not a theorem; we mention it only to stress that binary gauge disorder
+in two dimensions does not localize automatically.
+\end{remark}

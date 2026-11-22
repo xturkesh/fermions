@@ -47,3 +47,10 @@ N=5, sector q=(1, 1, 1, 1, 1): 2-fermion spectrum vs rank-alternating formula: m
 N=5, sector q=(1, -1, -1, 1, -1): 2-fermion spectrum vs rank-alternating formula: max|dE| = 5.3e-15; vs best free-fermion guess e1_a+e1_b-e0: max|dE| = 0.974 (nonzero => not free)
 [time 55.1s]
 Eigenfunction correlator E Q(x0,x0+d) (N=600, x0=300, 200 samples):
+  h/J=0.25: d = [1, 4, 16, 32, 64, 128]
+     random-walk V  : 8.0e-01 6.5e-01 3.3e-01 1.5e-01 2.6e-02 1.3e-03
+     iid Bernoulli  : 8.0e-01 6.9e-01 4.3e-01 2.6e-01 1.2e-01 3.7e-02
+  h/J=0.5: d = [1, 4, 16, 32, 64, 128]
+     random-walk V  : 7.7e-01 5.3e-01 1.0e-01 1.0e-02 6.7e-05 1.0e-13
+     iid Bernoulli  : 7.5e-01 5.4e-01 1.6e-01 3.9e-02 3.1e-03 2.8e-05
+[total time 888.9s]

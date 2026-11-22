@@ -1,0 +1,368 @@
+% ---------------------------------------------------------------------------
+% Section: Number entropy in U(1) gauge theories: kinematic bounds
+% ---------------------------------------------------------------------------
+% Section-local macros (unique names, \providecommand only).
+\providecommand{\Ush}{\mathrm{H}}            % Shannon entropy (same symbol as \Hsh in sec:main)
+\providecommand{\Uodd}{o}                    % number of odd sites in an interval
+\providecommand{\UQ}{\mathsf{Q}}             % background charge operator sums
+% identical to the definitions in sections/model.tex (repeated so that this file compiles on its own)
+\providecommand{\sxb}[1]{\sigma^{x}_{b_{#1}}}
+\providecommand{\szb}[1]{\sigma^{z}_{b_{#1}}}
+\providecommand{\taux}[1]{\tau^{x}_{#1}}
+
+\section{Number entropy in \texorpdfstring{$U(1)$}{U(1)} gauge theories: kinematic bounds}\label{sec:u1}
+
+The number entropy $\SN$ of a region, the Shannon entropy of the distribution of the conserved particle number
+in it, is used as a probe of particle transport in disordered systems \cite{Lukin2019,KUFS2020}, and
+\cref{thm:numberentropy} bounds it uniformly in time for the model of this paper.  In a lattice gauge theory,
+however, the Gauss law relates the charge inside a region to the electric fluxes through its boundary.  In this
+section we show that for $U(1)$ gauge theories with finite-dimensional (quantum) links this makes $\SN$
+\emph{kinematically} bounded, for every state and every gauge-invariant dynamics (\cref{prop:gausscap}); with
+Wilson (unbounded) links, energy conservation bounds its average over cuts, uniformly in time and volume
+(\cref{prop:wilson}).  Neither statement uses any localization property.  For discrete gauge groups the
+Gauss law fixes the charge only modulo $n$, and $\SN$ remains a genuine diagnostic; this is the case of the
+$\Z_2$ theory of this paper (\cref{sec:u1:diag}).  We also record that the \emph{standard} $\Z_2$ gauge theory,
+with a single-link electric term, maps one charge to a particle in a random-walk potential
+(\cref{rem:randomwalk}), and what can be said about prethermal (strong-coupling) statements.
+
+\subsection{Setting}\label{sec:u1:setting}
+
+\paragraph{Lattice and fields.}
+Sites $j=1,\dots,L$ carry spinless fermions $f_j$ with $n_j=f_j^\dagger f_j$, in the staggered
+(Kogut--Susskind) formulation \cite{KogutSusskind1975}: the charge at site $j$ is
+\begin{equation}\label{eq:rho}
+  \rho_j:=n_j-\tfrac12\bigl(1-(-1)^j\bigr),
+\end{equation}
+so an empty odd site carries charge $-1$ (an antiparticle) and an occupied even site carries charge $+1$ (a
+particle).  For an interval $A$ we write $N_A:=\sum_{j\in A}n_j$ and $\Uodd_A:=\#\{j\in A:\ j\text{ odd}\}$, so that
+$\sum_{j\in A}\rho_j=N_A-\Uodd_A$.  As in \cref{sec:model}, links are $b_j=(j,j+1)$, $j=1,\dots,L$; the boundary
+link $b_L$ carries no hopping.  Link $b_j$ carries an electric field $E_j$ and a parallel transporter $U_j$
+with $[E_j,U_k]=\delta_{jk}U_j$, all commuting with the fermions.  The flux entering from the left is a fixed
+real number, $E_0:=e_0$ (the analogue of $\sigma^x_{b_0}:=\one$).  We consider:
+\begin{itemize}
+\item \emph{spin-$S$ quantum links} \cite{ChandrasekharanWiese1997}, $S\in\{\frac12,1,\frac32,\dots\}$: each link
+carries $\C^{2S+1}$, $E_j=S^z_j$ with spectrum $\{-S,-S+1,\dots,S\}$, and $U_j=S^+_j$;
+\item \emph{Wilson links}: each link carries $\ell^2(\Z)$, $E_j\ket k=k\ket k$, $U_j\ket k=\ket{k+1}$ (so $U_j$ is
+unitary), and $e_0\in\Z$.
+\end{itemize}
+
+\paragraph{Gauss law and sectors.}
+The Gauss operators are
+\begin{equation}\label{eq:gaussU1}
+  G_j:=E_j-E_{j-1}-\rho_j,\qquad j=1,\dots,L\qquad(E_0=e_0).
+\end{equation}
+They commute with each other, with all $E_k$ and with all $n_k$.  An operator is \emph{gauge invariant} if it
+commutes with every $G_j$.  The hopping $f_j^\dagger U_jf_{j+1}$ ($1\le j<L$; it moves a fermion from $j+1$ to $j$
+and raises $E_j$ by one), the $n_j$ and all functions of the $E_j$ are gauge invariant; e.g.\
+$[G_j,f_j^\dagger U_jf_{j+1}]=f_j^\dagger[E_j,U_j]f_{j+1}-[n_j,f_j^\dagger]U_jf_{j+1}=0$.  A typical Hamiltonian is
+\begin{equation}\label{eq:HU1}
+  H=-w\sum_{j=1}^{L-1}\bigl(f_j^\dagger U_jf_{j+1}+\text{h.c.}\bigr)+m\sum_{j=1}^L(-1)^jn_j
+  +\frac{g^2}2\sum_{j=1}^L(E_j+\vartheta)^2,
+\end{equation}
+with $w,g>0$ and $m,\vartheta\in\R$ (for quantum links the hopping is often divided by $\sqrt{S(S+1)}$; nothing
+below depends on this).  It is the lattice Schwinger model for Wilson links (cf.\ \cite[Eq.~(1)]{Brenes2018},
+whose generators $G_n=L_n-L_{n-1}-\psi_n^\dagger\psi_n+\frac12[1-(-1)^n]$ coincide with \eqref{eq:gaussU1}).  For
+$Q\in\R^L$ let $P_Q$ be the joint spectral projection onto $\{G_j=Q_j\ \forall j\}$, the sector with static
+background charges $Q_j$.  In a sector, \eqref{eq:gaussU1} determines the fields recursively,
+$E_j=e_0+\sum_{k\le j}(\rho_k+Q_k)$ (``integrating out the gauge field''); for quantum links only the occupation
+configurations with $\abs{E_j}\le S$ for all $j$ survive.
+
+\paragraph{Number entropy.}
+For a state (density matrix) $\varrho$, not to be confused with the charges $\rho_j$, and an interval $A$ let $p_\varrho(k):=\Tr(\varrho\,\one[N_A=k])$ and
+\[
+  \SN(\varrho;A):=\Ush(p_\varrho)=-\sum_kp_\varrho(k)\ln p_\varrho(k).
+\]
+For a vector state $\Psi$ we write $\SN(\Psi;A)$.  As elsewhere in the paper, ``number'' is the \emph{conserved}
+fermion number, equal to the $U(1)$ charge $\sum_{j\in A}\rho_j$ up to the constant $\Uodd_A$.  The number of
+particles plus antiparticles is not conserved by \eqref{eq:HU1}; reduced states are not block diagonal with
+respect to it, and it has no number entropy in the sense used for transport.  For an operator $X$ with discrete
+spectrum, $\Ush_\varrho(X)$ denotes the Shannon entropy of the law of $X$ in $\varrho$.
+
+\subsection{Quantum links: a Gauss-law cap}\label{sec:u1:qlm}
+
+\begin{proposition}[Gauss-law caps]\label{prop:gausscap}
+Let $A=[a,b]\subset\{1,\dots,L\}$ be an interval and $\UQ_A:=\sum_{j\in A}G_j$.
+\begin{enumerate}[label=(\alph*)]
+\item (Summed Gauss law; any links.)  As an operator identity,
+\begin{equation}\label{eq:summedgauss}
+  N_A=E_b-E_{a-1}+\Uodd_A-\UQ_A .
+\end{equation}
+\item (Fixed sector; spin-$S$ links.)  Let $\varrho$ be \emph{any} state with $P_Q\varrho P_Q=\varrho$ for some $Q$.  Then the
+law of $N_A$ in $\varrho$ is the law of $E_b-E_{a-1}$ shifted by the constant $\Uodd_A-\sum_{j\in A}Q_j$, and
+\begin{equation}\label{eq:cap}
+  \SN(\varrho;A)\le
+  \begin{cases}
+    \ln\min\{4S+1,\ \abs A+1\} & (a\ge2),\\
+    \ln\min\{2S+1,\ \abs A+1\} & (a=1,\ \text{fixed-flux edge}).
+  \end{cases}
+\end{equation}
+\item (Superpositions of sectors; spin-$S$ links.)  For every state $\varrho$,
+\[
+  \SN(\varrho;A)\le\ln(4S+1)+\Ush_\varrho(\UQ_A)\quad(a\ge2),\qquad
+  \SN(\varrho;A)\le\ln(2S+1)+\Ush_\varrho(\UQ_A)\quad(a=1).
+\]
+So superposing background-charge sectors adds at most $\Ush_\varrho(\UQ_A)$, the entropy of the total background charge in $A$.
+\item (Any dynamics.)  Let $(V(t))_{t\in\R}$ be unitaries commuting with all $G_j$, e.g.\ generated by any
+gauge-invariant, possibly time-dependent, interacting or disordered Hamiltonian, and $\varrho(t):=V(t)\varrho V(t)^*$.
+If $\varrho$ lies in one sector, then \eqref{eq:cap} holds for $\varrho(t)$ for all $t$; in (c),
+$\Ush_{\varrho(t)}(\UQ_A)=\Ush_\varrho(\UQ_A)$ for all $t$.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(a) Sum \eqref{eq:gaussU1} over $j\in A$: the fields telescope, and
+$\UQ_A=E_b-E_{a-1}-\sum_{j\in A}\rho_j=E_b-E_{a-1}-N_A+\Uodd_A$.
+
+(b) The operators $E_j$, $n_j$, $G_j$ commute pairwise, and $G_j=Q_j$ on $\operatorname{Ran}P_Q$.  By (a),
+$\one[N_A=k]P_Q=\one\bigl[E_b-E_{a-1}=k-\Uodd_A+\sum_{j\in A}Q_j\bigr]P_Q$ for every $k$; multiply by $\varrho=P_Q\varrho P_Q$
+and take the trace.  The spectra of the commuting operators $E_b$ and $E_{a-1}$ lie in $\{-S,\dots,S\}$, so the
+spectrum of $E_b-E_{a-1}$ lies in $\{-2S,\dots,2S\}$, which has $4S+1$ elements.  If $a=1$, $E_0=e_0$ is a number,
+and $E_b-e_0$ takes at most $2S+1$ values.  In any case $N_A$ takes at most $\abs A+1$ values.  A law with at most
+$k$ atoms has Shannon entropy at most $\ln k$.
+
+(c) $X:=E_b-E_{a-1}+\Uodd_A$ and $\UQ_A$ commute, and $N_A=X-\UQ_A$ by (a).  So the law of $N_A$ in $\varrho$ is the image
+of the joint law $\mu(x,y):=\Tr\bigl(\varrho\,\one[X=x]\one[\UQ_A=y]\bigr)$ under $(x,y)\mapsto x-y$.  The entropy does not
+increase under maps, and is subadditive, so $\SN(\varrho;A)\le\Ush(\mu)\le\Ush_\varrho(X)+\Ush_\varrho(\UQ_A)$, and
+$\Ush_\varrho(X)\le\ln(4S+1)$ (resp.\ $\ln(2S+1)$) as in (b).
+
+(d) $V(t)$ commutes with every $P_Q$ and with every spectral projection of $\UQ_A$.
+\end{proof}
+
+\begin{remark}[Scope and sharpness]\label{rem:gausscap}
+\leavevmode
+\begin{enumerate}[label=(\alph*)]
+\item Nothing about the Hamiltonian enters: \eqref{eq:cap} holds for localized, ergodic, integrable or
+fragmented dynamics alike, before or after integrating out the gauge fields.  For spin-$\frac12$ links and a
+half chain starting at the fixed-flux edge, $\SN\le\ln2$ for every state of a sector.
+\item The bounds are attained.  If some sector contains states $\phi_k$ with $N_A\phi_k=k\phi_k$ for $r$ distinct
+values $k$, the normalized equal-weight superposition of the $\phi_k$ lies in the same sector and has
+$\SN=\ln r$.  In the numerics of \cref{rem:u1numerics} ($L=10$, $Q=0$), $r=4S+1$ for a bulk interval and
+$r=2S+1$ at the edge are realized for $S=\frac12,1$.  The naive count $(2S+1)^2$ of the pairs $(E_{a-1},E_b)$ is
+correct but not sharp.
+\item If the total fermion number is fixed, then $E_L=e_0+\sum_{j=1}^L(\rho_j+G_j)$ is fixed in each sector, so an
+interval ending at $L$ also obeys the edge bound $\ln(2S+1)$.  On a ring, a half chain has two boundary links and
+obeys $\ln(4S+1)$.
+\end{enumerate}
+\end{remark}
+
+\subsection{Wilson links: an energy bound}\label{sec:u1:wilson}
+
+For Wilson links $\SN$ is not kinematically bounded: in a sector, $E_\ell=e_0+\sum_{k\le\ell}(\rho_k+Q_k)$ can take
+$\ell+1$ values.  Each sector $\operatorname{Ran}P_Q$ is finite dimensional (the occupations determine the
+fields), $H$ of \eqref{eq:HU1} acts on it as a Hermitian matrix, and $H$ is the (self-adjoint) direct sum of
+these matrices.  The hopping is normalized so that every bond term has norm at most $w$
+(\cref{prop:wilson}, proof of (b)).
+
+\begin{proposition}[Wilson links: cut-averaged number entropy]\label{prop:wilson}
+Consider Wilson links and $H$ as in \eqref{eq:HU1}.  Let $\Psi_0\in\operatorname{Ran}P_Q$ be a unit vector,
+$\Psi(t):=\e^{-\ii tH}\Psi_0$ and $\varepsilon_0:=\langle\Psi_0,H\Psi_0\rangle/L$.  Then
+$\varepsilon_0+w+\abs m\ge0$, and for all $t\in\R$ and all $L\ge1$:
+\begin{enumerate}[label=(\alph*)]
+\item $\SN(\Psi(t);[1,\ell])=\Ush_{\Psi(t)}(E_\ell)$ for $\ell=1,\dots,L$;
+\item $\displaystyle\frac1L\sum_{\ell=1}^L\langle\Psi(t),(E_\ell+\vartheta)^2\Psi(t)\rangle\le\frac2{g^2}\bigl(\varepsilon_0+w+\abs m\bigr)$;
+\item $\displaystyle\frac1L\sum_{\ell=1}^L\SN(\Psi(t);[1,\ell])\le\frac12\ln\Bigl(2\pi e\Bigl(\frac2{g^2}(\varepsilon_0+w+\abs m)+\frac1{12}\Bigr)\Bigr)$;
+\item for every $\delta\in(0,1]$, $\SN(\Psi(t);[1,\ell])\le\frac12\ln\bigl(2\pi e\bigl(\frac{2(\varepsilon_0+w+\abs m)}{\delta g^2}+\frac1{12}\bigr)\bigr)$
+for all but at most $\delta L$ values of $\ell$;
+\item for every $\ell$, $\SN(\Psi(t);[1,\ell])\le\frac12\ln\bigl(2\pi e\bigl(\frac{2L(\varepsilon_0+w+\abs m)}{g^2}+\frac1{12}\bigr)\bigr)$.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(a) By \eqref{eq:summedgauss} with $a=1$, $N_{[1,\ell]}=E_\ell-e_0+\Uodd_{[1,\ell]}-\sum_{j\le\ell}Q_j$ on
+$\operatorname{Ran}P_Q$, an injective (affine) function of $E_\ell$; both laws are finitely supported, and
+injective maps preserve Shannon entropy.
+
+(b) Let $X_j:=f_j^\dagger U_jf_{j+1}$.  Then $\norm{X_j}\le1$, and $X_j^2=U_j^2f_j^\dagger f_{j+1}f_j^\dagger f_{j+1}=
+-U_j^2(f_j^\dagger)^2f_{j+1}^2=0$.  For an operator with $X^2=0$, the positive operators $XX^*$ and $X^*X$ satisfy
+$(XX^*)(X^*X)=0=(X^*X)(XX^*)$; in the commutative $C^*$-algebra they generate they are functions with disjoint
+supports, so $\norm{X+X^*}^2=\norm{XX^*+X^*X}=\max\{\norm{XX^*},\norm{X^*X}\}=\norm X^2$.  Hence each bond term has
+norm $\norm{X_j+X_j^*}=\norm{X_j}\le1$, and the hopping part of $H$ is $\ge-w(L-1)$.  The mass term
+$m\sum_j(-1)^jn_j$ is $\ge-\abs m\lceil L/2\rceil$, since it is a sum of commuting terms of which at most
+$\lceil L/2\rceil$ are negative, each $\ge-\abs m$.  Therefore, on $\operatorname{Ran}P_Q$,
+\[
+  \frac{g^2}2\sum_{\ell=1}^L(E_\ell+\vartheta)^2\le H+w(L-1)+\abs m\lceil L/2\rceil\le H+L(w+\abs m).
+\]
+Take the expectation in $\Psi(t)$ and use $\langle\Psi(t),H\Psi(t)\rangle=L\varepsilon_0$ (energy conservation in
+the finite-dimensional space $\operatorname{Ran}P_Q$).  Since the left side is non-negative, also
+$\varepsilon_0+w+\abs m\ge0$.
+
+(c) Let $\phi(x):=\frac12\ln(2\pi e(x+\frac1{12}))$, increasing and concave on $[0,\infty)$.  By (a),
+\cref{lem:intentropy} (applicable because $E_\ell$ is integer valued with finitely many values in $\Psi(t)$) and
+$\Var E_\ell\le\langle(E_\ell+\vartheta)^2\rangle$, we get $\SN(\Psi(t);[1,\ell])\le\phi(\langle(E_\ell+\vartheta)^2\rangle_t)$.
+Average over $\ell$, apply Jensen's inequality to $\phi$, and use (b) and the monotonicity of $\phi$.
+
+(d) By (b) and Markov's inequality, at most $\delta L$ values of $\ell$ have
+$\langle(E_\ell+\vartheta)^2\rangle_t>2(\varepsilon_0+w+\abs m)/(\delta g^2)$; for the others use $\phi$ as in (c).
+(e) Each term of the sum in (b) is at most $L$ times the average.
+\end{proof}
+
+\begin{remark}[On \cref{prop:wilson}]\label{rem:wilson}
+\leavevmode
+\begin{enumerate}[label=(\alph*)]
+\item \emph{Superpositions of sectors.}  If $\Psi_0$ is a finite superposition of sectors, as for the initial
+states of \cite{Brenes2018} (staggered fermions, each link in an equal superposition of $E\in\{-1,0,1\}$), then
+(b) still holds, because $H$ and the bound in its proof are block diagonal.  Moreover
+$\SN(\Psi(t);[1,\ell])\le\Ush_{\Psi(t)}(E_\ell)+\Ush_{\Psi_0}(\UQ_{[1,\ell]})$, by \eqref{eq:summedgauss} and
+subadditivity as in \cref{prop:gausscap}(c).  The second term is independent of time.  For the bare-vacuum
+initial states of \cite{Brenes2018}, $\rho_j\Psi_0=0$, so $\UQ_{[1,\ell]}=E_\ell-e_0$ on $\Psi_0$, and the second term is
+the entropy of the initial field on the cut link ($\le\ln3$ there).  For i.i.d.\ random background charges it
+typically grows like $\frac12\ln\ell$, but in no case does it grow in time: the time-dependent part of $\SN$ is
+bounded on average over cuts, uniformly in $t$ and $L$.
+\item \emph{What is not covered.}  For a single cut, (e) only gives $\frac12\ln O(L)$; we do not know whether
+growth of this kind can occur at an individual cut.  With $\vartheta\neq0$ the bound controls
+$\langle(E_\ell+\vartheta)^2\rangle\ge\Var E_\ell$, which is what enters.
+\item \emph{Normalization.}  The constant in (b) is fixed by the normalization of \eqref{eq:HU1}: each bond term
+$-w(f_j^\dagger U_jf_{j+1}+\text{h.c.})$ has norm exactly $w$, by the identity $\norm{X+X^*}=\norm X$ for $X^2=0$ used in
+the proof (the naive estimate $\norm X+\norm{X^*}$ would give $2w$).  For a hopping written as
+$-\frac w2(f_j^\dagger U_jf_{j+1}+\text{h.c.})$, replace $w$ by $w/2$.  With the quantum-link normalization
+$-\frac{w}{\sqrt{S(S+1)}}f_j^\dagger S^+_jf_{j+1}+\text{h.c.}$ the same argument gives at most $w$ per bond, since
+$\norm{S^+}\le\sqrt{S(S+1)}$; but for quantum links \cref{prop:gausscap} is stronger anyway.
+\end{enumerate}
+\end{remark}
+
+\subsection{Consequences for number-entropy diagnostics}\label{sec:u1:diag}
+
+\paragraph{$U(1)$ with quantum links: kinematics.}
+By \cref{prop:gausscap}, in a spin-$S$ quantum link model the distribution of $N_A$ in any state of a
+background-charge sector is the distribution of the electric flux difference $E_b-E_{a-1}$ across the
+interval, shifted by a constant.  Hence $\SN\le\ln(4S+1)$, or $\ln(2S+1)$ at a fixed-flux edge, at all times and
+for every gauge-invariant dynamics; superposing sectors adds the time-independent amount $\Ush(\UQ_A)$.  Saturation,
+or boundedness, of $\SN$ in such models, including studies of disorder-free localization in quantum link models
+and in truncated Schwinger models with background charges (cf.\ \cite{Brenes2018}), therefore carries
+\emph{no} information about localization.  Since the gauge fields can be eliminated by the Gauss law, the same
+holds for the equivalent spin chains with long-range interactions.
+
+\paragraph{$U(1)$ with Wilson links: energetics.}
+Here $\SN([1,\ell])$ is the Shannon entropy of the electric field on the cut link
+(\cref{prop:wilson}(a)).  It is not kinematically bounded, but its average over cuts is bounded uniformly in
+time and system size by energy conservation (\cref{prop:wilson}(c)), whether or not the dynamics localizes.  A
+diagnostic based on the growth of $\SN$ must therefore look at individual cuts, where only $\frac12\ln O(L)$ is
+excluded, and must distinguish this from the energetic constraint.
+
+\paragraph{Discrete gauge groups: a genuine diagnostic.}
+For a $\Z_n$ gauge theory the Gauss law holds modulo $n$, and summing it over $A$ gives
+$N_A\equiv E_b-E_{a-1}+\Uodd_A-\UQ_A\pmod n$: the electric fields at the ends of $A$ fix only the residue of $N_A$
+modulo $n$.  For the $\Z_2$ model of this paper the precise statement is the identity, from
+\eqref{eq:gausslaw1d},
+\begin{equation}\label{eq:Z2parity}
+  (-1)^{N_{[a,b]}}=\sigma^x_{b_{a-1}}\,\sigma^x_{b_b}\prod_{j=a}^bG_j\qquad(\sigma^x_{b_0}=\one),
+\end{equation}
+which fixes the parity of $N_A$ and nothing else.  Indeed, every law of $N_A$ is realized in every sector: given
+$q$, $N_f$ and a probability law $p$ on the possible values of $N_{[1,\ell]}$, choose occupation configurations
+$n^{(k)}$ with $\abs{n^{(k)}}=N_f$ and $N_{[1,\ell]}(n^{(k)})=k$; then
+$\sum_k\sqrt{p(k)}\,\ket{n^{(k)}}\otimes\ket{x(n^{(k)},q)}_\sigma$ lies in $P_q\cH_N$ by \cref{lem:gauss}(iii) (with $x(n,q)$
+as in \eqref{eq:xnq}), and its $N_{[1,\ell]}$-law is $p$.  So in the $\Z_2$ theory the bound of
+\cref{thm:numberentropy} is a genuine consequence of localization and not of kinematics; its proof uses the
+sector average in an essential way, and the localization input fails in a single clean sector
+(\cref{rem:gaussproj}).
+
+\subsection{The standard \texorpdfstring{$\Z_2$}{Z2} gauge theory: one charge in a random-walk potential}\label{sec:u1:rw}
+
+\begin{remark}[Random-walk potential]\label{rem:randomwalk}
+Replace the two-link electric term of \eqref{eq:H} by the single-link term of the standard $\Z_2$ lattice gauge
+theory, keeping the boundary link:
+\[
+  H_{\rm std}:=-J\sum_{j=1}^{N-1}\szb{j}\bigl(f_j^\dagger f_{j+1}+f_{j+1}^\dagger f_j\bigr)-h\sum_{j=1}^N\sxb{j}.
+\]
+The $G_j$ of \eqref{eq:gauss} still commute with $H_{\rm std}$, and by \cref{thm:duality}(c),
+$U^\dagger\sxb{j}U=\prod_{k\le j}\taux{k}(-1)^{n_k}$.  Hence, with $\xi_b:=\prod_{k\le b}q_k$ for $b=1,\dots,N$,
+\[
+  U^\dagger H_{\rm std}U=\sum_q\Bigl(-J\sum_{j=1}^{N-1}(c_j^\dagger c_{j+1}+c_{j+1}^\dagger c_j)
+  -h\sum_{b=1}^N\xi_b\,(-1)^{N_{\le b}}\Bigr)\otimes\ket q\bra q .
+\]
+\begin{enumerate}[label=(\alph*)]
+\item \emph{One fermion.}  On the one-particle space $\ell^2(\{1,\dots,N\})$ of the sector $q$ this is
+$-J\Delta_N+V_q-h\sum_b\xi_b$, with
+\[
+  V_q(x):=2h\sum_{b=x}^N\xi_b,\qquad V_q(x)-V_q(y)=2h\sum_{b=x}^{y-1}\xi_b\quad(x<y).
+\]
+For the $\sigma^z$-polarized initial state the charges are i.i.d.\ uniform (\cref{cor:sector}), and so are the
+$\xi_b$, since $q\mapsto\xi$ is a bijection ($q_1=\xi_1$, $q_k=\xi_{k-1}\xi_k$).  So a single charge moves in a
+\emph{random-walk potential} with steps $\pm2h$, anchored at the boundary link; typically
+$\abs{V_q(x)-V_q(y)}\sim2\abs h\abs{x-y}^{1/2}$.
+\item \emph{Two or more fermions interact.}  For fermions at $x_1<\dots<x_k$,
+$(-1)^{N_{\le b}}=(-1)^r$ for $x_r\le b<x_{r+1}$ ($x_0:=0$, $x_{k+1}:=N+1$), so the electric term equals
+$-h\sum_b\xi_b+\sum_{r=1}^k(-1)^{r+1}V_q(x_r)$: the $r$-th fermion from the left sees the potential
+$(-1)^{r+1}V_q$.  Nearest-neighbour hopping preserves the order of the particles, so this is a system of hard-core
+particles with rank-dependent potentials, not a quadratic Hamiltonian.  Numerically, for $N=5$ the two-fermion
+spectrum in a sector agrees with this rank-alternating description to $10^{-14}$ and differs from the free-fermion
+prediction $\{e^{(1)}_a+e^{(1)}_b-e^{(0)}\}$ built from the zero- and one-particle spectra of the same sector by
+$O(1)$; so the sector Hamiltonian is not of the form $\dGamma(a)+\text{const}$.
+\item \emph{What can be said.}  Subtracting the constant $V_q(1)$, which does not affect the dynamics, the
+potential $V'_q(x):=V_q(x)-V_q(1)=-2h\sum_{b<x}\xi_b$ does not depend on $N$ for $x\le N$, and the limit $N\to\infty$
+is the half-line operator $-J\Delta+V'_q$ on $\ell^2(\N)$, where $V'_q$ is a simple random walk with steps
+$\pm2h$ started at $0$.  Almost surely $\limsup_{x\to\infty}\abs{V'_q(x)}=\infty$ (by the law of the iterated
+logarithm).  The theorem of Simon and Spencer \cite{SimonSpencer1989}, in its half-line form, which we have not
+re-checked and quote only in this remark, then gives that the half-line operator has no absolutely continuous
+spectrum almost surely.  Pure point spectrum and dynamical localization are, to our knowledge, open: the potential is not
+stationary, so the Furstenberg and large-deviation theory behind \cref{sec:onebody} is not available, and integer
+increments produce exactly degenerate wells (returns of the walk) without a Wegner estimate.  The
+eigenfunction correlator decays much faster than for the i.i.d.\ Bernoulli potential of the same strength in
+our numerics (\cref{rem:u1numerics}), consistent with super-exponential decay away from returns of the walk.  A tightly bound $U(1)$ meson sees an analogous random-walk potential, and an
+isolated $U(1)$ charge an integrated walk $V\sim\abs x^{3/2}$ on top of the string tension.
+\end{enumerate}
+\end{remark}
+
+\subsection{Prethermal statements}\label{sec:u1:adhh}
+
+\begin{remark}[Strong coupling and gauge protection]\label{rem:adhh}
+\leavevmode
+\begin{enumerate}[label=(\alph*)]
+\item \emph{An elementary bound.}  If $H=\nu\mathcal N+H'$ with $\mathcal N$ self-adjoint, $H'$ bounded and
+$\nu>0$, then energy conservation gives $\abs{\langle\mathcal N\rangle_t-\langle\mathcal N\rangle_0}\le2\norm{H'}/\nu$ for
+all $t$.  For \eqref{eq:HU1} with quantum links, $\nu=g^2/2$ and $\mathcal N=\sum_j(E_j+\vartheta)^2$, the hopping
+and mass terms have norm at most $L(w+\abs m)$ (as in the proof of \cref{prop:wilson}, the QLM hopping
+normalized by $\sqrt{S(S+1)}$), so the electric-energy density changes by at most $4(w+\abs m)/g^2$, \emph{for all
+times}.  Likewise, for a penalty $V\sum_j(G_j-g_j)^2$ added to gauge-invariant and gauge-breaking terms
+$H_0+\lambda H_1$, the density of Gauss-law violations changes by at most $2\norm{H_0+\lambda H_1}/(VL)$.
+\item \emph{What \cite{ADHH2017} adds.}  We checked the statements against the arXiv text (arXiv:1509.05386v3).
+In the time-independent setting, \cite[Thm.~3.1]{ADHH2017} assumes a spin system on $(\C^{\mathsf q})^{\otimes\Lambda}$,
+$\Lambda\subset\Z^d$ finite, and a Hamiltonian $\nu\mathcal N+H$ with $\mathcal N=\sum_x\mathcal N_x$, each $\mathcal N_x$ acting on
+the single site $x$ with $\sigma(\mathcal N_x)\subset\Z$.  It also assumes their condition (3.1): for some $\kappa_0>0$,
+$\nu\ge9\pi\norm V_{\kappa_0}/\kappa_0$ and $n_*\ge1$, where $D=\sum_n\chi(\mathcal N=n)H\chi(\mathcal N=n)$, $V=H-D$, and
+$n_*\sim(\nu/\nu_0)/(1+\ln(\nu/\nu_0))^3$ with $\nu_0=54\pi(\norm D_{\kappa_0}+2\norm V_{\kappa_0})/\kappa_0^2$ (local norms
+$\norm\cdot_\kappa$ of potentials).  It then provides a quasi-local unitary $Y$ with
+$Y(\nu\mathcal N+H)Y^*=\nu\mathcal N+\hat D+\hat V$, $[\hat D,\mathcal N]=0$, $\hat D$ close to $D$, and
+$\norm{\hat V}_{\kappa_{n_*}}\le(2/3)^{n_*}\norm V_{\kappa_0}$.  \cite[Thm.~3.2]{ADHH2017} gives
+$\abs\Lambda^{-1}\norm{U(t)^*Y^*\mathcal NYU(t)-Y^*\mathcal NY}\le tK_0'(2/3)^{n_*}$ for
+$U(t)=\e^{-\ii t(\nu\mathcal N+H)}$, and \cite[Thm.~3.3]{ADHH2017}
+gives the effective dynamics of local observables under $\nu\mathcal N+\hat D$ up to times $\e^{r_1n_*}$.  For the
+electric energy of a one-dimensional quantum link model, the local spaces are finite dimensional, the fermions
+can be mapped to spins by a Jordan--Wigner transformation (a hop between consecutive modes carries no string),
+and $\mathcal N_x=(E_x+\vartheta)^2$ has spectrum in $c+\Z$ if and only if $2\vartheta\in\Z$ (for rational $\vartheta$, in a
+lattice $c+\frac1r\Z$, after which $\nu$ is rescaled).  With these identifications the hypotheses of
+\cite[Thm.~3.1]{ADHH2017} appear to be met, and one expects the \emph{dressed} electric energy to be conserved up to
+errors $t\,\e^{-cn_*}$ with $n_*\sim g^2/((w+\abs m)\log^3)$, together with an effective, electric-energy-conserving
+(fragmented) dynamics generated by $\hat D$.  We have not written out the constants, and we therefore state this as
+a remark.  Compared with (a), the gain is the exponential accuracy for the dressed quantity and the effective
+dynamics, not the conservation of the bare density, which holds to $O(1/g^2)$ for all times anyway.
+\item \emph{Not covered.}  The gauge-protection penalty $\mathcal N=\sum_j(G_j-g_j)^2$ has commuting terms of
+finite range with integer spectrum, but $G_j$ acts on a site and two links, not on a single site; so
+\cite[Thm.~3.1]{ADHH2017} does not apply as stated.  By \cite{ADHH2017} one expects exponentially long gauge
+protection here too, but we have not checked the extension.  Wilson links have infinite-dimensional local spaces
+and are not covered.
+\end{enumerate}
+\end{remark}
+
+\begin{remark}[Numerical checks]\label{rem:u1numerics}
+The script \texttt{code/u1\_check.py} (output \texttt{code/u1\_check.out}) checks the following.
+\begin{itemize}
+\item \Cref{prop:gausscap}: \eqref{eq:summedgauss} on every basis state of sectors with $L=10$, $S\in\{\frac12,1,\frac32\}$
+and zero or random $Q$.  The number of values of $N_A$ never exceeds the caps; for $Q=0$ the caps $2S+1$ (edge) and
+$4S+1$ (bulk) are realized for $S=\frac12,1$, and equal-weight superpositions reach $\SN=\ln(2S+1)$, $\ln(4S+1)$.  Along
+the dynamics generated by a gauge-invariant Hamiltonian with random on-site potentials and a nearest-neighbour
+interaction ($S=1$, $t\le10^4$), $\sup_t\SN=0.97\le\ln3$ (edge) and $1.11\le\ln5$ (bulk).  For superpositions of
+$256$ (resp.\ $729$) background-charge sectors (bare-vacuum fermions, every link in an equal superposition of its
+electric eigenstates), $\SN(t)$ stays below $\ln(2S+1)+\Ush(\UQ_A)$, resp.\ $\ln(4S+1)+\Ush(\UQ_A)$.
+\item \Cref{prop:wilson} for the Schwinger model with $L=12$, $Q=0$, bare-vacuum initial state, $w=1$,
+$t\le10^4$, and the three parameter sets $(m,g^2)=(0,\frac14)$, $(\frac12,\frac12)$, $(0,2)$: (a) holds to machine
+precision, and the cut averages
+$\sup_t\frac1L\sum_\ell\langle E_\ell^2\rangle_t=0.78,0.52,0.37$ against the bounds $8,5,1$, and
+$\sup_t\frac1L\sum_\ell\SN=1.06,0.95,0.76$ against the bounds $2.46,2.23,1.46$.
+\item \Cref{rem:randomwalk}: the one-fermion reduction sector by sector ($N=3,4,5$, all $2^N$ sectors, by exact
+diagonalization of $H_{\rm std}$ and projection onto the joint eigenspaces of the $G_j$; error $\le4\times10^{-15}$), and
+the two-fermion statements of (b).  For the eigenfunction correlator $\E\,Q(x_0,x_0+d)$ ($N=600$, $200$ samples), the
+random-walk potential gives much smaller values than the i.i.d.\ Bernoulli potential at large $d$: for $h=J/2$,
+$6.7\times10^{-5}$ versus $3.1\times10^{-3}$ at $d=64$ and $10^{-13}$ versus $2.8\times10^{-5}$ at $d=128$.
+\end{itemize}
+\end{remark}

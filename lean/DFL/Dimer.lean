@@ -99,13 +99,14 @@ theorem dimerExt_linkOf_cdw_odd (q : Cfg N) (k : ℕ) (h : 2 * k + 1 < N) :
     simp
     ring
   | succ k ih =>
-    rw [show 2 * (k + 1) + 1 = (2 * k + 1 + 1) + 1 by ring, dimerExt_linkOf_succ _ _ _ h,
-      dimerExt_linkOf_succ _ _ _ (by omega), ih (by omega), sum_range_succ,
-      dimerExt_cdw _ h, dimerExt_cdw _ (by omega)]
+    have h' : 2 * k + 1 + 1 + 1 < N := by omega
+    rw [show 2 * (k + 1) + 1 = (2 * k + 1 + 1) + 1 by ring,
+      dimerExt_linkOf_succ _ _ (2 * k + 1 + 1) h', dimerExt_linkOf_succ _ _ (2 * k + 1) (by omega),
+      ih (by omega), sum_range_succ _ (k + 1), dimerExt_cdw _ h', dimerExt_cdw _ (by omega)]
     have he1 : Even (2 * k + 1 + 1) := ⟨k + 1, by ring⟩
     have he2 : ¬ Even (2 * k + 1 + 1 + 1) := by
       rw [Nat.not_even_iff_odd]; exact ⟨k + 1, by ring⟩
-    rw [if_pos he1, if_neg he2, show 2 * (k + 1) = 2 * k + 1 + 1 by ring]
+    rw [ite_eq_left he1, ite_eq_right he2, show 2 * (k + 1) = 2 * k + 1 + 1 by ring]
     push_cast
     ring
 
@@ -136,24 +137,26 @@ theorem dimerLinks_linkOf_cdw_iff (q : Cfg N) :
         ∑ i ∈ range (k + 1), (dimerExt q (2 * i) + dimerExt q (2 * i + 1)) = 0 := by
   constructor
   · intro hd k hk
-    have h1 := hd ⟨2 * k + 1, hk⟩ (by simp; omega)
-    rw [← dimerExt_val, dimerExt_linkOf_cdw_odd q k hk] at h1
+    have h1 := hd ⟨2 * k + 1, hk⟩ (by show (2 * k + 1) % 2 = 1; omega)
+    rw [← dimerExt_of_lt (linkOf (fockCfg (univ.filter (fun x : Fin N => Even x.val))) q)
+      (2 * k + 1) hk, dimerExt_linkOf_cdw_odd q k hk] at h1
     have h2 : dimerLabel (⟨2 * k + 1, hk⟩ : Fin N) = ((k + 1 : ℕ) : ZMod 2) := by
       unfold dimerLabel
       congr 2
-      simp only
+      show (2 * k + 1) / 2 = k
       omega
     rw [h2] at h1
     exact (add_eq_left).mp h1
   · intro hs b hb
     have hb' : b.val = 2 * (b.val / 2) + 1 := by omega
     have hlt : 2 * (b.val / 2) + 1 < N := by omega
-    rw [← dimerExt_val, hb', dimerExt_linkOf_cdw_odd q _ hlt, hs _ hlt, add_zero]
+    rw [← dimerExt_val (linkOf (fockCfg (univ.filter (fun x : Fin N => Even x.val))) q) b, hb',
+      dimerExt_linkOf_cdw_odd q _ hlt, hs _ hlt, add_zero]
     unfold dimerLabel
     rfl
 
 /-- Dimer charge configurations, as conditions on the pairs. -/
-theorem isDimer_iff (q : Cfg N) :
+theorem isDimer_iff_pairs (q : Cfg N) :
     IsDimer q ↔ ∀ k, 2 * k + 1 < N → dimerExt q (2 * k) + dimerExt q (2 * k + 1) = 0 := by
   constructor
   · intro hd k hk
@@ -162,15 +165,14 @@ theorem isDimer_iff (q : Cfg N) :
   · intro hs k hk hk1
     have hk' : k.val = 2 * (k.val / 2) := by omega
     have h1 := (dimer_zmod2_add_eq_zero _ _).mp (hs (k.val / 2) (by omega))
-    rw [← hk', dimerExt_val, show 2 * (k.val / 2) + 1 = k.val + 1 by omega,
-      dimerExt_of_lt _ _ hk1] at h1
+    rw [← hk', dimerExt_val, dimerExt_of_lt _ _ hk1] at h1
     exact h1
 
 /-- For density-wave matter, the dimer link constraints are exactly the dimer charge
 constraints. -/
 theorem dimerLinks_linkOf_cdw (q : Cfg N) :
     dimerLinks (linkOf (fockCfg (univ.filter (fun x : Fin N => Even x.val))) q) ↔ IsDimer q := by
-  rw [dimerLinks_linkOf_cdw_iff, isDimer_iff]
+  rw [dimerLinks_linkOf_cdw_iff, isDimer_iff_pairs]
   exact dimer_partial_sums (fun i => dimerExt q (2 * i) + dimerExt q (2 * i + 1))
 
 /-- **The dimer sector law**: in the dual frame the dimer initial state is the uniform
@@ -178,10 +180,11 @@ superposition of density-wave matter over all dimer charge configurations. -/
 theorem dimerInit_dual (hN : Even N) (n q : Cfg N) :
     dimerInit N (dualEquiv (n, q)) =
       if n = fockCfg (univ.filter (fun x : Fin N => Even x.val)) ∧ IsDimer q then 1 else 0 := by
+  have _hN := hN  -- the sector law holds for every `N`; evenness is not needed here
   simp only [dimerInit, dualEquiv_apply]
   by_cases hn : n = fockCfg (univ.filter (fun x : Fin N => Even x.val))
   · subst hn
-    simp only [if_true, true_and, one_mul, dimerGauge]
+    simp only [ite_true, true_and, one_mul, dimerGauge]
     exact if_congr (dimerLinks_linkOf_cdw q) rfl rfl
   · simp [hn]
 
@@ -195,34 +198,32 @@ theorem card_isDimer (hN : Even N) :
   refine card_nbij' (fun q k => q ⟨2 * k.val, by omega⟩)
     (fun r x => r ⟨x.val / 2, by omega⟩) ?_ ?_ ?_ ?_
   · intro q _
-    simp
+    exact mem_coe.mpr (mem_univ _)
   · intro r _
-    simp only [coe_filter, mem_univ, true_and, Set.mem_setOf_eq]
+    rw [mem_coe, mem_filter]
+    refine ⟨mem_univ _, ?_⟩
     intro k hk hk1
+    show r ⟨k.val / 2, _⟩ = r ⟨(k.val + 1) / 2, _⟩
     congr 2
-    simp only
     omega
   · intro q hq
-    simp only [coe_filter, mem_univ, true_and, Set.mem_setOf_eq] at hq
+    rw [mem_coe, mem_filter] at hq
+    have hq' : IsDimer q := hq.2
     funext x
+    show q ⟨2 * (x.val / 2), _⟩ = q x
     by_cases hx : x.val % 2 = 0
     · congr 1
-      ext
-      simp only
-      omega
-    · have h1 := hq ⟨2 * (x.val / 2), by omega⟩ (by simp) (by simp; omega)
+      exact Fin.ext (by show 2 * (x.val / 2) = x.val; omega)
+    · have h1 := hq' ⟨2 * (x.val / 2), by omega⟩ (by show 2 * (x.val / 2) % 2 = 0; omega)
+        (by show 2 * (x.val / 2) + 1 < N; omega)
       rw [h1]
       congr 1
-      ext
-      simp only
-      omega
+      exact Fin.ext (by show 2 * (x.val / 2) + 1 = x.val; omega)
   · intro r _
     funext k
-    simp only
+    show r ⟨2 * k.val / 2, _⟩ = r k
     congr 1
-    ext
-    simp only
-    omega
+    exact Fin.ext (by show 2 * k.val / 2 = k.val; omega)
 
 /-! ### Auxiliary lemmas: the dual-frame expectation formula -/
 
@@ -283,12 +284,12 @@ theorem sector_average_dimer (hN : Even N) (J h : ℝ)
   rw [dimer_expect_evo_dual J h _ O hO t, Finset.sum_filter]
   refine Finset.sum_congr rfl fun q _ => ?_
   by_cases hq : IsDimer q
-  · rw [if_pos hq]
+  · rw [ite_eq_left hq]
     congr 2
     ext n
     rw [dimerInit_dual hN, Pi.single_apply]
     simp [hq]
-  · rw [if_neg hq]
+  · rw [ite_eq_right hq]
     have hvec : (fun n => dimerInit N (dualEquiv (n, q))) = 0 := by
       ext n
       rw [dimerInit_dual hN]
