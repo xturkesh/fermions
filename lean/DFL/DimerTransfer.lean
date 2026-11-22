@@ -63,12 +63,32 @@ def dimerKappa (lam : ℝ) : ℝ := √((1 + lam) / (1 - lam))
 theorem dimerD_commutator (lam : ℝ) (z : ℂ) :
     dimerDp lam z * dimerDm lam z - dimerDm lam z * dimerDp lam z =
       (2 * lam * (lam ^ 2 - z ^ 2)) • sigmaXC := by
-  sorry
+  ext i j
+  fin_cases i <;> fin_cases j <;> simp [dimerDp, dimerDm, tmC, sigmaXC] <;> ring1
 
 /-- `D_+(E)` and `D_-(E)` commute iff `E = ±λ` (paper: Lemma `lem:dimercritical`(i)). -/
 theorem dimerD_commute_iff (lam : ℝ) (hlam : 0 < lam) (E : ℝ) :
     Commute (dimerDp lam E) (dimerDm lam E) ↔ E = lam ∨ E = -lam := by
-  sorry
+  have key := dimerD_commutator lam E
+  constructor
+  · intro h
+    have h2 : (2 * (lam : ℂ) * ((lam : ℂ) ^ 2 - (E : ℂ) ^ 2)) • sigmaXC = 0 := by
+      rw [← key, h.eq, sub_self]
+    have h3 : (2 * (lam : ℂ) * ((lam : ℂ) ^ 2 - (E : ℂ) ^ 2)) = 0 := by
+      have := congrFun (congrFun h2 0) 1
+      simpa [sigmaXC] using this
+    have h4 : 2 * lam * (lam ^ 2 - E ^ 2) = 0 := by exact_mod_cast h3
+    have h5 : (E - lam) * (E + lam) = 0 := by
+      rcases mul_eq_zero.mp h4 with h | h
+      · exfalso; linarith
+      · linear_combination -h
+    rcases mul_eq_zero.mp h5 with h | h
+    · left; linarith
+    · right; linarith
+  · intro h
+    show dimerDp lam E * dimerDm lam E = dimerDm lam E * dimerDp lam E
+    rw [← sub_eq_zero, key]
+    rcases h with h | h <;> subst h <;> simp
 
 /-! ### (iii) -/
 
@@ -76,27 +96,127 @@ theorem dimerD_commute_iff (lam : ℝ) (hlam : 0 < lam) (E : ℝ) :
 theorem dimerTheta_spec (lam : ℝ) (h0 : 0 < lam) (h1 : lam < 1) :
     Real.pi / 2 < dimerTheta lam ∧ dimerTheta lam < Real.pi ∧
       Real.cos (dimerTheta lam) = -lam ∧ Real.sin (dimerTheta lam) = √(1 - lam ^ 2) := by
-  sorry
+  unfold dimerTheta
+  refine ⟨Real.pi_div_two_lt_arccos.mpr (by linarith), Real.arccos_lt_pi.mpr (by linarith),
+    Real.cos_arccos (by linarith) (by linarith), ?_⟩
+  rw [Real.sin_arccos, neg_sq]
 
+namespace DimerTransferAux
+
+/-- `sin θ > 0`. -/
+lemma sin_pos (lam : ℝ) (h0 : 0 < lam) (h1 : lam < 1) : 0 < Real.sin (dimerTheta lam) := by
+  rw [(dimerTheta_spec lam h0 h1).2.2.2]
+  exact Real.sqrt_pos.mpr (by nlinarith)
+
+/-- `sin² θ = 1 - λ²`. -/
+lemma sin_sq (lam : ℝ) (h0 : 0 < lam) (h1 : lam < 1) :
+    Real.sin (dimerTheta lam) ^ 2 = 1 - lam ^ 2 := by
+  rw [(dimerTheta_spec lam h0 h1).2.2.2, Real.sq_sqrt (by nlinarith)]
+
+/-- `sin² θ = 1 - λ²`, as complex numbers. -/
+lemma sin_sq_C (lam : ℝ) (h0 : 0 < lam) (h1 : lam < 1) :
+    ((Real.sin (dimerTheta lam) : ℝ) : ℂ) ^ 2 = 1 - (lam : ℂ) ^ 2 := by
+  exact_mod_cast sin_sq lam h0 h1
+
+/-- If `A P = P B` with `P` invertible, then `P⁻¹ A P = B`. -/
+lemma conj_of_mul_eq {A B P : Matrix (Fin 2) (Fin 2) ℂ} (hP : IsUnit P.det)
+    (h : A * P = P * B) : P⁻¹ * A * P = B := by
+  rw [Matrix.mul_assoc, h, ← Matrix.mul_assoc, Matrix.nonsing_inv_mul _ hP, Matrix.one_mul]
+
+/-- If `A P = P B` with `P` invertible, then `P⁻¹ A² P = B²`. -/
+lemma conj_sq_of_mul_eq {A B P : Matrix (Fin 2) (Fin 2) ℂ} (hP : IsUnit P.det)
+    (h : A * P = P * B) : P⁻¹ * (A * A) * P = B * B := by
+  apply conj_of_mul_eq hP
+  rw [Matrix.mul_assoc, h, ← Matrix.mul_assoc, h, Matrix.mul_assoc]
+
+/-- `R_a R_b = R_{a+b}`. -/
+lemma rotC_mul (a b : ℝ) : rotC a * rotC b = rotC (a + b) := by
+  ext i j
+  fin_cases i <;> fin_cases j <;> simp [rotC, Real.cos_add, Real.sin_add] <;> ring1
+
+/-- `T_{-2λ} S = S R_θ`. -/
+lemma tm_mul_S (lam : ℝ) (h0 : 0 < lam) (h1 : lam < 1) :
+    tmC (-2 * lam) * dimerS lam = dimerS lam * rotC (dimerTheta lam) := by
+  have hc := (dimerTheta_spec lam h0 h1).2.2.1
+  have hs := sin_sq_C lam h0 h1
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [tmC, dimerS, rotC, hc, -Complex.ofReal_sin, -Complex.ofReal_cos] <;>
+    first | ring1 | linear_combination hs
+
+/-- `T_{2λ} (Γ₂ S) = (Γ₂ S) (-R_θ)`. -/
+lemma tm_mul_gS (lam : ℝ) (h0 : 0 < lam) (h1 : lam < 1) :
+    tmC (2 * lam) * (gamma2C * dimerS lam) =
+      (gamma2C * dimerS lam) * (-rotC (dimerTheta lam)) := by
+  have hc := (dimerTheta_spec lam h0 h1).2.2.1
+  have hs := sin_sq_C lam h0 h1
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [tmC, dimerS, rotC, gamma2C, hc, -Complex.ofReal_sin, -Complex.ofReal_cos] <;>
+    first | ring1 | linear_combination -hs
+
+end DimerTransferAux
+
+open DimerTransferAux in
 /-- `S` is invertible. -/
 theorem dimerS_det (lam : ℝ) (h0 : 0 < lam) (h1 : lam < 1) : (dimerS lam).det ≠ 0 := by
-  sorry
+  rw [dimerS, Matrix.det_fin_two_of]
+  have := sin_pos lam h0 h1
+  simp only [mul_one, mul_zero, sub_zero]
+  exact_mod_cast this.ne'
+
+namespace DimerTransferAux
+
+/-- `det S` is a unit. -/
+lemma S_isUnit (lam : ℝ) (h0 : 0 < lam) (h1 : lam < 1) : IsUnit (dimerS lam).det :=
+  isUnit_iff_ne_zero.mpr (dimerS_det lam h0 h1)
+
+/-- `det (Γ₂ S)` is a unit. -/
+lemma gS_isUnit (lam : ℝ) (h0 : 0 < lam) (h1 : lam < 1) :
+    IsUnit (gamma2C * dimerS lam).det := by
+  rw [Matrix.det_mul]
+  refine (isUnit_iff_ne_zero.mpr ?_).mul (S_isUnit lam h0 h1)
+  simp [gamma2C, Matrix.det_fin_two_of]
+
+/-- `D_+(λ) = -1`. -/
+lemma dimerDp_self (lam : ℝ) : dimerDp lam lam = -1 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;> simp [dimerDp, tmC]
+
+/-- `D_-(-λ) = -1`. -/
+lemma dimerDm_neg_self (lam : ℝ) : dimerDm lam (-lam) = -1 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;> simp [dimerDm, tmC]
+
+/-- `R_π = -1`. -/
+lemma rotC_pi : rotC Real.pi = -1 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;> simp [rotC]
+
+end DimerTransferAux
 
 /-- **Rotation normal form at `E_c = λ`** (paper: Lemma `lem:dimercritical`(iii), eq. `eq:dimerrot`):
 `S⁻¹ D_+(λ) S = -1 = R_π`. -/
 theorem dimerS_conj_plus (lam : ℝ) (h0 : 0 < lam) (h1 : lam < 1) :
     (dimerS lam)⁻¹ * dimerDp lam lam * dimerS lam = -1 ∧ rotC Real.pi = -1 := by
-  sorry
+  refine ⟨?_, DimerTransferAux.rotC_pi⟩
+  rw [DimerTransferAux.dimerDp_self, mul_neg, mul_one, neg_mul,
+    Matrix.nonsing_inv_mul _ (DimerTransferAux.S_isUnit lam h0 h1)]
 
 /-- `S⁻¹ T_{-2λ} S = R_θ` (paper: eq. `eq:dimerrot`). -/
 theorem dimerS_conj_tm (lam : ℝ) (h0 : 0 < lam) (h1 : lam < 1) :
-    (dimerS lam)⁻¹ * tmC (-2 * lam) * dimerS lam = rotC (dimerTheta lam) := by
-  sorry
+    (dimerS lam)⁻¹ * tmC (-2 * lam) * dimerS lam = rotC (dimerTheta lam) :=
+  DimerTransferAux.conj_of_mul_eq (DimerTransferAux.S_isUnit lam h0 h1)
+    (DimerTransferAux.tm_mul_S lam h0 h1)
 
 /-- `S⁻¹ D_-(λ) S = R_{2θ}` (paper: eq. `eq:dimerrot`). -/
 theorem dimerS_conj_minus (lam : ℝ) (h0 : 0 < lam) (h1 : lam < 1) :
     (dimerS lam)⁻¹ * dimerDm lam lam * dimerS lam = rotC (2 * dimerTheta lam) := by
-  sorry
+  have h := DimerTransferAux.conj_sq_of_mul_eq (DimerTransferAux.S_isUnit lam h0 h1)
+    (DimerTransferAux.tm_mul_S lam h0 h1)
+  rw [DimerTransferAux.rotC_mul, ← two_mul] at h
+  rw [← h, dimerDm]
+  congr 3 <;> ring1
 
 /-- **The averaged rotation phases** (paper: eq. `eq:dimerangles`), with `η₊ = π`, `η₋ = 2θ` and equal
 probabilities. -/
@@ -120,7 +240,8 @@ theorem dimerS_kappa (lam : ℝ) (h0 : 0 < lam) (h1 : lam < 1) :
 
 /-- `Γ₂ T_a Γ₂ = -T_{-a}` (paper: proof of Lemma `lem:dimercritical`(iv)). -/
 theorem gamma2_tmC (a : ℂ) : gamma2C * tmC a * gamma2C = -tmC (-a) := by
-  sorry
+  ext i j
+  fin_cases i <;> fin_cases j <;> simp [gamma2C, tmC]
 
 /-- **Rotation normal form at `E_c = -λ`** (paper: Lemma `lem:dimercritical`(iv)):
 `(Γ₂S)⁻¹ D_-(-λ) Γ₂S = R_π` and `(Γ₂S)⁻¹ D_+(-λ) Γ₂S = R_{2θ}`. -/
@@ -128,7 +249,14 @@ theorem dimerS_conj_neg (lam : ℝ) (h0 : 0 < lam) (h1 : lam < 1) :
     (gamma2C * dimerS lam)⁻¹ * dimerDm lam (-lam) * (gamma2C * dimerS lam) = rotC Real.pi ∧
       (gamma2C * dimerS lam)⁻¹ * dimerDp lam (-lam) * (gamma2C * dimerS lam) =
         rotC (2 * dimerTheta lam) := by
-  sorry
+  have hU := DimerTransferAux.gS_isUnit lam h0 h1
+  refine ⟨?_, ?_⟩
+  · rw [DimerTransferAux.rotC_pi, DimerTransferAux.dimerDm_neg_self, mul_neg, mul_one, neg_mul,
+      Matrix.nonsing_inv_mul _ hU]
+  · have h := DimerTransferAux.conj_sq_of_mul_eq hU (DimerTransferAux.tm_mul_gS lam h0 h1)
+    rw [neg_mul_neg, DimerTransferAux.rotC_mul, ← two_mul] at h
+    rw [← h, dimerDp]
+    congr 3 <;> ring1
 
 /-! ### Lemma `lem:dimertransfer` -/
 
