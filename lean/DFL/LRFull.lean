@@ -54,6 +54,384 @@ structure LocB (Y : Finset (Fin N)) (B : Matrix (Cfg N × Cfg N) (Cfg N × Cfg N
   gauge : ∀ k : Fin N, B * cplx (gauss k) = cplx (gauss k) * B
   comm : ∀ y ∉ Y, ∀ b : Bool, B * dressedSharp y b = dressedSharp y b * B
 
+namespace LRFullAux
+
+/-! ### Auxiliary lemmas -/
+
+section Basic
+
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+
+omit [Fintype ι] [DecidableEq ι] in
+/-- The conjugate transpose of a complexified real matrix is the complexified transpose. -/
+lemma cplx_conjTranspose' (A : Matrix ι ι ℝ) : (cplx A)ᴴ = cplx Aᵀ := by
+  ext i j
+  simp [cplx, conjTranspose_apply]
+
+/-- The identity matrix has operator norm at most one. -/
+lemma norm_one_le : ‖(1 : Matrix ι ι ℂ)‖ ≤ 1 := by
+  rw [← diagonal_one, l2_opNorm_diagonal]
+  exact (pi_norm_le_iff_of_nonneg zero_le_one).mpr fun _ => by simp
+
+/-- An isometry (`Uᴴ U = 1`) has operator norm at most one. -/
+lemma norm_le_one_of_isometry (U : Matrix ι ι ℂ) (hU : Uᴴ * U = 1) : ‖U‖ ≤ 1 := by
+  have h := l2_opNorm_conjTranspose_mul_self U
+  rw [hU] at h
+  nlinarith [norm_nonneg U, norm_one_le (ι := ι)]
+
+end Basic
+
+/-- The LGT Hamiltonian is a real symmetric matrix. -/
+lemma H_isSymm (J h : ℝ) : (H J h : Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℝ).IsSymm := by
+  have h1 : (Hdual J h : Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℝ).IsSymm := by
+    unfold Hdual
+    rw [Matrix.IsSymm, blockDiagonal_transpose]
+    congr 1
+    funext q
+    unfold Hsec
+    rw [transpose_sub, transpose_smul, transpose_one, (dGamma_isSymm _ (hq_isSymm J h q)).eq]
+  have h2 : H J h = (Hdual J h).submatrix (dualEquiv (N := N)).symm dualEquiv.symm := by
+    rw [← duality, submatrix_submatrix, Equiv.self_comp_symm, submatrix_id_id]
+  rw [h2, Matrix.IsSymm, transpose_submatrix, h1.eq]
+
+/-- `e^{-itH}` is unitary: `U U† = 1`. -/
+lemma evo_mul_conjTranspose_H (J h t : ℝ) :
+    evo (H J h) t * (evo (H J h) t)ᴴ = (1 : Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℂ) :=
+  evo_unitary' _ (H_isSymm J h) t
+
+/-- `e^{-itH}` is unitary: `U† U = 1`. -/
+lemma conjTranspose_mul_evo_H (J h t : ℝ) :
+    (evo (H J h) t)ᴴ * evo (H J h) t = (1 : Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℂ) :=
+  evo_unitary _ (H_isSymm J h) t
+
+/-- `‖e^{-itH}‖ ≤ 1`. -/
+lemma norm_evo_H_le (J h t : ℝ) : ‖(evo (H J h) t : Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℂ)‖ ≤ 1 :=
+  norm_le_one_of_isometry _ (conjTranspose_mul_evo_H J h t)
+
+/-- The Heisenberg evolution is multiplicative. -/
+lemma heis_mul (J h t : ℝ) (A B : Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℂ) :
+    heis J h t (A * B) = heis J h t A * heis J h t B := by
+  unfold heis
+  calc (evo (H J h) t)ᴴ * (A * B) * evo (H J h) t
+      = (evo (H J h) t)ᴴ * A * (evo (H J h) t * (evo (H J h) t)ᴴ) * B * evo (H J h) t := by
+        rw [evo_mul_conjTranspose_H, Matrix.mul_one]; simp only [Matrix.mul_assoc]
+    _ = (evo (H J h) t)ᴴ * A * evo (H J h) t * ((evo (H J h) t)ᴴ * B * evo (H J h) t) := by
+        simp only [Matrix.mul_assoc]
+
+/-- `heis 1 = 1`. -/
+lemma heis_one (J h t : ℝ) :
+    heis J h t (1 : Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℂ) = 1 := by
+  unfold heis
+  rw [Matrix.mul_one, conjTranspose_mul_evo_H]
+
+/-- The Heisenberg evolution is additive. -/
+lemma heis_add (J h t : ℝ) (A B : Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℂ) :
+    heis J h t (A + B) = heis J h t A + heis J h t B := by
+  unfold heis
+  rw [Matrix.mul_add, Matrix.add_mul]
+
+/-- The Heisenberg evolution commutes with subtraction. -/
+lemma heis_sub (J h t : ℝ) (A B : Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℂ) :
+    heis J h t (A - B) = heis J h t A - heis J h t B := by
+  unfold heis
+  rw [Matrix.mul_sub, Matrix.sub_mul]
+
+/-- The Heisenberg evolution is homogeneous. -/
+lemma heis_smul (J h t : ℝ) (c : ℂ) (A : Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℂ) :
+    heis J h t (c • A) = c • heis J h t A := by
+  unfold heis
+  rw [Matrix.mul_smul, Matrix.smul_mul]
+
+/-- The Heisenberg evolution commutes with finite sums. -/
+lemma heis_sum {κ : Type*} (J h t : ℝ) (s : Finset κ)
+    (A : κ → Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℂ) :
+    heis J h t (∑ i ∈ s, A i) = ∑ i ∈ s, heis J h t (A i) := by
+  unfold heis
+  rw [Matrix.mul_sum, Matrix.sum_mul]
+
+/-- The Heisenberg evolution of a list product. -/
+lemma heis_list_prod {α : Type*} (J h t : ℝ) (f : α → Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℂ)
+    (l : List α) : heis J h t (l.map f).prod = (l.map (fun p => heis J h t (f p))).prod := by
+  induction l with
+  | nil => simp [heis_one]
+  | cons p l ih => rw [List.map_cons, List.prod_cons, heis_mul, ih, List.map_cons, List.prod_cons]
+
+/-- The Heisenberg evolution commutes with the adjoint. -/
+lemma heis_conjTranspose (J h t : ℝ) (A : Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℂ) :
+    heis J h t Aᴴ = (heis J h t A)ᴴ := by
+  unfold heis
+  rw [conjTranspose_mul, conjTranspose_mul, conjTranspose_conjTranspose, Matrix.mul_assoc]
+
+/-- The Heisenberg evolution does not increase the norm. -/
+lemma norm_heis_le (J h t : ℝ) (A : Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℂ) :
+    ‖heis J h t A‖ ≤ ‖A‖ := by
+  unfold heis
+  have h1 := norm_evo_H_le (N := N) J h t
+  have h2 : ‖(evo (H (N := N) J h) t)ᴴ‖ ≤ 1 := by rw [l2_opNorm_conjTranspose]; exact h1
+  calc ‖(evo (H J h) t)ᴴ * A * evo (H J h) t‖
+      ≤ ‖(evo (H J h) t)ᴴ‖ * ‖A‖ * ‖evo (H J h) t‖ :=
+        (norm_mul_le _ _).trans (mul_le_mul_of_nonneg_right (norm_mul_le _ _) (norm_nonneg _))
+    _ ≤ 1 * ‖A‖ * 1 := by gcongr
+    _ = ‖A‖ := by ring
+
+/-- `‖P_q‖ ≤ 1`. -/
+lemma norm_cplx_gaussProj_le (q : Cfg N) : ‖cplx (gaussProj q)‖ ≤ 1 := by
+  rw [SectorNormAux.cplx_gaussProj, l2_opNorm_diagonal]
+  refine (pi_norm_le_iff_of_nonneg zero_le_one).mpr fun p => ?_
+  split_ifs <;> simp
+
+/-- `c̃_y† c̃_y = n_y ⊗ 1` is diagonal with entries `n_y ∈ {0, 1}` (complexified). -/
+lemma cplx_number_eq (y : Fin N) :
+    cplx (numOp {y} ⊗ₖ (1 : Matrix (Cfg N) (Cfg N) ℝ)) =
+      diagonal (fun p : Cfg N × Cfg N => ((occ (p.1 y) : ℝ) : ℂ)) := by
+  rw [numOp, sec_diagonal_kronecker_one, sec_cplx_diagonal]
+  congr 1
+  funext p
+  simp [count]
+
+/-- `c̃_y† c̃_y = n_y ⊗ 1` (complexified). -/
+lemma cplx_dressed_number (y : Fin N) :
+    cplx (dressed y)ᵀ * cplx (dressed y) = cplx (numOp {y} ⊗ₖ (1 : Matrix (Cfg N) (Cfg N) ℝ)) := by
+  rw [← TransportSharpAux.cplx_mul', dressed_number]
+
+/-- `‖c̃_y‖ ≤ 1`: `c̃_y` is a partial isometry. -/
+lemma norm_cplx_dressed_le (y : Fin N) : ‖cplx (dressed y)‖ ≤ 1 := by
+  have h2 : ‖(cplx (dressed y))ᴴ * cplx (dressed y)‖ ≤ 1 := by
+    rw [cplx_conjTranspose', cplx_dressed_number, cplx_number_eq, l2_opNorm_diagonal]
+    refine (pi_norm_le_iff_of_nonneg zero_le_one).mpr fun p => ?_
+    unfold occ
+    split_ifs <;> simp
+  rw [l2_opNorm_conjTranspose_mul_self] at h2
+  nlinarith [norm_nonneg (cplx (dressed y))]
+
+/-- `‖c̃_y†‖ ≤ 1`. -/
+lemma norm_cplx_dressed_transpose_le (y : Fin N) : ‖cplx (dressed y)ᵀ‖ ≤ 1 := by
+  rw [← cplx_conjTranspose', l2_opNorm_conjTranspose]
+  exact norm_cplx_dressed_le y
+
+/-- `‖c̃^♯_y‖ ≤ 1`. -/
+lemma norm_dressedSharp_le (y : Fin N) (b : Bool) : ‖dressedSharp y b‖ ≤ 1 := by
+  cases b
+  · exact norm_cplx_dressed_le y
+  · exact norm_cplx_dressed_transpose_le y
+
+/-! #### Sector projections -/
+
+/-- `P_q P_{q'} = δ_{qq'} P_q` (complexified). -/
+lemma cplx_gaussProj_mul (q q' : Cfg N) :
+    cplx (gaussProj q) * cplx (gaussProj q') = if q = q' then cplx (gaussProj q) else 0 := by
+  rw [← TransportSharpAux.cplx_mul', gaussProj_mul]
+  split_ifs
+  · rfl
+  · exact TransportSharpAux.cplx_zero'
+
+/-- A gauge-invariant operator commutes with every sector projection. -/
+lemma comm_gaussProj_of_gaugeInv (M : Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℂ) (hM : GaugeInv M)
+    (q : Cfg N) : cplx (gaussProj q) * M = M * cplx (gaussProj q) := by
+  ext a b
+  rw [SectorNormAux.cplx_gaussProj, diagonal_mul, mul_diagonal]
+  by_cases hab : chargeOf a.1 a.2 = chargeOf b.1 b.2
+  · simp only [hab]
+    ring
+  · rw [SectorNormAux.gaugeInv_apply_eq_zero M hM a b hab]
+    ring
+
+/-- The complexified Gauss operator is a linear combination of the sector projections. -/
+lemma cplx_gauss_eq_sum (j : Fin N) :
+    cplx (gauss j) = ∑ q : Cfg N, ((sgn (q j) : ℝ) : ℂ) • cplx (gaussProj q) := by
+  rw [SectorNormAux.sum_smul_gaussProj, GaussLawAux.gauss_eq, sec_cplx_diagonal]
+
+/-- An operator commuting with every sector projection is gauge invariant. -/
+lemma gaugeInv_of_comm_gaussProj (M : Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℂ)
+    (hM : ∀ q, cplx (gaussProj q) * M = M * cplx (gaussProj q)) : GaugeInv M := by
+  intro j
+  rw [cplx_gauss_eq_sum, Matrix.mul_sum, Matrix.sum_mul]
+  refine Finset.sum_congr rfl fun q _ => ?_
+  rw [Matrix.mul_smul, Matrix.smul_mul, hM q]
+
+/-- `c̃_y` is gauge invariant (complexified). -/
+lemma gaugeInv_cplx_dressed (y : Fin N) : GaugeInv (cplx (dressed y)) := by
+  intro j
+  rw [← TransportSharpAux.cplx_mul', ← TransportSharpAux.cplx_mul', dressed_comm_gauss]
+
+/-- `c̃_y†` is gauge invariant (complexified). -/
+lemma gaugeInv_cplx_dressed_transpose (y : Fin N) : GaugeInv (cplx (dressed y)ᵀ) := by
+  intro j
+  rw [← TransportSharpAux.cplx_mul', ← TransportSharpAux.cplx_mul',
+    TransportSharpAux.dressed_transpose_comm_gauss]
+
+/-- `P_q` commutes with `c̃^♯_y`. -/
+lemma comm_gaussProj_dressedSharp (q : Cfg N) (y : Fin N) (b : Bool) :
+    cplx (gaussProj q) * dressedSharp y b = dressedSharp y b * cplx (gaussProj q) := by
+  cases b
+  · exact comm_gaussProj_of_gaugeInv _ (gaugeInv_cplx_dressed y) q
+  · exact comm_gaussProj_of_gaugeInv _ (gaugeInv_cplx_dressed_transpose y) q
+
+/-- `P_q` commutes with every linear combination of the `c̃^♯_y` (fixed `♯`). -/
+lemma comm_gaussProj_sum_dressedSharp (q : Cfg N) (c : Fin N → ℂ) (b : Bool) :
+    cplx (gaussProj q) * ∑ y, c y • dressedSharp y b =
+      (∑ y, c y • dressedSharp y b) * cplx (gaussProj q) := by
+  rw [Matrix.mul_sum, Matrix.sum_mul]
+  refine Finset.sum_congr rfl fun y _ => ?_
+  rw [Matrix.mul_smul, Matrix.smul_mul, comm_gaussProj_dressedSharp]
+
+/-- `P_{q₀} ∑_q P_q Y_q = P_{q₀} Y_{q₀}` when every `Y_q` commutes with the sector projections. -/
+lemma gaussProj_mul_sectorSum (Y : Cfg N → Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℂ) (q₀ : Cfg N) :
+    cplx (gaussProj q₀) * ∑ q, cplx (gaussProj q) * Y q = cplx (gaussProj q₀) * Y q₀ := by
+  rw [Matrix.mul_sum]
+  simp_rw [← Matrix.mul_assoc, cplx_gaussProj_mul, ite_mul, zero_mul]
+  rw [Finset.sum_ite_eq]
+  simp
+
+/-- `(∑_q P_q Y_q) P_{q₀} = P_{q₀} Y_{q₀}` when every `Y_q` commutes with the sector projections. -/
+lemma sectorSum_mul_gaussProj (Y : Cfg N → Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℂ)
+    (hY : ∀ q q', cplx (gaussProj q') * Y q = Y q * cplx (gaussProj q')) (q₀ : Cfg N) :
+    (∑ q, cplx (gaussProj q) * Y q) * cplx (gaussProj q₀) = cplx (gaussProj q₀) * Y q₀ := by
+  rw [Matrix.sum_mul]
+  have e : ∀ q, cplx (gaussProj q) * Y q * cplx (gaussProj q₀) =
+      cplx (gaussProj q₀) * cplx (gaussProj q) * Y q := by
+    intro q
+    rw [Matrix.mul_assoc, ← hY q q₀, ← Matrix.mul_assoc, cplx_gaussProj_mul, cplx_gaussProj_mul]
+    split_ifs with h1 h2 h2
+    · subst h1; rfl
+    · exact absurd h1.symm h2
+    · exact absurd h2.symm h1
+    · rfl
+  simp_rw [e, cplx_gaussProj_mul, ite_mul, zero_mul]
+  rw [Finset.sum_ite_eq]
+  simp
+
+/-- The adjoint of a sector sum, multiplied by `P_{q₀}` on the left. -/
+lemma gaussProj_mul_sectorSum_conjTranspose (Y : Cfg N → Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℂ)
+    (hY : ∀ q q', cplx (gaussProj q') * Y q = Y q * cplx (gaussProj q')) (q₀ : Cfg N) :
+    cplx (gaussProj q₀) * (∑ q, cplx (gaussProj q) * Y q)ᴴ = cplx (gaussProj q₀) * (Y q₀)ᴴ := by
+  have h1 := congrArg conjTranspose (sectorSum_mul_gaussProj Y hY q₀)
+  rw [conjTranspose_mul, conjTranspose_mul, SectorNormAux.cplx_gaussProj_conjTranspose] at h1
+  rw [h1]
+  have h2 := congrArg conjTranspose (hY q₀ q₀)
+  rw [conjTranspose_mul, conjTranspose_mul, SectorNormAux.cplx_gaussProj_conjTranspose] at h2
+  exact h2
+
+/-- The adjoint of a sector sum, multiplied by `P_{q₀}` on the right. -/
+lemma sectorSum_conjTranspose_mul_gaussProj
+    (Y : Cfg N → Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℂ)
+    (hY : ∀ q q', cplx (gaussProj q') * Y q = Y q * cplx (gaussProj q')) (q₀ : Cfg N) :
+    (∑ q, cplx (gaussProj q) * Y q)ᴴ * cplx (gaussProj q₀) = cplx (gaussProj q₀) * (Y q₀)ᴴ := by
+  have h1 := congrArg conjTranspose (gaussProj_mul_sectorSum Y q₀)
+  rw [conjTranspose_mul, conjTranspose_mul, SectorNormAux.cplx_gaussProj_conjTranspose] at h1
+  rw [h1]
+  have h2 := congrArg conjTranspose (hY q₀ q₀)
+  rw [conjTranspose_mul, conjTranspose_mul, SectorNormAux.cplx_gaussProj_conjTranspose] at h2
+  exact h2
+
+/-! #### The evolved dressed fermions in a sector -/
+
+/-- Coefficient of `c̃^♯_y` in `P_q c̃^♯_x(t)`: `U_q(t)_{xy}` or its complex conjugate. -/
+def coef (J h : ℝ) (q : Cfg N) (t : ℝ) (x y : Fin N) (b : Bool) : ℂ :=
+  if b then star (evo (hq J h q) t x y) else evo (hq J h q) t x y
+
+/-- `|coef| = |U_q(t)_{xy}|`. -/
+lemma norm_coef (J h : ℝ) (q : Cfg N) (t : ℝ) (x y : Fin N) (b : Bool) :
+    ‖coef J h q t x y b‖ = ‖evo (hq J h q) t x y‖ := by
+  cases b
+  · rfl
+  · exact norm_star _
+
+/-- The sector operators `∑_y U_q(t)_{xy} c̃_y` commute with every sector projection. -/
+lemma sectorOp_comm (J h t : ℝ) (x : Fin N) (q q' : Cfg N) :
+    cplx (gaussProj q') * ∑ y, evo (hq J h q) t x y • cplx (dressed y) =
+      (∑ y, evo (hq J h q) t x y • cplx (dressed y)) * cplx (gaussProj q') :=
+  comm_gaussProj_sum_dressedSharp q' (fun y => evo (hq J h q) t x y) false
+
+/-- **The evolved `c̃^♯_x` in the sector `q`**: `P_q c̃^♯_x(t) = c̃^♯_x(t) P_q = P_q ∑_y coef_y c̃^♯_y`. -/
+lemma gaussProj_heis_dressedSharp (J h : ℝ) (q : Cfg N) (t : ℝ) (x : Fin N) (b : Bool) :
+    cplx (gaussProj q) * heis J h t (dressedSharp x b) =
+        cplx (gaussProj q) * ∑ y, coef J h q t x y b • dressedSharp y b ∧
+      heis J h t (dressedSharp x b) * cplx (gaussProj q) =
+        cplx (gaussProj q) * ∑ y, coef J h q t x y b • dressedSharp y b := by
+  have hX : heis J h t (cplx (dressed x)) =
+      ∑ q, cplx (gaussProj q) * ∑ y, evo (hq J h q) t x y • cplx (dressed y) :=
+    heisenberg_dressed J h x t
+  cases b
+  · refine ⟨?_, ?_⟩
+    · show cplx (gaussProj q) * heis J h t (cplx (dressed x)) = _
+      rw [hX, gaussProj_mul_sectorSum]
+      rfl
+    · show heis J h t (cplx (dressed x)) * cplx (gaussProj q) = _
+      rw [hX, sectorSum_mul_gaussProj _ (sectorOp_comm J h t x)]
+      rfl
+  · have hadj : heis J h t (cplx (dressed x)ᵀ) =
+        (∑ q, cplx (gaussProj q) * ∑ y, evo (hq J h q) t x y • cplx (dressed y))ᴴ := by
+      rw [← cplx_conjTranspose', heis_conjTranspose, hX]
+    have hS : (∑ y, evo (hq J h q) t x y • cplx (dressed y))ᴴ =
+        ∑ y, coef J h q t x y true • dressedSharp y true := by
+      rw [conjTranspose_sum]
+      refine Finset.sum_congr rfl fun y _ => ?_
+      rw [conjTranspose_smul, cplx_conjTranspose']
+      rfl
+    refine ⟨?_, ?_⟩
+    · show cplx (gaussProj q) * heis J h t (cplx (dressed x)ᵀ) = _
+      rw [hadj, gaussProj_mul_sectorSum_conjTranspose _ (sectorOp_comm J h t x), hS]
+    · show heis J h t (cplx (dressed x)ᵀ) * cplx (gaussProj q) = _
+      rw [hadj, sectorSum_conjTranspose_mul_gaussProj _ (sectorOp_comm J h t x), hS]
+
+/-- `P_q` commutes with `c̃^♯_x(t)`. -/
+lemma comm_gaussProj_heis_dressedSharp (J h : ℝ) (q : Cfg N) (t : ℝ) (x : Fin N) (b : Bool) :
+    cplx (gaussProj q) * heis J h t (dressedSharp x b) =
+      heis J h t (dressedSharp x b) * cplx (gaussProj q) := by
+  rw [(gaussProj_heis_dressedSharp J h q t x b).1, (gaussProj_heis_dressedSharp J h q t x b).2]
+
+/-- `‖[c̃^♯_y, B]‖ ≤ 2‖B‖`. -/
+lemma norm_comm_dressedSharp_le (y : Fin N) (b : Bool)
+    (B : Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℂ) :
+    ‖dressedSharp y b * B - B * dressedSharp y b‖ ≤ 2 * ‖B‖ := by
+  have h1 : ‖dressedSharp y b * B‖ ≤ ‖B‖ :=
+    (norm_mul_le _ _).trans (mul_le_of_le_one_left (norm_nonneg B) (norm_dressedSharp_le y b))
+  have h2 : ‖B * dressedSharp y b‖ ≤ ‖B‖ :=
+    (norm_mul_le _ _).trans (mul_le_of_le_one_right (norm_nonneg B) (norm_dressedSharp_le y b))
+  linarith [norm_sub_le (dressedSharp y b * B) (B * dressedSharp y b)]
+
+/-- **Sector-wise commutator bound for one evolved dressed fermion**:
+`‖P_q [c̃^♯_x(t), B]‖ ≤ 2‖B‖ ∑_{y ∈ Y} |U_q(t)_{xy}|`. -/
+lemma norm_gaussProj_comm_heis_dressedSharp_le (J h : ℝ) (Y : Finset (Fin N))
+    (B : Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℂ) (hB : LocB Y B) (q : Cfg N) (t : ℝ)
+    (x : Fin N) (b : Bool) :
+    ‖cplx (gaussProj q) * (heis J h t (dressedSharp x b) * B - B * heis J h t (dressedSharp x b))‖ ≤
+      2 * ‖B‖ * ∑ y ∈ Y, ‖evo (hq J h q) t x y‖ := by
+  set P := cplx (gaussProj q) with hP
+  set a := heis J h t (dressedSharp x b) with ha
+  set T := ∑ y, coef J h q t x y b • dressedSharp y b with hT
+  have hPB : P * B = B * P := comm_gaussProj_of_gaugeInv B hB.gauge q
+  have hPa : P * a = P * T := (gaussProj_heis_dressedSharp J h q t x b).1
+  have hPT : P * T = T * P := comm_gaussProj_sum_dressedSharp q _ b
+  have e1 : P * (a * B - B * a) = P * (T * B - B * T) := by
+    rw [Matrix.mul_sub, Matrix.mul_sub, ← Matrix.mul_assoc, hPa, ← Matrix.mul_assoc, hPB,
+      Matrix.mul_assoc, hPa, ← Matrix.mul_assoc P B T, hPB, Matrix.mul_assoc, Matrix.mul_assoc]
+  have e2 : T * B - B * T =
+      ∑ y ∈ Y, coef J h q t x y b • (dressedSharp y b * B - B * dressedSharp y b) := by
+    rw [hT, Matrix.sum_mul, Matrix.mul_sum, ← Finset.sum_sub_distrib]
+    symm
+    refine (Finset.sum_subset (Finset.subset_univ Y) (fun y _ hy => ?_)).trans ?_
+    · rw [hB.comm y hy b, sub_self, smul_zero]
+    · refine Finset.sum_congr rfl fun y _ => ?_
+      rw [smul_sub, Matrix.smul_mul, Matrix.mul_smul]
+  rw [e1, e2]
+  calc ‖P * ∑ y ∈ Y, coef J h q t x y b • (dressedSharp y b * B - B * dressedSharp y b)‖
+      ≤ ‖P‖ * ‖∑ y ∈ Y, coef J h q t x y b • (dressedSharp y b * B - B * dressedSharp y b)‖ :=
+        norm_mul_le _ _
+    _ ≤ 1 * ∑ y ∈ Y, ‖evo (hq J h q) t x y‖ * (2 * ‖B‖) := by
+        refine mul_le_mul (norm_cplx_gaussProj_le q) ?_ (norm_nonneg _) zero_le_one
+        refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun y _ => ?_)
+        rw [norm_smul, norm_coef]
+        exact mul_le_mul_of_nonneg_left (norm_comm_dressedSharp_le y b B) (norm_nonneg _)
+    _ = 2 * ‖B‖ * ∑ y ∈ Y, ‖evo (hq J h q) t x y‖ := by
+        rw [one_mul, Finset.sum_mul, Finset.mul_sum]
+        exact Finset.sum_congr rfl fun y _ => by ring
+
+end LRFullAux
+
+open LRFullAux
+
 /-! ### (a) -/
 
 /-- **Sector-wise Lieb–Robinson bound for monomials** (paper: eq. `eq:main-LRsector`). -/
