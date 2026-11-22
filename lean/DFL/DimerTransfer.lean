@@ -503,6 +503,227 @@ def IsDimerCfg (lam : ℝ) (r : ℤ) (v : ℤ → ℝ) (m : ℤ) (L : ℕ) : Pro
   (∀ y : ℤ, m ≤ y → y < m + L → v y = lam ∨ v y = -lam) ∧
     ∀ k : ℤ, m ≤ 2 * k - r → 2 * k - r + 1 < m + L → v (2 * k - r) = v (2 * k - r + 1)
 
+namespace DimerTransferAux
+
+/-- `E₁₁ = diag(1, 0)`. -/
+def e11 : Matrix (Fin 2) (Fin 2) ℂ := !![1, 0; 0, 0]
+
+/-- `‖E₁₁‖ ≤ 1`. -/
+lemma norm_e11_le : ‖e11‖ ≤ 1 := by
+  have h : ‖e11‖ ^ 2 ≤ 1 := norm_sq_le_of_forall zero_le_one fun v => by
+    simp [e11, Matrix.mulVec, dotProduct, Fin.sum_univ_two]
+  nlinarith [norm_nonneg e11]
+
+/-- `T_a - T_b = (a - b) E₁₁`. -/
+lemma tmC_sub (a b : ℂ) : tmC a - tmC b = (a - b) • e11 := by
+  ext i j
+  fin_cases i <;> fin_cases j <;> simp [tmC, e11]
+
+/-- `‖T_a - T_b‖ ≤ |a - b|`. -/
+lemma norm_tmC_sub_le (a b : ℂ) : ‖tmC a - tmC b‖ ≤ ‖a - b‖ := by
+  rw [tmC_sub, norm_smul]
+  calc ‖a - b‖ * ‖e11‖ ≤ ‖a - b‖ * 1 := by gcongr; exact norm_e11_le
+    _ = ‖a - b‖ := mul_one _
+
+/-- `‖T_0‖ ≤ 1`. -/
+lemma norm_tmC_zero_le : ‖tmC 0‖ ≤ 1 := by
+  have h : ‖tmC 0‖ ^ 2 ≤ 1 := norm_sq_le_of_forall zero_le_one fun v => by
+    simp [tmC, Matrix.mulVec, dotProduct, Fin.sum_univ_two]
+    linarith
+  nlinarith [norm_nonneg (tmC 0)]
+
+/-- `‖T_a‖ ≤ |a| + 1`. -/
+lemma norm_tmC_le (a : ℂ) : ‖tmC a‖ ≤ ‖a‖ + 1 := by
+  calc ‖tmC a‖ = ‖(tmC a - tmC 0) + tmC 0‖ := by rw [sub_add_cancel]
+    _ ≤ ‖tmC a - tmC 0‖ + ‖tmC 0‖ := norm_add_le _ _
+    _ ≤ ‖a - 0‖ + 1 := add_le_add (norm_tmC_sub_le a 0) norm_tmC_zero_le
+    _ = ‖a‖ + 1 := by rw [sub_zero]
+
+/-- `‖R_φ‖ ≤ 1`. -/
+lemma norm_rotC_le (φ : ℝ) : ‖rotC φ‖ ≤ 1 := by
+  have h : ‖rotC φ‖ ^ 2 ≤ 1 := norm_sq_le_of_forall zero_le_one fun v => by
+    have hm := mulVec_real (Real.cos φ) (-Real.sin φ) (Real.sin φ) (Real.cos φ) v
+    have hR : rotC φ = !![((Real.cos φ : ℝ) : ℂ), ((-Real.sin φ : ℝ) : ℂ);
+        ((Real.sin φ : ℝ) : ℂ), ((Real.cos φ : ℝ) : ℂ)] := by
+      rw [rotC, Complex.ofReal_neg]
+    rw [hR, hm.1, hm.2, norm_sq_real_comb, norm_sq_real_comb, norm_sq_re_im (v 0),
+      norm_sq_re_im (v 1)]
+    apply le_of_eq
+    linear_combination ((v 0).re ^ 2 + (v 0).im ^ 2 + ((v 1).re ^ 2 + (v 1).im ^ 2)) *
+      Real.cos_sq_add_sin_sq φ
+  nlinarith [norm_nonneg (rotC φ)]
+
+/-- `‖1‖ ≤ 1`. -/
+lemma norm_one_le : ‖(1 : Matrix (Fin 2) (Fin 2) ℂ)‖ ≤ 1 := by
+  have h : ‖(1 : Matrix (Fin 2) (Fin 2) ℂ)‖ ^ 2 ≤ 1 :=
+    norm_sq_le_of_forall zero_le_one fun v => by simp
+  nlinarith [norm_nonneg (1 : Matrix (Fin 2) (Fin 2) ℂ)]
+
+/-- `κ ≥ 1`. -/
+lemma kappa_ge_one (lam : ℝ) (h0 : 0 < lam) (h1 : lam < 1) : 1 ≤ dimerKappa lam := by
+  rw [dimerKappa, Real.one_le_sqrt, le_div_iff₀ (by linarith)]
+  linarith
+
+/-- `‖S⁻¹ X S‖ ≤ κ ‖X‖`. -/
+lemma norm_conj_le (lam : ℝ) (h0 : 0 < lam) (h1 : lam < 1) (X : Matrix (Fin 2) (Fin 2) ℂ) :
+    ‖(dimerS lam)⁻¹ * X * dimerS lam‖ ≤ dimerKappa lam * ‖X‖ := by
+  rw [← dimerS_kappa lam h0 h1]
+  calc ‖(dimerS lam)⁻¹ * X * dimerS lam‖ ≤ ‖(dimerS lam)⁻¹ * X‖ * ‖dimerS lam‖ :=
+        norm_mul_le _ _
+    _ ≤ ‖(dimerS lam)⁻¹‖ * ‖X‖ * ‖dimerS lam‖ := by gcongr; exact norm_mul_le _ _
+    _ = ‖dimerS lam‖ * ‖(dimerS lam)⁻¹‖ * ‖X‖ := by ring
+
+/-- `‖X‖ ≤ κ ‖S⁻¹ X S‖`. -/
+lemma norm_le_conj (lam : ℝ) (h0 : 0 < lam) (h1 : lam < 1) (X : Matrix (Fin 2) (Fin 2) ℂ) :
+    ‖X‖ ≤ dimerKappa lam * ‖(dimerS lam)⁻¹ * X * dimerS lam‖ := by
+  have hU := S_isUnit lam h0 h1
+  have hX : dimerS lam * ((dimerS lam)⁻¹ * X * dimerS lam) * (dimerS lam)⁻¹ = X := by
+    rw [Matrix.mul_assoc (dimerS lam)⁻¹, Matrix.mul_nonsing_inv_cancel_left _ _ hU,
+      Matrix.mul_nonsing_inv_cancel_right _ _ hU]
+  rw [← dimerS_kappa lam h0 h1]
+  calc ‖X‖ = ‖dimerS lam * ((dimerS lam)⁻¹ * X * dimerS lam) * (dimerS lam)⁻¹‖ := by rw [hX]
+    _ ≤ ‖dimerS lam * ((dimerS lam)⁻¹ * X * dimerS lam)‖ * ‖(dimerS lam)⁻¹‖ := norm_mul_le _ _
+    _ ≤ ‖dimerS lam‖ * ‖(dimerS lam)⁻¹ * X * dimerS lam‖ * ‖(dimerS lam)⁻¹‖ := by
+        gcongr; exact norm_mul_le _ _
+    _ = ‖dimerS lam‖ * ‖(dimerS lam)⁻¹‖ * ‖(dimerS lam)⁻¹ * X * dimerS lam‖ := by ring
+
+/-- `|w - λ| ≤ 2λ` for `w = ±λ`. -/
+lemma norm_w_sub_le (lam : ℝ) (h0 : 0 < lam) {w : ℝ} (hw : w = lam ∨ w = -lam) :
+    ‖(w : ℂ) - lam‖ ≤ 2 * lam := by
+  rw [← Complex.ofReal_sub, Complex.norm_real, Real.norm_eq_abs, abs_le]
+  rcases hw with hw | hw <;> subst hw <;> constructor <;> linarith
+
+/-- A single site: `‖T_{w - z}‖ ≤ 2 + 2λ` for `w = ±λ` and `|z - λ| ≤ 1`. -/
+lemma norm_tm_single_le (lam : ℝ) (h0 : 0 < lam) {w : ℝ} (hw : w = lam ∨ w = -lam) (z : ℂ)
+    (hz : ‖z - lam‖ ≤ 1) : ‖tmC (w - z)‖ ≤ 2 + 2 * lam := by
+  have hwl := norm_w_sub_le lam h0 hw
+  have htri : ‖(w : ℂ) - z‖ ≤ ‖(w : ℂ) - lam‖ + ‖z - lam‖ := by
+    calc ‖(w : ℂ) - z‖ ≤ ‖(w : ℂ) - lam‖ + ‖(lam : ℂ) - z‖ :=
+          norm_sub_le_norm_sub_add_norm_sub _ _ _
+      _ = ‖(w : ℂ) - lam‖ + ‖z - lam‖ := by rw [norm_sub_rev (lam : ℂ) z]
+  calc ‖tmC (w - z)‖ ≤ ‖(w : ℂ) - z‖ + 1 := norm_tmC_le _
+    _ ≤ 2 + 2 * lam := by linarith
+
+/-- Abstract perturbation step: `‖S⁻¹ A² S‖ ≤ 1 + κ (a + b) d` if `‖S⁻¹ B² S‖ ≤ 1`, `‖A‖ ≤ a`,
+`‖B‖ ≤ b`, `‖A - B‖ ≤ d`. -/
+lemma conj_sq_perturb {S A B : Matrix (Fin 2) (Fin 2) ℂ} {κ a b d : ℝ}
+    (hκ : ∀ X : Matrix (Fin 2) (Fin 2) ℂ, ‖S⁻¹ * X * S‖ ≤ κ * ‖X‖) (hκ0 : 0 ≤ κ)
+    (hB : ‖S⁻¹ * (B * B) * S‖ ≤ 1) (ha : ‖A‖ ≤ a) (hb : ‖B‖ ≤ b) (hd : ‖A - B‖ ≤ d) :
+    ‖S⁻¹ * (A * A) * S‖ ≤ 1 + κ * ((a + b) * d) := by
+  have e1 : A * A - B * B = A * (A - B) + (A - B) * B := by noncomm_ring
+  have hAB : ‖A * A - B * B‖ ≤ (a + b) * d := by
+    rw [e1]
+    calc ‖A * (A - B) + (A - B) * B‖ ≤ ‖A‖ * ‖A - B‖ + ‖A - B‖ * ‖B‖ :=
+          (norm_add_le _ _).trans (add_le_add (norm_mul_le _ _) (norm_mul_le _ _))
+      _ ≤ a * d + d * b := by gcongr <;> linarith [norm_nonneg A, norm_nonneg (A - B)]
+      _ = (a + b) * d := by ring
+  have e2 : S⁻¹ * (A * A) * S = S⁻¹ * (B * B) * S + S⁻¹ * (A * A - B * B) * S := by
+    noncomm_ring
+  rw [e2]
+  calc ‖S⁻¹ * (B * B) * S + S⁻¹ * (A * A - B * B) * S‖
+      ≤ ‖S⁻¹ * (B * B) * S‖ + ‖S⁻¹ * (A * A - B * B) * S‖ := norm_add_le _ _
+    _ ≤ 1 + κ * ((a + b) * d) := by
+        gcongr
+        exact (hκ _).trans (by gcongr)
+
+/-- One dimer: `‖S⁻¹ T_{w-z}² S‖ ≤ exp(κ(3+4λ)|z-λ|)` for `w = ±λ` and `|z - λ| ≤ 1`. -/
+lemma conj_dimer_le (lam : ℝ) (h0 : 0 < lam) (h1 : lam < 1) {w : ℝ} (hw : w = lam ∨ w = -lam)
+    (z : ℂ) (hz : ‖z - lam‖ ≤ 1) :
+    ‖(dimerS lam)⁻¹ * (tmC (w - z) * tmC (w - z)) * dimerS lam‖ ≤
+      Real.exp (dimerKappa lam * (3 + 4 * lam) * ‖z - lam‖) := by
+  have hB : ‖(dimerS lam)⁻¹ * (tmC (w - lam) * tmC (w - lam)) * dimerS lam‖ ≤ 1 := by
+    rcases hw with hw | hw <;> rw [hw]
+    · rw [show tmC ((lam : ℂ) - lam) * tmC ((lam : ℂ) - lam) = dimerDp lam lam from rfl,
+        (dimerS_conj_plus lam h0 h1).1, norm_neg]
+      exact norm_one_le
+    · rw [show tmC (((-lam : ℝ) : ℂ) - lam) * tmC (((-lam : ℝ) : ℂ) - lam) = dimerDm lam lam by
+          rw [dimerDm, Complex.ofReal_neg], dimerS_conj_minus lam h0 h1]
+      exact norm_rotC_le _
+  have hwl := norm_w_sub_le lam h0 hw
+  have ha := norm_tm_single_le lam h0 hw z hz
+  have hb : ‖tmC (w - lam)‖ ≤ 2 * lam + 1 :=
+    (norm_tmC_le _).trans (by linarith)
+  have hd : ‖tmC (w - z) - tmC (w - lam)‖ ≤ ‖z - lam‖ := by
+    refine (norm_tmC_sub_le _ _).trans (le_of_eq ?_)
+    rw [show ((w : ℂ) - z) - (w - lam) = -(z - lam) by ring, norm_neg]
+  have hκ0 : 0 ≤ dimerKappa lam := Real.sqrt_nonneg _
+  have h := conj_sq_perturb (norm_conj_le lam h0 h1) hκ0 hB ha hb hd
+  calc _ ≤ 1 + dimerKappa lam * ((2 + 2 * lam + (2 * lam + 1)) * ‖z - lam‖) := h
+    _ = dimerKappa lam * (3 + 4 * lam) * ‖z - lam‖ + 1 := by ring
+    _ ≤ _ := Real.add_one_le_exp _
+
+/-- `T^z(m + L₁ + L₂, m) = T^z(m + L₁ + L₂, m + L₁) T^z(m + L₁, m)`. -/
+lemma tmProd_add (v : ℤ → ℝ) (z : ℂ) (m : ℤ) (L₁ L₂ : ℕ) :
+    tmProd v z m (L₁ + L₂) = tmProd v z (m + L₁) L₂ * tmProd v z m L₁ := by
+  induction L₂ with
+  | zero => simp [tmProd]
+  | succ n ih =>
+    rw [← add_assoc, tmProd, ih, tmProd, Matrix.mul_assoc]
+    have e : m + ((L₁ + n : ℕ) : ℤ) = m + (L₁ : ℤ) + (n : ℤ) := by push_cast; ring
+    rw [e]
+
+/-- Products over complete dimers starting at the first site of a dimer:
+`‖S⁻¹ T^z(m₀ + 2j, m₀) S‖ ≤ exp(κ(3+4λ)|z-λ| j)`. -/
+lemma aligned_bound (lam : ℝ) (h0 : 0 < lam) (h1 : lam < 1) (v : ℤ → ℝ) (z : ℂ)
+    (hz : ‖z - lam‖ ≤ 1) (m₀ : ℤ) :
+    ∀ j : ℕ, (∀ i : ℕ, i < j → (v (m₀ + 2 * i) = lam ∨ v (m₀ + 2 * i) = -lam) ∧
+        v (m₀ + 2 * i + 1) = v (m₀ + 2 * i)) →
+      ‖(dimerS lam)⁻¹ * tmProd v z m₀ (2 * j) * dimerS lam‖ ≤
+        Real.exp (dimerKappa lam * (3 + 4 * lam) * ‖z - lam‖ * j)
+  | 0, _ => by
+    simp only [tmProd, Matrix.mul_one,
+      Matrix.nonsing_inv_mul _ (S_isUnit lam h0 h1), CharP.cast_eq_zero, mul_zero, Real.exp_zero]
+    exact norm_one_le
+  | j + 1, hv => by
+    have ih := aligned_bound lam h0 h1 v z hz m₀ j (fun i hi => hv i (by omega))
+    obtain ⟨hw, heq⟩ := hv j (by omega)
+    have hU := S_isUnit lam h0 h1
+    have hprod : tmProd v z m₀ (2 * (j + 1)) =
+        tmC (v (m₀ + 2 * j) - z) * tmC (v (m₀ + 2 * j) - z) * tmProd v z m₀ (2 * j) := by
+      rw [show 2 * (j + 1) = 2 * j + 1 + 1 by ring, tmProd, tmProd, ← Matrix.mul_assoc]
+      have e1 : m₀ + ((2 * j + 1 : ℕ) : ℤ) = m₀ + 2 * j + 1 := by push_cast; ring
+      have e2 : m₀ + ((2 * j : ℕ) : ℤ) = m₀ + 2 * j := by push_cast; ring
+      rw [e1, e2, heq]
+    have hsplit : (dimerS lam)⁻¹ * tmProd v z m₀ (2 * (j + 1)) * dimerS lam =
+        ((dimerS lam)⁻¹ * (tmC (v (m₀ + 2 * j) - z) * tmC (v (m₀ + 2 * j) - z)) * dimerS lam) *
+          ((dimerS lam)⁻¹ * tmProd v z m₀ (2 * j) * dimerS lam) := by
+      rw [hprod]
+      simp only [Matrix.mul_assoc, Matrix.mul_nonsing_inv_cancel_left _ _ hU]
+    rw [hsplit]
+    calc _ ≤ ‖(dimerS lam)⁻¹ * (tmC (v (m₀ + 2 * j) - z) * tmC (v (m₀ + 2 * j) - z)) *
+            dimerS lam‖ * ‖(dimerS lam)⁻¹ * tmProd v z m₀ (2 * j) * dimerS lam‖ :=
+          norm_mul_le _ _
+      _ ≤ Real.exp (dimerKappa lam * (3 + 4 * lam) * ‖z - lam‖) *
+            Real.exp (dimerKappa lam * (3 + 4 * lam) * ‖z - lam‖ * j) := by
+          gcongr
+          exact conj_dimer_le lam h0 h1 hw z hz
+      _ = Real.exp (dimerKappa lam * (3 + 4 * lam) * ‖z - lam‖ * ↑(j + 1)) := by
+          rw [← Real.exp_add]
+          push_cast
+          ring_nf
+
+/-- `e^{K d j} = e^{(K/2) d (2j)}`. -/
+lemma exp_even (K d : ℝ) (j : ℕ) :
+    Real.exp (K * d * j) = Real.exp (K / 2 * d * ((2 * j : ℕ) : ℝ)) := by
+  congr 1; push_cast; ring
+
+/-- `e^{K d j} ≤ e^{(K/2) d (2j+1)}` for `K, d ≥ 0`. -/
+lemma exp_odd_le {K d : ℝ} (hK : 0 ≤ K) (hd : 0 ≤ d) (j : ℕ) :
+    Real.exp (K * d * j) ≤ Real.exp (K / 2 * d * ((2 * j + 1 : ℕ) : ℝ)) := by
+  rw [Real.exp_le_exp]
+  have : 0 ≤ K / 2 * d := by positivity
+  push_cast
+  nlinarith
+
+/-- `e^{c L} ≤ e^{c (L+1)}` for `c ≥ 0`. -/
+lemma exp_succ_le {c : ℝ} (hc : 0 ≤ c) (L : ℕ) :
+    Real.exp (c * L) ≤ Real.exp (c * ((L + 1 : ℕ) : ℝ)) := by
+  rw [Real.exp_le_exp]
+  push_cast
+  nlinarith
+
+end DimerTransferAux
+
 /-- **Uniform transfer-matrix bound near `E_c = λ`** (paper: Lemma `lem:dimertransfer`):
 `‖T^z(n, m)‖ ≤ K₁ e^{K₂ |z - λ| (n - m)}` with `K₁ = κ (2 + 2λ)²`, `K₂ = κ (3 + 4λ)/2`, for every dimer
 configuration and every `z` with `|z - λ| ≤ 1`. -/
@@ -511,6 +732,88 @@ theorem dimer_transfer_bound (lam : ℝ) (h0 : 0 < lam) (h1 : lam < 1) (r : ℤ)
     ‖tmProd v z m L‖ ≤
       dimerKappa lam * (2 + 2 * lam) ^ 2 *
         Real.exp (dimerKappa lam * (3 + 4 * lam) / 2 * ‖z - lam‖ * L) := by
-  sorry
+  obtain ⟨hv1, hv2⟩ := hv
+  have hκ1 : 1 ≤ dimerKappa lam := DimerTransferAux.kappa_ge_one lam h0 h1
+  have hκ0 : 0 ≤ dimerKappa lam := by linarith
+  have hd0 : 0 ≤ ‖z - (lam : ℂ)‖ := norm_nonneg _
+  have hK0 : 0 ≤ dimerKappa lam * (3 + 4 * lam) := by positivity
+  have hc1 : 1 ≤ 2 + 2 * lam := by linarith
+  have hc2 : 2 + 2 * lam ≤ (2 + 2 * lam) ^ 2 := by nlinarith
+  -- the bound for a product starting at the first site `2k - r` of a dimer
+  have key : ∀ (k : ℤ) (L' : ℕ), m ≤ 2 * k - r → 2 * k - r + L' ≤ m + L →
+      ‖tmProd v z (2 * k - r) L'‖ ≤
+        dimerKappa lam * (2 + 2 * lam) *
+          Real.exp (dimerKappa lam * (3 + 4 * lam) / 2 * ‖z - lam‖ * L') := by
+    intro k L' hm hL
+    obtain ⟨j, hj⟩ := Nat.even_or_odd' L'
+    have hal : ‖(dimerS lam)⁻¹ * tmProd v z (2 * k - r) (2 * j) * dimerS lam‖ ≤
+        Real.exp (dimerKappa lam * (3 + 4 * lam) * ‖z - lam‖ * j) := by
+      apply DimerTransferAux.aligned_bound lam h0 h1 v z hz
+      intro i hi
+      have hi' : 2 * (i : ℤ) + 1 < L' := by omega
+      refine ⟨hv1 _ (by omega) (by omega), ?_⟩
+      have e : 2 * (k + (i : ℤ)) - r = 2 * k - r + 2 * i := by ring
+      have h := hv2 (k + i) (by rw [e]; omega) (by rw [e]; omega)
+      rw [e] at h
+      exact h.symm
+    have hP : ‖tmProd v z (2 * k - r) (2 * j)‖ ≤
+        dimerKappa lam * Real.exp (dimerKappa lam * (3 + 4 * lam) * ‖z - lam‖ * j) :=
+      (DimerTransferAux.norm_le_conj lam h0 h1 _).trans (by gcongr)
+    rcases hj with rfl | rfl
+    · calc _ ≤ dimerKappa lam * Real.exp (dimerKappa lam * (3 + 4 * lam) * ‖z - lam‖ * j) := hP
+        _ = dimerKappa lam * 1 *
+              Real.exp (dimerKappa lam * (3 + 4 * lam) / 2 * ‖z - lam‖ * ((2 * j : ℕ) : ℝ)) := by
+            rw [DimerTransferAux.exp_even, mul_one]
+        _ ≤ _ := by gcongr
+    · have hy : v (2 * k - r + ((2 * j : ℕ) : ℤ)) = lam ∨
+          v (2 * k - r + ((2 * j : ℕ) : ℤ)) = -lam := hv1 _ (by omega) (by omega)
+      rw [tmProd]
+      calc _ ≤ ‖tmC (v (2 * k - r + ((2 * j : ℕ) : ℤ)) - z)‖ *
+              ‖tmProd v z (2 * k - r) (2 * j)‖ := norm_mul_le _ _
+        _ ≤ (2 + 2 * lam) *
+              (dimerKappa lam * Real.exp (dimerKappa lam * (3 + 4 * lam) * ‖z - lam‖ * j)) := by
+            gcongr
+            exact DimerTransferAux.norm_tm_single_le lam h0 hy z hz
+        _ = dimerKappa lam * (2 + 2 * lam) *
+              Real.exp (dimerKappa lam * (3 + 4 * lam) * ‖z - lam‖ * j) := by ring
+        _ ≤ _ := mul_le_mul_of_nonneg_left (DimerTransferAux.exp_odd_le hK0 hd0 j)
+            (by positivity)
+  -- assemble, according to the parity of `m + r`
+  obtain ⟨k, hk⟩ := Int.even_or_odd' (m + r)
+  rcases hk with hk | hk
+  · -- `m = 2k - r` is the first site of a dimer
+    have hm : m = 2 * k - r := by omega
+    have h := key k L (by omega) (by omega)
+    rw [← hm] at h
+    calc _ ≤ _ := h
+      _ ≤ _ := by gcongr
+  · -- `m + 1 = 2(k+1) - r` is the first site of a dimer
+    cases L with
+    | zero =>
+      simp only [tmProd, CharP.cast_eq_zero, mul_zero, Real.exp_zero, mul_one]
+      calc ‖(1 : Matrix (Fin 2) (Fin 2) ℂ)‖ ≤ 1 := DimerTransferAux.norm_one_le
+        _ ≤ dimerKappa lam * (2 + 2 * lam) ^ 2 := by nlinarith
+    | succ L'' =>
+      have hm : m + 1 = 2 * (k + 1) - r := by omega
+      have hsplit : tmProd v z m (L'' + 1) = tmProd v z (m + 1) L'' * tmProd v z m 1 := by
+        rw [add_comm L'' 1, DimerTransferAux.tmProd_add]
+        push_cast
+        rfl
+      have hP := key (k + 1) L'' (by omega) (by push_cast; omega)
+      rw [← hm] at hP
+      have hy : v m = lam ∨ v m = -lam := hv1 m le_rfl (by push_cast; omega)
+      have h1f : ‖tmProd v z m 1‖ ≤ 2 + 2 * lam := by
+        simp only [tmProd, Matrix.mul_one, CharP.cast_eq_zero, add_zero]
+        exact DimerTransferAux.norm_tm_single_le lam h0 hy z hz
+      rw [hsplit]
+      calc _ ≤ ‖tmProd v z (m + 1) L''‖ * ‖tmProd v z m 1‖ := norm_mul_le _ _
+        _ ≤ (dimerKappa lam * (2 + 2 * lam) *
+              Real.exp (dimerKappa lam * (3 + 4 * lam) / 2 * ‖z - lam‖ * L'')) * (2 + 2 * lam) := by
+            gcongr
+        _ = dimerKappa lam * (2 + 2 * lam) ^ 2 *
+              Real.exp (dimerKappa lam * (3 + 4 * lam) / 2 * ‖z - lam‖ * L'') := by ring
+        _ ≤ _ := mul_le_mul_of_nonneg_left
+            (DimerTransferAux.exp_succ_le (c := dimerKappa lam * (3 + 4 * lam) / 2 * ‖z - lam‖)
+              (by positivity) L'') (by positivity)
 
 end DFL
