@@ -3,12 +3,14 @@
 % ---------------------------------------------------------------------------
 \section{Formal verification in Lean}\label{app:lean}
 
-Most of the finite-volume results of this paper are formalized in the proof assistant Lean~4 with the
+The results of this paper, in finite and in infinite volume, are formalized in the proof assistant Lean~4 with the
 Mathlib library (both at version 4.36.0), in the directory \texttt{lean/} of the repository that
-accompanies the paper.  This appendix describes what the formalization contains, what it assumes,
-and where it deviates from the text.
+accompanies the paper, with the exceptions listed at the end of this appendix.  This appendix describes what the
+formalization contains, what it assumes, and where it deviates from the text.
 
-\paragraph{Objects.}  Everything is finite dimensional and defined from scratch:
+\paragraph{Objects.}  The finite-volume objects are finite dimensional and defined from scratch; the infinite-volume
+statements use the product measure of i.i.d.\ charges on $\Z$ and $\N$, entrywise exponential series, and bounded
+operators on $\ell^2(\Z)$ and $\ell^2(\N)$ with Mathlib's continuous functional calculus:
 \begin{itemize}
 \item the Fock space of $N$ Jordan--Wigner fermions and the link spins, written in the $\sigma^x$
 basis of the links;
