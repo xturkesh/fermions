@@ -53,3 +53,5 @@ import DFL.TwoDLaws
 import DFL.TwoDLattices
 import DFL.DimerTransfer
 import DFL.DimerTL
+import DFL.DualitySpectrum
+import DFL.AnnealedInterval

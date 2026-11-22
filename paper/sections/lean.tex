@@ -47,7 +47,8 @@ only external input is this literature result (\texttt{lgt\_transport\_of\_ldt},
 i.e.\ the dictionary, the dressed fermions and their Heisenberg evolution: \texttt{ann\_dual}, \texttt{sz\_dual},
 \texttt{szTail\_dual}, \texttt{sx\_dual}, \texttt{hopTerm\_dual}, \texttt{dressed\_eq}, \texttt{dressed\_CAR},
 \texttt{dressed\_comm\_gauss}, \texttt{dressed\_hop}, \texttt{H\_dressed}, \texttt{evo\_dual},
-\texttt{heisenberg\_dressed} (\texttt{DualityFull}).
+\texttt{heisenberg\_dressed} (\texttt{DualityFull}); the spectrum in \cref{thm:duality}(b):
+\texttt{charpoly\_dGamma}, \texttt{charpoly\_H} (\texttt{DualitySpectrum}).
 \item \cref{lem:gauss}: \texttt{gauss\_comm\_H}, \texttt{gauss\_law\_1d}, \texttt{gauss\_prod},
 \texttt{sxL\_last\_comm\_H}, \texttt{rank\_gaussProj}, \texttt{gaussProj\_comm\_H} (\texttt{GaussLaw});
 \cref{lem:sectornorm}: \texttt{gaugeInv\_eq\_sum}, \texttt{norm\_gaugeInv}, \texttt{norm\_trace\_le},
@@ -91,7 +92,9 @@ $\Z$: \texttt{tendsto\_evoZ}, \texttt{lintegral\_iSup\_UZ\_le}, \texttt{infvol\_
 segments: \texttt{vonNeumann\_rdm\_slater} ($S(\rho_A)=\sum_i\bent(\nu_i)$), \texttt{numDist\_slater},
 \texttt{genfun\_slater}, \texttt{sum\_sqrt\_eig\_le} (\texttt{SlaterExact}); \cref{lem:binent}:
 \texttt{binEntropy\_le\_two\_log\_two\_sqrt}, \texttt{binEntropy\_eq\_two\_log\_two\_sqrt\_iff} (\texttt{BinEntropy});
-\cref{lem:annealed}(i),(ii): \texttt{annealed\_K}, \texttt{annealed\_cut} (\texttt{AreaLawSharp}).
+\cref{lem:annealed}: \texttt{annealed\_K}, \texttt{annealed\_cut} (\texttt{AreaLawSharp}), \texttt{annealed\_cut\_Q},
+\texttt{annealed\_cut\_Q\_sq}, \texttt{annealed\_ivl\_K}, \texttt{annealed\_ivl\_Q}, \texttt{annealed\_ivl\_Q\_sq}
+(\texttt{AnnealedInterval}).
 \item \cref{thm:arealaw}: \texttt{vonNeumann\_slater\_sharp}, \texttt{lgt\_areaLaw\_sharp} (with the constant
 $2\ln2\,\Theta(F)$), \texttt{lgt\_areaLaw\_full} (\texttt{AreaLawSharp}, \texttt{CutLocal}).
 \item \cref{prop:entropies}: (a) \texttt{lgt\_duality\_defect}; (b) \texttt{mixRdm\_eq\_marginal},
@@ -166,6 +169,6 @@ the transport bounds of \cite{JSBS2003} behind \cref{thm:dimer}, and the percola
 region;
 \item the infinite-volume statements other than those listed above: \cref{thm:infvol}(a),(c),(d),(e),
 \cref{cor:ECinfvol} for the full correlator $Q^X$, \cref{thm:EC}(ii) and \cref{prop:dimerimbalance}(iii);
-\item \cref{lem:quasifree}(a) and \cref{lem:annealed}(iii);
+\item \cref{lem:quasifree}(a);
 \item remarks, conjectures and numerics.
 \end{itemize}
