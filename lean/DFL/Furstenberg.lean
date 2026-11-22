@@ -175,7 +175,8 @@ theorem no_finite_invariant_lines (E lam : ℝ) (hlam : lam ≠ 0) (L : Finset (
     intro s hs v hv
     obtain ⟨u, hu, rfl⟩ := Finset.mem_image.1 hs
     obtain ⟨u', hu', c, hc, h⟩ := hinv u hu v hv
-    rw [← FurstenbergAux.lineSlope_transferT E v u (hL0 u hu), h, FurstenbergAux.lineSlope_smul c hc]
+    rw [← FurstenbergAux.lineSlope_transferT E v u (hL0 u hu), h,
+      FurstenbergAux.lineSlope_smul c hc]
     exact Finset.mem_image_of_mem _ hu'
   -- `T_E(-λ)` permutes the finite set `S` (injective self-map of a finite set)
   have hsurj : S.image (FurstenbergAux.mob E (-lam)) = S := by
