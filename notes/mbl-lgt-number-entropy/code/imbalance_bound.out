@@ -1,0 +1,8 @@
+lambda=2h/J=0.20 N=  800: kappa(2 cuts)= 75.503  l=  182424  rigorous bound=2.83e-09  actual E Ibar=0.0025
+lambda=2h/J=0.20 N= 3200: kappa(2 cuts)= 96.194  l=  296106  rigorous bound=1.74e-09  actual E Ibar=0.0020
+lambda=2h/J=0.50 N=  400: kappa(2 cuts)= 15.712  l=    7900  rigorous bound=3.16e-07  actual E Ibar=0.0164
+lambda=2h/J=0.50 N= 1600: kappa(2 cuts)= 16.201  l=    8400  rigorous bound=2.98e-07  actual E Ibar=0.0150
+lambda=2h/J=1.00 N=  400: kappa(2 cuts)=  5.084  l=     827  rigorous bound=8.40e-06  actual E Ibar=0.0728
+lambda=2h/J=1.00 N= 1600: kappa(2 cuts)=  4.979  l=     794  rigorous bound=8.75e-06  actual E Ibar=0.0728
+lambda=2h/J=2.00 N=  400: kappa(2 cuts)=  2.416  l=     187  rigorous bound=8.36e-05  actual E Ibar=0.1656
+lambda=2h/J=2.00 N= 1600: kappa(2 cuts)=  2.510  l=     202  rigorous bound=7.74e-05  actual E Ibar=0.1657

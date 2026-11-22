@@ -1,0 +1,32 @@
+--- spectra: full LGT vs union of mapped free-fermion sectors ---
+open_bl  N=2: dim=16, predicted=16, max|dE|=1.11e-15
+open_bl  N=3: dim=64, predicted=64, max|dE|=7.55e-15
+open_bl  N=4: dim=256, predicted=256, max|dE|=1.42e-14
+open_bl  N=5: dim=1024, predicted=1024, max|dE|=4.88e-14
+open_bl  N=6: dim=4096, predicted=4096, max|dE|=7.73e-14
+open     N=2: dim=8, predicted=8, max|dE|=0.00e+00
+open     N=3: dim=32, predicted=32, max|dE|=1.60e-15
+open     N=4: dim=128, predicted=128, max|dE|=1.47e-14
+open     N=5: dim=512, predicted=512, max|dE|=1.95e-14
+open     N=6: dim=2048, predicted=2048, max|dE|=4.17e-14
+ring     N=3: dim=64, predicted=64, max|dE|=3.11e-15
+ring     N=4: dim=256, predicted=256, max|dE|=1.51e-14
+ring     N=5: dim=1024, predicted=1024, max|dE|=3.82e-14
+ring     N=6: dim=4096, predicted=4096, max|dE|=1.10e-13
+ring N=4: alternative (JW-type) twist hypothesis error = 0.000  (should be O(1))
+ring N=5: alternative (JW-type) twist hypothesis error = 0.000  (should be O(1))
+--- dynamics, open_bl, CDW initial state, all observables incl. string/Loschmidt ones ---
+N=4: max error over t in [0,6] = 4.97e-15
+N=5: max error over t in [0,6] = 2.00e-15
+N=6: max error over t in [0,6] = 4.00e-15
+   t=0.0 n=[1. 0. 1. 0. 1. 0.] sx=[0. 0. 0. 0. 0. 0.] sz=[1. 1. 1. 1. 1. 1.]
+   t=2.0 n=[0.6293 0.5025 0.5572 0.4428 0.4975 0.3707] sx=[ 0.     -0.1164  0.      0.0011  0.      0.    ] sz=[ 0.3519  0.2012  0.1768  0.2012  0.3519 -0.1922]
+   t=4.0 n=[0.6672 0.4033 0.6747 0.3253 0.5967 0.3328] sx=[ 0.     -0.0278  0.      0.0057  0.      0.    ] sz=[ 0.0521  0.0162  0.0227  0.0162  0.0521 -0.345 ]
+   t=6.0 n=[0.7047 0.4421 0.5917 0.4083 0.5579 0.2953] sx=[ 0.      0.0356  0.     -0.0073  0.      0.    ] sz=[0.0004 0.0886 0.1697 0.0886 0.0004 0.1674]
+--- standard single-link Z2 model, one-particle sector: random-walk potential ---
+std_bl N=3: dim(N_f=1)=24, predicted=24, max|dE|=4.00e-15
+std_bl N=4: dim(N_f=1)=64, predicted=64, max|dE|=4.44e-15
+std_bl N=5: dim(N_f=1)=160, predicted=160, max|dE|=9.77e-15
+std_bl N=6: dim(N_f=1)=384, predicted=384, max|dE|=1.24e-14
+std_bl N=4, sector q=+1, N_f=2: exact [-2.734 -1.921 -1.4    0.202  0.521  2.531]
+                 free-fermion guess [0.707 2.304 4.2   4.2   6.096 7.693]  (mismatch => interacting)

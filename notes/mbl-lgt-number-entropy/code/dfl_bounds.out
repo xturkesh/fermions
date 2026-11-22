@@ -1,0 +1,77 @@
+(4) max h/(2ln2 sqrt(nu(1-nu))) = 1.000000 (<=1),  min h/(4ln2 nu(1-nu)) = 1.000000 (>=1)
+(2) time-averaged CDW imbalance E Ibar = E (1/N) sum a_alpha^2  (exact, simple spectrum)
+   lambda=0.00: E Ibar(N=50,100,200,400) = 0.0000 0.0000 0.0000 0.0000
+   lambda=0.20: E Ibar(N=50,100,200,400) = 0.0090 0.0063 0.0043 0.0030
+   lambda=0.50: E Ibar(N=50,100,200,400) = 0.0246 0.0196 0.0175 0.0161
+   lambda=1.00: E Ibar(N=50,100,200,400) = 0.0853 0.0776 0.0759 0.0748
+   lambda=2.00: E Ibar(N=50,100,200,400) = 0.1774 0.1715 0.1648 0.1639
+   lambda=4.00: E Ibar(N=50,100,200,400) = 0.2511 0.2407 0.2365 0.2350
+   identity  E_a a_a = 2h sum_x q_x (-1)^x phi_a(x)^2 : max violation 1.5e-14
+(1) E Q(x,y) [Q >= sup_t|U_t(x,y)|], x = bulk center or boundary site 0
+   lambda=2h/J= 0.5 N=100: bulk EQ(d=1,10,20,40)=7.92e-01 5.24e-01 3.67e-01 2.14e-01 rate=0.031 | boundary EQ(d=1,10,20,40)=8.36e-01 6.06e-01 4.53e-01 2.73e-01 rate=0.027
+   lambda=2h/J= 0.5 N=200: bulk EQ(d=1,10,20,40)=7.94e-01 5.21e-01 3.70e-01 2.14e-01 rate=0.031 | boundary EQ(d=1,10,20,40)=8.38e-01 6.01e-01 4.49e-01 2.79e-01 rate=0.026
+   lambda=2h/J= 0.5 N=400: bulk EQ(d=1,10,20,40)=7.97e-01 5.25e-01 3.74e-01 2.17e-01 rate=0.030 | boundary EQ(d=1,10,20,40)=8.33e-01 6.04e-01 4.52e-01 2.76e-01 rate=0.027
+   lambda=2h/J= 1.0 N=100: bulk EQ(d=1,10,20,40)=7.62e-01 2.80e-01 1.18e-01 2.23e-02 rate=0.083 | boundary EQ(d=1,10,20,40)=7.97e-01 2.94e-01 1.22e-01 2.56e-02 rate=0.083
+   lambda=2h/J= 1.0 N=200: bulk EQ(d=1,10,20,40)=7.57e-01 2.82e-01 1.14e-01 2.43e-02 rate=0.083 | boundary EQ(d=1,10,20,40)=7.89e-01 3.02e-01 1.25e-01 2.74e-02 rate=0.081
+   lambda=2h/J= 1.0 N=400: bulk EQ(d=1,10,20,40)=7.45e-01 2.85e-01 1.11e-01 2.21e-02 rate=0.086 | boundary EQ(d=1,10,20,40)=7.86e-01 2.94e-01 1.23e-01 2.34e-02 rate=0.086
+   lambda=2h/J= 2.0 N=100: bulk EQ(d=1,10,20,40)=6.37e-01 7.86e-02 9.86e-03 2.91e-04 rate=0.184 | boundary EQ(d=1,10,20,40)=6.68e-01 8.07e-02 1.07e-02 1.82e-04 rate=0.195
+   lambda=2h/J= 2.0 N=200: bulk EQ(d=1,10,20,40)=6.49e-01 8.39e-02 1.09e-02 2.21e-04 rate=0.197 | boundary EQ(d=1,10,20,40)=6.40e-01 7.76e-02 1.07e-02 4.45e-04 rate=0.174
+   lambda=2h/J= 2.0 N=400: bulk EQ(d=1,10,20,40)=6.61e-01 8.55e-02 1.19e-02 1.90e-04 rate=0.203 | boundary EQ(d=1,10,20,40)=6.68e-01 9.82e-02 1.19e-02 2.44e-04 rate=0.185
+   lambda=2h/J= 4.0 N=100: bulk EQ(d=1,10,20,40)=5.49e-01 4.97e-02 3.28e-03 9.22e-06 rate=0.248 | boundary EQ(d=1,10,20,40)=5.51e-01 4.62e-02 4.64e-03 6.90e-05 rate=0.236
+   lambda=2h/J= 4.0 N=200: bulk EQ(d=1,10,20,40)=5.63e-01 3.81e-02 2.75e-03 2.14e-05 rate=0.246 | boundary EQ(d=1,10,20,40)=5.76e-01 3.41e-02 4.26e-03 1.31e-05 rate=0.244
+   lambda=2h/J= 4.0 N=400: bulk EQ(d=1,10,20,40)=5.38e-01 3.09e-02 2.17e-03 4.14e-06 rate=0.275 | boundary EQ(d=1,10,20,40)=5.67e-01 4.40e-02 5.04e-03 4.79e-04 rate=0.231
+(3) half chain, CDW: Gaussian EE (sector avg), number variance, S_N of mixture and sector-avg S_N, vs t
+   lambda=1.0, N=64:
+     t=   0e+00: S_G=0.000  E Var_q N_A=0.000  Var_mix N_A=-0.000  E_q S_N^q=0.000  S_N(mixture)=0.000  (Massey bound 0.176)
+     t=   1e+00: S_G=0.856  E Var_q N_A=0.277  Var_mix N_A=0.282  E_q S_N^q=0.767  S_N(mixture)=0.779  (Massey bound 0.916)
+     t=   1e+01: S_G=2.330  E Var_q N_A=0.713  Var_mix N_A=0.745  E_q S_N^q=1.235  S_N(mixture)=1.271  (Massey bound 1.325)
+     t=   1e+02: S_G=3.070  E Var_q N_A=0.924  Var_mix N_A=0.958  E_q S_N^q=1.360  S_N(mixture)=1.396  (Massey bound 1.439)
+     t=   1e+03: S_G=3.132  E Var_q N_A=0.942  Var_mix N_A=0.983  E_q S_N^q=1.371  S_N(mixture)=1.409  (Massey bound 1.451)
+     t=   1e+04: S_G=3.185  E Var_q N_A=0.963  Var_mix N_A=1.002  E_q S_N^q=1.382  S_N(mixture)=1.419  (Massey bound 1.460)
+     t=   1e+06: S_G=3.182  E Var_q N_A=0.962  Var_mix N_A=1.005  E_q S_N^q=1.380  S_N(mixture)=1.421  (Massey bound 1.461)
+     t=   1e+08: S_G=3.179  E Var_q N_A=0.957  Var_mix N_A=0.997  E_q S_N^q=1.379  S_N(mixture)=1.416  (Massey bound 1.458)
+   lambda=1.0, N=128:
+     t=   0e+00: S_G=0.000  E Var_q N_A=0.000  Var_mix N_A=0.000  E_q S_N^q=0.000  S_N(mixture)=0.000  (Massey bound 0.176)
+     t=   1e+00: S_G=0.854  E Var_q N_A=0.277  Var_mix N_A=0.282  E_q S_N^q=0.765  S_N(mixture)=0.778  (Massey bound 0.915)
+     t=   1e+01: S_G=2.276  E Var_q N_A=0.692  Var_mix N_A=0.725  E_q S_N^q=1.220  S_N(mixture)=1.257  (Massey bound 1.312)
+     t=   1e+02: S_G=3.057  E Var_q N_A=0.918  Var_mix N_A=0.961  E_q S_N^q=1.358  S_N(mixture)=1.398  (Massey bound 1.441)
+     t=   1e+03: S_G=3.156  E Var_q N_A=0.946  Var_mix N_A=0.981  E_q S_N^q=1.372  S_N(mixture)=1.408  (Massey bound 1.450)
+     t=   1e+04: S_G=3.224  E Var_q N_A=0.967  Var_mix N_A=1.004  E_q S_N^q=1.380  S_N(mixture)=1.420  (Massey bound 1.461)
+     t=   1e+06: S_G=3.170  E Var_q N_A=0.949  Var_mix N_A=0.984  E_q S_N^q=1.373  S_N(mixture)=1.410  (Massey bound 1.451)
+     t=   1e+08: S_G=3.205  E Var_q N_A=0.960  Var_mix N_A=0.995  E_q S_N^q=1.379  S_N(mixture)=1.415  (Massey bound 1.457)
+   lambda=1.0, N=256:
+     t=   0e+00: S_G=0.000  E Var_q N_A=0.000  Var_mix N_A=0.000  E_q S_N^q=0.000  S_N(mixture)=0.000  (Massey bound 0.176)
+     t=   1e+00: S_G=0.853  E Var_q N_A=0.276  Var_mix N_A=0.281  E_q S_N^q=0.765  S_N(mixture)=0.777  (Massey bound 0.915)
+     t=   1e+01: S_G=2.312  E Var_q N_A=0.705  Var_mix N_A=0.734  E_q S_N^q=1.228  S_N(mixture)=1.264  (Massey bound 1.318)
+     t=   1e+02: S_G=3.098  E Var_q N_A=0.931  Var_mix N_A=0.965  E_q S_N^q=1.363  S_N(mixture)=1.400  (Massey bound 1.443)
+     t=   1e+03: S_G=3.213  E Var_q N_A=0.967  Var_mix N_A=1.005  E_q S_N^q=1.379  S_N(mixture)=1.420  (Massey bound 1.461)
+     t=   1e+04: S_G=3.218  E Var_q N_A=0.968  Var_mix N_A=1.006  E_q S_N^q=1.381  S_N(mixture)=1.420  (Massey bound 1.462)
+     t=   1e+06: S_G=3.207  E Var_q N_A=0.961  Var_mix N_A=1.001  E_q S_N^q=1.379  S_N(mixture)=1.418  (Massey bound 1.460)
+     t=   1e+08: S_G=3.146  E Var_q N_A=0.940  Var_mix N_A=0.975  E_q S_N^q=1.367  S_N(mixture)=1.405  (Massey bound 1.447)
+   lambda=2.0, N=64:
+     t=   0e+00: S_G=0.000  E Var_q N_A=0.000  Var_mix N_A=-0.000  E_q S_N^q=0.000  S_N(mixture)=0.000  (Massey bound 0.176)
+     t=   1e+00: S_G=0.612  E Var_q N_A=0.190  Var_mix N_A=0.228  E_q S_N^q=0.566  S_N(mixture)=0.674  (Massey bound 0.835)
+     t=   1e+01: S_G=0.935  E Var_q N_A=0.274  Var_mix N_A=0.302  E_q S_N^q=0.727  S_N(mixture)=0.818  (Massey bound 0.942)
+     t=   1e+02: S_G=1.160  E Var_q N_A=0.344  Var_mix N_A=0.396  E_q S_N^q=0.832  S_N(mixture)=0.950  (Massey bound 1.051)
+     t=   1e+03: S_G=1.197  E Var_q N_A=0.354  Var_mix N_A=0.418  E_q S_N^q=0.834  S_N(mixture)=0.976  (Massey bound 1.073)
+     t=   1e+04: S_G=1.205  E Var_q N_A=0.355  Var_mix N_A=0.433  E_q S_N^q=0.840  S_N(mixture)=0.993  (Massey bound 1.088)
+     t=   1e+06: S_G=1.192  E Var_q N_A=0.351  Var_mix N_A=0.410  E_q S_N^q=0.833  S_N(mixture)=0.967  (Massey bound 1.066)
+     t=   1e+08: S_G=1.214  E Var_q N_A=0.358  Var_mix N_A=0.416  E_q S_N^q=0.848  S_N(mixture)=0.973  (Massey bound 1.071)
+   lambda=2.0, N=128:
+     t=   0e+00: S_G=0.000  E Var_q N_A=0.000  Var_mix N_A=0.000  E_q S_N^q=0.000  S_N(mixture)=0.000  (Massey bound 0.176)
+     t=   1e+00: S_G=0.616  E Var_q N_A=0.190  Var_mix N_A=0.228  E_q S_N^q=0.568  S_N(mixture)=0.675  (Massey bound 0.835)
+     t=   1e+01: S_G=1.002  E Var_q N_A=0.295  Var_mix N_A=0.325  E_q S_N^q=0.759  S_N(mixture)=0.853  (Massey bound 0.971)
+     t=   1e+02: S_G=1.254  E Var_q N_A=0.374  Var_mix N_A=0.448  E_q S_N^q=0.855  S_N(mixture)=1.007  (Massey bound 1.103)
+     t=   1e+03: S_G=1.333  E Var_q N_A=0.397  Var_mix N_A=0.476  E_q S_N^q=0.894  S_N(mixture)=1.040  (Massey bound 1.128)
+     t=   1e+04: S_G=1.356  E Var_q N_A=0.405  Var_mix N_A=0.493  E_q S_N^q=0.896  S_N(mixture)=1.056  (Massey bound 1.144)
+     t=   1e+06: S_G=1.364  E Var_q N_A=0.407  Var_mix N_A=0.494  E_q S_N^q=0.905  S_N(mixture)=1.060  (Massey bound 1.144)
+     t=   1e+08: S_G=1.332  E Var_q N_A=0.394  Var_mix N_A=0.465  E_q S_N^q=0.887  S_N(mixture)=1.028  (Massey bound 1.119)
+   lambda=2.0, N=256:
+     t=   0e+00: S_G=0.000  E Var_q N_A=0.000  Var_mix N_A=0.000  E_q S_N^q=0.000  S_N(mixture)=0.000  (Massey bound 0.176)
+     t=   1e+00: S_G=0.617  E Var_q N_A=0.191  Var_mix N_A=0.228  E_q S_N^q=0.569  S_N(mixture)=0.676  (Massey bound 0.836)
+     t=   1e+01: S_G=0.947  E Var_q N_A=0.277  Var_mix N_A=0.305  E_q S_N^q=0.734  S_N(mixture)=0.821  (Massey bound 0.945)
+     t=   1e+02: S_G=1.166  E Var_q N_A=0.345  Var_mix N_A=0.397  E_q S_N^q=0.832  S_N(mixture)=0.952  (Massey bound 1.053)
+     t=   1e+03: S_G=1.213  E Var_q N_A=0.359  Var_mix N_A=0.427  E_q S_N^q=0.843  S_N(mixture)=0.990  (Massey bound 1.083)
+     t=   1e+04: S_G=1.242  E Var_q N_A=0.370  Var_mix N_A=0.429  E_q S_N^q=0.860  S_N(mixture)=0.990  (Massey bound 1.085)
+     t=   1e+06: S_G=1.241  E Var_q N_A=0.369  Var_mix N_A=0.430  E_q S_N^q=0.858  S_N(mixture)=0.990  (Massey bound 1.085)
+     t=   1e+08: S_G=1.271  E Var_q N_A=0.379  Var_mix N_A=0.432  E_q S_N^q=0.875  S_N(mixture)=0.993  (Massey bound 1.087)
