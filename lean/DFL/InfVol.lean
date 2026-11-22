@@ -273,7 +273,6 @@ lemma pow_hq_apply (J h : ℝ) (q : CfgZ) (M : ℕ) (y : ℤ) (hy : |y| ≤ M) (
     rw [Int.abs_eq_natAbs] at hx ⊢
     omega
 
-
 open scoped Matrix.Norms.Operator in
 /-- Entrywise exponential series of the propagator. -/
 lemma hasSum_evo_apply {N : ℕ} (A : Matrix (Fin N) (Fin N) ℝ) (t : ℝ) (i j : Fin N) :
@@ -333,10 +332,6 @@ lemma norm_evoZ_le_one (J h : ℝ) (q : CfgZ) (t : ℝ) (M : ℕ) (x y : ℤ) :
 /-- The finite-volume entry as a function of the charges in the box. -/
 def evoR (J h t : ℝ) (M : ℕ) (x y : ℤ) (q' : Cfg (2 * M + 1)) : ℂ :=
   if hxy : |x| ≤ M ∧ |y| ≤ M then evo (hq J h q') t (idxZ M x hxy.1) (idxZ M y hxy.2) else 0
-
-/-- `evoZ` only depends on the charges in the box. -/
-lemma evoZ_eq_evoR (J h : ℝ) (q : CfgZ) (t : ℝ) (M : ℕ) (x y : ℤ) :
-    evoZ J h q t M x y = evoR J h t M x y (restrictZ M q) := rfl
 
 /-- The restriction map is measurable. -/
 lemma measurable_restrictZ (M : ℕ) : Measurable (restrictZ M) :=
@@ -506,7 +501,7 @@ theorem measurable_UZ (J h : ℝ) (t : ℝ) (x y : ℤ) :
 `thm:infvol`(b)): under Hypothesis (EC), `E sup_t |U^ℤ_q(t)_{xy}| ≤ F(|x-y|)`. -/
 theorem lintegral_iSup_UZ_le (J h : ℝ) {F : ℕ → ℝ} (hEC : EC J h F) (x y : ℤ) :
     ∫⁻ q, ⨆ t : ℝ, (‖UZ J h q t x y‖₊ : ENNReal) ∂muZ ≤ ENNReal.ofReal (F (x - y).natAbs) := by
-  set G : ℕ → CfgZ → ENNReal := fun M q => ⨆ t : ℝ, (‖evoZ J h q t M x y‖₊ : ENNReal) with hG
+  set G : ℕ → CfgZ → ENNReal := fun M q => ⨆ t : ℝ, (‖evoZ J h q t M x y‖₊ : ENNReal)
   have hpt : ∀ q, ⨆ t : ℝ, (‖UZ J h q t x y‖₊ : ENNReal) ≤ liminf (fun M => G M q) atTop := by
     intro q
     refine iSup_le fun t => ?_
@@ -577,7 +572,7 @@ theorem moments_UZ (J h : ℝ) {F : ℕ → ℝ} (hEC : EC J h F) (t : ℝ) (y :
     Summable (fun x : ℤ => (((x - y).natAbs : ℝ) + 1) ^ p * ∫ q, Complex.normSq (UZ J h q t x y) ∂muZ) ∧
       ∑' x : ℤ, (((x - y).natAbs : ℝ) + 1) ^ p * ∫ q, Complex.normSq (UZ J h q t x y) ∂muZ ≤
         2 * ∑' d : ℕ, ((d : ℝ) + 1) ^ p * F d := by
-  set φ : ℕ → ℝ := fun d => ((d : ℝ) + 1) ^ p * F d with hφ
+  set φ : ℕ → ℝ := fun d => ((d : ℝ) + 1) ^ p * F d
   have hφnn : ∀ d, 0 ≤ φ d := fun d =>
     mul_nonneg (Real.rpow_nonneg (by positivity) _) (hEC.nonneg d)
   have hφsum : Summable φ := by

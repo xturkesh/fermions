@@ -53,6 +53,7 @@ No `axiom` is introduced anywhere.
 | Theorem `thm:transport` (bounded transport) | `lgt_density`, `lgt_transport` | `Main.lean` |
 | Proposition `prop:LR` (sector-averaged zero-velocity LR) | `avg_norm_evo_le`, `avg_iSup_norm_evo_le`, `avg_norm_comm_le` | `LiebRobinson.lean` |
 | Theorem `thm:imbalance` (persistent imbalance) | `stag_hq_anticomm`, `eigenvalue_mul_stagWeight`, `hq_eigenvalues_injective`, `imbOne_timeAvg`, `avg_imbInf_ge`, `avg_imbInf_uniform`, `lgtImbalance_eq`, `lgtImbalance_timeAvg`, `lgtImbalance_lower` | `Imbalance.lean`, `Main.lean` |
+| Corollary `cor:imbalanceopen` (persistent imbalance on the open chain of SKKM, without boundary link) | `lgtImbalanceOpen_lower`, `lgtImbalanceOpen_timeAvg`, `lgtImbalanceOpen_eq`, `avgPar_imbInf_uniform` | `OpenImbalance.lean` |
 | Theorem `thm:numberentropy` (bounded number entropy) | `lgt_numberEntropy`, `lgtNumDist_isProb` | `Main.lean` |
 | Lemma `lem:intentropy` (Massey) and entropy tools | `massey`, `shannon_le_log_card`, `pvar_mixture`, `binEntropy_le_two_sqrt` | `Entropy.lean` |
 | Theorem `thm:arealaw`(a),(b) (area law, `S_G`) | `vonNeumann_slater_le`, `lgt_areaLaw` | `AreaLaw.lean` |
@@ -64,6 +65,7 @@ No `axiom` is introduced anywhere.
 | Lemma `lem:duhamel` | `colNorm_evo_sub_le`, `avg_colNorm_evo_sub_le` | `Duhamel.lean` |
 | Theorem `thm:EC` (Hypothesis (EC) from uniform large deviations), with Lemmas `lem:green`, `lem:entry`, `lem:badset`, `lem:double` | `ec_of_ldt`, `corrQ_decay_of_ldt`; `poisson`, `box_right`, `box_left`, `dirL_eq_dirR`, `sl2_entry_ineq`, `eigvec_recursion`, `abs_eigenvalue_hq_le`; `decay_of_not_res`, `exists_resEnd`, `card_resEnds`; `LDT`, `entry_ldt`, `single_box`, `two_box` | `Transfer.lean`, `Resonance.lean`, `LDTEntry.lean`, `ECProof.lean` |
 | Main results with (EC) replaced by `LDT` | `lgt_transport_of_ldt`, `lgt_numberEntropy_of_ldt`, `lgt_areaLaw_of_ldt`, `lgtImbalance_lower_of_ldt` | `ECProof.lean` |
+| Lemma `lem:propagation`(b), Corollary `cor:ECinfvol` (propagator form) and Theorem `thm:infvol`(b) (infinite volume: `U^ℤ_q(t)` as the exponential series of the tridiagonal `h^ℤ_q`, i.i.d. charges on `ℤ`; `E sup_t |U^ℤ_q(t)_{xy}| ≤ F(|x-y|)`, one-particle density, moments, transported charge) | `tendsto_evoZ`, `lintegral_iSup_UZ_le`, `infvol_propagator_of_ldt`, `tendsto_density_one`, `moments_UZ`, `abs_transportM_le`, `transport_tendsto` | `InfVol.lean`, `InfVolTransport.lean` |
 | Proposition `prop:nocritical`(i),(ii),(iv) (hypotheses of Furstenberg's theorem; no critical energies) | `transferT_mul_inv`, `transferT_commutator`, `transferT_not_commute`, `unipotent_pow_unbounded`, `no_finite_invariant_lines` | `Furstenberg.lean` |
 | Remark `rem:randomwalk` (one charge of the standard ℤ₂ LGT in a random-walk potential) | `Hstd_dual_oneP`, `partialSum_bijective` | `RandomWalk.lean` |
 | Proposition `prop:dimerlaw` (dimer sector law) | `dimerInit_dual`, `card_isDimer`, `sector_average_dimer` | `Dimer.lean` |
@@ -81,14 +83,14 @@ No `axiom` is introduced anywhere.
 
 ## Verification
 
-`lake build` compiles all 40 modules (about 20,000 lines) without `sorry`; there is no `axiom`,
+`lake build` compiles all 43 modules (about 21,600 lines) without `sorry`; there is no `axiom`,
 `admit`, `native_decide` or `implemented_by` in the library. The script `CheckAxioms.lean` walks
 through every theorem declared in a `DFL` module (including private helper lemmas) and collects the
 axioms it depends on:
 
 ```
 lake env lean CheckAxioms.lean
-# checked 2140 theorems in DFL modules; with non-standard axioms: 0
+# checked 2402 theorems in DFL modules; with non-standard axioms: 0
 ```
 
 i.e. every theorem depends only on Lean's standard axioms `propext`, `Classical.choice` and
@@ -140,9 +142,11 @@ lake env lean Check.lean
   bounds of Jitomirskaya–Schulz-Baldes–Stolz for the random dimer (`thm:dimer`), and the percolation
   estimate of Li–Liang used in `prop:cluster`(c) (entering `cluster_avg` as the probability that the
   cluster leaves the region).
-- Infinite-volume statements: `thm:infvol`, `cor:ECinfvol`, `thm:EC`(ii) (supremum over all
-  intervals; not needed for (EC)), and part (iii) of `prop:dimerimbalance`. All of these need
-  operators on `ℓ²(ℤ)`.
+- Infinite-volume statements beyond the one-body propagator: `thm:infvol`(a),(c),(d),(e) (the
+  quasi-free limit state, the infinite-volume Lieb–Robinson, area-law and number-entropy limits),
+  `cor:ECinfvol` for the full correlator `Q^X` (Borel functional calculus on `ℓ²(X)`; the
+  propagator bound is formalized), `thm:EC`(ii) (supremum over all intervals; not needed for (EC)),
+  and part (iii) of `prop:dimerimbalance`.
 - In two dimensions, the specializations of `thm:2dmap` to planar boxes and tori ((c),(d)), and
   `prop:2dlaws`(c)(iii),(iv) (the propagator formula and the entries of `K_s²`).
 - Remarks, conjectures and numerics.

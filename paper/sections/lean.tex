@@ -60,13 +60,19 @@ only external input is this literature result (\texttt{lgt\_transport\_of\_ldt},
 \texttt{poisson}, \texttt{box\_right}, \texttt{box\_left}, \texttt{entry\_ldt},
 \texttt{exists\_resEnd}, \texttt{single\_box}, \texttt{two\_box} (\texttt{Transfer}, \texttt{Resonance},
 \texttt{LDTEntry}, \texttt{ECProof}).
+\item \cref{lem:propagation}(b), \cref{cor:ECinfvol} (for the propagator) and \cref{thm:infvol}(b), with
+$U^\Z_q(t)$ defined entrywise by the exponential series of the tridiagonal matrix $h^\Z_q$ and i.i.d.\ charges on
+$\Z$: \texttt{tendsto\_evoZ}, \texttt{lintegral\_iSup\_UZ\_le}, \texttt{infvol\_propagator\_of\_ldt},
+\texttt{tendsto\_density\_one}, \texttt{moments\_UZ}, \texttt{transport\_tendsto} (\texttt{InfVol},
+\texttt{InfVolTransport}).
 \item \cref{prop:nocritical}(i),(ii),(iv): \texttt{unipotent\_pow\_unbounded},
 \texttt{no\_finite\_invariant\_lines}, \texttt{transferT\_commutator} (\texttt{Furstenberg}).
 \item \cref{thm:transport}: \texttt{lgt\_transport}; \cref{prop:LR}: \texttt{avg\_norm\_comm\_le};
 \cref{lem:duhamel}: \texttt{avg\_colNorm\_evo\_sub\_le} (\texttt{Main}, \texttt{LiebRobinson},
 \texttt{Duhamel}).
 \item \cref{thm:imbalance}: \texttt{lgtImbalance\_timeAvg}, \texttt{lgtImbalance\_lower}
-(\texttt{Imbalance}, \texttt{Main}).
+(\texttt{Imbalance}, \texttt{Main}); \cref{cor:imbalanceopen}: \texttt{lgtImbalanceOpen\_lower},
+\texttt{avgPar\_imbInf\_uniform} (\texttt{OpenImbalance}).
 \item \cref{lem:intentropy,thm:numberentropy}: \texttt{massey}, \texttt{lgt\_numberEntropy}
 (\texttt{Entropy}, \texttt{Main}).
 \item \cref{thm:arealaw}: \texttt{lgt\_areaLaw}, \texttt{lgt\_areaLaw\_full} (\texttt{AreaLaw},
@@ -130,8 +136,8 @@ positivity and continuity of the Lyapunov exponent, \cref{prop:nocritical}(iii),
 the transport bounds of \cite{JSBS2003} behind \cref{thm:dimer}, and the percolation estimate of
 \cite{LiL2022}, which enters \texttt{cluster\_avg} as the probability that the cluster leaves the
 region;
-\item the infinite-volume statements: \cref{thm:infvol}, \cref{cor:ECinfvol}, \cref{thm:EC}(ii) and
-\cref{prop:dimerimbalance}(iii);
+\item the infinite-volume statements other than those listed above: \cref{thm:infvol}(a),(c),(d),(e),
+\cref{cor:ECinfvol} for the full correlator $Q^X$, \cref{thm:EC}(ii) and \cref{prop:dimerimbalance}(iii);
 \item in two dimensions, \cref{thm:2dmap}(c),(d) (planar boxes and tori) and
 \cref{prop:2dlaws}(c)(iii),(iv);
 \item remarks, conjectures and numerics.
