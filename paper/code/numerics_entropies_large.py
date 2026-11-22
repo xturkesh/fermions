@@ -13,7 +13,9 @@ U_q(t) = V exp(-itE) V^T is exact for every t (no time stepping).  Errors: stand
 S_G and E_q H(p^q_t); delta method for S_N = H(E_q p^q_t) (standard error of -sum_k p^q_t(k) ln p_t(k)),
 cross-checked against a bootstrap for one (lambda, N).
 
-Usage:  python3 numerics_entropies_large.py LAMBDA [ns]   -> data/numerics_entropies_large_lam{LAMBDA}.npz
+Usage:  python3 numerics_entropies_large.py LAMBDA [ns]          -> data/numerics_entropies_large_lam{LAMBDA}.npz
+        python3 numerics_entropies_large.py LAMBDA ns early     -> data/numerics_entropies_early_lam{LAMBDA}.npz
+        (fine grid of early times, N = 256 only, for the comparison of S_N and S_G)
 Recommended OPENBLAS_NUM_THREADS=2.  Runtime ~4-6 min per lambda with ns = 1000.  Not used in any proof.
 """
 import os
@@ -91,7 +93,7 @@ def run(lam, N, ns, times):
     kk = np.arange(l + 1)
     mean = (pbar * kk).sum(1)
     var_mix = (pbar * kk ** 2).sum(1) - mean ** 2
-    late = times >= 1e3                                                # plateau window
+    late = times >= min(1e3, times.max() / 10)                         # plateau window
     sgp = SGq[:, late].mean(1)
     gp = g[:, late].mean(1)
     out = dict(SG=SGq.mean(0), SG_se=SGq.std(0, ddof=1) / np.sqrt(ns),
@@ -114,23 +116,32 @@ def run(lam, N, ns, times):
 def main():
     lam = float(sys.argv[1])
     ns = int(sys.argv[2]) if len(sys.argv) > 2 else 1000
-    times = np.concatenate([[0.0], np.logspace(-2, 8, 61)])
-    P(f"=== S_G(t), S_N(t): lambda={lam}, J={J}, CDW on even sites, A=[1,N/2], N in {NS_LIST}, "
-      f"{len(times)} times in [0] u [1e-2, 1e8] ===")
-    res = dict(times=times, lam=lam, ns=ns, Ns=np.array(NS_LIST))
-    for N in NS_LIST:
+    early = len(sys.argv) > 3 and sys.argv[3] == "early"
+    if early:      # fine grid of early times for the S_N - S_G comparison (fig:entropies(b)), N = 256 only
+        times = np.concatenate([[0.0], np.logspace(-2, 2, 121)])
+        Ns = (256,)
+        fname = f"numerics_entropies_early_lam{lam:g}.npz"
+    else:
+        times = np.concatenate([[0.0], np.logspace(-2, 8, 61)])
+        Ns = NS_LIST
+        fname = f"numerics_entropies_large_lam{lam:g}.npz"
+    P(f"=== S_G(t), S_N(t): lambda={lam}, J={J}, CDW on even sites, A=[1,N/2], N in {Ns}, "
+      f"{len(times)} times in [0] u [{times[1]:.0e}, {times[-1]:.0e}] ===")
+    res = dict(times=times, lam=lam, ns=ns, Ns=np.array(Ns))
+    for N in Ns:
         o = run(lam, N, ns, times)
         for key, val in o.items():
             res[f"{key}_N{N}"] = val
-        late = times >= 1e3
+        t_late = min(1e3, times.max() / 10)
+        late = times >= t_late
         P(f"    S_G : t=1: {o['SG'][np.argmin(abs(times-1))]:.3f}+-{o['SG_se'][np.argmin(abs(times-1))]:.3f}, "
-          f"t=10: {o['SG'][np.argmin(abs(times-10))]:.3f}, plateau mean(t>=1e3) = {o['SG'][late].mean():.3f} "
-          f"(typical err {o['SG_se'][late].mean():.3f}); range over t>=1e3: [{o['SG'][late].min():.3f}, {o['SG'][late].max():.3f}]")
+          f"t=10: {o['SG'][np.argmin(abs(times-10))]:.3f}, mean over grid times t>={t_late:g}: {o['SG'][late].mean():.3f} "
+          f"(typical err {o['SG_se'][late].mean():.3f}); range: [{o['SG'][late].min():.3f}, {o['SG'][late].max():.3f}]")
         P(f"    S_N : t=1: {o['SN'][np.argmin(abs(times-1))]:.3f}+-{o['SN_se'][np.argmin(abs(times-1))]:.3f}, "
-          f"t=10: {o['SN'][np.argmin(abs(times-10))]:.3f}, plateau mean(t>=1e3) = {o['SN'][late].mean():.3f} "
-          f"(typical err {o['SN_se'][late].mean():.3f}); range over t>=1e3: [{o['SN'][late].min():.3f}, {o['SN'][late].max():.3f}]")
-        P(f"    E_qH(p^q) plateau = {o['EHq'][late].mean():.3f};  Var_mix(N_A) plateau = {o['var_mix'][late].mean():.3f}, "
-          f"max_t = {o['var_mix'].max():.3f};  E_q Var_q plateau = {o['EVq'][late].mean():.3f};  "
+          f"t=10: {o['SN'][np.argmin(abs(times-10))]:.3f}, mean over grid times t>={t_late:g}: {o['SN'][late].mean():.3f} "
+          f"(typical err {o['SN_se'][late].mean():.3f}); range: [{o['SN'][late].min():.3f}, {o['SN'][late].max():.3f}]")
+        P(f"    same window: E_qH(p^q) = {o['EHq'][late].mean():.3f};  Var_mix(N_A) = {o['var_mix'][late].mean():.3f}, "
+          f"max_t = {o['var_mix'].max():.3f};  E_q Var_q = {o['EVq'][late].mean():.3f};  "
           f"E_q max_(t in grid) S(rho^q_A) = {o['SGsup']:.3f}+-{o['SGsup_se']:.3f}")
         d = o["SN"] - o["SG"]
         pos = times[(d > 0) & (times > 0)]
@@ -139,13 +150,26 @@ def main():
         if "SN_boot_se" in o:
             P(f"    delta-method vs bootstrap error of S_N (t>0): max ratio = {np.max(o['SN_se'][1:] / o['SN_boot_se'][1:]):.2f}, "
               f"min ratio = {np.min(o['SN_se'][1:] / o['SN_boot_se'][1:]):.2f}")
+    if early:
+        o = {k[:-5]: v for k, v in res.items() if k.endswith("_N256")}
+        d = o["SN"] - o["SG"]
+        e = o["DNG_se"]
+        ch = np.nonzero((np.sign(d[1:]) != np.sign(d[:-1])) & (times[1:] > 0.05))[0]
+        P(f"  N=256: S_N - S_G > 2 SE for t in [{times[(d > 2 * e) & (times > 0)].min():.3g}, "
+          f"{times[(d > 2 * e) & (times > 0)].max():.3g}]; max = {d.max():.4f}({e[np.argmax(d)]:.4f}) at t = "
+          f"{times[np.argmax(d)]:.3g}; sign changes (t > 0.05) between grid points near t = "
+          + ", ".join(f"{times[i]:.3g}-{times[i + 1]:.3g}" for i in ch)
+          + f"; S_N - S_G < -2 SE for all t >= {times[ch[-1] + 1] if len(ch) else float('nan'):.3g}: "
+          + f"{bool(np.all(d[ch[-1] + 1:] < -2 * e[ch[-1] + 1:])) if len(ch) else 'n/a'}")
+        np.savez_compressed(os.path.join(DATA, fname), **res)
+        return
     # N-independence of the plateau
     late = times >= 1e3
     for key in ("SG", "SN"):
         vals = [(float(res[f"{key}_plateau_N{N}"]), float(res[f"{key}_plateau_se_N{N}"])) for N in NS_LIST]
         P(f"  {key} plateau (time average over the grid points t>=1e3, error over sectors) for N=64,128,256: "
           + ", ".join(f"{v:.4f}+-{e:.4f}" for v, e in vals))
-    np.savez_compressed(os.path.join(DATA, f"numerics_entropies_large_lam{lam:g}.npz"), **res)
+    np.savez_compressed(os.path.join(DATA, fname), **res)
 
 
 if __name__ == "__main__":

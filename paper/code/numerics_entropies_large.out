@@ -1,0 +1,38 @@
+=== S_G(t), S_N(t): lambda=1.0, J=1.0, CDW on even sites, A=[1,N/2], N in (64, 128, 256), 62 times in [0] u [1e-2, 1e8] ===
+  N= 64: 1000 sectors, 19s
+    S_G : t=1: 0.853+-0.002, t=10: 2.294, plateau mean(t>=1e3) = 3.193 (typical err 0.025); range over t>=1e3: [3.141, 3.229]
+    S_N : t=1: 0.777+-0.001, t=10: 1.262, plateau mean(t>=1e3) = 1.420 (typical err 0.004); range over t>=1e3: [1.409, 1.427]
+    E_qH(p^q) plateau = 1.379;  Var_mix(N_A) plateau = 1.004, max_t = 1.018;  E_q Var_q plateau = 0.961;  E_q max_(t in grid) S(rho^q_A) = 3.917+-0.026
+    S_N - S_G > 0 on grid points: t in [0.0215, 0.0681] (4 points); max(S_N - S_G) = 0.000 at t = 0.0681
+    delta-method vs bootstrap error of S_N (t>0): max ratio = 1.10, min ratio = 0.90
+  N=128: 1000 sectors, 109s
+    S_G : t=1: 0.853+-0.002, t=10: 2.307, plateau mean(t>=1e3) = 3.282 (typical err 0.026); range over t>=1e3: [3.232, 3.307]
+    S_N : t=1: 0.777+-0.001, t=10: 1.265, plateau mean(t>=1e3) = 1.431 (typical err 0.004); range over t>=1e3: [1.421, 1.436]
+    E_qH(p^q) plateau = 1.392;  Var_mix(N_A) plateau = 1.027, max_t = 1.036;  E_q Var_q plateau = 0.986;  E_q max_(t in grid) S(rho^q_A) = 4.017+-0.027
+    S_N - S_G > 0 on grid points: t in [0.0215, 0.0681] (4 points); max(S_N - S_G) = 0.000 at t = 0.0681
+  N=256: 1000 sectors, 268s
+    S_G : t=1: 0.851+-0.002, t=10: 2.305, plateau mean(t>=1e3) = 3.241 (typical err 0.026); range over t>=1e3: [3.203, 3.266]
+    S_N : t=1: 0.776+-0.001, t=10: 1.265, plateau mean(t>=1e3) = 1.425 (typical err 0.005); range over t>=1e3: [1.417, 1.430]
+    E_qH(p^q) plateau = 1.384;  Var_mix(N_A) plateau = 1.015, max_t = 1.024;  E_q Var_q plateau = 0.972;  E_q max_(t in grid) S(rho^q_A) = 3.962+-0.027
+    S_N - S_G > 0 on grid points: t in [0.0316, 0.0681] (3 points); max(S_N - S_G) = 0.000 at t = 0.0681
+  SG plateau (time average over the grid points t>=1e3, error over sectors) for N=64,128,256: 3.1925+-0.0215, 3.2821+-0.0228, 3.2406+-0.0227
+  SN plateau (time average over the grid points t>=1e3, error over sectors) for N=64,128,256: 1.4200+-0.0037, 1.4312+-0.0038, 1.4249+-0.0039
+=== S_G(t), S_N(t): lambda=2.0, J=1.0, CDW on even sites, A=[1,N/2], N in (64, 128, 256), 62 times in [0] u [1e-2, 1e8] ===
+  N= 64: 1000 sectors, 21s
+    S_G : t=1: 0.601+-0.008, t=10: 0.954, plateau mean(t>=1e3) = 1.271 (typical err 0.018); range over t>=1e3: [1.245, 1.285]
+    S_N : t=1: 0.666+-0.006, t=10: 0.829, plateau mean(t>=1e3) = 1.011 (typical err 0.009); range over t>=1e3: [1.002, 1.019]
+    E_qH(p^q) plateau = 0.871;  Var_mix(N_A) plateau = 0.448, max_t = 0.455;  E_q Var_q plateau = 0.378;  E_q max_(t in grid) S(rho^q_A) = 1.681+-0.021
+    S_N - S_G > 0 on grid points: t in [0.0147, 4.64] (16 points); max(S_N - S_G) = 0.116 at t = 1.47
+    delta-method vs bootstrap error of S_N (t>0): max ratio = 1.12, min ratio = 0.90
+  N=128: 1000 sectors, 161s
+    S_G : t=1: 0.609+-0.008, t=10: 0.957, plateau mean(t>=1e3) = 1.308 (typical err 0.018); range over t>=1e3: [1.271, 1.323]
+    S_N : t=1: 0.673+-0.006, t=10: 0.832, plateau mean(t>=1e3) = 1.028 (typical err 0.009); range over t>=1e3: [1.015, 1.037]
+    E_qH(p^q) plateau = 0.886;  Var_mix(N_A) plateau = 0.464, max_t = 0.472;  E_q Var_q plateau = 0.390;  E_q max_(t in grid) S(rho^q_A) = 1.737+-0.021
+    S_N - S_G > 0 on grid points: t in [0.0147, 4.64] (16 points); max(S_N - S_G) = 0.118 at t = 1.47
+  N=256: 1000 sectors, 360s
+    S_G : t=1: 0.609+-0.008, t=10: 0.948, plateau mean(t>=1e3) = 1.289 (typical err 0.019); range over t>=1e3: [1.262, 1.305]
+    S_N : t=1: 0.672+-0.006, t=10: 0.828, plateau mean(t>=1e3) = 1.016 (typical err 0.009); range over t>=1e3: [1.001, 1.026]
+    E_qH(p^q) plateau = 0.875;  Var_mix(N_A) plateau = 0.452, max_t = 0.462;  E_q Var_q plateau = 0.383;  E_q max_(t in grid) S(rho^q_A) = 1.706+-0.022
+    S_N - S_G > 0 on grid points: t in [0.0147, 4.64] (16 points); max(S_N - S_G) = 0.117 at t = 1.47
+  SG plateau (time average over the grid points t>=1e3, error over sectors) for N=64,128,256: 1.2708+-0.0163, 1.3081+-0.0164, 1.2886+-0.0170
+  SN plateau (time average over the grid points t>=1e3, error over sectors) for N=64,128,256: 1.0108+-0.0074, 1.0282+-0.0074, 1.0156+-0.0077

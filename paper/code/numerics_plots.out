@@ -1,0 +1,77 @@
+=== S_N - S_G, N=10, h=J (exact; fine grid step 0.005 on [0.05,12]) ===
+  positive on [0.05, 2.575]; max 0.1135 at t = 1.400; sign changes near t = 2.575, 2.930, 3.630, 4.250, 5.225; max |S_N - S_G| between first and last change = 0.0431; negative for all grid t > 5.230: True
+=== S_N - S_G, N=256, lambda=1.0 (400 sectors, 30 times per decade on [1e-2, 1e2]) ===
+  > 2 SE at all grid times in [0.0251, 0.0681]; max = 1.687e-10(6.5e-12) at t = 0.063; sign changes between grid points: 0.0681-0.0736; max |S_N - S_G| in that window = 0.0000; < -2 SE for all grid t >= 0.0736: True
+=== S_N - S_G, N=256, lambda=2.0 (400 sectors, 30 times per decade on [1e-2, 1e2]) ===
+  > 2 SE at all grid times in [0.0147, 2.3263]; max = 1.240e-01(1.1e-02) at t = 1.468; sign changes between grid points: 2.51-2.71, 3.16-3.41, 3.41-3.69, 4.3-4.64, 5.01-5.41; max |S_N - S_G| in that window = 0.0435; < -2 SE for all grid t >= 5.41: True
+=== imbalance: Ibar(N) +- SE, kappa_N +- SE (max over all intervals), lower bounds of thm:imbalance ===
+    bounds use kappa_N + 2 SE; khat = max_N (kappa_N + 2 SE); kthm = 2 Sigma_1(F_emp) with F_emp from N=400
+  lambda=0.25: Ibar N=100,200,400: 0.00782(0.00010)  0.00556(0.00005)  0.00433(0.00003) | kappa_N: 17.97(0.02)  29.29(0.03)  43.22(0.03)
+      N=400: global 3.09e-05, block 0.00e+00 (L=1), best(iii) 3.09e-05, ratio Ibar/best = 140 | (iv) khat=43.29: L*=59969, 1.29e-08, ratio 3.4e+05 | Sigma_1(F_emp)=1.59e+04 (F_emp(399)=1.3e-01), (iv) with kthm=3.17e+04: 2.39e-14
+  lambda=0.35: Ibar N=100,200,400: 0.01140(0.00011)  0.00888(0.00006)  0.00781(0.00004) | kappa_N: 15.08(0.02)  22.15(0.02)  28.39(0.04)
+      N=400: global 5.55e-05, block 0.00e+00 (L=1), best(iii) 5.55e-05, ratio Ibar/best = 141 | (iv) khat=28.47: L*=25937, 5.35e-08, ratio 1.5e+05 | Sigma_1(F_emp)=6.11e+03 (F_emp(399)=2.2e-02), (iv) with kthm=1.22e+04: 2.90e-13
+  lambda=0.50: Ibar N=100,200,400: 0.01968(0.00014)  0.01732(0.00009)  0.01596(0.00006) | kappa_N: 11.25(0.02)  14.27(0.03)  15.84(0.03)
+      N=400: global 1.00e-04, block 0.00e+00 (L=1), best(iii) 1.00e-04, ratio Ibar/best = 160 | (iv) khat=15.90: L*=8088, 3.09e-07, ratio 5.2e+04 | Sigma_1(F_emp)=1.65e+03 (F_emp(399)=8.1e-04), (iv) with kthm=3.29e+03: 7.21e-12
+  lambda=0.70: Ibar N=100,200,400: 0.03878(0.00022)  0.03655(0.00015)  0.03483(0.00010) | kappa_N: 7.69(0.02)  8.46(0.02)  8.69(0.01)
+      N=400: global 1.68e-04, block 0.00e+00 (L=1), best(iii) 1.68e-04, ratio Ibar/best = 207 | (iv) khat=8.72: L*=2432, 1.73e-06, ratio 2.0e+04 | Sigma_1(F_emp)=410 (F_emp(399)=1.2e-06), (iv) with kthm=821: 1.95e-10
+  lambda=1.00: Ibar N=100,200,400: 0.07882(0.00040)  0.07592(0.00028)  0.07449(0.00018) | kappa_N: 4.83(0.01)  4.93(0.02)  4.95(0.02)
+      N=400: global 2.78e-04, block 1.20e-05 (L=400), best(iii) 2.78e-04, ratio Ibar/best = 268 | (iv) khat=5.00: L*=799, 8.69e-06, ratio 8.6e+03 | Sigma_1(F_emp)=104 (F_emp(399)=2.8e-15), (iv) with kthm=208: 5.02e-09
+  lambda=1.40: Ibar N=100,200,400: 0.12367(0.00059)  0.11924(0.00041)  0.11811(0.00029) | kappa_N: 3.12(0.01)  3.14(0.02)  3.15(0.02)
+      N=400: global 4.24e-04, block 6.39e-05 (L=400), best(iii) 4.24e-04, ratio Ibar/best = 279 | (iv) khat=3.19: L*=326, 3.25e-05, ratio 3.6e+03 | Sigma_1(F_emp)=35.4 (F_emp(399)=2.4e-27), (iv) with kthm=70.8: 6.60e-08
+  lambda=2.00: Ibar N=100,200,400: 0.17096(0.00076)  0.16721(0.00052)  0.16535(0.00040) | kappa_N: 2.37(0.01)  2.41(0.03)  2.42(0.03)
+      N=400: global 6.25e-04, block 1.59e-04 (L=200), best(iii) 6.25e-04, ratio Ibar/best = 265 | (iv) khat=2.48: L*=197, 7.93e-05, ratio 2.1e+03 | Sigma_1(F_emp)=18.9 (F_emp(399)=1.0e-39), (iv) with kthm=37.8: 3.42e-07
+  lambda=2.80: Ibar N=100,200,400: 0.21153(0.00095)  0.20643(0.00066)  0.20362(0.00047) | kappa_N: 2.15(0.01)  2.14(0.02)  2.14(0.02)
+      N=400: global 8.51e-04, block 2.76e-04 (L=133), best(iii) 8.51e-04, ratio Ibar/best = 239 | (iv) khat=2.18: L*=153, 1.39e-04, ratio 1.5e+03 | Sigma_1(F_emp)=13.3 (F_emp(399)=6.3e-46), (iv) with kthm=26.7: 9.34e-07
+  lambda=4.00: Ibar N=100,200,400: 0.24022(0.00108)  0.23693(0.00076)  0.23615(0.00054) | kappa_N: 1.99(0.02)  2.00(0.03)  2.02(0.02)
+      N=400: global 1.11e-03, block 4.12e-04 (L=133), best(iii) 1.11e-03, ratio Ibar/best = 213 | (iv) khat=2.05: L*=136, 2.04e-04, ratio 1.2e+03 | Sigma_1(F_emp)=10.9 (F_emp(399)=1.1e-53), (iv) with kthm=21.9: 1.82e-06
+  lambda=5.60: Ibar N=100,200,400: 0.25768(0.00117)  0.25598(0.00083)  0.25313(0.00059) | kappa_N: 1.90(0.01)  1.95(0.03)  1.96(0.03)
+      N=400: global 1.36e-03, block 5.20e-04 (L=133), best(iii) 1.36e-03, ratio Ibar/best = 186 | (iv) khat=2.02: L*=131, 2.59e-04, ratio 9.8e+02 | Sigma_1(F_emp)=9.17 (F_emp(399)=7.2e-64), (iv) with kthm=18.3: 3.15e-06
+  lambda=8.00: Ibar N=100,200,400: 0.26967(0.00120)  0.26694(0.00086)  0.26397(0.00061) | kappa_N: 1.87(0.02)  1.91(0.02)  1.90(0.03)
+      N=400: global 1.60e-03, block 6.49e-04 (L=133), best(iii) 1.60e-03, ratio Ibar/best = 165 | (iv) khat=1.96: L*=123, 3.25e-04, ratio 8.1e+02 | Sigma_1(F_emp)=8.33 (F_emp(399)=1.3e-69), (iv) with kthm=16.7: 4.50e-06
+=== weighted least-squares fit Ibar_N = Ibar_inf + c/N to N = 100, 200, 400 ===
+  lambda=0.25: Ibar_inf = 0.0032(0.0001), c = 0.471(0.013), chi2 = 0.91 (1 dof); relative change N=100 -> 400: 44.7%
+  lambda=0.35: Ibar_inf = 0.0066(0.0001), c = 0.473(0.015), chi2 = 2.32 (1 dof); relative change N=100 -> 400: 31.5%
+  lambda=0.50: Ibar_inf = 0.0147(0.0001), c = 0.501(0.020), chi2 = 1.20 (1 dof); relative change N=100 -> 400: 18.9%
+  lambda=0.70: Ibar_inf = 0.0336(0.0002), c = 0.540(0.031), chi2 = 4.89 (1 dof); relative change N=100 -> 400: 10.2%
+  lambda=1.00: Ibar_inf = 0.0731(0.0003), c = 0.577(0.057), chi2 = 0.00 (1 dof); relative change N=100 -> 400: 5.5%
+  lambda=1.40: Ibar_inf = 0.1162(0.0004), c = 0.717(0.085), chi2 = 2.16 (1 dof); relative change N=100 -> 400: 4.5%
+  lambda=2.00: Ibar_inf = 0.1635(0.0006), c = 0.748(0.113), chi2 = 0.00 (1 dof); relative change N=100 -> 400: 3.3%
+  lambda=2.80: Ibar_inf = 0.2010(0.0007), c = 1.061(0.139), chi2 = 0.05 (1 dof); relative change N=100 -> 400: 3.7%
+  lambda=4.00: Ibar_inf = 0.2347(0.0008), c = 0.524(0.159), chi2 = 0.40 (1 dof); relative change N=100 -> 400: 1.7%
+  lambda=5.60: Ibar_inf = 0.2518(0.0009), c = 0.647(0.172), chi2 = 1.79 (1 dof); relative change N=100 -> 400: 1.8%
+  lambda=8.00: Ibar_inf = 0.2622(0.0009), c = 0.792(0.177), chi2 = 1.08 (1 dof); relative change N=100 -> 400: 2.1%
+=== constants of thm:arealaw(b) and thm:numberentropy with F_emp (N=400, truncated at d<=399) ===
+  lambda=1.0: Sigma_1=104, Sigma'_1=586, Theta=1.11e+04, M_2=2.93e+03; area-law bound 2ln2*Theta = 1.53e+04 (<= 8ln2*M_2 = 1.63e+04); number-entropy bound 1/2 ln(2 pi e (Theta + Sigma'_1^2 + 1/12)) = 7.81; per-sector bound 6.07
+  lambda=2.0: Sigma_1=18.9, Sigma'_1=129, Theta=949, M_2=270; area-law bound 2ln2*Theta = 1.32e+03 (<= 8ln2*M_2 = 1.5e+03); number-entropy bound 1/2 ln(2 pi e (Theta + Sigma'_1^2 + 1/12)) = 6.31; per-sector bound 4.85
+=== large N, lambda=1.0: plateaus (time average over grid points t>=1e3; error over sectors) ===
+  N=64: S_G = 3.1925(0.0215), S_N = 1.4200(0.0037), E_qH(p^q) = 1.379, Var_mix = 1.004 (max_t 1.018), Massey with measured Var (non-rigorous) max_t = 1.467, E_q max_grid S(rho^q_A) = 3.917(0.026), max_t S_N = 1.427, max_t S_G = 3.229
+      SG: mean over t in [1e3,1e5] = 3.1929, over [1e6,1e8] = 3.1925, drift = -0.0004 (conservative error 0.0494)
+      SN: mean over t in [1e3,1e5] = 1.4198, over [1e6,1e8] = 1.4202, drift = +0.0004 (conservative error 0.0088)
+      t=1: Var_mix(N_A) = 0.2815, E_q Var_q = 0.2761, variance of the sector means = 0.0054
+      S_N - S_G: max = 0.0000(0.0000) at t = 0.0681; > 2 SE at grid times: [0.0215, 0.0681]; values at t=1, 2.15, 4.64, 10: -0.0757(0.0008), -0.3205(0.0045), -0.6427(0.0065), -1.0320(0.0107)
+  N=128: S_G = 3.2821(0.0228), S_N = 1.4312(0.0038), E_qH(p^q) = 1.392, Var_mix = 1.027 (max_t 1.036), Massey with measured Var (non-rigorous) max_t = 1.475, E_q max_grid S(rho^q_A) = 4.017(0.027), max_t S_N = 1.436, max_t S_G = 3.307
+      SG: mean over t in [1e3,1e5] = 3.2770, over [1e6,1e8] = 3.2860, drift = +0.0090 (conservative error 0.0518)
+      SN: mean over t in [1e3,1e5] = 1.4301, over [1e6,1e8] = 1.4322, drift = +0.0021 (conservative error 0.0089)
+      t=1: Var_mix(N_A) = 0.2815, E_q Var_q = 0.2763, variance of the sector means = 0.0052
+      S_N - S_G: max = 0.0000(0.0000) at t = 0.0681; > 2 SE at grid times: [0.0215, 0.0681]; values at t=1, 2.15, 4.64, 10: -0.0762(0.0008), -0.3311(0.0047), -0.6531(0.0069), -1.0420(0.0110)
+  N=256: S_G = 3.2406(0.0227), S_N = 1.4249(0.0039), E_qH(p^q) = 1.384, Var_mix = 1.015 (max_t 1.024), Massey with measured Var (non-rigorous) max_t = 1.470, E_q max_grid S(rho^q_A) = 3.962(0.027), max_t S_N = 1.430, max_t S_G = 3.266
+      SG: mean over t in [1e3,1e5] = 3.2374, over [1e6,1e8] = 3.2415, drift = +0.0040 (conservative error 0.0514)
+      SN: mean over t in [1e3,1e5] = 1.4243, over [1e6,1e8] = 1.4252, drift = +0.0009 (conservative error 0.0093)
+      t=1: Var_mix(N_A) = 0.2806, E_q Var_q = 0.2753, variance of the sector means = 0.0053
+      S_N - S_G: max = 0.0000(0.0000) at t = 0.0681; > 2 SE at grid times: [0.0316, 0.0681]; values at t=1, 2.15, 4.64, 10: -0.0755(0.0008), -0.3216(0.0045), -0.6410(0.0069), -1.0397(0.0111)
+=== large N, lambda=2.0: plateaus (time average over grid points t>=1e3; error over sectors) ===
+  N=64: S_G = 1.2708(0.0163), S_N = 1.0108(0.0074), E_qH(p^q) = 0.871, Var_mix = 0.448 (max_t 0.455), Massey with measured Var (non-rigorous) max_t = 1.110, E_q max_grid S(rho^q_A) = 1.681(0.021), max_t S_N = 1.019, max_t S_G = 1.285
+      SG: mean over t in [1e3,1e5] = 1.2681, over [1e6,1e8] = 1.2748, drift = +0.0068 (conservative error 0.0362)
+      SN: mean over t in [1e3,1e5] = 1.0106, over [1e6,1e8] = 1.0107, drift = +0.0001 (conservative error 0.0177)
+      t=1: Var_mix(N_A) = 0.2236, E_q Var_q = 0.1848, variance of the sector means = 0.0388
+      S_N - S_G: max = 0.1161(0.0069) at t = 1.47; > 2 SE at grid times: [0.0147, 4.64]; values at t=1, 2.15, 4.64, 10: +0.0659(0.0023), +0.0686(0.0061), +0.0263(0.0071), -0.1250(0.0059)
+  N=128: S_G = 1.3081(0.0164), S_N = 1.0282(0.0074), E_qH(p^q) = 0.886, Var_mix = 0.464 (max_t 0.472), Massey with measured Var (non-rigorous) max_t = 1.125, E_q max_grid S(rho^q_A) = 1.737(0.021), max_t S_N = 1.037, max_t S_G = 1.323
+      SG: mean over t in [1e3,1e5] = 1.3049, over [1e6,1e8] = 1.3132, drift = +0.0083 (conservative error 0.0365)
+      SN: mean over t in [1e3,1e5] = 1.0285, over [1e6,1e8] = 1.0292, drift = +0.0006 (conservative error 0.0179)
+      t=1: Var_mix(N_A) = 0.2268, E_q Var_q = 0.1879, variance of the sector means = 0.0389
+      S_N - S_G: max = 0.1184(0.0071) at t = 1.47; > 2 SE at grid times: [0.0147, 4.64]; values at t=1, 2.15, 4.64, 10: +0.0644(0.0024), +0.0674(0.0065), +0.0320(0.0075), -0.1245(0.0060)
+  N=256: S_G = 1.2886(0.0170), S_N = 1.0156(0.0077), E_qH(p^q) = 0.875, Var_mix = 0.452 (max_t 0.462), Massey with measured Var (non-rigorous) max_t = 1.116, E_q max_grid S(rho^q_A) = 1.706(0.022), max_t S_N = 1.026, max_t S_G = 1.305
+      SG: mean over t in [1e3,1e5] = 1.2830, over [1e6,1e8] = 1.2928, drift = +0.0098 (conservative error 0.0375)
+      SN: mean over t in [1e3,1e5] = 1.0124, over [1e6,1e8] = 1.0185, drift = +0.0061 (conservative error 0.0182)
+      t=1: Var_mix(N_A) = 0.2264, E_q Var_q = 0.1878, variance of the sector means = 0.0386
+      S_N - S_G: max = 0.1168(0.0071) at t = 1.47; > 2 SE at grid times: [0.0147, 4.64]; values at t=1, 2.15, 4.64, 10: +0.0633(0.0024), +0.0726(0.0062), +0.0385(0.0073), -0.1201(0.0058)

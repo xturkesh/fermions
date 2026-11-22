@@ -1,0 +1,7 @@
+=== spectral weight of I_q(t) - Ibar_q: N=200, lambda=4.0, 400 sectors, bins of 0.02 decades ===
+  omega in [1e-06,1e-05]: weight 0.0005; peak density 0.0044/decade at omega = 6.76e-06; median density 0.0000/decade;  omega_7 = 7.63e-06 (period 8.2e+05/J): weight within a factor 1.2 = 0.0002
+  omega in [1e-05,1e-04]: weight 0.0002; peak density 0.0012/decade at omega = 9.77e-05; median density 0.0001/decade
+  omega in [1e-04,1e-03]: weight 0.0061; peak density 0.0750/decade at omega = 4.47e-04; median density 0.0020/decade;  omega_5 = 4.88e-04 (period 1.3e+04/J): weight within a factor 1.2 = 0.0029
+  omega in [1e-03,1e-02]: weight 0.0030; peak density 0.0237/decade at omega = 8.91e-03; median density 0.0011/decade
+  omega in [1e-02,1e-01]: weight 0.0472; peak density 0.6597/decade at omega = 2.95e-02; median density 0.0139/decade;  omega_3 = 3.12e-02 (period 2e+02/J): weight within a factor 1.2 = 0.0219
+  omega in [1e-01,1e+00]: weight 0.0327; peak density 0.7322/decade at omega = 8.91e-01; median density 0.0078/decade

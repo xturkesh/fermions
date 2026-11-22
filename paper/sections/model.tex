@@ -16,8 +16,12 @@ In this section we define the model, prove the exact duality to free fermions co
 $\Z_2$ charges (\cref{thm:duality}), show that the duality is local across a cut up to a single
 controlled gate (\cref{lem:cutlocal}), and derive the exact sector-averaging formulas for the
 initial states of \cite{SKKM2017} (\cref{cor:sector}) and for general product initial states
-(\cref{lem:productlaw}).  Everything in this section is an exact identity in finite volume; no
-probabilistic or spectral input is used.  The one-body input enters only in \cref{sec:onebody}.
+(\cref{lem:productlaw}).  Apart from \cref{rem:gaussproj}(iii), which concerns $\ell^2(\Z)$, everything
+in this section is an exact identity in finite volume; no probabilistic input and no localization input is
+used.  The one-body input enters only in \cref{sec:onebody}.  The duality itself is the one of
+\cite{SKKM2017} (\cref{rem:boundary}(b)); what we add is a convention (the boundary link) under which it
+is an exact unitary equivalence on the full Hilbert space, without constraints, together with the
+precise bookkeeping of signs, boundary variants, cuts and initial states that the later sections need.
 
 \subsection{Hilbert space, Hamiltonian and Gauss law}\label{sec:model:def}
 
@@ -76,7 +80,8 @@ $q\in\{\pm1\}^N$ let $P_q:=\prod_{j=1}^N\frac12(\one+q_jG_j)$.
 \end{definition}
 
 All algebraic statements of this section hold for arbitrary real $J,h$; the restrictions $J>0$,
-$h\neq0$ only matter for the localization results.  The boundary link enters $H$ only through
+$h\neq0$ only matter for the localization results.  (The simplicity of the spectrum of $\hq$, used in
+\cref{thm:duality}(b) and \cref{rem:gaussproj}(ii), needs $J\neq0$.)  The boundary link enters $H$ only through
 the term $-h\,\sxb{N-1}\sxb{N}$; for $N=1$, $H=-h\,\sxb{1}$.  Conjugation by $G_j$ is the local
 gauge transformation at $j$: it maps $f_j\mapsto -f_j$, $\szb{j-1}\mapsto-\szb{j-1}$ (if $j\ge2$),
 $\szb{j}\mapsto-\szb{j}$, and fixes all other $f_k$, $\sigma^z_{b_k}$ and all $\sigma^x_{b_k}$.
@@ -157,8 +162,9 @@ parity the sum in SKKM's Eq.~(5) runs over the $2^{N-1}$ configurations of a par
 The open chain is the restriction of our model to the invariant subspace $\{\sxb{N}=+1\}$
 (\cref{prop:variants}(i)).  The boundary link $b_N$ is a static $\Z_2$ flux through the right
 end; it makes $\sxb{N}=(-1)^{N_f}\prod_jG_j$ a free conserved label, removes the parity constraint,
-and makes the charges exactly i.i.d.  The two conventions differ by a density bounded by $2$
-(\cref{prop:variants}(i)), which is harmless for all localization bounds.
+and makes the charges exactly i.i.d.  For the $z$-polarized gauge state and \emph{any} matter state, the
+sector laws of the two conventions differ by a density bounded by $2$ (\cref{prop:variants}(i)).  This is
+harmless for all localization \emph{upper} bounds (\cref{rem:productlaws}(c)).
 \item \emph{The ``ring''} ($N$ sites, $N$ links, hopping also across $b_N=(N,1)$) has, in
 addition, the conserved Wilson loop $W=\prod_j\szb{j}$, again the constraint
 $\prod_jG_j=(-1)^{N_f}$, and the one-body operator acquires the twist $W$ on the bond $(N,1)$,
@@ -215,8 +221,8 @@ $U^\dagger P_qU=\one\otimes\ket{q}\bra{q}$.
   U^\dagger HU=-J\sum_{j=1}^{N-1}(c_j^\dagger c_{j+1}+c_{j+1}^\dagger c_j)-h\sum_{j=1}^N\taux{j}(-1)^{n_j}
   =\sum_{q\in\{\pm1\}^N}\Bigl(\dGamma(\hq)-h\sum_{j=1}^Nq_j\Bigr)\otimes\ket{q}\bra{q}.
 \end{equation}
-Consequently, with $E_1(q)<\dots<E_N(q)$ the eigenvalues of $\hq$ (simple, since $\hq$ is a Jacobi
-matrix with non-zero off-diagonal entries), the spectrum of $H$ (with
+Consequently, with $E_1(q)<\dots<E_N(q)$ the eigenvalues of $\hq$ (simple, since $J\neq0$ and $\hq$ is a
+Jacobi matrix with non-zero off-diagonal entries), the spectrum of $H$ (with
 multiplicities) is the union over $q$ of the multisets
 $\{\sum_\alpha m_\alpha E_\alpha(q)-h\sum_jq_j:\ m\in\{0,1\}^N\}$.
 \item \emph{Dictionary:} for all $j$ (with $\tauz{N+1}=\one$),
@@ -329,10 +335,17 @@ $H$ restricted to the invariant subspace $\{\sxb{N}=+1\}$, and
 \end{equation}
 where $\Pi_{\pm}$ is the projection onto $\{(-1)^{N_c}=\pm1\}$ in $\cF^c_N$.  Thus
 $H^{\rm open}\cong\bigoplus_q\bigl(\dGamma(\hq)-h\sum_jq_j\bigr)\big|_{\Pi_{\pi(q)}\cF^c_N}$ (the
-parity constraint $\prod_jq_j=(-1)^{N_f}$).  If $\psi$ has definite parity $\pi$, the state
-$\psi\otimes\ket{\uparrow\cdots\uparrow}_z\in\cF_N\otimes(\C^2)^{\otimes(N-1)}$ has sector law uniform on
-$\{q:\prod_jq_j=\pi\}$, i.e.\ with density $2\cdot\one[\prod_jq_j=\pi]\le2$ with respect to the
-i.i.d.\ Bernoulli$(1/2)$ law, and the same matter state $\psi$ in every sector.
+parity constraint $\prod_jq_j=(-1)^{N_f}$).  For every unit vector $\psi\in\cF_N$, the state
+$\psi\otimes\ket{\uparrow\cdots\uparrow}_z\in\cF_N\otimes(\C^2)^{\otimes(N-1)}$ satisfies
+\begin{equation}\label{eq:openinit}
+  U^\dagger(\one\otimes\iota)\bigl(\psi\otimes\ket{\uparrow\cdots\uparrow}_z\bigr)
+  =2^{-(N-1)/2}\sum_q\Pi_{\pi(q)}\psi\otimes\ket{q}.
+\end{equation}
+So its sector law $\mu(q)=2^{-(N-1)}\norm{\Pi_{\pi(q)}\psi}^2$ has density
+$2\norm{\Pi_{\pi(q)}\psi}^2\le2$ with respect to the i.i.d.\ Bernoulli$(1/2)$ law, and the sector $q$
+carries the matter state $\Pi_{\pi(q)}\psi$ (normalized).  If $\psi$ has definite parity $\pi$, the sector
+law is uniform on $\{q:\prod_jq_j=\pi\}$, with density $2\cdot\one[\prod_jq_j=\pi]$, and every sector in
+its support carries the same matter state $\psi$.
 \item \emph{Ring} ($N\ge3$).  Let $H^{\rm ring}$ be \eqref{eq:H} on $\cH_N$ with the hopping sum
 extended to $j=N$ ($f_{N+1}:=f_1$) and $\sxb{0}:=\sxb{N}$, let $G^{\rm ring}_j$ be \eqref{eq:gauss}
 with $\sxb{0}:=\sxb{N}$, and $W:=\prod_{j=1}^N\szb{j}$.  Then, with the same $U$,
@@ -365,9 +378,14 @@ $U^\dagger\sxb{N}U=(-1)^{N_c}\prod_j\taux{j}$, which is \eqref{eq:openparity}.  
 \eqref{eq:dualH} to its range gives the sector decomposition.  For the initial state,
 $\iota(\ket{\uparrow\cdots\uparrow}_z)=2^{-(N-1)/2}\sum_{x:\,x_{b_N}=+1}\ket{x}_\sigma$.  For a Fock
 vector $\ket{n}$, by \eqref{eq:U} and \eqref{eq:qofx} the vectors $U^\dagger(\ket{n}\otimes\ket{x}_\sigma)=\ket{n,q(n,x)}$
-with $x_{b_N}=+1$ are exactly the $\ket{n,q}$ with $\prod_jq_j=(-1)^{|n|}$, each once.  By linearity,
-for $\psi$ of parity $\pi$, $U^\dagger(\psi\otimes\iota\ket{\uparrow\cdots\uparrow}_z)
-=2^{-(N-1)/2}\sum_{q:\,\pi(q)=\pi}\psi\otimes\ket{q}$.
+with $x_{b_N}=+1$ are exactly the $\ket{n,q}$ with $\prod_jq_j=(-1)^{|n|}$, each once (indeed
+$\prod_jq_j=x_{b_0}x_{b_N}(-1)^{|n|}$ by \eqref{eq:qofx}).  By linearity, for $\psi=\sum_n\psi(n)\ket{n}$,
+\[
+  U^\dagger(\psi\otimes\iota\ket{\uparrow\cdots\uparrow}_z)
+  =2^{-(N-1)/2}\sum_q\Bigl(\sum_{n:\,(-1)^{|n|}=\pi(q)}\psi(n)\ket{n}\Bigr)\otimes\ket{q}
+  =2^{-(N-1)/2}\sum_q\Pi_{\pi(q)}\psi\otimes\ket{q},
+\]
+which is \eqref{eq:openinit}; the statements on the sector law follow.
 
 (ii) The operators $f_j,\sigma_{b_j}$ and $U$ are the same as before, so the dictionary of
 \cref{thm:duality}(c) applies.  The new hopping term maps as
@@ -435,7 +453,7 @@ $U^\dagger\prod_{k\le\ell}G_kU$, the total $\Z_2$ charge in $A$), then $S_A(U\Ph
 particular, for a definite-charge state $\Phi=\phi\otimes\ket{q}$ with $\phi\in\cF_N^c$ of definite
 parity, $S_A(U\Phi)=S(\rho^\phi_{\le\ell})$, the entanglement entropy of $\phi$ for the modes
 $1,\dots,\ell$.
-\item The constant $\ln2$ in (b) is attained in both directions.
+\item The constant $\ln2$ in (b) is attained in both directions (already for $N=2$, $\ell=1$).
 \end{enumerate}
 \end{lemma}
 
@@ -459,6 +477,9 @@ Let $P^++P^-=\one$ be orthogonal projections on a finite-dimensional space and
 $\mathcal{P}(\sigma):=P^+\sigma P^++P^-\sigma P^-$.  Then $S(\sigma)\le S(\mathcal{P}(\sigma))\le S(\sigma)+\ln2$
 for every density matrix $\sigma$.
 \end{lemma}
+
+This is standard (a pinching into $k$ blocks raises the entropy by at most $\ln k$); we include the
+short proof.
 
 \begin{proof}
 With the unitary $R:=P^+-P^-$ one has $\mathcal{P}(\sigma)=\frac12(\sigma+R\sigma R^\dagger)$.  The lower
@@ -513,10 +534,17 @@ $U^\dagger\Psi=\ket{0,0}_c\otimes2^{-1/2}(\ket{+1,+1}+\ket{-1,-1})_{\tau}$ has $
 
 \begin{remark}[Interior intervals]\label{rem:interior}
 For an interval $A=[\ell_1+1,\ell_2]$ (sites and links) with $1\le\ell_1<\ell_2<N$, applying (a) at
-$\ell_1$ and, inside the right factor, at $\ell_2$ writes $U$ as a local unitary followed by two
-controlled gates.  The control of the first gate lies outside $A$; after tracing it out, the reduced
-state of $A$ becomes a two-component mixture related to the original one by a unitary on one
-component.  The argument of (b) then gives $\abs{S_A(U\Phi)-S_{A'}(\Phi)}\le2\ln2$.  We do not use this.
+$\ell_1$ and, inside the right factor (which is again a chain with boundary link $b_N$), at $\ell_2$ writes
+$U=C_{\ell_1}(\one\otimes C'_{\ell_2})(U_{\le\ell_1}\otimes U_{(\ell_1,\ell_2]}\otimes U_{>\ell_2})$: a local unitary
+followed by two controlled gates.  The gate $C'_{\ell_2}$ has its control $\sxb{\ell_2}$ in $A$ and its
+target in the right complement, so by the argument of (b) it changes $S_A$ by at most $\ln2$.  The gate
+$C_{\ell_1}$ has its control $\sxb{\ell_1}$ in the left complement.  Tracing out the complement, it changes the
+reduced state of $A$ from $p_+\omega_++p_-\omega_-$ to $p_+\omega_++p_-V\omega_-V^\dagger$, where
+$p_\pm\omega_\pm$ are the parts with $\sxb{\ell_1}=\pm1$ and $V=\prod_{\ell_1<k\le\ell_2}\szb{k}$.  Concavity of
+$S$ and the bound $S(p_+\omega'_++p_-\omega'_-)\le p_+S(\omega'_+)+p_-S(\omega'_-)+\ln2$ for density matrices
+$\omega'_\pm$ (proved as in \cref{lem:pinching}) show that this changes $S_A$ by at most $\ln2$.  Hence
+$\abs{S_A(U\Phi)-S_{A'}(\Phi)}\le2\ln2$, with the Jordan--Wigner partial trace on both sides.  Numerically
+the value $2\ln2$ is attained ($N=3$, $A$ consisting of site $2$ and link $b_2$).  We do not use this.
 For interior intervals, odd elements of the algebra of $A$ carry the Jordan--Wigner string of the
 left part.  For states of definite total fermion parity, however, the partial trace over the
 complement is block diagonal with respect to the parity of $A$ and coincides with the fermionic
@@ -539,10 +567,13 @@ for unique operators $O_q$ on $\cF^c_N$.  We set $O_q(t):=\Gamma(\e^{\ii t\hq})O
 Let $\psi\in\cF_N$ be a unit vector, $\Psi_0:=\ket{\uparrow\cdots\uparrow}_z\otimes\psi$ (we do not
 distinguish $\LinkS_N\otimes\cF_N$ from $\cF_N\otimes\LinkS_N$), and $\Psi(t):=\e^{-\ii tH}\Psi_0$.
 \begin{enumerate}[label=(\alph*)]
-\item $U^\dagger\Psi_0=2^{-N/2}\sum_q\psi\otimes\ket{q}$ and
-$U^\dagger\Psi(t)=2^{-N/2}\sum_q\e^{\ii ht\sum_jq_j}\,\psi_q(t)\otimes\ket{q}$.  In particular
-$\norm{P_q\Psi_0}^2=2^{-N}$ for every $q$: the charges are exactly i.i.d.\ Bernoulli$(1/2)$, and
-every sector carries the same matter state $\psi$.
+\item One has
+\[
+  U^\dagger\Psi_0=2^{-N/2}\sum_q\psi\otimes\ket{q},\qquad
+  U^\dagger\Psi(t)=2^{-N/2}\sum_q\e^{\ii ht\sum_jq_j}\,\psi_q(t)\otimes\ket{q}.
+\]
+In particular $\norm{P_q\Psi_0}^2=2^{-N}$ for every $q$: the charges are exactly i.i.d.\
+Bernoulli$(1/2)$, and every sector carries the same matter state $\psi$.
 \item For every gauge-invariant $O$ and $t\in\R$,
 \begin{equation}\label{eq:sectoravg}
   \langle\Psi(t),O\,\Psi(t)\rangle=\E_q\,\langle\psi_q(t),O_q\,\psi_q(t)\rangle .
@@ -696,26 +727,31 @@ the sector law stays i.i.d.\ uniform, and the matter state changes by the $q$-in
 $W_D$.
 \item For the biased $\sigma^x$-product states $\chi_j=\cos\theta\ket{+}+\sin\theta\ket{-}$ with Fock
 matter, (b) shows that $q_j=(-1)^{n_j}x_{b_{j-1}}x_{b_j}$ with $x$ i.i.d.\ and
-$\Prob(x_{b_j}=1)=\cos^2\theta$.  This is a $1$-block factor of an i.i.d.\ sequence, which is not i.i.d.\
-unless $\cos^2\theta\in\{0,\tfrac12,1\}$.
-\item The localization statements of \cref{sec:main} are for the i.i.d.\ law.  They transfer to every
-sector law with bounded density with respect to it, at the cost of multiplying the bounds by the
-density, e.g.\ by $2$ for the open chain.  The dimer law \eqref{eq:dimerstate} has density $2^{N/2}$ on
-its support, which is unbounded in $N$; in infinite volume the two laws are mutually singular.
-\Cref{sec:dimer} shows that for $0<2h<J$ the dimer law leads to transport that is at least diffusive.
+$\Prob(x_{b_j}=1)=\cos^2\theta$.  This is a block factor of an i.i.d.\ sequence: $q_j$ is a function of
+$(x_{b_{j-1}},x_{b_j})$, so $q_j$ and $q_k$ are independent for $\abs{j-k}\ge2$.  For $N\ge2$ the charges are
+independent only if $\cos^2\theta\in\{0,\tfrac12,1\}$: with $m:=2\cos^2\theta-1$ one has
+$\E[(-1)^{n_1}q_1]=m$, $\E[(-1)^{n_2}q_2]=m^2$ and $\E[(-1)^{n_1+n_2}q_1q_2]=\E[x_{b_2}]=m$, and $m\neq m^3$
+unless $m\in\{0,\pm1\}$.  For $\cos^2\theta=\tfrac12$ the law is the i.i.d.\ law of \cref{cor:sector}; for
+$\cos^2\theta\in\{0,1\}$ it is a point mass (a single sector, \cref{lem:productlaw}(d)).
+\item The localization statements of \cref{sec:main} are proved for the i.i.d.\ law.  An upper bound of
+the form $\E_q[F(q)]\le B$ with $F\ge0$ transfers to every sector law $\mu$ with $\mu(q)\le K\,2^{-N}$ for all
+$q$, as $\sum_q\mu(q)F(q)\le KB$; e.g.\ $K=2$ for the open chain (\cref{prop:variants}(i)).  Lower bounds,
+such as the positivity of the infinite-time imbalance in \cref{thm:imbalance}, do not transfer in this
+way.  The dimer law \eqref{eq:dimerstate} has density $2^{N/2}$ on its support, which is unbounded in $N$;
+in infinite volume the two laws are mutually singular.
+\Cref{sec:dimer} shows that for $0<2\abs{h}<J$ the dimer law leads to transport that is at least diffusive.
 Disorder-free localization is a property of the sector law induced by the initial state, not of the
 Hamiltonian alone.
 \end{enumerate}
 \end{remark}
 
-\begin{remark}[A single sector is ballistic: DFL needs superpositions of sectors]\label{rem:gaussproj}
+\begin{remark}[The clean sector is ballistic]\label{rem:gaussproj}
 Let $\Psi_0\in P_q\cH_N$ for one fixed $q$.  This is the case, for instance, for the strictly
 gauge-invariant subspace $G_j\equiv1$ of the usual lattice-gauge-theory formulation (no background
 charges), or for the definite-charge states $\ket{\xi}_\sigma\otimes\ket{n}$ of
 \cref{lem:productlaw}(d).  Then, by \cref{thm:duality}(e), the matter evolves under the single,
-deterministic one-body operator $\hq$, and nothing is averaged.  Write $\one_N:=(1,\dots,1)$.  Then
-$h_{\one_N}=-J\Delta_N+2h\one$ is the clean hopping operator shifted by a constant, and none of
-the localization properties of \cref{sec:main} holds in this sector:
+deterministic one-body operator $\hq$, and nothing is averaged.  Write $\one_N:=(1,\dots,1)$.  Then $h_{\one_N}=-J\Delta_N+2h\one$ is the clean hopping
+operator shifted by a constant, and the localization properties of \cref{sec:main} fail in this sector:
 \begin{enumerate}[label=(\roman*)]
 \item \emph{No decay of the eigenfunction correlator.}  The eigenvectors of $h_{\one_N}$ are
 \[
@@ -735,8 +771,8 @@ $(E_k-2h)a_k=0$, where $E_k=2h-2J\cos(\pi k/(N+1))\neq2h$ because $N+1$ is odd. 
 all $k$.  Take the CDW Fock state $\psi$ ($n_x=1$ iff $x$ is even) in this sector, e.g.\
 $\Psi_0=\ket{\xi}_\sigma\otimes\psi$ with $\xi_{b_j}=\prod_{k\le j}(-1)^{n_k}$.  Its imbalance
 $I(t):=\frac2N\sum_x(-1)^x\langle\Psi(t),n_x\Psi(t)\rangle$ equals
-$\frac1N\Tr(\Gamma\e^{-\ii th_{\one_N}}\Gamma\e^{\ii th_{\one_N}})$, because $\Tr\Gamma=0$.  Its time
-average is $\frac1N\sum_ka_k^2=0$, since the spectrum is simple.  Compare \cref{thm:imbalance}, where
+$\frac1N\Tr(\Gamma\e^{-\ii th_{\one_N}}\Gamma\e^{\ii th_{\one_N}})$, because $\Tr\Gamma=0$.  Its infinite-time
+average $\lim_{T\to\infty}\frac1T\int_0^TI(t)\,\dd t$ is $\frac1N\sum_ka_k^2=0$, since the spectrum is simple.  Compare \cref{thm:imbalance}, where
 the $q$-average makes the time average strictly positive for every $h\neq0$.
 \item \emph{Ballistic transport.}  On $\ell^2(\Z)$, let $h_\Z:=-J\Delta+2h$ and let $X$ be the
 position operator.  Since $h_\Z$ is bounded and of finite range, $\e^{-\ii th_\Z}$ maps finitely
@@ -747,15 +783,19 @@ $\langle\delta_y,\e^{\ii th_\Z}(X-y)^2\e^{-\ii th_\Z}\delta_y\rangle=t^2\norm{V\
 for all $t$.  Consequently there is no bound
 $\sup_t\abs{\langle\delta_x,\e^{-\ii th_\Z}\delta_y\rangle}\le F(\abs{x-y})$ with
 $\sum_dd^2F(d)^2<\infty$.  By \eqref{eq:heisenberg}, the dressed-fermion propagator restricted to
-$P_{\one_N}\cH_N$ is $\e^{-\ii th_{\one_N}}$, and at fixed $t$ it converges, away from the ends, to
-$\e^{-\ii th_\Z}$ as $N\to\infty$ (finite propagation speed).  This is why the zero-velocity
-Lieb--Robinson bound of \cref{prop:LR} can only hold on average over sectors, and not in operator
-norm uniformly in $N$.
+$P_{\one_N}\cH_N$ is $\e^{-\ii th_{\one_N}}$, and at fixed $t$ its entries at distance $\gg\abs t(2J+2\abs h)$
+from the ends converge to those of $\e^{-\ii th_\Z}$ as $N\to\infty$ (finite propagation speed,
+\cref{lem:propagation}(b)).  This is why the zero-velocity Lieb--Robinson bound of \cref{prop:LR} can only
+hold on average over sectors, and not in operator norm uniformly in $N$.
 \end{enumerate}
-Disorder-free localization in this model is therefore a property of the uniform \emph{superposition}
-(equivalently, the uniform average) over the $2^N$ sectors in \cref{cor:sector}.  It is never a
-property of a single superselection sector.  In particular, it is invisible in the strictly
-gauge-invariant subspace.
+For the initial states of \cref{cor:sector}, whose gauge part $\ket{\uparrow\cdots\uparrow}_z$ is translation
+invariant, disorder-free localization is therefore produced by the uniform average over the $2^N$
+sectors, almost all of which carry a disordered potential.  It fails in the clean sector $q=\one_N$; in
+particular it is invisible in the strictly gauge-invariant subspace, and no bound that is uniform over all
+sectors (such as an operator-norm Lieb--Robinson bound) can hold.  Single sectors with a disordered charge
+configuration do localize.  For instance, for the definite-charge states $\ket{\xi}_\sigma\otimes\ket{n}$
+with $\xi$ uniformly distributed, $\Sfull$ obeys an area law in expectation (\cref{thm:arealaw}(c)).  In
+that case, however, the disorder is already present in the initial gauge configuration $\xi$.
 \end{remark}
 
 \begin{remark}[Numerical verification]\label{rem:EDcheck}
@@ -778,8 +818,8 @@ alternative Jordan--Wigner-type twist $w(-1)^{N_f+1}$ has error $2.0$;
 \item the cut decomposition of \cref{lem:cutlocal}(a) for all $\ell$, to $3\times10^{-17}$.  It also
 checks \cref{lem:cutlocal}(b),(c) on random vectors ($N=3,4$; equality in (c) to $2\times10^{-15}$)
 and the sharpness examples of (d).  Along the dynamics from $\ket{\uparrow\cdots\uparrow}_z\otimes$CDW
-($N=6$, $\ell=3$, $h=J$) the defect $\abs{S_A(\Psi(t))-S_{A'}(U^\dagger\Psi(t))}$ reaches $0.50$, so it
-is a genuine effect, of the order of the bound $\ln2$;
+($N=6$, $\ell=3$, $h=J$) the defect $\abs{S_A(\Psi(t))-S_{A'}(U^\dagger\Psi(t))}$ reaches $0.496$ (at $t=2$),
+so it is a genuine effect, of the order of the bound $\ln2\approx0.693$;
 \item the dynamics of \cref{cor:sector}: full exact diagonalization of the LGT against
 \eqref{eq:sectoravg}, \eqref{eq:stringdet}, \eqref{eq:loschmidt} for $N=4,5,6$, $h\in\{0.4,1.3\}$,
 $t\le10$, for the CDW and for random non-Fock $\psi$.  The observables are $n_x$, all dressed

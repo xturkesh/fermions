@@ -1,0 +1,14 @@
+=== S_G(t), S_N(t): lambda=1.0, J=1.0, CDW on even sites, A=[1,N/2], N in (256,), 122 times in [0] u [1e-02, 1e+02] ===
+  N=256: 400 sectors, 136s
+    S_G : t=1: 0.848+-0.003, t=10: 2.300, mean over grid times t>=10: 2.784 (typical err 0.032); range: [2.300, 3.081]
+    S_N : t=1: 0.774+-0.002, t=10: 1.264, mean over grid times t>=10: 1.355 (typical err 0.007); range: [1.264, 1.404]
+    same window: E_qH(p^q) = 1.312;  Var_mix(N_A) = 0.884, max_t = 0.974;  E_q Var_q = 0.840;  E_q max_(t in grid) S(rho^q_A) = 3.441+-0.035
+    S_N - S_G > 0 on grid points: t in [0.0251, 0.0681] (14 points); max(S_N - S_G) = 0.000 at t = 0.0631
+  N=256: S_N - S_G > 2 SE for t in [0.0251, 0.0681]; max = 0.0000(0.0000) at t = 0.0631; sign changes (t > 0.05) between grid points near t = 0.0681-0.0736; S_N - S_G < -2 SE for all t >= 0.0736: True
+=== S_G(t), S_N(t): lambda=2.0, J=1.0, CDW on even sites, A=[1,N/2], N in (256,), 122 times in [0] u [1e-02, 1e+02] ===
+  N=256: 400 sectors, 136s
+    S_G : t=1: 0.599+-0.013, t=10: 0.975, mean over grid times t>=10: 1.134 (typical err 0.024); range: [0.975, 1.238]
+    S_N : t=1: 0.667+-0.010, t=10: 0.845, mean over grid times t>=10: 0.952 (typical err 0.014); range: [0.845, 1.010]
+    same window: E_qH(p^q) = 0.818;  Var_mix(N_A) = 0.398, max_t = 0.445;  E_q Var_q = 0.337;  E_q max_(t in grid) S(rho^q_A) = 1.506+-0.028
+    S_N - S_G > 0 on grid points: t in [0.0147, 5.01] (71 points); max(S_N - S_G) = 0.124 at t = 1.47
+  N=256: S_N - S_G > 2 SE for t in [0.0147, 5.01]; max = 0.1240(0.0114) at t = 1.47; sign changes (t > 0.05) between grid points near t = 2.51-2.71, 3.16-3.41, 3.41-3.69, 4.3-4.64, 5.01-5.41; S_N - S_G < -2 SE for all t >= 5.41: True

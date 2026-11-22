@@ -21,7 +21,8 @@ evaluated with the measured kappa (see the section text for what this does and d
 Usage:
     python3 numerics_imbalance.py traces          -> data/numerics_imbalance_traces.npz
     python3 numerics_imbalance.py ibar N [ns]     -> data/numerics_imbalance_ibar_N{N}.npz
-Recommended: OPENBLAS_NUM_THREADS=2 (or 1).  Runtime: traces ~3 min, ibar N=400 ~6 min.
+    python3 numerics_imbalance.py spectral        -> printed only (heuristic check of the slow oscillations)
+Recommended: OPENBLAS_NUM_THREADS=1 or 2.  Runtime: traces ~8 min, ibar N=400 ~5 min.
 Nothing computed here is used in a proof.
 """
 import os
@@ -69,57 +70,106 @@ def imbalance_trace(E, V, gam, times, iu):
     return ibq + np.cos(np.outer(times, om)) @ w, ibq
 
 
-def run_traces(N=200, ns=1000):
-    times = np.logspace(-1, 6, 211)
+def run_traces(N=200, ns=1000, K=10, dt=0.05, tlin=200.0, M=2 ** 23):
+    """I(t) on a uniform grid t = 0, dt, ..., tlin (all oscillations resolved) and on a logarithmic grid
+    tlin < t <= 1e6.  Uniform grid: the frequencies omega_ab = E_b - E_a >= 0 and weights 2 G_ab^2 / N of all
+    sampled sectors are deposited on a frequency grid of spacing dw = 2 pi / (M dt) by linear interpolation,
+    and sum_b W_b cos(omega_b t_n) is evaluated by one real FFT per batch.  For |t| <= tlin the interpolation
+    error of cos(omega t) is at most (dw t)^2 / 8 per unit weight (< 2e-6 here); it is also measured below.
+    Logarithmic grid: exact evaluation.  Errors: batch means (K batches) on the uniform grid, standard
+    error over sectors on the logarithmic grid."""
+    assert ns % K == 0
+    nd = int(round(tlin / dt)) + 1
+    tlin_grid = dt * np.arange(nd)
+    tlog = np.logspace(np.log10(tlin), 6, 187)[1:]
     gam = gamma_diag(N)
     iu = np.triu_indices(N, 1)
-    P(f"=== I(t): N={N}, J={J}, CDW on even sites, {ns} i.i.d. sectors per lambda, "
-      f"{len(times)} times in [{times[0]:.1e}, {times[-1]:.1e}] ===")
-    res = dict(times=times, N=N, ns=ns, lams=np.array(LAMS_TRACES))
-    mean = np.zeros((len(LAMS_TRACES), len(times)))
-    se = np.zeros_like(mean)
-    ibm = np.zeros(len(LAMS_TRACES))
-    ibse = np.zeros(len(LAMS_TRACES))
+    dw = 2 * np.pi / (M * dt)
+    P(f"=== I(t): N={N}, J={J}, CDW on even sites, {ns} i.i.d. sectors per lambda; uniform grid dt={dt} on "
+      f"[0,{tlin:g}] ({nd} times, FFT with dw={dw:.2e}), {len(tlog)} log-spaced times in ({tlin:g}, 1e6] ===")
+    nl = len(LAMS_TRACES)
+    res = dict(tlin=tlin_grid, tlog=tlog, N=N, ns=ns, lams=np.array(LAMS_TRACES),
+               mean_lin=np.zeros((nl, nd)), se_lin=np.zeros((nl, nd)),
+               mean_log=np.zeros((nl, len(tlog))), se_log=np.zeros((nl, len(tlog))),
+               ibar=np.zeros(nl), ibar_se=np.zeros(nl))
     for il, lam in enumerate(LAMS_TRACES):
         h = lam * J / 2
+        nb = int(np.ceil((4 * J + 4 * abs(h)) / dw)) + 3
         rng = rng_for(1, lam, N)
-        s1 = np.zeros(len(times))
-        s2 = np.zeros(len(times))
+        Wb = np.zeros((K, nb))
+        ibb = np.zeros(K)
+        s1 = np.zeros(len(tlog))
+        s2 = np.zeros(len(tlog))
         ib = np.zeros(ns)
         err0 = 0.0
+        errfft = 0.0
         t0 = time.time()
         for k in range(ns):
             q = rng.choice([-1.0, 1.0], size=N)
             E, V = eig_q(q, h)
-            Iq, ib[k] = imbalance_trace(E, V, gam, times, iu)
-            if k < 5:   # I_q(0) = 1 and direct evaluation at one time
-                I0, _ = imbalance_trace(E, V, gam, np.array([0.0]), iu)
-                U = (V * np.exp(-1j * E * times[50])) @ V.T
-                nx = (np.abs(U[:, 1::2]) ** 2).sum(1)                  # occupied: x even <-> index odd
-                Idir = (2.0 / N) * (gam * nx).sum()
-                err0 = max(err0, abs(I0[0] - 1.0), abs(Idir - Iq[50]))
+            G = V.T @ (gam[:, None] * V)
+            a = np.diag(G)
+            ib[k] = (a ** 2).sum() / N
+            w = 2.0 * G[iu] ** 2 / N
+            om = E[iu[1]] - E[iu[0]]
+            Iq = ib[k] + np.cos(np.outer(tlog, om)) @ w
             s1 += Iq
             s2 += Iq ** 2
-        mean[il] = s1 / ns
-        se[il] = np.sqrt(np.maximum(s2 / ns - mean[il] ** 2, 0.0) / (ns - 1))
-        ibm[il] = ib.mean()
-        ibse[il] = ib.std(ddof=1) / np.sqrt(ns)
-        late = times >= 1e4
-        dev = (mean[il][late] - ibm[il]) / np.sqrt(se[il][late] ** 2 + ibse[il] ** 2)
-        P(f"  lambda={lam:4.1f}: Ibar = {ibm[il]:.5f} +- {ibse[il]:.5f};  I(t) at t=1,10,1e2,1e3,1e6: "
-          + ", ".join(f"{mean[il][np.argmin(abs(times - tt))]:.4f}+-{se[il][np.argmin(abs(times - tt))]:.4f}"
-                      for tt in (1.0, 10.0, 1e2, 1e3, 1e6))
-          + f";  t>=1e4: max |I(t)-Ibar|/err = {np.max(np.abs(dev)):.2f};  self-check err = {err0:.1e}"
-          + f"  [{time.time() - t0:.0f}s]")
-    res.update(mean=mean, se=se, ibar=ibm, ibar_se=ibse)
-    # clean sector q = (1,...,1): the potential is constant, so this is the h = 0 chain
+            u = om / dw
+            i0 = np.floor(u).astype(np.int64)
+            f = u - i0
+            Wk = np.bincount(i0, weights=w * (1.0 - f), minlength=nb) + np.bincount(i0 + 1, weights=w * f, minlength=nb)
+            Wb[k % K] += Wk[:nb]
+            ibb[k % K] += ib[k]
+            if k < 3:   # self-checks: I_q(0) = 1, direct evaluation, FFT reconstruction of one sector
+                tchk = np.array([0.0, 1.3, 37.0, tlin])
+                Iex = ib[k] + np.cos(np.outer(tchk, om)) @ w
+                U = (V * np.exp(-1j * E * 37.0)) @ V.T
+                nx = (np.abs(U[:, 1::2]) ** 2).sum(1)                      # occupied: x even <-> index odd
+                err0 = max(err0, abs(Iex[0] - 1.0), abs((2.0 / N) * (gam * nx).sum() - Iex[2]))
+                Wpad = np.zeros(M)
+                Wpad[:nb] = Wk[:nb]
+                Ifft = ib[k] + np.fft.rfft(Wpad).real[:nd]
+                idx = np.round(tchk / dt).astype(int)
+                errfft = max(errfft, np.max(np.abs(Ifft[idx] - Iex)))
+        nk = ns // K
+        Ib_batches = np.zeros((K, nd))
+        for j in range(K):
+            Wpad = np.zeros(M)
+            Wpad[:nb] = Wb[j]
+            Ib_batches[j] = (ibb[j] + np.fft.rfft(Wpad).real[:nd]) / nk
+        res["mean_lin"][il] = Ib_batches.mean(0)
+        res["se_lin"][il] = Ib_batches.std(0, ddof=1) / np.sqrt(K)
+        res["mean_log"][il] = s1 / ns
+        res["se_log"][il] = np.sqrt(np.maximum(s2 / ns - (s1 / ns) ** 2, 0.0) / (ns - 1))
+        res["ibar"][il] = ib.mean()
+        res["ibar_se"][il] = ib.std(ddof=1) / np.sqrt(ns)
+        ml, sl = res["mean_lin"][il], res["se_lin"][il]
+        mg, sg = res["mean_log"][il], res["se_log"][il]
+
+        def at(tt):
+            if tt <= tlin:
+                j = int(round(tt / dt))
+                return f"{ml[j]:.4f}({sl[j]:.4f})"
+            j = int(np.argmin(np.abs(tlog - tt)))
+            return f"{mg[j]:.4f}({sg[j]:.4f}) [t={tlog[j]:.3g}]"
+        late = tlog >= 1e4
+        dev = (mg[late] - res["ibar"][il]) / np.sqrt(sg[late] ** 2 + res["ibar_se"][il] ** 2)
+        P(f"  lambda={lam:4.1f}: Ibar = {res['ibar'][il]:.5f}({res['ibar_se'][il]:.5f}); I(t) at t = 1, 10, 29, 100, "
+          f"1e3, 1e4, 2.9e4, 1e5, 1e6: " + ", ".join(at(tt) for tt in (1.0, 10.0, 29.0, 100.0, 1e3, 1e4, 2.9e4, 1e5, 1e6)))
+        P(f"      t>=1e4: max |I(t)-Ibar|/err = {np.max(np.abs(dev)):.2f};  max over t in [100,200] of |I(t)-Ibar| = "
+          f"{np.max(np.abs(ml[tlin_grid >= 100] - res['ibar'][il])):.4f};  self-checks: |I(0)-1|, direct = {err0:.1e}, "
+          f"FFT reconstruction error = {errfft:.1e}  [{time.time() - t0:.0f}s]")
+    # clean sector q = (1,...,1): constant potential, i.e. the h = 0 chain (exact, t <= 40)
     E, V = eig_q(np.ones(N), 0.0)
-    Ic, ibc = imbalance_trace(E, V, gam, times, iu)
-    res.update(clean=Ic, clean_ibar=ibc, j0=j0(4 * J * times))
-    k = times <= 40
-    P(f"  clean sector q=1: Ibar = {ibc:.1e} (exactly 0, rem:main-imbalance(ii)); "
-      f"max_(t<=40) |I_clean(t) - J_0(4Jt)| = {np.max(np.abs(Ic[k] - j0(4 * J * times[k]))):.1e}; "
-      f"max_(t>=1e3) |I_clean(t)| = {np.max(np.abs(Ic[times >= 1e3])):.3f}")
+    G = V.T @ (gam[:, None] * V)
+    w = 2.0 * G[iu] ** 2 / N
+    om = E[iu[1]] - E[iu[0]]
+    tc = tlin_grid[tlin_grid <= 40.0]
+    Ic = (np.diag(G) ** 2).sum() / N + np.cos(np.outer(tc, om)) @ w
+    res.update(tclean=tc, clean=Ic, j0=j0(4 * J * tc))
+    P(f"  clean sector q=1: Ibar = {(np.diag(G) ** 2).sum() / N:.1e} (exactly 0, rem:gaussproj(ii)); "
+      f"max_(t<=40) |I_clean(t) - J_0(4Jt)| = {np.max(np.abs(Ic - j0(4 * J * tc))):.1e}")
     np.savez_compressed(os.path.join(DATA, "numerics_imbalance_traces.npz"), **res)
 
 
@@ -205,12 +255,46 @@ def run_ibar(N, ns=2000, K=10):
     np.savez_compressed(os.path.join(DATA, f"numerics_imbalance_ibar_N{N}.npz"), **out)
 
 
+def run_spectral(N=200, ns=400, lam=4.0):
+    """spectral weight of the oscillating part of I_q(t): w(omega) = E_q N^{-1} sum_{a != b} G_ab^2 delta(omega - |E_a-E_b|),
+    histogrammed in bins of 0.02 decades.  Heuristic check of the slow oscillations at strong coupling (see the text):
+    effective k-th order hoppings J (2 lambda)^{-(k-1)} between equal charges at odd distance k, separated by k-1
+    opposite charges, give oscillations at omega_k = 2 J (2 lambda)^{-(k-1)}."""
+    gam = gamma_diag(N)
+    iu = np.triu_indices(N, 1)
+    h = lam * J / 2
+    rng = rng_for(4, lam, N)
+    bins = np.logspace(-6, 0, 301)
+    W = np.zeros(len(bins) - 1)
+    for _ in range(ns):
+        q = rng.choice([-1.0, 1.0], size=N)
+        E, V = eig_q(q, h)
+        G = V.T @ (gam[:, None] * V)
+        W += np.histogram(np.abs(E[iu[1]] - E[iu[0]]), bins=bins, weights=2.0 * G[iu] ** 2 / N)[0] / ns
+    dens = W / 0.02
+    P(f"=== spectral weight of I_q(t) - Ibar_q: N={N}, lambda={lam}, {ns} sectors, bins of 0.02 decades ===")
+    for k, (lo, hi) in zip((7, None, 5, None, 3, None), ((1e-6, 1e-5), (1e-5, 1e-4), (1e-4, 1e-3), (1e-3, 1e-2),
+                                                        (1e-2, 1e-1), (1e-1, 1.0))):
+        m = (bins[:-1] >= lo * 0.999) & (bins[1:] <= hi * 1.001)
+        i = int(np.argmax(dens[m]))
+        c = np.sqrt(bins[:-1][m][i] * bins[1:][m][i])
+        line = (f"  omega in [{lo:.0e},{hi:.0e}]: weight {W[m].sum():.4f}; peak density {dens[m].max():.4f}/decade at "
+                f"omega = {c:.2e}; median density {np.median(dens[m]):.4f}/decade")
+        if k is not None:
+            om = 2.0 * J * (2.0 * lam) ** (-(k - 1))
+            mk = (bins[:-1] >= om / 1.2) & (bins[1:] <= om * 1.2)
+            line += f";  omega_{k} = {om:.2e} (period {2*np.pi/om:.2g}/J): weight within a factor 1.2 = {W[mk].sum():.4f}"
+        P(line)
+
+
 if __name__ == "__main__":
     os.makedirs(DATA, exist_ok=True)
     what = sys.argv[1] if len(sys.argv) > 1 else "traces"
     if what == "traces":
         run_traces(ns=int(sys.argv[2]) if len(sys.argv) > 2 else 1000)
+    elif what == "spectral":
+        run_spectral()
     elif what == "ibar":
         run_ibar(int(sys.argv[2]), ns=int(sys.argv[3]) if len(sys.argv) > 3 else 2000)
     else:
-        raise SystemExit("usage: numerics_imbalance.py traces [ns] | ibar N [ns]")
+        raise SystemExit("usage: numerics_imbalance.py traces [ns] | ibar N [ns] | spectral")

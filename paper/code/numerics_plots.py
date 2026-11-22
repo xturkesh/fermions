@@ -66,26 +66,31 @@ def fig_imbalance():
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(6.6, 2.7), gridspec_kw=dict(width_ratios=[1.12, 1.0]))
     fig.subplots_adjust(left=0.075, right=0.985, bottom=0.16, top=0.97, wspace=0.27)
 
-    # (a) I(t), N = 200
-    t = tr["times"]
+    # (a) I(t), N = 200: uniform grid (dt = 0.05) for t <= 200, logarithmic grid beyond
     ax1.axhline(0.0, color=AXIS0, lw=0.6, zorder=0)
-    m = t <= 40.0
-    ax1.plot(t[m], tr["clean"][m], color=MUTED, lw=0.8, zorder=1)
-    ax1.text(0.95, -0.36, r"$q\equiv1$", color=INK2, fontsize=7.5, ha="left", va="center")
-    for i, lam in enumerate(tr["lams"]):
-        mu, se = tr["mean"][i], tr["se"][i]
-        col = LAM_RAMP[float(lam)]
-        ax1.fill_between(t, mu - 2 * se, mu + 2 * se, color=col, alpha=0.35, lw=0, zorder=2)
-        ax1.plot(t, mu, color=col, zorder=3, label=rf"$\lambda={lam:g}$")
-        ax1.plot([1.5e5, 1e6], [tr["ibar"][i]] * 2, color="k", lw=0.7, ls=(0, (1.5, 1.5)), zorder=4)
-    for lam, y in ((4.0, 0.285), (2.0, 0.205), (1.0, 0.115), (0.5, 0.045)):
-        ax1.text(9e3, y, rf"$\lambda={lam:g}$", color=INK2, fontsize=7.5, ha="right", va="center")
+    ax1.plot(tr["tclean"][1:], tr["clean"][1:], color=MUTED, lw=0.7, zorder=1, label=r"$q=\mathbf{1}_N$")
+    nl = len(tr["lams"])
+    for i in range(nl - 1, -1, -1):           # strongest disorder drawn first (lowest)
+        lam = float(tr["lams"][i])
+        col = LAM_RAMP[lam]
+        t = np.concatenate([tr["tlin"][2:], tr["tlog"]])
+        mu = np.concatenate([tr["mean_lin"][i][2:], tr["mean_log"][i]])
+        se = np.concatenate([tr["se_lin"][i][2:], tr["se_log"][i]])
+        ax1.fill_between(t, mu - 2 * se, mu + 2 * se, color=col, alpha=0.35, lw=0, zorder=2 + 2 * (nl - i))
+        ax1.plot(t, mu, color=col, lw=0.55 if lam >= 2 else 0.9, zorder=3 + 2 * (nl - i), label=rf"$\lambda={lam:g}$")
+        ax1.plot([1.5e5, 1e6], [tr["ibar"][i]] * 2, color="k", lw=0.8, ls=(0, (1.2, 1.2)), zorder=20,
+                 label=r"$\bar I$" if i == 0 else None)
     logx(ax1, 0.1, 1e6)
     ax1.set_ylim(-0.45, 1.03)
     ax1.yaxis.set_major_locator(MultipleLocator(0.25))
     ax1.set_xlabel(r"time $Jt$")
     ax1.set_ylabel(r"imbalance $I(t)$")
-    panel_label(ax1, r"(a) $N=200$", x=0.6, y=0.95)
+    h_, l_ = ax1.get_legend_handles_labels()
+    order = [l_.index(rf"$\lambda={x:g}$") for x in (0.5, 1, 2, 4)] + [l_.index(r"$\bar I$"),
+                                                                    l_.index(r"$q=\mathbf{1}_N$")]
+    ax1.legend([h_[i] for i in order], [l_[i] for i in order], loc="upper right", bbox_to_anchor=(1.0, 0.885),
+               ncol=2, handlelength=1.3, labelspacing=0.3, columnspacing=0.8, fontsize=7.2)
+    panel_label(ax1, r"(a) $N=200$", x=0.66, y=0.965)
 
     # (b) Ibar(lambda) and the lower bounds of thm:imbalance
     marks = {100: "o", 200: "s", 400: "D"}
@@ -116,10 +121,11 @@ def fig_imbalance():
     ax2.yaxis.set_minor_formatter(NullFormatter())
     ax2.set_xlabel(r"disorder strength $\lambda=2h/J$")
     ax2.set_ylabel(r"infinite-time imbalance $\bar I$")
-    ax2.legend(loc="lower right", ncol=1, borderaxespad=0.3)
+    h_, l_ = ax2.get_legend_handles_labels()
+    ax2.legend(h_[2:] + h_[:2], l_[2:] + l_[:2], loc="lower right", ncol=1, borderaxespad=0.3)
     panel_label(ax2, "(b)")
     out = os.path.join(FIGS, "imbalance.pdf")
-    fig.savefig(out)
+    fig.savefig(out, bbox_inches="tight", pad_inches=0.02)
     plt.close(fig)
     return out, dict(best3=best3, unif=unif, khat=khat)
 
@@ -137,42 +143,52 @@ def fig_entropies():
     ell = int(sm["ell"])
     axa.axhline(2 * ell * LN2, color=AXIS0, lw=0.7, zorder=0)
     axa.axhline(ell * LN2, color=AXIS0, lw=0.7, zorder=0)
-    axa.text(1.3e-2, 2 * ell * LN2 - 0.08, r"$2\ell\ln2$", color=INK2, fontsize=7.3, va="top")
-    axa.text(1.3e-2, ell * LN2 + 0.08, r"$\ell\ln2$", color=INK2, fontsize=7.3, va="bottom")
+    axa.text(8e5, 2 * ell * LN2 + 0.07, r"$2\ell\ln2$", color=INK2, fontsize=7.3, va="bottom", ha="right")
+    axa.text(1.3e-2, ell * LN2 + 0.07, r"$\ell\ln2$", color=INK2, fontsize=7.3, va="bottom", ha="left")
     series = (("Sfull", C_SF, r"$S_{\mathrm{full}}$", "o"), ("Smix", C_SM, r"$S_{\mathrm{mix}}$", "s"),
               ("SG", C_SG, r"$S_{\mathrm{G}}$", "^"), ("SN", C_SN, r"$S_N$", "v"))
     for key, col, lab, mk in series:
         axa.plot(t, sm[key][1:], color=col, label=lab, marker=mk, ms=3.0, markevery=(4, 8), mew=0.6,
                  mfc="white")
-    axa.text(2e5, sm["Sfull"][-1] + 0.25, r"$S_{\mathrm{full}}$", color=INK2, fontsize=8, ha="center")
+    axa.text(2e5, sm["Sfull"][-1] - 0.3, r"$S_{\mathrm{full}}$", color=INK2, fontsize=8, ha="center", va="top")
     axa.text(2e5, sm["Smix"][-1] + 0.22, r"$S_{\mathrm{mix}}$", color=INK2, fontsize=8, ha="center")
     axa.text(2e5, sm["SG"][-1] + 0.2, r"$S_{\mathrm{G}}$", color=INK2, fontsize=8, ha="center")
     axa.text(2e5, sm["SN"][-1] - 0.22, r"$S_N$", color=INK2, fontsize=8, ha="center", va="top")
     logx(axa, 1e-2, 1e6, every=2)
-    axa.set_ylim(0, 7.4)
+    axa.set_ylim(0, 8.1)
     axa.set_xlabel(r"time $Jt$")
     axa.set_ylabel("entropy (nats)")
-    axa.legend(loc="upper left", bbox_to_anchor=(0.0, 0.9), ncol=1)
+    axa.legend(loc="upper left", bbox_to_anchor=(0.0, 0.89), ncol=1, labelspacing=0.3)
     panel_label(axa, r"(a) $N=10$, $\ell=5$, $h=J$: exact")
 
     # (b) S_N - S_G at early times
     axb.axhline(0.0, color=AXIS0, lw=0.7, zorder=0)
-    tl = lg[2.0]["times"]
-    for lam, ls, lab in ((1.0, (0, (4, 2)), r"$N=256$, $\lambda=1$"), (2.0, "-", r"$N=256$, $\lambda=2$")):
-        d = lg[lam]
+    for lam, ls, lab in ((1.0, (0, (4, 2)), r"$N=256,\ \lambda=1$"), (2.0, "-", r"$N=256,\ \lambda=2$")):
+        fe = os.path.join(DATA, f"numerics_entropies_early_lam{lam:g}.npz")
+        d = np.load(fe) if os.path.exists(fe) else lg[lam]          # fine early-time grid if available
+        tl = d["times"]
         y = d["SN_N256"] - d["SG_N256"]
         e = d["DNG_se_N256"]
-        col = LAM_RAMP[lam]
+        col = INK2 if lam == 2.0 else MUTED            # neutral: blue/vermillion denote S_G/S_N in this figure
         axb.fill_between(tl[1:], (y - 2 * e)[1:], (y + 2 * e)[1:], color=col, alpha=0.3, lw=0)
         axb.plot(tl[1:], y[1:], color=col, ls=ls, label=lab)
-    axb.plot(t, (sm["SN"] - sm["SG"])[1:], color="k", lw=1.1, label=r"$N=10$, $\lambda=2$ (exact)")
+    # N = 10: fine linear grid on [0.05, 12] where available, logarithmic grid elsewhere
+    tt10, dd10 = t, (sm["SN"] - sm["SG"])[1:]
+    if "tfine" in sm.files:
+        lo = tt10 < sm["tfine"][0]
+        hi = tt10 > sm["tfine"][-1]
+        tt10 = np.concatenate([tt10[lo], sm["tfine"], tt10[hi]])
+        dd10 = np.concatenate([dd10[lo], sm["dfine"], dd10[hi]])
+    axb.plot(tt10, dd10, color="k", lw=1.0, label=r"$N=10,\ \lambda=2$")
     logx(axb, 1e-2, 1e2)
-    axb.set_ylim(-0.32, 0.17)
+    axb.set_ylim(-0.32, 0.2)
     axb.set_xlabel(r"time $Jt$")
     axb.set_ylabel(r"$S_N-S_{\mathrm{G}}$")
-    axb.text(0.03, 0.62, r"$S_{\mathrm{G}}<S_N$", transform=axb.transAxes, color=INK2, fontsize=7.5)
-    axb.text(0.03, 0.47, r"$S_{\mathrm{G}}>S_N$", transform=axb.transAxes, color=INK2, fontsize=7.5)
-    axb.legend(loc="lower left", borderaxespad=0.3)
+    y0 = 0.32 / 0.52
+    axb.text(0.03, y0 + 0.04, r"$S_{\mathrm{G}}<S_N$", transform=axb.transAxes, color=INK2, fontsize=7.5, va="bottom")
+    axb.text(0.03, y0 - 0.04, r"$S_{\mathrm{G}}>S_N$", transform=axb.transAxes, color=INK2, fontsize=7.5, va="top")
+    h_, l_ = axb.get_legend_handles_labels()
+    axb.legend(h_[::-1], l_[::-1], loc="upper right", borderaxespad=0.3, labelspacing=0.3)
     panel_label(axb, "(b)")
 
     # (c), (d) large N
@@ -194,10 +210,10 @@ def fig_entropies():
     axd.set_ylim(0, 1.6)
     handles, labels = axc.get_legend_handles_labels()
     order = [0, 2, 4, 1, 3, 5]
-    axc.legend([handles[i] for i in order], [labels[i] for i in order], ncol=2, loc="center left",
-               bbox_to_anchor=(0.0, 0.62), columnspacing=1.0)
+    axc.legend([handles[i] for i in order], [labels[i] for i in order], ncol=2, loc="lower right",
+               columnspacing=1.0, labelspacing=0.3, borderaxespad=0.4)
     out = os.path.join(FIGS, "entropies.pdf")
-    fig.savefig(out)
+    fig.savefig(out, bbox_inches="tight", pad_inches=0.02)
     plt.close(fig)
     return out
 
@@ -234,6 +250,17 @@ def summary():
               f"ratio Ibar/best = {ib[400]['ibar'][i] / max(glob, blk):.0f} | (iv) khat={khat[i]:.2f}: L*={Ls}, "
               f"{u:.2e}, ratio {ib[400]['ibar'][i] / u:.1e} | Sigma_1(F_emp)={S1:.3g} (F_emp(399)={tail:.1e}), "
               f"(iv) with kthm={2*S1:.3g}: {ut:.2e}")
+    print("=== weighted least-squares fit Ibar_N = Ibar_inf + c/N to N = 100, 200, 400 ===")
+    for i, lam in enumerate(lams):
+        y = np.array([ib[N]["ibar"][i] for N in (100, 200, 400)])
+        e = np.array([ib[N]["ibar_se"][i] for N in (100, 200, 400)])
+        A = np.vstack([np.ones(3), 1.0 / np.array([100.0, 200.0, 400.0])]).T
+        W = np.diag(1.0 / e ** 2)
+        cov = np.linalg.inv(A.T @ W @ A)
+        pfit = cov @ A.T @ W @ y
+        chi2 = float((((A @ pfit - y) / e) ** 2).sum())
+        print(f"  lambda={lam:4.2f}: Ibar_inf = {pfit[0]:.4f}({np.sqrt(cov[0, 0]):.4f}), c = {pfit[1]:.3f}({np.sqrt(cov[1, 1]):.3f}), "
+              f"chi2 = {chi2:.2f} (1 dof); relative change N=100 -> 400: {100 * (y[0] - y[2]) / y[0]:.1f}%")
     print("=== constants of thm:arealaw(b) and thm:numberentropy with F_emp (N=400, truncated at d<=399) ===")
     for lam in (1.0, 2.0):
         i = int(np.argmin(np.abs(lams - lam)))
@@ -259,6 +286,16 @@ def summary():
                   f"Massey with measured Var (non-rigorous) max_t = {0.5*np.log(2*np.pi*np.e*(vm.max()+1/12)):.3f}, "
                   f"E_q max_grid S(rho^q_A) = {float(d[f'SGsup_N{N}']):.3f}({float(d[f'SGsup_se_N{N}']):.3f}), "
                   f"max_t S_N = {d[f'SN_N{N}'].max():.3f}, max_t S_G = {d[f'SG_N{N}'].max():.3f}")
+            for key in ("SG", "SN"):
+                y, e = d[f"{key}_N{N}"], d[f"{key}_se_N{N}"]
+                w1 = (t >= 1e3) & (t <= 1e5)
+                w2 = t >= 1e6
+                drift = y[w2].mean() - y[w1].mean()
+                print(f"      {key}: mean over t in [1e3,1e5] = {y[w1].mean():.4f}, over [1e6,1e8] = {y[w2].mean():.4f}, "
+                      f"drift = {drift:+.4f} (conservative error {e[w1].mean() + e[w2].mean():.4f})")
+            j1 = int(np.argmin(np.abs(t - 1.0)))
+            print(f"      t=1: Var_mix(N_A) = {vm[j1]:.4f}, E_q Var_q = {d[f'EVq_N{N}'][j1]:.4f}, "
+                  f"variance of the sector means = {vm[j1] - d[f'EVq_N{N}'][j1]:.4f}")
             dd = d[f"SN_N{N}"] - d[f"SG_N{N}"]
             e = d[f"DNG_se_N{N}"]
             sig = (dd > 2 * e) & (t > 0)
@@ -268,8 +305,44 @@ def summary():
                       f"{dd[np.argmin(abs(t - tt))]:+.4f}({e[np.argmin(abs(t - tt))]:.4f})" for tt in (1, 2.154, 4.642, 10)))
 
 
+def summary_crossings():
+    """S_N - S_G at early times: N = 10 (exact, fine grid) and N = 256 (fine grid of early times)."""
+    sm = np.load(os.path.join(DATA, "numerics_entropies_small.npz"))
+    tf, df = sm["tfine"], sm["dfine"]
+    ch = np.nonzero(np.sign(df[1:]) != np.sign(df[:-1]))[0]
+    w = (tf >= tf[ch[0]]) & (tf <= tf[ch[-1] + 1])
+    print("=== S_N - S_G, N=10, h=J (exact; fine grid step 0.005 on [0.05,12]) ===")
+    print(f"  positive on [0.05, {tf[ch[0]]:.3f}]; max {df.max():.4f} at t = {tf[np.argmax(df)]:.3f}; sign changes near t = "
+          + ", ".join(f"{tf[i]:.3f}" for i in ch) + f"; max |S_N - S_G| between first and last change = {np.abs(df[w]).max():.4f}; "
+          f"negative for all grid t > {tf[ch[-1] + 1]:.3f}: {bool(np.all(df[ch[-1] + 1:] < 0))}")
+    for lam in (1.0, 2.0):
+        f = os.path.join(DATA, f"numerics_entropies_early_lam{lam:g}.npz")
+        if not os.path.exists(f):
+            continue
+        d = np.load(f)
+        t = d["times"]
+        y = d["SN_N256"] - d["SG_N256"]
+        e = d["DNG_se_N256"]
+        sig = (y > 2 * e) & (t > 0)
+        i0 = int(np.argmax(sig))
+        i1 = i0
+        while i1 + 1 < len(t) and sig[i1 + 1]:
+            i1 += 1
+        ch = np.nonzero((np.sign(y[1:]) != np.sign(y[:-1])) & (t[1:] > 0.05))[0]
+        line = (f"=== S_N - S_G, N=256, lambda={lam} (400 sectors, 30 times per decade on [1e-2, 1e2]) ===\n"
+                f"  > 2 SE at all grid times in [{t[i0]:.4f}, {t[i1]:.4f}]; max = {y.max():.3e}({e[np.argmax(y)]:.1e}) at t = "
+                f"{t[np.argmax(y)]:.3f}; sign changes between grid points: "
+                + ", ".join(f"{t[i]:.3g}-{t[i + 1]:.3g}" for i in ch))
+        if len(ch):
+            wv = (t >= t[ch[0]]) & (t <= t[ch[-1] + 1])
+            line += (f"; max |S_N - S_G| in that window = {np.abs(y[wv]).max():.4f}; < -2 SE for all grid t >= "
+                     f"{t[ch[-1] + 1]:.3g}: {bool(np.all(y[ch[-1] + 1:] < -2 * e[ch[-1] + 1:]))}")
+        print(line)
+
+
 if __name__ == "__main__":
     if sys.argv[1:] == ["summary"]:
+        summary_crossings()
         summary()
         sys.exit(0)
     which = sys.argv[1:] or ["imbalance", "entropies"]

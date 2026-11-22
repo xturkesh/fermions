@@ -1,0 +1,34 @@
+=== cross-check of the dual reconstruction against direct ED of the full LGT ===
+  N=4 h=+1.3 l=2 t= 0.3: max|Psi_pipeline - Psi_ED| = 3.1e-16; |dS_full| = 3.3e-16, |dS_f| = 1.1e-16, |dS_N| = 5.6e-17
+  N=4 h=+1.3 l=2 t= 1.7: max|Psi_pipeline - Psi_ED| = 1.2e-15; |dS_full| = 1.3e-15, |dS_f| = 2.2e-16, |dS_N| = 8.9e-16
+  N=4 h=+1.3 l=2 t= 6.0: max|Psi_pipeline - Psi_ED| = 1.3e-14; |dS_full| = 7.1e-15, |dS_f| = 3.6e-15, |dS_N| = 6.8e-15
+  N=6 h=+1.0 l=3 t= 0.3: max|Psi_pipeline - Psi_ED| = 3.4e-16; |dS_full| = 0.0e+00, |dS_f| = 1.1e-16, |dS_N| = 1.7e-16
+  N=6 h=+1.0 l=3 t= 1.7: max|Psi_pipeline - Psi_ED| = 1.0e-15; |dS_full| = 1.8e-15, |dS_f| = 6.7e-16, |dS_N| = 7.8e-16
+  N=6 h=+1.0 l=3 t= 6.0: max|Psi_pipeline - Psi_ED| = 2.1e-14; |dS_full| = 3.0e-14, |dS_f| = 4.0e-15, |dS_N| = 1.4e-14
+  N=6 h=-0.7 l=2 t= 0.3: max|Psi_pipeline - Psi_ED| = 3.3e-16; |dS_full| = 3.3e-16, |dS_f| = 7.2e-16, |dS_N| = 2.2e-16
+  N=6 h=-0.7 l=2 t= 1.7: max|Psi_pipeline - Psi_ED| = 6.2e-16; |dS_full| = 4.4e-16, |dS_f| = 0.0e+00, |dS_N| = 1.1e-16
+  N=6 h=-0.7 l=2 t= 6.0: max|Psi_pipeline - Psi_ED| = 1.3e-15; |dS_full| = 1.8e-15, |dS_f| = 2.2e-16, |dS_N| = 5.6e-16
+  N=6, h=J, l=3, all 64 definite-charge states, t=0.7,5: max|S_full - S(rho^q_A)| = 1.2e-14
+=== exact entropies: N=10, J=1.0, h=1.0 (lambda=2.0), l=5, CDW on even sites, all 1024 sectors ===
+  t=0: all entropies vanish: max = 4.3e-14
+  (45s)   t      S_full  S_A'(Phi)  S_G    S_mix   S_f    S_N   E_qH(p^q)
+       0.464   0.872   0.443   0.432   1.228   1.198   0.433   0.431
+           1   1.446   0.975   0.605   2.652   2.571   0.670   0.560
+        2.15   2.361   1.850   0.726   2.658   2.666   0.792   0.608
+          10   3.403   2.919   0.913   2.566   2.674   0.816   0.722
+         100   5.000   4.786   0.980   2.775   2.826   0.890   0.757
+       1e+03   5.327   5.246   0.967   2.947   2.982   0.891   0.752
+       1e+05   5.382   5.331   0.945   2.902   2.929   0.876   0.736
+       1e+06   5.428   5.385   0.972   2.964   2.993   0.913   0.753
+  prop:entropies checks on all 97 times t > 0 (all must be <= 0): |S_full-S_A'|-ln2: -1.31e-01; S_G-S_mix: -1.48e-06; S_mix-l ln2: -4.80e-01; S_N-min(S_full,S_mix,S_f): -1.48e-06; E_qH(p^q)-S_G: -1.70e-14; E_qH(p^q)-S_N: -2.23e-13
+  norm error 2.2e-16; lem:slater (many-body vs correlation matrix) max deviation 9.7e-14
+  Sfull : mean over t in [1e3,1e6] = 5.398, min = 5.301, max = 5.450
+  Sdual : mean over t in [1e3,1e6] = 5.344, min = 5.219, max = 5.404
+  SG    : mean over t in [1e3,1e6] = 0.962, min = 0.932, max = 0.992
+  Smix  : mean over t in [1e3,1e6] = 2.933, min = 2.893, max = 2.968
+  Sf    : mean over t in [1e3,1e6] = 2.962, min = 2.924, max = 2.995
+  SN    : mean over t in [1e3,1e6] = 0.893, min = 0.867, max = 0.919
+  EHq   : mean over t in [1e3,1e6] = 0.745, min = 0.724, max = 0.764
+  maxima: 2 l ln2 = 6.931 (S_full), l ln2 = 3.466 (S_mix, S_f)
+  log grid: S_N - S_G > 0 for t in [0.01, 4.64]; sign changes at t = 2.5752, 2.9302, 3.6331, 4.2516, 5.2278;  max_t (S_N - S_G) = 0.1132 at t = 1.47
+  fine grid (step 0.005 on [0.05, 12]): S_N - S_G > 0 for all t in [0.05, 2.575]; sign changes near t = 2.575, 2.930, 3.630, 4.250, 5.225; S_N - S_G < 0 on the whole grid for t > 5.230: True;  min over t in [6, 1e6] of S_G - S_N on the log grid: 0.022
