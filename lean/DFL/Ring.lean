@@ -76,7 +76,6 @@ def wrapAdj : Matrix (Fin N) (Fin N) ℝ :=
 def hqw (J h : ℝ) (q : Cfg N) (ω : ZMod 2) : Matrix (Fin N) (Fin N) ℝ :=
   hq J h q + (-J * sgn ω) • wrapAdj
 
-
 /-! ### Auxiliary lemmas (namespace `DFL.RingAux`) -/
 
 namespace RingAux
@@ -932,6 +931,221 @@ theorem wilson_initZ (ψ : Cfg N → ℂ) : cplx wilson *ᵥ initZ ψ = initZ ψ
   rw [RingAux.wilson_mulVec_dualEquiv]
   simp [initZ]
 
+
+namespace RingAux
+
+/-- Intertwining passes to the exponential: `A V = V B → exp A V = V exp B` (rectangular `V`). -/
+lemma exp_mul_eq_mul_exp {ι κ : Type*} [Fintype ι] [DecidableEq ι] [Fintype κ] [DecidableEq κ]
+    (A : Matrix ι ι ℂ) (B : Matrix κ κ ℂ) (V : Matrix ι κ ℂ) (h : A * V = V * B) :
+    NormedSpace.exp A * V = V * NormedSpace.exp B := by
+  have hpow : ∀ n : ℕ, A ^ n * V = V * B ^ n := by
+    intro n
+    induction n with
+    | zero => simp
+    | succ n ih =>
+      rw [pow_succ, pow_succ, Matrix.mul_assoc, h, ← Matrix.mul_assoc, ih, Matrix.mul_assoc]
+  let f : Matrix ι ι ℂ →+ Matrix ι κ ℂ :=
+    { toFun := fun M => M * V, map_zero' := Matrix.zero_mul V,
+      map_add' := fun M M' => Matrix.add_mul M M' V }
+  let g : Matrix κ κ ℂ →+ Matrix ι κ ℂ :=
+    { toFun := fun M => V * M, map_zero' := Matrix.mul_zero V,
+      map_add' := fun M M' => Matrix.mul_add V M M' }
+  have hf : Continuous f := continuous_id.matrix_mul continuous_const
+  have hg : Continuous g := continuous_const.matrix_mul continuous_id
+  have hA : HasSum (fun n : ℕ => ((n.factorial : ℂ)⁻¹) • A ^ n) (NormedSpace.exp A) := by
+    open scoped Matrix.Norms.Operator in exact NormedSpace.exp_series_hasSum_exp' A
+  have hB : HasSum (fun n : ℕ => ((n.factorial : ℂ)⁻¹) • B ^ n) (NormedSpace.exp B) := by
+    open scoped Matrix.Norms.Operator in exact NormedSpace.exp_series_hasSum_exp' B
+  have h1 := hA.map f hf
+  have h2 := hB.map g hg
+  have e : (f ∘ fun n : ℕ => ((n.factorial : ℂ)⁻¹) • A ^ n) =
+      (g ∘ fun n : ℕ => ((n.factorial : ℂ)⁻¹) • B ^ n) := by
+    funext n
+    simp only [Function.comp_apply, f, g, AddMonoidHom.coe_mk, ZeroHom.coe_mk, Matrix.smul_mul,
+      Matrix.mul_smul, hpow]
+  rw [e] at h1
+  exact h1.unique h2
+
+/-- `⟨A x, B y⟩ = ⟨x, A† B y⟩`. -/
+lemma star_mulVec_dotProduct_mulVec {ι κ κ' : Type*} [Fintype ι] [Fintype κ] [Fintype κ']
+    (A : Matrix ι κ ℂ) (B : Matrix ι κ' ℂ) (x : κ → ℂ) (y : κ' → ℂ) :
+    star (A *ᵥ x) ⬝ᵥ (B *ᵥ y) = star x ⬝ᵥ ((Aᴴ * B) *ᵥ y) := by
+  rw [star_mulVec, ← dotProduct_mulVec, mulVec_mulVec]
+
+/-- The isometric embedding `φ ↦ ∑_{n : ∑ n = π} φ(n) ringVec q 0 n` as a matrix. -/
+def ringMat (q : Cfg N) (π : ZMod 2) : Matrix (Cfg N × Cfg N) (Cfg N) ℂ :=
+  fun p n => if ∑ k, n k = π then ringVec q 0 n p else 0
+
+/-- `H^ring` intertwines `ringMat q π` with the twisted sector Hamiltonian. -/
+lemma Hring_mul_ringMat (hN : 2 ≤ N) (J h : ℝ) (q : Cfg N) (π : ZMod 2) (hq : ∑ k, q k = π) :
+    cplx (Hring (N := N) J h) * ringMat q π =
+      ringMat q π * cplx (dGamma (hqw J h q 0) - (h * ∑ j, sgn (q j)) • 1) := by
+  ext p n
+  rw [Matrix.mul_apply, Matrix.mul_apply]
+  by_cases hn : ∑ k, n k = π
+  · have hH := congrFun (Hring_ringVec hN J h q 0 n (hn.trans hq.symm)) p
+    simp only [mulVec, dotProduct] at hH
+    simp only [ringMat, hn, ite_true]
+    rw [hH, Finset.sum_apply, Finset.sum_filter]
+    refine Finset.sum_congr rfl (fun n' _ => ?_)
+    simp only [Pi.smul_apply, smul_eq_mul, cplx, Matrix.map_apply, hq]
+    split_ifs <;> ring
+  · simp only [ringMat, hn, ite_false, mul_zero, Finset.sum_const_zero]
+    symm
+    apply Finset.sum_eq_zero
+    intro n' _
+    by_cases hn' : ∑ k, n' k = π
+    · have h0 : (dGamma (hqw J h q 0) - (h * ∑ j, sgn (q j)) •
+          (1 : Matrix (Cfg N) (Cfg N) ℝ)) n' n = 0 := by
+        have hne : n' ≠ n := by rintro rfl; exact hn hn'
+        rw [Matrix.sub_apply, Matrix.smul_apply, Matrix.one_apply_ne hne, smul_zero, sub_zero]
+        exact CutLocalAux.dGamma_eq_zero _ n' n (fun h' => hn (h'.symm.trans hn'))
+      simp [cplx, h0]
+    · simp [hn']
+
+/-- The propagators intertwine as well. -/
+lemma evo_mul_ringMat (hN : 2 ≤ N) (J h : ℝ) (q : Cfg N) (π : ZMod 2) (hq : ∑ k, q k = π)
+    (t : ℝ) :
+    evo (Hring (N := N) J h) t * ringMat q π =
+      ringMat q π * evo (dGamma (hqw J h q 0) - (h * ∑ j, sgn (q j)) • 1) t := by
+  unfold evo
+  apply exp_mul_eq_mul_exp
+  rw [Matrix.smul_mul, Hring_mul_ringMat hN J h q π hq, Matrix.mul_smul]
+
+/-- `2^{-N/2} = 2^{-(N-1)/2} 2^{-1/2}`. -/
+lemma inv_sqrt_two_pow_eq :
+    ((Real.sqrt 2) ^ N)⁻¹ = ((Real.sqrt 2) ^ (N - 1))⁻¹ * (Real.sqrt 2)⁻¹ := by
+  rw [← mul_inv, ← pow_succ, Nat.sub_add_cancel (NeZero.pos N)]
+
+/-- Decomposition of the `z`-polarized initial state along the blocks `ringMat q π`. -/
+lemma initZ_eq_sum (ψ : Cfg N → ℂ) (π : ZMod 2) (hψ : ∀ n, ψ n ≠ 0 → ∑ j, n j = π) :
+    initZ ψ = ((((Real.sqrt 2) ^ (N - 1) : ℝ) : ℂ)⁻¹) •
+      ∑ q ∈ univ.filter (fun q : Cfg N => ∑ j, q j = π), ringMat q π *ᵥ ψ := by
+  funext p
+  obtain ⟨⟨m, r⟩, rfl⟩ := dualEquiv.surjective p
+  have hV : ∀ q, (ringMat q π *ᵥ ψ) (dualEquiv (m, r)) =
+      if ∑ k, m k = π then ((chVec q 0 r : ℝ) : ℂ) * ψ m else 0 := by
+    intro q
+    simp only [mulVec, dotProduct, ringMat, ringVec_dualEquiv]
+    rw [Finset.sum_eq_single m]
+    · by_cases hm : ∑ k, m k = π <;> simp [hm]
+    · intro n _ hnm
+      simp [Ne.symm hnm]
+    · simp
+  rw [Pi.smul_apply, Finset.sum_apply, smul_eq_mul]
+  simp only [hV]
+  by_cases hm : ∑ k, m k = π
+  · simp only [hm, ite_true]
+    set qs : Cfg N := Function.update r 0 (r 0 + ∑ k, r k + π) with hqs
+    have hqs_off : ∀ k, k ≠ 0 → r k = qs k := fun k hk => by
+      rw [hqs, Function.update_of_ne hk]
+    have hqs_sum : ∑ k, qs k = π := by
+      have hB := sum_eq_zero_add r
+      have hE : ∑ k ∈ univ.erase 0, qs k = ∑ k ∈ univ.erase 0, r k :=
+        Finset.sum_congr rfl (fun k hk => (hqs_off k (Finset.ne_of_mem_erase hk)).symm)
+      rw [sum_eq_zero_add qs, hE, hqs, Function.update_self]
+      linear_combination (-1 : ZMod 2) * hB + zmod2_add_self (∑ k, r k)
+    have hqsS : qs ∈ univ.filter (fun q : Cfg N => ∑ j, q j = π) := by
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+      exact hqs_sum
+    rw [Finset.sum_eq_single qs]
+    · simp only [initZ, dualEquiv_apply, chVec, ite_eq_left hqs_off, mul_comm (0 : ZMod 2),
+        mul_zero]
+      rw [← Complex.ofReal_inv, ← Complex.ofReal_inv, inv_sqrt_two_pow_eq]
+      norm_num [sgn]
+      ring
+    · intro q hq hne
+      have hq' : ∑ k, q k = π := (Finset.mem_filter.1 hq).2
+      have hoff : ¬ ∀ k, k ≠ 0 → r k = q k := by
+        intro hrq
+        apply hne
+        exact eq_of_eqOff_of_sum (fun k hk => (hrq k hk).symm.trans (hqs_off k hk))
+          (hq'.trans hqs_sum.symm)
+      simp only [chVec, ite_eq_right hoff, Complex.ofReal_zero, zero_mul]
+    · intro h
+      exact absurd hqsS h
+  · have : ψ m = 0 := by
+      by_contra h0
+      exact hm (hψ m h0)
+    simp [initZ, this, hm]
+
+/-- A diagonal matter observable acts on `ringMat q π` through its matter label. -/
+lemma diag_mul_ringMat (d : Cfg N → ℝ) (q : Cfg N) (π : ZMod 2) :
+    cplx (diagonal d ⊗ₖ (1 : Matrix (Cfg N) (Cfg N) ℝ)) * ringMat q π =
+      ringMat q π * cplx (diagonal d) := by
+  ext p n
+  rw [sec_diagonal_kronecker_one, sec_cplx_diagonal, sec_cplx_diagonal]
+  simp only [diagonal_mul, mul_diagonal, ringMat, ringVec]
+  by_cases h1 : ∑ k, n k = π
+  · by_cases h2 : p.1 = n ∧ ∀ k, k ≠ 0 → chargeOf p.1 p.2 k = q k
+    · rw [ite_eq_left h1, ite_eq_left h2, h2.1, mul_comm]
+    · rw [ite_eq_left h1, ite_eq_right h2, mul_zero, zero_mul]
+  · rw [ite_eq_right h1, mul_zero, zero_mul]
+
+/-- Orthogonality of the blocks: `ringMat q' π† ringMat q π = δ_{q' q} Π_π`. -/
+lemma ringMat_conj_mul (q' q : Cfg N) (π : ZMod 2) (hq' : ∑ k, q' k = π) (hq : ∑ k, q k = π) :
+    (ringMat q' π)ᴴ * ringMat q π =
+      if q' = q then diagonal (fun n : Cfg N => if ∑ k, n k = π then (1 : ℂ) else 0) else 0 := by
+  ext n' n
+  rw [Matrix.mul_apply]
+  simp only [conjTranspose_apply, ringMat]
+  have hR : (if q' = q then diagonal (fun n : Cfg N => if ∑ k, n k = π then (1 : ℂ) else 0)
+      else 0) n' n = if q' = q ∧ n' = n ∧ ∑ k, n k = π then 1 else 0 := by
+    by_cases hqq : q' = q
+    · rw [ite_eq_left hqq, diagonal_apply]
+      by_cases hnn : n' = n
+      · subst hnn
+        by_cases hs : ∑ k, n' k = π <;> simp [hqq, hs]
+      · simp [hnn]
+    · rw [ite_eq_right hqq]
+      simp [hqq]
+  rw [hR]
+  by_cases h1 : ∑ k, n' k = π
+  · by_cases h2 : ∑ k, n k = π
+    · simp only [h1, h2, ite_true]
+      have := ringVec_orthonormal q q' 0 0 n n' (h2.trans hq.symm) (h1.trans hq'.symm)
+      simp only [dotProduct, Pi.star_apply] at this
+      rw [this]
+      by_cases hqq : q' = q <;> by_cases hnn : n' = n <;> simp [hqq, hnn]
+    · simp only [h2, ite_false, mul_zero, Finset.sum_const_zero]
+      rw [ite_eq_right]
+      rintro ⟨-, -, h⟩
+      exact h
+  · simp only [h1, ite_false, star_zero, zero_mul, Finset.sum_const_zero]
+    rw [ite_eq_right]
+    rintro ⟨-, rfl, h⟩
+    exact h1 h
+
+omit [NeZero N] in
+/-- On vectors of parity `π`, inserting the parity projection does not change expectations. -/
+lemma dot_parity (π : ZMod 2) (D : Matrix (Cfg N) (Cfg N) ℂ) (φ : Cfg N → ℂ)
+    (hφ : ∀ m, ∑ k, m k ≠ π → φ m = 0) :
+    star φ ⬝ᵥ ((diagonal (fun n : Cfg N => if ∑ k, n k = π then (1 : ℂ) else 0) * D) *ᵥ φ) =
+      expect D φ := by
+  unfold expect
+  rw [← mulVec_mulVec]
+  simp only [dotProduct, mulVec_diagonal, Pi.star_apply]
+  refine Finset.sum_congr rfl (fun m _ => ?_)
+  by_cases hm : ∑ k, m k = π
+  · simp [hm]
+  · simp [hφ m hm]
+
+omit [NeZero N] in
+/-- The free-fermion propagator (shifted by a constant) preserves the parity `π`. -/
+lemma evo_parity (A : Matrix (Fin N) (Fin N) ℝ) (c t : ℝ) (ψ : Cfg N → ℂ) (π : ZMod 2)
+    (hψ : ∀ n, ψ n ≠ 0 → ∑ j, n j = π) (m : Cfg N) (hm : ∑ k, m k ≠ π) :
+    (evo (dGamma A - c • 1) t *ᵥ ψ) m = 0 := by
+  obtain ⟨w, -, hw⟩ := CutLocalAux.evo_sub_smul_one (dGamma A) c t
+  simp only [hw, mulVec, dotProduct, Matrix.smul_apply, smul_eq_mul]
+  apply Finset.sum_eq_zero
+  intro n _
+  by_cases hn : ψ n = 0
+  · simp [hn]
+  · rw [CutLocalAux.evo_dGamma_eq_zero A t m n (fun h' => hm (h'.trans (hψ n hn)))]
+    simp
+
+end RingAux
+
 /-- **Ring, sector law**: for a matter state of definite parity `π` and `z`-polarized links, the
 dynamics of every matter observable diagonal in the occupations is the uniform average over the
 `2^{N-1}` charge configurations with `∑_j q_j = π` of free-fermion dynamics with the periodic
@@ -941,6 +1155,57 @@ theorem sector_average_ring (hN : 2 ≤ N) (J h : ℝ) (ψ : Cfg N → ℂ) (π 
     expect (cplx (diagonal d ⊗ₖ (1 : Matrix (Cfg N) (Cfg N) ℝ))) (evo (Hring J h) t *ᵥ initZ ψ) =
       (1 / 2 ^ (N - 1) : ℂ) * ∑ q ∈ univ.filter (fun q : Cfg N => ∑ j, q j = π),
         expect (cplx (diagonal d)) (evo (dGamma (hqw J h q 0)) t *ᵥ ψ) := by
-  sorry
+  have hstate : evo (Hring J h) t *ᵥ initZ ψ =
+      ((((Real.sqrt 2) ^ (N - 1) : ℝ) : ℂ)⁻¹) •
+        ∑ q ∈ univ.filter (fun q : Cfg N => ∑ j, q j = π), RingAux.ringMat q π *ᵥ
+          (evo (dGamma (hqw J h q 0) - (h * ∑ j, sgn (q j)) • 1) t *ᵥ ψ) := by
+    rw [RingAux.initZ_eq_sum ψ π hψ, mulVec_smul, mulVec_sum]
+    congr 1
+    refine Finset.sum_congr rfl (fun q hq => ?_)
+    rw [mulVec_mulVec, RingAux.evo_mul_ringMat hN J h q π (Finset.mem_filter.1 hq).2 t,
+      ← mulVec_mulVec]
+  have hterm : ∀ q' ∈ univ.filter (fun q : Cfg N => ∑ j, q j = π),
+      ∀ q ∈ univ.filter (fun q : Cfg N => ∑ j, q j = π),
+      star (RingAux.ringMat q' π *ᵥ
+          (evo (dGamma (hqw J h q' 0) - (h * ∑ j, sgn (q' j)) • 1) t *ᵥ ψ)) ⬝ᵥ
+        (cplx (diagonal d ⊗ₖ (1 : Matrix (Cfg N) (Cfg N) ℝ)) *ᵥ (RingAux.ringMat q π *ᵥ
+          (evo (dGamma (hqw J h q 0) - (h * ∑ j, sgn (q j)) • 1) t *ᵥ ψ))) =
+      if q' = q then expect (cplx (diagonal d))
+        (evo (dGamma (hqw J h q 0) - (h * ∑ j, sgn (q j)) • 1) t *ᵥ ψ) else 0 := by
+    intro q' hq' q hq
+    have hpar : ∀ m : Cfg N, ∑ k, m k ≠ π →
+        (evo (dGamma (hqw J h q 0) - (h * ∑ j, sgn (q j)) • 1) t *ᵥ ψ) m = 0 :=
+      fun m hm => RingAux.evo_parity _ _ t ψ π hψ m hm
+    have hqS : ∑ k, q k = π := (Finset.mem_filter.1 hq).2
+    have hq'S : ∑ k, q' k = π := (Finset.mem_filter.1 hq').2
+    by_cases hqq : q' = q
+    · rw [hqq, ite_eq_left rfl]
+      generalize evo (dGamma (hqw J h q 0) - (h * ∑ j, sgn (q j)) • 1) t *ᵥ ψ = φ at hpar ⊢
+      rw [mulVec_mulVec, RingAux.diag_mul_ringMat, ← mulVec_mulVec,
+        RingAux.star_mulVec_dotProduct_mulVec, RingAux.ringMat_conj_mul q q π hqS hqS,
+        ite_eq_left rfl, mulVec_mulVec]
+      exact RingAux.dot_parity π _ φ hpar
+    · rw [ite_eq_right hqq]
+      generalize evo (dGamma (hqw J h q' 0) - (h * ∑ j, sgn (q' j)) • 1) t *ᵥ ψ = φ'
+      generalize evo (dGamma (hqw J h q 0) - (h * ∑ j, sgn (q j)) • 1) t *ᵥ ψ = φ
+      rw [mulVec_mulVec, RingAux.diag_mul_ringMat, ← mulVec_mulVec,
+        RingAux.star_mulVec_dotProduct_mulVec, RingAux.ringMat_conj_mul q' q π hq'S hqS,
+        ite_eq_right hqq, zero_mulVec, dotProduct_zero]
+  have hsum : ∀ x ∈ univ.filter (fun q : Cfg N => ∑ j, q j = π),
+      (∑ i ∈ univ.filter (fun q : Cfg N => ∑ j, q j = π),
+        if i = x then expect (cplx (diagonal d))
+          (evo (dGamma (hqw J h x 0) - (h * ∑ j, sgn (x j)) • 1) t *ᵥ ψ) else 0) =
+      expect (cplx (diagonal d)) (evo (dGamma (hqw J h x 0) - (h * ∑ j, sgn (x j)) • 1) t *ᵥ ψ) := by
+    intro x hx
+    rw [Finset.sum_ite_eq', ite_eq_left hx]
+  rw [hstate]
+  conv_lhs => rw [expect]
+  rw [mulVec_smul, mulVec_sum, star_smul, star_sum, smul_dotProduct, dotProduct_smul]
+  simp only [sum_dotProduct, dotProduct_sum]
+  rw [Finset.sum_congr rfl (fun x hx => Finset.sum_congr rfl (fun i hi => hterm i hi x hx)),
+    Finset.sum_congr rfl hsum]
+  rw [smul_eq_mul, smul_eq_mul, ← mul_assoc, sec_norm_sq_prefactor (N := N - 1)]
+  refine congrArg (fun s => (1 / 2 ^ (N - 1) : ℂ) * s) (Finset.sum_congr rfl (fun q _ => ?_))
+  exact expect_evo_sub_smul_one _ _ _ _ _
 
 end DFL

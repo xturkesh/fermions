@@ -790,6 +790,343 @@ theorem sector_average_flux (J h : ℝ) (s : Cfg M) (n : Cfg N) (d : Cfg N → �
   have hK : (G.kerCard : ℂ) ≠ 0 := right_ne_zero_of_mul h2
   rw [← hcard, one_div, mul_inv, mul_assoc, inv_mul_cancel₀ hK, mul_one, one_div]
 
+/-! ### Auxiliary lemmas: complexification -/
+
+/-- Complexification is multiplicative. -/
+private lemma cplx_mul {ι : Type*} [Fintype ι] (A B : Matrix ι ι ℝ) :
+    cplx (A * B) = cplx A * cplx B :=
+  Matrix.map_mul (f := Complex.ofRealHom)
+
+/-- Complexification commutes with subtraction. -/
+private lemma cplx_sub {ι : Type*} (A B : Matrix ι ι ℝ) : cplx (A - B) = cplx A - cplx B := by
+  ext i j
+  simp [cplx]
+
+/-- Complexification of a real multiple. -/
+private lemma cplx_smul {ι : Type*} (c : ℝ) (A : Matrix ι ι ℝ) :
+    cplx (c • A) = (c : ℂ) • cplx A := by
+  ext i j
+  simp [cplx]
+
+/-- Complexification commutes with finite sums. -/
+private lemma cplx_sum {ι κ : Type*} (s : Finset κ) (A : κ → Matrix ι ι ℝ) :
+    cplx (∑ k ∈ s, A k) = ∑ k ∈ s, cplx (A k) := by
+  ext i j
+  simp [cplx, Matrix.sum_apply]
+
+/-- Complexification of the identity. -/
+private lemma cplx_one {ι : Type*} [DecidableEq ι] : cplx (1 : Matrix ι ι ℝ) = 1 := by
+  ext i j
+  by_cases hij : i = j <;> simp [cplx, Matrix.one_apply, hij]
+
+/-- The adjoint of a complexified real matrix is the complexified transpose. -/
+private lemma cplx_conjTranspose' {ι : Type*} (A : Matrix ι ι ℝ) : (cplx A)ᴴ = cplx Aᵀ := by
+  ext i j
+  simp [cplx, conjTranspose_apply]
+
+/-- `⟨W u, X W u⟩ = ⟨u, Wᵀ X W u⟩` for real matrices `W`, `X`. -/
+private lemma expect_cplx_mulVec {ι : Type*} [Fintype ι] [DecidableEq ι] (X W : Matrix ι ι ℝ)
+    (u : ι → ℂ) : expect (cplx X) (cplx W *ᵥ u) = expect (cplx (Wᵀ * X * W)) u := by
+  unfold expect
+  rw [star_mulVec, ← dotProduct_mulVec, mulVec_mulVec, mulVec_mulVec, cplx_conjTranspose',
+    cplx_mul, cplx_mul]
+
+/-- If `A` preserves a property `P` of vectors and agrees with `B` on the vectors with `P`, then
+`e^{-itA} v = e^{-itB} v` for every `v` with `P`. -/
+private lemma evo_mulVec_eq_of_invariant {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (A B : Matrix ι ι ℝ) (P : (ι → ℂ) → Prop) (hS : ∀ v, P v → P (cplx A *ᵥ v))
+    (hAB : ∀ v, P v → cplx A *ᵥ v = cplx B *ᵥ v) (t : ℝ) {v : ι → ℂ} (hv : P v) :
+    evo A t *ᵥ v = evo B t *ᵥ v := by
+  have hpow : ∀ k : ℕ, ∀ w, P w → cplx A ^ k *ᵥ w = cplx B ^ k *ᵥ w := by
+    intro k
+    induction k with
+    | zero => intro w _; simp
+    | succ k ih =>
+      intro w hw
+      rw [pow_succ, pow_succ, ← mulVec_mulVec, ← mulVec_mulVec, ih _ (hS w hw), hAB w hw]
+  unfold evo
+  have h1 := (hasSum_exp_matrix ((-(t : ℂ) * Complex.I) • cplx A)).map
+    (Matrix.mulVec.addMonoidHomLeft v) (continuous_id.matrix_mulVec continuous_const)
+  have h2 := (hasSum_exp_matrix ((-(t : ℂ) * Complex.I) • cplx B)).map
+    (Matrix.mulVec.addMonoidHomLeft v) (continuous_id.matrix_mulVec continuous_const)
+  have e : (⇑(Matrix.mulVec.addMonoidHomLeft v) ∘
+      fun k : ℕ => ((k.factorial : ℂ)⁻¹) • ((-(t : ℂ) * Complex.I) • cplx A) ^ k) =
+      (⇑(Matrix.mulVec.addMonoidHomLeft v) ∘
+      fun k : ℕ => ((k.factorial : ℂ)⁻¹) • ((-(t : ℂ) * Complex.I) • cplx B) ^ k) := by
+    funext k
+    have hf : ∀ X : Matrix ι ι ℂ, (Matrix.mulVec.addMonoidHomLeft v) X = X *ᵥ v := fun X => rfl
+    simp only [Function.comp_apply, hf, smul_pow, smul_mulVec, hpow k v hv]
+  rw [e] at h1
+  exact h1.unique h2
+
+/-! ### The `σᶻ` frame of the links (Hadamard transform) -/
+
+/-- `x + c + c = x` for `ZMod 2`-configurations. -/
+private lemma cfg_add_add_self (x c : Cfg M) : x + c + c = x := by
+  funext e
+  simp only [Pi.add_apply, add_assoc, z2_add_self, add_zero]
+
+/-- `x + x = 0` for `ZMod 2`-configurations. -/
+private lemma cfg_add_self (x : Cfg M) : x + x = 0 := by
+  funext e
+  exact z2_add_self (x e)
+
+/-- `x + y = 0 → x = y` for `ZMod 2`-configurations. -/
+private lemma cfg_eq_of_add_eq_zero {x y : Cfg M} (h : x + y = 0) : x = y := by
+  have := congrArg (· + y) h
+  simp only [cfg_add_add_self, zero_add] at this
+  exact this
+
+/-- `⟨x + δ_e, s⟩ = ⟨x, s⟩ + s_e`. -/
+private lemma pair_add_single' (x s : Cfg M) (e : Fin M) :
+    ∑ k, (x + Pi.single e 1 : Cfg M) k * s k = ∑ k, x k * s k + s e := by
+  simp [add_mul, Finset.sum_add_distrib, Pi.single_apply]
+
+/-- The normalized Hadamard matrix `2^{-M/2} (-1)^{⟨x, s⟩}`: the change from the `σˣ` basis to the
+`σᶻ` basis of the links. -/
+private def hadM (M : ℕ) : Matrix (Cfg M) (Cfg M) ℝ :=
+  fun x s => ((Real.sqrt 2) ^ M)⁻¹ * sgn (∑ e, x e * s e)
+
+/-- Character orthogonality: `∑_s (-1)^{⟨r, s⟩} = 2^M [r = 0]`. -/
+private lemma sum_sgn_pair (r : Cfg M) :
+    ∑ s : Cfg M, sgn (∑ e, r e * s e) = if r = 0 then (2 : ℝ) ^ M else 0 := by
+  split_ifs with hr
+  · subst hr
+    simp [sgn_zero]
+  · obtain ⟨e0, he0⟩ : ∃ e0, r e0 ≠ 0 := by
+      by_contra hcon
+      push Not at hcon
+      exact hr (funext hcon)
+    have hr1 : r e0 = 1 := (z2_cases _).resolve_left he0
+    have key : ∑ s : Cfg M, sgn (∑ e, r e * (s + Pi.single e0 1 : Cfg M) e) =
+        ∑ s : Cfg M, sgn (∑ e, r e * s e) :=
+      Fintype.sum_equiv (Equiv.addRight (Pi.single e0 1)) _ _ (fun s => rfl)
+    have hflip : ∀ s : Cfg M, sgn (∑ e, r e * (s + Pi.single e0 1 : Cfg M) e) =
+        -sgn (∑ e, r e * s e) := by
+      intro s
+      have h1 : sgn (1 : ZMod 2) = -1 := by simp [sgn]
+      rw [pair_add_single, sgn_add, hr1, h1, mul_neg_one]
+    simp only [hflip, Finset.sum_neg_distrib] at key
+    linarith
+
+/-- The Hadamard matrix is symmetric. -/
+private lemma hadM_transpose : (hadM M)ᵀ = hadM M := by
+  ext x s
+  simp only [Matrix.transpose_apply, hadM]
+  congr 2
+  exact Finset.sum_congr rfl (fun e _ => mul_comm _ _)
+
+/-- The Hadamard matrix is an involution. -/
+private lemma hadM_mul_self : hadM M * hadM M = 1 := by
+  ext x y
+  rw [Matrix.mul_apply, Matrix.one_apply]
+  have h1 : ∀ s : Cfg M, hadM M x s * hadM M s y =
+      (((Real.sqrt 2) ^ M)⁻¹ * ((Real.sqrt 2) ^ M)⁻¹) * sgn (∑ e, (x + y) e * s e) := by
+    intro s
+    have hxy : ∑ e, (x + y) e * s e = ∑ e, x e * s e + ∑ e, s e * y e := by
+      rw [← Finset.sum_add_distrib]
+      refine Finset.sum_congr rfl (fun e _ => ?_)
+      rw [Pi.add_apply]
+      ring
+    rw [hxy, sgn_add]
+    simp only [hadM]
+    ring
+  rw [Finset.sum_congr rfl (fun s _ => h1 s), ← Finset.mul_sum, sum_sgn_pair]
+  have hc : ((Real.sqrt 2) ^ M)⁻¹ * ((Real.sqrt 2) ^ M)⁻¹ * (2 : ℝ) ^ M = 1 := by
+    rw [← mul_inv, ← mul_pow, Real.mul_self_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
+    exact inv_mul_cancel₀ (pow_ne_zero _ two_ne_zero)
+  by_cases hxy : x = y
+  · subst hxy
+    rw [ite_eq_left (cfg_add_self x), ite_eq_left rfl, hc]
+  · have hne : x + y ≠ 0 := fun h0 => hxy (cfg_eq_of_add_eq_zero h0)
+    rw [ite_eq_right hne, ite_eq_right hxy, mul_zero]
+
+/-- `σᶻ_e` is diagonal in the `σᶻ` frame: `σᶻ_e H = H diag((-1)^{s_e})`. -/
+private lemma szE_mul_hadM (e : Fin M) :
+    G.szE e * hadM M = hadM M * diagonal (fun s : Cfg M => sgn (s e)) := by
+  ext x s
+  rw [Matrix.mul_diagonal, Matrix.mul_apply]
+  simp only [szE_apply, ite_mul, one_mul, zero_mul]
+  rw [Finset.sum_ite_eq']
+  simp only [Finset.mem_univ, ite_true, hadM]
+  rw [pair_add_single', sgn_add]
+  ring
+
+/-- The edges at the vertex `i`, as a link configuration `χ_i`. -/
+private def chiV (i : Fin N) : Cfg M := fun e => if G.src e = i ∨ G.tgt e = i then 1 else 0
+
+/-- `(∂x)_i = ⟨x, χ_i⟩`. -/
+private lemma bdry_eq_pair (x : Cfg M) (i : Fin N) : G.bdry x i = ∑ e, x e * G.chiV i e := by
+  simp only [bdry, chiV, Finset.sum_filter, mul_ite, mul_one, mul_zero]
+
+/-- The star term in the `σᶻ` frame: the permutation `s ↦ s + χ_i` of the link signs (the gauge
+transformation at `i`). -/
+private def flipM (i : Fin N) : Matrix (Cfg M) (Cfg M) ℝ :=
+  fun s' s => if s' = s + G.chiV i then 1 else 0
+
+/-- `∏_{e ∋ i} σˣ_e` in the `σᶻ` frame: `A_i H = H F_i`. -/
+private lemma star_mul_hadM (i : Fin N) : G.star i * hadM M = hadM M * G.flipM i := by
+  ext x s
+  rw [FinGraph.star, Matrix.diagonal_mul, Matrix.mul_apply]
+  simp only [flipM, mul_ite, mul_one, mul_zero]
+  rw [Finset.sum_ite_eq']
+  simp only [Finset.mem_univ, ite_true, hadM]
+  rw [bdry_eq_pair]
+  have hxs : ∑ e, x e * (s + G.chiV i) e = ∑ e, x e * s e + ∑ e, x e * G.chiV i e := by
+    rw [← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl (fun e _ => ?_)
+    rw [Pi.add_apply]
+    ring
+  rw [hxs, sgn_add]
+  ring
+
+/-- The change of frame `W = 1 ⊗ H` (`σˣ` basis → `σᶻ` basis of the links). -/
+private def hadW (N M : ℕ) : Matrix (Cfg N × Cfg M) (Cfg N × Cfg M) ℝ :=
+  (1 : Matrix (Cfg N) (Cfg N) ℝ) ⊗ₖ hadM M
+
+/-- `W² = 1`. -/
+private lemma hadW_mul_self : hadW N M * hadW N M = 1 := by
+  rw [hadW, ← mul_kronecker_mul, Matrix.mul_one, hadM_mul_self, one_kronecker_one]
+
+/-- `W` is symmetric. -/
+private lemma hadW_transpose : (hadW N M)ᵀ = hadW N M := by
+  rw [hadW, ← kroneckerMap_transpose, transpose_one, hadM_transpose]
+
+/-- The Hamiltonian in the `σᶻ` frame: `H^z = -J ∑_e hop_e ⊗ diag((-1)^{s_e}) - h ∑_i 1 ⊗ F_i`. -/
+private def hamZ (J h : ℝ) : Matrix (Cfg N × Cfg M) (Cfg N × Cfg M) ℝ :=
+  (-J) • ∑ e, G.hopE e ⊗ₖ diagonal (fun s : Cfg M => sgn (s e)) -
+    h • ∑ i, (1 : Matrix (Cfg N) (Cfg N) ℝ) ⊗ₖ G.flipM i
+
+/-- `H W = W H^z`. -/
+private lemma ham_mul_hadW (J h : ℝ) : G.ham J h * hadW N M = hadW N M * G.hamZ J h := by
+  have h1 : ∀ e, (G.hopE e ⊗ₖ G.szE e) * hadW N M =
+      hadW N M * (G.hopE e ⊗ₖ diagonal (fun s : Cfg M => sgn (s e))) := by
+    intro e
+    rw [hadW, ← mul_kronecker_mul, ← mul_kronecker_mul, Matrix.mul_one, Matrix.one_mul,
+      szE_mul_hadM]
+  have h2 : ∀ i, ((1 : Matrix (Cfg N) (Cfg N) ℝ) ⊗ₖ G.star i) * hadW N M =
+      hadW N M * ((1 : Matrix (Cfg N) (Cfg N) ℝ) ⊗ₖ G.flipM i) := by
+    intro i
+    rw [hadW, ← mul_kronecker_mul, ← mul_kronecker_mul, star_mul_hadM]
+  simp only [ham, hamZ, Matrix.sub_mul, Matrix.mul_sub, Matrix.smul_mul, Matrix.mul_smul,
+    Matrix.sum_mul, Matrix.mul_sum, h1, h2]
+
+/-- The Gauss operator in the `σᶻ` frame: `G_i^z = (-1)^{n_i} ⊗ F_i`. -/
+private def gaussZ (i : Fin N) : Matrix (Cfg N × Cfg M) (Cfg N × Cfg M) ℝ :=
+  diagonal (fun m : Cfg N => sgn (m i)) ⊗ₖ G.flipM i
+
+/-- `G_i W = W G_i^z`. -/
+private lemma gaussOp_mul_hadW (i : Fin N) :
+    G.gaussOp i * hadW N M = hadW N M * G.gaussZ i := by
+  have hg : G.gaussOp i = diagonal (fun m : Cfg N => sgn (m i)) ⊗ₖ G.star i := by
+    rw [gaussOp, FinGraph.star, diagonal_kronecker_diagonal]
+  rw [hg, hadW, gaussZ, ← mul_kronecker_mul, ← mul_kronecker_mul, Matrix.mul_one,
+    Matrix.one_mul, star_mul_hadM]
+
+/-- The Gauss operators in the `σᶻ` frame commute with `H^z`. -/
+private lemma gaussZ_comm_hamZ (J h : ℝ) (i : Fin N) :
+    G.gaussZ i * G.hamZ J h = G.hamZ J h * G.gaussZ i := by
+  have hW : hadW N M * hadW N M = 1 := hadW_mul_self
+  have h1 : G.hamZ J h = hadW N M * (G.ham J h * hadW N M) := by
+    rw [ham_mul_hadW, ← Matrix.mul_assoc, hW, Matrix.one_mul]
+  have h2 : G.gaussZ i = hadW N M * (G.gaussOp i * hadW N M) := by
+    rw [gaussOp_mul_hadW, ← Matrix.mul_assoc, hW, Matrix.one_mul]
+  have hc := G.gaussOp_comm_ham J h i
+  have e1 : hadW N M * (G.gaussOp i * hadW N M) * (hadW N M * (G.ham J h * hadW N M)) =
+      hadW N M * (G.gaussOp i * G.ham J h) * hadW N M := by
+    simp only [Matrix.mul_assoc]
+    rw [← Matrix.mul_assoc (hadW N M) (hadW N M), hW, Matrix.one_mul]
+  have e2 : hadW N M * (G.ham J h * hadW N M) * (hadW N M * (G.gaussOp i * hadW N M)) =
+      hadW N M * (G.ham J h * G.gaussOp i) * hadW N M := by
+    simp only [Matrix.mul_assoc]
+    rw [← Matrix.mul_assoc (hadW N M) (hadW N M), hW, Matrix.one_mul]
+  rw [h1, h2, e1, e2, hc]
+
+/-- The block-diagonal comparison Hamiltonian `H̃ = ⊕_s (dΓ(h_{n,s}) - h ∑_i sgn(n_i))`, in
+Kronecker form. -/
+private def hamT (J h : ℝ) (n : Cfg N) : Matrix (Cfg N × Cfg M) (Cfg N × Cfg M) ℝ :=
+  (-J) • ∑ e, G.hopE e ⊗ₖ diagonal (fun s : Cfg M => sgn (s e)) -
+    h • ∑ i, sgn (n i) •
+      (diagonal (fun m : Cfg N => sgn (m i)) ⊗ₖ (1 : Matrix (Cfg M) (Cfg M) ℝ))
+
+/-- `H^z = H̃ - h ∑_i ((-1)^{n_i} ⊗ 1)(G_i^z - sgn(n_i))`. -/
+private lemma hamZ_eq (J h : ℝ) (n : Cfg N) :
+    G.hamZ J h = G.hamT J h n - h • ∑ i,
+      (diagonal (fun m : Cfg N => sgn (m i)) ⊗ₖ (1 : Matrix (Cfg M) (Cfg M) ℝ)) *
+        (G.gaussZ i - sgn (n i) • (1 : Matrix (Cfg N × Cfg M) (Cfg N × Cfg M) ℝ)) := by
+  have key : ∀ i,
+      (diagonal (fun m : Cfg N => sgn (m i)) ⊗ₖ (1 : Matrix (Cfg M) (Cfg M) ℝ)) *
+        (G.gaussZ i - sgn (n i) • (1 : Matrix (Cfg N × Cfg M) (Cfg N × Cfg M) ℝ)) =
+      (1 : Matrix (Cfg N) (Cfg N) ℝ) ⊗ₖ G.flipM i -
+        sgn (n i) • (diagonal (fun m : Cfg N => sgn (m i)) ⊗ₖ
+          (1 : Matrix (Cfg M) (Cfg M) ℝ)) := by
+    intro i
+    have hDD : diagonal (fun m : Cfg N => sgn (m i)) * diagonal (fun m : Cfg N => sgn (m i)) =
+        1 := by
+      rw [diagonal_mul_diagonal, ← diagonal_one]
+      congr 1
+      funext m
+      exact sgn_mul_self _
+    rw [Matrix.mul_sub, Matrix.mul_smul, Matrix.mul_one, gaussZ, ← mul_kronecker_mul, hDD,
+      Matrix.one_mul]
+  simp only [hamZ, hamT, key, Finset.sum_sub_distrib, smul_sub]
+  abel
+
+/-- `H̃` is block diagonal in the link signs, with blocks `dΓ(h_{n,s}) - h ∑_i sgn(n_i)`. -/
+private lemma hamT_eq (J h : ℝ) (n : Cfg N) :
+    G.hamT J h n = blockDiagonal (fun s : Cfg M =>
+      dGamma (G.hqs J h (fun i => sgn (n i)) (fun e => sgn (s e))) -
+        (h * ∑ i, sgn (n i)) • (1 : Matrix (Cfg N) (Cfg N) ℝ)) := by
+  ext ⟨m, s⟩ ⟨m0, s0⟩
+  rw [blockDiagonal_apply, dGamma_hqs]
+  simp only [hamT, Matrix.sub_apply, Matrix.add_apply, Matrix.smul_apply, Matrix.sum_apply,
+    kronecker_apply, diagonal_apply, Matrix.one_apply, smul_eq_mul]
+  by_cases hs : s = s0
+  · subst s0
+    have hc : ∑ c, G.hopE c m m0 * sgn (s c) = ∑ c, sgn (s c) * G.hopE c m m0 :=
+      Finset.sum_congr rfl (fun c _ => mul_comm _ _)
+    simp only [ite_true, mul_one, hc]
+    by_cases hm : m = m0
+    · subst m0
+      simp only [ite_true, mul_one]
+      have e : ∀ i, sgn (n i) * sgn (m i) = sgn (n i) - 2 * (sgn (n i) * occ (m i)) := by
+        intro i; rw [sgn_eq_one_sub_two_occ (m i)]; ring
+      simp only [e, Finset.sum_sub_distrib, ← Finset.mul_sum]
+      ring
+    · simp [hm]
+  · simp [hs]
+
+/-- `|n⟩ ⊗ |+⋯+⟩` in the `σᶻ` frame is `2^{-M/2} ∑_s |n, s⟩`. -/
+private lemma hadW_mulVec_single (n : Cfg N) :
+    cplx (hadW N M) *ᵥ Pi.single (n, 0) 1 =
+      fun p => if p.1 = n then (((Real.sqrt 2) ^ M : ℝ) : ℂ)⁻¹ else 0 := by
+  funext ⟨m, s⟩
+  simp only [mulVec, dotProduct, Pi.single_apply, mul_ite, mul_one, mul_zero,
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true]
+  simp only [cplx, Matrix.map_apply, hadW, kronecker_apply, Matrix.one_apply, hadM]
+  by_cases hm : m = n
+  · simp [hm, sgn_zero]
+  · simp [hm]
+
+/-- `(G_i^z v)(m, s) = (-1)^{m_i} v(m, s + χ_i)`. -/
+private lemma gaussZ_mulVec_apply (i : Fin N) (v : Cfg N × Cfg M → ℂ) (m : Cfg N) (s : Cfg M) :
+    (cplx (G.gaussZ i) *ᵥ v) (m, s) = (sgn (m i) : ℂ) * v (m, s + G.chiV i) := by
+  simp only [mulVec, dotProduct]
+  rw [Fintype.sum_prod_type]
+  simp only [cplx, Matrix.map_apply, gaussZ, kronecker_apply, diagonal_apply, flipM]
+  rw [Finset.sum_eq_single m]
+  · rw [Finset.sum_eq_single (s + G.chiV i)]
+    · simp [cfg_add_add_self]
+    · intro s' _ hs'
+      have hne : ¬ s = s' + G.chiV i := by
+        rintro rfl
+        exact hs' (cfg_add_add_self s' (G.chiV i)).symm
+      simp [hne]
+    · simp
+  · intro m' _ hm'
+    simp [Ne.symm hm']
+  · simp
+
 /-- **`σˣ`-polarized links: random `π`-flux** (paper: Proposition `prop:2dlaws`(b)). The state
 `|n⟩ ⊗ |+⋯+⟩` is the basis vector `(n, 0)` of the `σˣ` basis. -/
 theorem sector_average_xpol (J h : ℝ) (n : Cfg N) (d : Cfg N → ℝ) (t : ℝ) :
@@ -799,7 +1136,78 @@ theorem sector_average_xpol (J h : ℝ) (n : Cfg N) (d : Cfg N → ℝ) (t : ℝ
         expect (cplx (diagonal d))
           (evo (dGamma (G.hqs J h (fun i => sgn (n i)) (fun e => sgn (s e)))) t *ᵥ
             Pi.single n 1) := by
-  sorry
+  -- the initial state in the `σᶻ` frame
+  set v0 : Cfg N × Cfg M → ℂ :=
+    fun p => if p.1 = n then (((Real.sqrt 2) ^ M : ℝ) : ℂ)⁻¹ else 0 with hv0
+  have hWW : cplx (hadW N M) * cplx (hadW N M) = 1 := by
+    rw [← cplx_mul, hadW_mul_self, cplx_one]
+  -- `e^{-itH} = W e^{-itH^z} W`
+  have hevoW : evo (G.ham J h) t = cplx (hadW N M) * evo (G.hamZ J h) t * cplx (hadW N M) := by
+    have h1 : evo (G.ham J h) t * cplx (hadW N M) = cplx (hadW N M) * evo (G.hamZ J h) t :=
+      evo_mul_eq_mul_evo (G.ham_mul_hadW J h) t
+    rw [← h1, Matrix.mul_assoc, hWW, Matrix.mul_one]
+  -- the joint eigenspace `G_i^z = (-1)^{n_i}` is invariant under `H^z`, and `H^z = H̃` on it
+  have hv0S : ∀ i, cplx (G.gaussZ i) *ᵥ v0 = (sgn (n i) : ℂ) • v0 := by
+    intro i
+    funext ⟨m, s⟩
+    rw [gaussZ_mulVec_apply, Pi.smul_apply, smul_eq_mul]
+    simp only [hv0]
+    by_cases hm : m = n
+    · rw [ite_eq_left hm, hm]
+    · rw [ite_eq_right hm, mul_zero, mul_zero]
+  have hS : ∀ v : Cfg N × Cfg M → ℂ, (∀ i, cplx (G.gaussZ i) *ᵥ v = (sgn (n i) : ℂ) • v) →
+      ∀ i, cplx (G.gaussZ i) *ᵥ (cplx (G.hamZ J h) *ᵥ v) =
+        (sgn (n i) : ℂ) • (cplx (G.hamZ J h) *ᵥ v) := by
+    intro v hv i
+    rw [mulVec_mulVec, ← cplx_mul, G.gaussZ_comm_hamZ J h i, cplx_mul, ← mulVec_mulVec, hv i,
+      mulVec_smul]
+  have hAB : ∀ v : Cfg N × Cfg M → ℂ, (∀ i, cplx (G.gaussZ i) *ᵥ v = (sgn (n i) : ℂ) • v) →
+      cplx (G.hamZ J h) *ᵥ v = cplx (G.hamT J h n) *ᵥ v := by
+    intro v hv
+    have h0 : ∀ i, cplx ((diagonal (fun m : Cfg N => sgn (m i)) ⊗ₖ
+        (1 : Matrix (Cfg M) (Cfg M) ℝ)) *
+        (G.gaussZ i - sgn (n i) • (1 : Matrix (Cfg N × Cfg M) (Cfg N × Cfg M) ℝ))) *ᵥ v = 0 := by
+      intro i
+      rw [cplx_mul, ← mulVec_mulVec, cplx_sub, sub_mulVec, cplx_smul, cplx_one, smul_mulVec,
+        one_mulVec, hv i, sub_self, mulVec_zero]
+    rw [G.hamZ_eq J h n, cplx_sub, sub_mulVec, cplx_smul, smul_mulVec, cplx_sum, sum_mulVec]
+    simp only [h0, Finset.sum_const_zero, smul_zero, sub_zero]
+  have hZT : evo (G.hamZ J h) t *ᵥ v0 = evo (G.hamT J h n) t *ᵥ v0 :=
+    evo_mulVec_eq_of_invariant _ _
+      (fun v => ∀ i, cplx (G.gaussZ i) *ᵥ v = (sgn (n i) : ℂ) • v) hS hAB t hv0S
+  -- the state at time `t`
+  have hstate : evo (G.ham J h) t *ᵥ Pi.single (n, 0) 1 =
+      cplx (hadW N M) *ᵥ (evo (G.hamT J h n) t *ᵥ v0) := by
+    rw [hevoW, ← mulVec_mulVec, ← mulVec_mulVec, hadW_mulVec_single, ← hv0, hZT]
+  -- the observable commutes with the change of frame
+  have hX : (hadW N M)ᵀ * (diagonal d ⊗ₖ (1 : Matrix (Cfg M) (Cfg M) ℝ)) * hadW N M =
+      diagonal d ⊗ₖ (1 : Matrix (Cfg M) (Cfg M) ℝ) := by
+    rw [hadW_transpose, hadW, ← mul_kronecker_mul, ← mul_kronecker_mul]
+    simp only [Matrix.one_mul, Matrix.mul_one, hadM_mul_self]
+  rw [hstate, expect_cplx_mulVec, hX, G.hamT_eq J h n, evo_blockDiagonal]
+  -- the block-diagonal evolution
+  have hD : diagonal d ⊗ₖ (1 : Matrix (Cfg M) (Cfg M) ℝ) =
+      diagonal (fun p : Cfg N × Cfg M => d p.1) := by
+    rw [← diagonal_one, diagonal_kronecker_diagonal]
+    simp
+  have hv0s : ∀ s : Cfg M, (fun j => v0 (j, s)) =
+      (((Real.sqrt 2) ^ M : ℝ) : ℂ)⁻¹ • (Pi.single n 1 : Cfg N → ℂ) := by
+    intro s
+    funext j
+    simp only [hv0, Pi.smul_apply, smul_eq_mul]
+    by_cases hj : j = n
+    · rw [ite_eq_left hj, hj, Pi.single_eq_same, mul_one]
+    · rw [ite_eq_right hj, Pi.single_eq_of_ne hj, mul_zero]
+  rw [hD, expect_cplx_diagonal, Fintype.sum_prod_type, Finset.sum_comm]
+  conv_rhs => rw [Finset.mul_sum]
+  refine Finset.sum_congr rfl (fun s _ => ?_)
+  rw [← expect_evo_sub_smul_one _ (h * ∑ i, sgn (n i)), expect_cplx_diagonal]
+  conv_rhs => rw [Finset.mul_sum]
+  refine Finset.sum_congr rfl (fun m _ => ?_)
+  rw [blockDiagonal_mulVec_apply, hv0s, mulVec_smul, Pi.smul_apply, smul_eq_mul, star_mul',
+    ← norm_sq_prefactor]
+  dsimp only
+  ring
 
 /-! ### Gauge covariance of the free-fermion dynamics -/
 
