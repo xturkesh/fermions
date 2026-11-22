@@ -316,7 +316,6 @@ lemma sq_rpow_half (x p : ℝ) : (x ^ 2) ^ (p / 2) = |x| ^ p := by
   push_cast
   ring
 
-
 section Series
 
 variable {ι : Type*} [Fintype ι] [DecidableEq ι]
@@ -460,19 +459,398 @@ lemma pow_schrH_incl (a b a' b' : ℤ) (ha' : a' ≤ a) (hb' : b ≤ b') (w : �
         push_cast at hx
         linarith
 
+
+section Euler
+
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+
+/-- Entries of powers of a complex matrix whose rows have `ℓ¹`-norm at most `c`. -/
+lemma norm_pow_apply_le (A : Matrix ι ι ℂ) (c : ℝ) (hc : 0 ≤ c)
+    (hA : ∀ i, ∑ l, ‖A i l‖ ≤ c) (k : ℕ) (i j : ι) : ‖(A ^ k) i j‖ ≤ c ^ k := by
+  induction k generalizing i with
+  | zero =>
+    rw [pow_zero, pow_zero, Matrix.one_apply]
+    split_ifs <;> simp
+  | succ k ih =>
+    rw [pow_succ', Matrix.mul_apply, pow_succ']
+    calc ‖∑ l, A i l * (A ^ k) l j‖ ≤ ∑ l, ‖A i l * (A ^ k) l j‖ := norm_sum_le _ _
+      _ ≤ ∑ l, ‖A i l‖ * c ^ k := by
+          refine Finset.sum_le_sum fun l _ => ?_
+          rw [norm_mul]
+          exact mul_le_mul_of_nonneg_left (ih l) (norm_nonneg _)
+      _ = (∑ l, ‖A i l‖) * c ^ k := by rw [Finset.sum_mul]
+      _ ≤ c * c ^ k := mul_le_mul_of_nonneg_right (hA i) (by positivity)
+
+/-- `C(n,k)/n^k ≤ 1/k!`. -/
+lemma choose_div_pow_le (n k : ℕ) : (n.choose k : ℝ) / (n : ℝ) ^ k ≤ (k.factorial : ℝ)⁻¹ := by
+  by_cases h : (n : ℝ) ^ k = 0
+  · rw [h, div_zero]; positivity
+  · have hpos : 0 < (n : ℝ) ^ k := lt_of_le_of_ne (by positivity) (Ne.symm h)
+    rw [div_le_iff₀ hpos]
+    calc (n.choose k : ℝ) ≤ (n : ℝ) ^ k / (k.factorial : ℝ) := Nat.choose_le_pow_div k n
+      _ = (k.factorial : ℝ)⁻¹ * (n : ℝ) ^ k := by ring
+
+/-- The coefficients of `(1 + x/n)^n = ∑_k eulerCoef n k x^k`. -/
+def eulerCoef (n k : ℕ) : ℝ := if k ≤ n then (n.choose k : ℝ) / (n : ℝ) ^ k else 0
+
+/-- The Euler coefficients are nonnegative. -/
+lemma eulerCoef_nonneg (n k : ℕ) : 0 ≤ eulerCoef n k := by
+  unfold eulerCoef
+  split_ifs <;> positivity
+
+/-- The Euler coefficients are dominated by the exponential ones. -/
+lemma eulerCoef_le (n k : ℕ) : eulerCoef n k ≤ (k.factorial : ℝ)⁻¹ := by
+  unfold eulerCoef
+  split_ifs
+  · exact choose_div_pow_le n k
+  · positivity
+
+/-- Entrywise binomial expansion of `(n⁻¹ Z + 1)^n`. -/
+lemma euler_apply (Z : Matrix ι ι ℂ) (n : ℕ) (i j : ι) :
+    (((n : ℂ)⁻¹ • Z + 1) ^ n) i j =
+      ∑ k ∈ Finset.range (n + 1), (eulerCoef n k : ℂ) * (Z ^ k) i j := by
+  rw [(Commute.one_right _).add_pow, Matrix.sum_apply]
+  refine Finset.sum_congr rfl fun k hk => ?_
+  have hk' : k ≤ n := Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)
+  rw [one_pow, mul_one, smul_pow, ← Matrix.diagonal_natCast, Matrix.mul_diagonal,
+    Matrix.smul_apply, eulerCoef, ite_eq_left hk']
+  simp only [smul_eq_mul]
+  push_cast
+  ring
+
+/-- The real binomial expansion of `(1 + x/n)^n`. -/
+lemma hasSum_euler_real (x : ℝ) (n : ℕ) :
+    HasSum (fun k => eulerCoef n k * x ^ k) ((1 + x / n) ^ n) := by
+  have h : HasSum (fun k => eulerCoef n k * x ^ k)
+      (∑ k ∈ Finset.range (n + 1), eulerCoef n k * x ^ k) :=
+    hasSum_sum_of_ne_finset_zero (fun k hk => by
+      rw [Finset.mem_range, not_lt] at hk
+      simp only [eulerCoef]
+      rw [ite_eq_right (by omega), zero_mul])
+  convert h using 1
+  rw [add_comm, add_pow]
+  refine Finset.sum_congr rfl fun k hk => ?_
+  have hk' : k ≤ n := Nat.lt_succ_iff.mp (Finset.mem_range.mp hk)
+  rw [eulerCoef, ite_eq_left hk', one_pow, mul_one, div_pow]
+  ring
+
+/-- The complex binomial expansion of `(n⁻¹ Z + 1)^n`, entrywise. -/
+lemma hasSum_euler_apply (Z : Matrix ι ι ℂ) (n : ℕ) (i j : ι) :
+    HasSum (fun k => (eulerCoef n k : ℂ) * (Z ^ k) i j) ((((n : ℂ)⁻¹ • Z + 1) ^ n) i j) := by
+  rw [euler_apply]
+  exact hasSum_sum_of_ne_finset_zero fun k hk => by
+    rw [Finset.mem_range, not_lt] at hk
+    simp only [eulerCoef]
+    rw [ite_eq_right (by omega), Complex.ofReal_zero, zero_mul]
+
+open scoped Matrix.Norms.Operator in
+/-- Entrywise exponential series. -/
+lemma hasSum_exp_apply (Z : Matrix ι ι ℂ) (i j : ι) :
+    HasSum (fun k : ℕ => ((k.factorial : ℂ))⁻¹ * (Z ^ k) i j) (exp Z i j) := by
+  have h := NormedSpace.exp_series_hasSum_exp' (𝕂 := ℂ) Z
+  have h2 := Pi.hasSum.mp (Pi.hasSum.mp h i) j
+  convert h2 using 1
+  rfl
+
+/-- The real exponential series. -/
+lemma hasSum_exp_real (x : ℝ) :
+    HasSum (fun k : ℕ => ((k.factorial : ℝ))⁻¹ * x ^ k) (Real.exp x) := by
+  have h := NormedSpace.exp_series_hasSum_exp' (𝕂 := ℝ) x
+  rw [← Real.exp_eq_exp_ℝ] at h
+  simpa [smul_eq_mul] using h
+
+/-- **Euler approximation**: `|(e^Z - (1 + Z/n)^n)_{ij}| ≤ e^c - (1 + c/n)^n` when the rows of `Z`
+have `ℓ¹`-norm at most `c`. -/
+lemma norm_exp_sub_euler_le (Z : Matrix ι ι ℂ) (c : ℝ) (hc : 0 ≤ c)
+    (hZ : ∀ i, ∑ l, ‖Z i l‖ ≤ c) (n : ℕ) (i j : ι) :
+    ‖exp Z i j - (((n : ℂ)⁻¹ • Z + 1) ^ n) i j‖ ≤ Real.exp c - (1 + c / n) ^ n := by
+  refine ((hasSum_exp_apply Z i j).sub (hasSum_euler_apply Z n i j)).norm_le_of_bounded
+    ((hasSum_exp_real c).sub (hasSum_euler_real c n)) fun k => ?_
+  rw [← sub_mul, ← sub_mul, norm_mul]
+  have he := eulerCoef_le n k
+  have hZk := norm_pow_apply_le Z c hc hZ k i j
+  have e : ‖((k.factorial : ℂ))⁻¹ - (eulerCoef n k : ℂ)‖ = (k.factorial : ℝ)⁻¹ - eulerCoef n k := by
+    rw [show ((k.factorial : ℂ))⁻¹ - (eulerCoef n k : ℂ) =
+        (((k.factorial : ℝ)⁻¹ - eulerCoef n k : ℝ) : ℂ) by push_cast; ring,
+      Complex.norm_real, Real.norm_eq_abs, abs_of_nonneg (by linarith)]
+  rw [e]
+  exact mul_le_mul_of_nonneg_left hZk (by linarith)
+
+end Euler
+
+
+section Majorant
+
+variable {ι : Type*} [Fintype ι] [DecidableEq ι]
+
+/-- Entrywise majorants are preserved by powers. -/
+lemma norm_pow_le_of_le (M : Matrix ι ι ℂ) (B : Matrix ι ι ℝ) (hMB : ∀ u v, ‖M u v‖ ≤ B u v)
+    (k : ℕ) (u v : ι) : ‖(M ^ k) u v‖ ≤ (B ^ k) u v := by
+  induction k generalizing v with
+  | zero =>
+    rw [pow_zero, pow_zero, Matrix.one_apply, Matrix.one_apply]
+    split_ifs <;> simp
+  | succ k ih =>
+    rw [pow_succ, pow_succ, Matrix.mul_apply, Matrix.mul_apply]
+    refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun l _ => ?_)
+    rw [norm_mul]
+    exact mul_le_mul (ih l) (hMB l v) (norm_nonneg _) ((norm_nonneg _).trans (ih l))
+
+/-- Entrywise binomial expansion of `(τ A + c 1)^n`. -/
+lemma pow_smul_add_smul_one_apply (A : Matrix ι ι ℝ) (τ c : ℝ) (n : ℕ) (i j : ι) :
+    ((τ • A + c • (1 : Matrix ι ι ℝ)) ^ n) i j =
+      ∑ k ∈ Finset.range (n + 1), τ ^ k * c ^ (n - k) * (n.choose k : ℝ) * (A ^ k) i j := by
+  rw [(((Commute.one_right A).smul_right c).smul_left τ).add_pow, Matrix.sum_apply]
+  refine Finset.sum_congr rfl fun k _ => ?_
+  rw [smul_pow, smul_pow, one_pow, ← Matrix.diagonal_natCast, Matrix.mul_diagonal,
+    Matrix.smul_mul, Matrix.mul_smul, mul_one, Matrix.smul_apply, Matrix.smul_apply]
+  simp only [smul_eq_mul]
+  ring
+
+end Majorant
+
+/-- The adjacency matrix of `[a, b]`. -/
+def adj (a b : ℤ) : Matrix (Set.Icc a b) (Set.Icc a b) ℝ := fun u v =>
+  if |u.1 - v.1| = 1 then 1 else 0
+
+/-- Entries of powers of the adjacency matrix: nonnegative, at most `2^k`, and zero beyond
+distance `k` (nearest-neighbour paths). -/
+lemma adj_pow_le (a b : ℤ) (k : ℕ) : ∀ y x : Set.Icc a b,
+    0 ≤ (adj a b ^ k) y x ∧ (adj a b ^ k) y x ≤ if |y.1 - x.1| ≤ k then (2 : ℝ) ^ k else 0 := by
+  induction k with
+  | zero =>
+    intro y x
+    rw [pow_zero, Matrix.one_apply]
+    by_cases h : y = x
+    · rw [ite_eq_left h, h, sub_self, abs_zero]
+      simp
+    · rw [ite_eq_right h]
+      refine ⟨le_rfl, ?_⟩
+      split_ifs <;> positivity
+  | succ k ih =>
+    intro y x
+    rw [pow_succ', Matrix.mul_apply]
+    have hA0 : ∀ u, 0 ≤ adj a b y u := fun u => by unfold adj; split_ifs <;> norm_num
+    refine ⟨Finset.sum_nonneg fun u _ => mul_nonneg (hA0 u) (ih u x).1, ?_⟩
+    by_cases h : |y.1 - x.1| ≤ ((k + 1 : ℕ) : ℤ)
+    · rw [ite_eq_left h]
+      calc ∑ u, adj a b y u * (adj a b ^ k) u x ≤ ∑ u, adj a b y u * 2 ^ k := by
+            refine Finset.sum_le_sum fun u _ => mul_le_mul_of_nonneg_left ?_ (hA0 u)
+            refine (ih u x).2.trans ?_
+            split_ifs
+            · exact le_rfl
+            · positivity
+        _ = (∑ u, adj a b y u) * 2 ^ k := by rw [Finset.sum_mul]
+        _ ≤ 2 * 2 ^ k := by
+            gcongr
+            exact sum_adj_le_two a b y.1
+        _ = 2 ^ (k + 1) := by ring
+    · rw [ite_eq_right h]
+      refine le_of_eq (Finset.sum_eq_zero fun u _ => ?_)
+      by_cases hyu : |y.1 - u.1| = 1
+      · have hux : ¬ |u.1 - x.1| ≤ (k : ℤ) := by
+          intro hc
+          apply h
+          have := abs_sub_le y.1 u.1 x.1
+          push_cast
+          linarith
+        have h1 := (ih u x).2
+        rw [ite_eq_right hux] at h1
+        rw [le_antisymm h1 (ih u x).1, mul_zero]
+      · rw [show adj a b y u = 0 from ite_eq_right hyu, zero_mul]
+
+/-- `‖1 + it‖ ≤ 1 + t²`. -/
+lemma norm_one_add_mul_I_le (t : ℝ) : ‖(1 : ℂ) + t * Complex.I‖ ≤ 1 + t ^ 2 := by
+  have h : ‖(1 : ℂ) + t * Complex.I‖ ^ 2 = 1 + t ^ 2 := by
+    rw [Complex.sq_norm, show (1 : ℂ) = ((1 : ℝ) : ℂ) by simp, Complex.normSq_add_mul_I]
+    ring
+  nlinarith [norm_nonneg ((1 : ℂ) + t * Complex.I), sq_nonneg t]
+
+/-- One term of the binomial majorant. -/
+lemma term_le (n k : ℕ) (x c A : ℝ) (hx : 0 ≤ x) (hc : 1 ≤ c) (hA0 : 0 ≤ A) (hA : A ≤ 2 ^ k) :
+    (x / n) ^ k * c ^ (n - k) * (n.choose k : ℝ) * A ≤ c ^ n * ((2 * x) ^ k / k.factorial) := by
+  have h1 := choose_div_pow_le n k
+  have h2 : c ^ (n - k) ≤ c ^ n := pow_le_pow_right₀ hc (Nat.sub_le n k)
+  calc (x / n) ^ k * c ^ (n - k) * (n.choose k : ℝ) * A
+      = ((n.choose k : ℝ) / (n : ℝ) ^ k) * x ^ k * c ^ (n - k) * A := by rw [div_pow]; ring
+    _ ≤ (k.factorial : ℝ)⁻¹ * x ^ k * c ^ n * 2 ^ k := by
+        have : 0 ≤ (n.choose k : ℝ) / (n : ℝ) ^ k := by positivity
+        have : 0 ≤ c ^ (n - k) := by positivity
+        gcongr
+    _ = c ^ n * ((2 * x) ^ k / k.factorial) := by rw [mul_pow]; ring
+
+/-- The majorant series is summable. -/
+lemma summable_tail (x : ℝ) (hx : 0 ≤ x) (m : ℕ) :
+    Summable (fun k : ℕ => if m ≤ k then x ^ k / (k.factorial : ℝ) else 0) := by
+  refine Summable.of_nonneg_of_le (fun k => ?_) (fun k => ?_) (Real.summable_pow_div_factorial x)
+  · split_ifs <;> positivity
+  · split_ifs
+    · exact le_rfl
+    · positivity
+
+/-- **Main term**: the Euler approximants `(1 - isH/n)^n` obey the finite-speed bound up to the
+factor `(1 + s² ∑ w² / n²)^n`. -/
+lemma main_term_le (a b : ℤ) (ha : a ≤ 0) (hb : 0 ≤ b) (w : ℤ → ℝ) (s : ℝ) (y : Set.Icc a b)
+    (n : ℕ) :
+    ‖((((n : ℂ)⁻¹ • ((-(s : ℂ) * Complex.I) • cplx (schrH a b w)) + 1) ^ n) y
+        (origin a b ha hb))‖ ≤
+      (1 + (s / n) ^ 2 * ∑ u : Set.Icc a b, (w u.1) ^ 2) ^ n *
+        ∑' k : ℕ, if (y.1).natAbs ≤ k then (2 * |s|) ^ k / (k.factorial : ℝ) else 0 := by
+  set Wq := ∑ u : Set.Icc a b, (w u.1) ^ 2 with hWq
+  set c := 1 + (s / n) ^ 2 * Wq with hc
+  have hc1 : 1 ≤ c := by
+    have : 0 ≤ (s / n) ^ 2 * Wq := by positivity
+    linarith
+  set M := (n : ℂ)⁻¹ • ((-(s : ℂ) * Complex.I) • cplx (schrH a b w)) + 1 with hM
+  set B := (|s| / n) • adj a b + c • (1 : Matrix (Set.Icc a b) (Set.Icc a b) ℝ) with hB
+  have hMB : ∀ u v, ‖M u v‖ ≤ B u v := by
+    intro u v
+    simp only [hM, hB, Matrix.add_apply, Matrix.smul_apply, smul_eq_mul, cplx, Matrix.map_apply]
+    by_cases huv : u = v
+    · subst huv
+      rw [Matrix.one_apply_eq, Matrix.one_apply_eq]
+      have hA : adj a b u u = 0 := by simp [adj]
+      have hH : schrH a b w u u = w u.1 := by simp [schrH]
+      rw [hA, hH, mul_zero, zero_add, mul_one]
+      have e : (n : ℂ)⁻¹ * (-(s : ℂ) * Complex.I * (w u.1 : ℂ)) + 1 =
+          (1 : ℂ) + ((-(s * w u.1 / n) : ℝ) : ℂ) * Complex.I := by
+        push_cast; ring
+      rw [e]
+      refine (norm_one_add_mul_I_le _).trans ?_
+      have hw : (w u.1) ^ 2 ≤ Wq :=
+        Finset.single_le_sum (f := fun u : Set.Icc a b => (w u.1) ^ 2)
+          (fun _ _ => sq_nonneg _) (Finset.mem_univ u)
+      have e2 : (-(s * w u.1 / n)) ^ 2 = (s / n) ^ 2 * (w u.1) ^ 2 := by ring
+      rw [e2]
+      have : 0 ≤ (s / n) ^ 2 := sq_nonneg _
+      nlinarith
+    · rw [Matrix.one_apply_ne huv, Matrix.one_apply_ne huv, add_zero, mul_zero, add_zero]
+      rw [norm_mul, norm_mul, norm_mul, norm_inv, Complex.norm_natCast, norm_neg,
+        Complex.norm_real, Complex.norm_I, mul_one, Complex.norm_real, Real.norm_eq_abs,
+        Real.norm_eq_abs]
+      have hHA : |schrH a b w u v| = adj a b u v := by
+        have hne : u.1 ≠ v.1 := fun e => huv (Subtype.ext e)
+        simp only [schrH, adj, ite_eq_right hne]
+        split_ifs <;> simp
+      rw [hHA, div_eq_inv_mul]
+      ring_nf
+      exact le_rfl
+  have h1 := norm_pow_le_of_le M B hMB n y (origin a b ha hb)
+  rw [hB, pow_smul_add_smul_one_apply] at h1
+  refine h1.trans ?_
+  set f : ℕ → ℝ := fun k => if (y.1).natAbs ≤ k then (2 * |s|) ^ k / (k.factorial : ℝ) else 0
+    with hf
+  calc ∑ k ∈ Finset.range (n + 1), (|s| / n) ^ k * c ^ (n - k) * (n.choose k : ℝ) *
+        (adj a b ^ k) y (origin a b ha hb)
+      ≤ ∑ k ∈ Finset.range (n + 1), c ^ n * f k := by
+        refine Finset.sum_le_sum fun k _ => ?_
+        have hA := adj_pow_le a b k y (origin a b ha hb)
+        have hy : |y.1 - (origin a b ha hb).1| ≤ (k : ℤ) ↔ (y.1).natAbs ≤ k := by
+          simp only [origin, sub_zero, Int.abs_eq_natAbs]
+          exact Nat.cast_le
+        simp only [hf]
+        by_cases hk : (y.1).natAbs ≤ k
+        · rw [ite_eq_left hk]
+          rw [ite_eq_left (hy.mpr hk)] at hA
+          exact term_le n k |s| c _ (abs_nonneg s) hc1 hA.1 hA.2
+        · rw [ite_eq_right hk, mul_zero]
+          rw [ite_eq_right (fun h => hk (hy.mp h))] at hA
+          rw [le_antisymm hA.2 hA.1, mul_zero]
+    _ = c ^ n * ∑ k ∈ Finset.range (n + 1), f k := by rw [Finset.mul_sum]
+    _ ≤ c ^ n * ∑' k, f k := by
+        refine mul_le_mul_of_nonneg_left ?_ (by positivity)
+        exact (summable_tail (2 * |s|) (by positivity) _).sum_le_tsum _
+          (fun k _ => by simp only [hf]; split_ifs <;> positivity)
+
+
+/-- Tail of the exponential series: `∑_{k ≥ m} x^k/k! ≤ (x^m/m!) e^x`. -/
+lemma tail_exp_le (x : ℝ) (hx : 0 ≤ x) (m : ℕ) :
+    ∑' k : ℕ, (if m ≤ k then x ^ k / (k.factorial : ℝ) else 0) ≤
+      x ^ m / (m.factorial : ℝ) * Real.exp x := by
+  set f : ℕ → ℝ := fun k => if m ≤ k then x ^ k / (k.factorial : ℝ) else 0 with hf
+  have hfs : Summable f := summable_tail x hx m
+  rw [← hfs.sum_add_tsum_nat_add m]
+  have h0 : ∑ i ∈ Finset.range m, f i = 0 := Finset.sum_eq_zero fun i hi => by
+    rw [Finset.mem_range] at hi
+    simp only [hf]
+    rw [ite_eq_right (by omega)]
+  rw [h0, zero_add]
+  have hexp : Real.exp x = ∑' j : ℕ, x ^ j / (j.factorial : ℝ) := by
+    rw [Real.exp_eq_exp_ℝ, NormedSpace.exp_eq_tsum_div]
+  rw [hexp, ← tsum_mul_left]
+  refine ((summable_nat_add_iff m).mpr hfs).tsum_le_tsum (fun j => ?_)
+    ((Real.summable_pow_div_factorial x).mul_left _)
+  simp only [hf]
+  rw [ite_eq_left (by omega)]
+  have h1 : ((m.factorial : ℝ) * j.factorial) ≤ ((j + m).factorial : ℝ) := by
+    have := Nat.factorial_mul_factorial_dvd_factorial_add m j
+    rw [add_comm m j] at this
+    exact_mod_cast Nat.le_of_dvd (Nat.factorial_pos _) this
+  rw [pow_add, div_mul_div_comm, mul_comm (x ^ j) (x ^ m)]
+  exact div_le_div_of_nonneg_left (by positivity) (by positivity) h1
+
 end DimerTLAux
 
 /-- **Finite speed, uniformly in the potential** (paper: Lemma `lem:dimerTL`(i)). -/
 theorem dimerTL_i (a b : ℤ) (ha : a ≤ 0) (hb : 0 ≤ b) (w : ℤ → ℝ) (s : ℝ) (y : Set.Icc a b) :
     ‖evo (schrH a b w) s y (origin a b ha hb)‖ ≤
       ∑' k : ℕ, if (y.1).natAbs ≤ k then (2 * |s|) ^ k / (k.factorial : ℝ) else 0 := by
-  sorry
+  set o := origin a b ha hb with ho
+  set S := ∑' k : ℕ, if (y.1).natAbs ≤ k then (2 * |s|) ^ k / (k.factorial : ℝ) else 0 with hS
+  set Z : Matrix (Set.Icc a b) (Set.Icc a b) ℂ := (-(s : ℂ) * Complex.I) • cplx (schrH a b w)
+    with hZ
+  set Wb := ∑ u : Set.Icc a b, |w u.1| with hWb
+  set Wq := ∑ u : Set.Icc a b, (w u.1) ^ 2 with hWq
+  set c := |s| * (Wb + 2) with hc
+  have hWb0 : 0 ≤ Wb := Finset.sum_nonneg fun _ _ => abs_nonneg _
+  have hc0 : 0 ≤ c := by positivity
+  have hZrow : ∀ i, ∑ l, ‖Z i l‖ ≤ c := by
+    intro i
+    have e : ∀ l, ‖Z i l‖ = |s| * |schrH a b w i l| := by
+      intro l
+      simp only [hZ, Matrix.smul_apply, smul_eq_mul, cplx, Matrix.map_apply]
+      rw [norm_mul, norm_mul, norm_neg, Complex.norm_real, Complex.norm_I, mul_one,
+        Complex.norm_real, Real.norm_eq_abs, Real.norm_eq_abs]
+    simp only [e, ← Finset.mul_sum]
+    have h1 := DimerTLAux.sum_abs_schrH_le a b w i
+    have h2 : |w i.1| ≤ Wb := Finset.single_le_sum (f := fun u : Set.Icc a b => |w u.1|)
+      (fun _ _ => abs_nonneg _) (Finset.mem_univ i)
+    exact mul_le_mul_of_nonneg_left (by linarith) (abs_nonneg s)
+  have hbound : ∀ n : ℕ, 1 ≤ n → ‖evo (schrH a b w) s y o‖ ≤
+      (Real.exp c - (1 + c / n) ^ n) + (1 + (s / n) ^ 2 * Wq) ^ n * S := by
+    intro n _
+    have e1 := DimerTLAux.norm_exp_sub_euler_le Z c hc0 hZrow n y o
+    have e2 := DimerTLAux.main_term_le a b ha hb w s y n
+    have hev : evo (schrH a b w) s y o = NormedSpace.exp Z y o := rfl
+    calc ‖evo (schrH a b w) s y o‖
+        = ‖(NormedSpace.exp Z y o - (((n : ℂ)⁻¹ • Z + 1) ^ n) y o) +
+            (((n : ℂ)⁻¹ • Z + 1) ^ n) y o‖ := by rw [hev, sub_add_cancel]
+      _ ≤ ‖NormedSpace.exp Z y o - (((n : ℂ)⁻¹ • Z + 1) ^ n) y o‖ +
+            ‖(((n : ℂ)⁻¹ • Z + 1) ^ n) y o‖ := norm_add_le _ _
+      _ ≤ (Real.exp c - (1 + c / n) ^ n) + (1 + (s / n) ^ 2 * Wq) ^ n * S := add_le_add e1 e2
+  have hlim1 : Filter.Tendsto (fun n : ℕ => Real.exp c - (1 + c / n) ^ n) Filter.atTop
+      (nhds 0) := by
+    have := (Real.tendsto_one_add_div_pow_exp c).const_sub (Real.exp c)
+    simpa using this
+  have hlim2 : Filter.Tendsto (fun n : ℕ => (1 + (s / n) ^ 2 * Wq) ^ n) Filter.atTop
+      (nhds 1) := by
+    have h := Real.tendsto_one_add_pow_exp_of_tendsto (g := fun n : ℕ => (s / n) ^ 2 * Wq)
+      (t := 0) ?_
+    · simpa using h
+    · refine (tendsto_const_div_atTop_nhds_zero_nat (s ^ 2 * Wq)).congr fun n => ?_
+      rcases Nat.eq_zero_or_pos n with hn | hn
+      · simp [hn]
+      · have : (n : ℝ) ≠ 0 := by positivity
+        field_simp
+  have hlim := hlim1.add (hlim2.mul_const S)
+  rw [zero_add, one_mul] at hlim
+  exact ge_of_tendsto hlim (Filter.eventually_atTop.mpr ⟨1, hbound⟩)
 
 /-- The tail bound in (i): `∑_{k ≥ m} c^k/k! ≤ (c^m / m!) e^c`. -/
 theorem dimerTL_i' (a b : ℤ) (ha : a ≤ 0) (hb : 0 ≤ b) (w : ℤ → ℝ) (s : ℝ) (y : Set.Icc a b) :
     ‖evo (schrH a b w) s y (origin a b ha hb)‖ ≤
-      (2 * |s|) ^ (y.1).natAbs / ((y.1).natAbs.factorial : ℝ) * Real.exp (2 * |s|) := by
-  sorry
+      (2 * |s|) ^ (y.1).natAbs / ((y.1).natAbs.factorial : ℝ) * Real.exp (2 * |s|) :=
+  (dimerTL_i a b ha hb w s y).trans (DimerTLAux.tail_exp_le (2 * |s|) (by positivity) _)
 
 /-- **Thermodynamic limit** (paper: Lemma `lem:dimerTL`(ii), finite `Λ'`). -/
 theorem dimerTL_ii (a b a' b' : ℤ) (ha : a ≤ 0) (hb : 0 ≤ b) (ha' : a' ≤ a) (hb' : b ≤ b')
