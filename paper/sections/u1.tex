@@ -59,8 +59,8 @@ $[G_j,f_j^\dagger U_jf_{j+1}]=f_j^\dagger[E_j,U_j]f_{j+1}-[n_j,f_j^\dagger]U_jf_
   H=-w\sum_{j=1}^{L-1}\bigl(f_j^\dagger U_jf_{j+1}+\text{h.c.}\bigr)+m\sum_{j=1}^L(-1)^jn_j
   +\frac{g^2}2\sum_{j=1}^L(E_j+\vartheta)^2,
 \end{equation}
-with $w,g>0$ and $m,\vartheta\in\R$ (for quantum links the hopping is often divided by $\sqrt{S(S+1)}$; nothing
-below depends on this).  It is the lattice Schwinger model for Wilson links (cf.\ \cite[Eq.~(1)]{Brenes2018},
+with $w,g>0$ and $m,\vartheta\in\R$ (for quantum links the hopping is often divided by $\sqrt{S(S+1)}$; the kinematic
+statements below do not depend on this, and the normalization enters only the constants of \cref{rem:adhh}(a)).  It is the lattice Schwinger model for Wilson links (cf.\ \cite[Eq.~(1)]{Brenes2018},
 whose generators $G_n=L_n-L_{n-1}-\psi_n^\dagger\psi_n+\frac12[1-(-1)^n]$ coincide with \eqref{eq:gaussU1}).  For
 $Q\in\R^L$ let $P_Q$ be the joint spectral projection onto $\{G_j=Q_j\ \forall j\}$, the sector with static
 background charges $Q_j$.  In a sector, \eqref{eq:gaussU1} determines the fields recursively,
@@ -215,8 +215,14 @@ $\langle(E_\ell+\vartheta)^2\rangle\ge\Var E_\ell$, which is what enters.
 $-w(f_j^\dagger U_jf_{j+1}+\text{h.c.})$ has norm exactly $w$, by the identity $\norm{X+X^*}=\norm X$ for $X^2=0$ used in
 the proof (the naive estimate $\norm X+\norm{X^*}$ would give $2w$).  If the hopping is written with $w/2$ in
 place of $w$, replace $w$ by $w/2$ in (b)--(e).  With the quantum-link normalization, in which $U_j=S^+_j$ is divided
-by $\sqrt{S(S+1)}$, the same argument gives at most $w$ per bond, since $\norm{S^+}\le\sqrt{S(S+1)}$; but for
-quantum links \cref{prop:gausscap} is stronger anyway.
+by $\sqrt{S(S+1)}$, the same argument gives exactly $c_S\,w$ per bond, where
+\[
+  c_S:=\frac{\norm{S^+}}{\sqrt{S(S+1)}}=\max_{-S\le m\le S-1}\sqrt{\frac{(S-m)(S+m+1)}{S(S+1)}}
+  =\begin{cases}1 & (S\in\N),\\ \dfrac{S+\frac12}{\sqrt{S(S+1)}} & (S\in\N-\frac12),\end{cases}
+\]
+since the maximum is attained at $m=0$ for integer $S$ and at $m=-\frac12$ for half-integer $S$.  So $1\le c_S\le
+c_{1/2}=2/\sqrt3$; note that $\norm{S^+}>\sqrt{S(S+1)}$ for half-integer $S$ (e.g.\ $\norm{S^+}=1$ for $S=\frac12$).
+For quantum links \cref{prop:gausscap} is stronger anyway.
 \end{enumerate}
 \end{remark}
 
@@ -311,11 +317,13 @@ isolated $U(1)$ charge an integrated walk $V\sim\abs x^{3/2}$ on top of the stri
 \begin{enumerate}[label=(\alph*)]
 \item \emph{An elementary bound.}  If $H=\nu\mathcal N+H'$ with $\mathcal N$ self-adjoint, $H'$ bounded and
 $\nu>0$, then energy conservation gives $\abs{\langle\mathcal N\rangle_t-\langle\mathcal N\rangle_0}\le2\norm{H'}/\nu$ for
-all $t$.  For \eqref{eq:HU1} with quantum links, $\nu=g^2/2$ and $\mathcal N=\sum_j(E_j+\vartheta)^2$, the hopping
-and mass terms have norm at most $L(w+\abs m)$ (as in the proof of \cref{prop:wilson}, the QLM hopping
-normalized by $\sqrt{S(S+1)}$), so the electric-energy density changes by at most $4(w+\abs m)/g^2$, \emph{for all
-times}.  Likewise, for a penalty $V\sum_j(G_j-g_j)^2$ added to gauge-invariant and gauge-breaking terms
-$H_0+\lambda H_1$, the density of Gauss-law violations changes by at most $2\norm{H_0+\lambda H_1}/(VL)$.
+all $t$ (since $\nu\langle\mathcal N\rangle_t+\langle H'\rangle_t$ is conserved).  For \eqref{eq:HU1} with quantum
+links, $\nu=g^2/2$ and $\mathcal N=\sum_j(E_j+\vartheta)^2$, the hopping and mass terms have norm at most
+$(L-1)c_Sw+\abs m\lceil L/2\rceil\le L(c_Sw+\abs m)$, with the QLM hopping normalized by $\sqrt{S(S+1)}$ and $c_S\le2/\sqrt3$
+as in \cref{rem:wilson}(c) (each bond term has norm $c_Sw$ by the argument in the proof of \cref{prop:wilson}).  So the
+electric-energy density changes by at most $4(c_Sw+\abs m)/g^2$, \emph{for all times}.  Likewise, for a penalty
+$V\sum_j(G_j-Q_j)^2$ ($Q_j$ the target background charges) added to gauge-invariant and gauge-breaking terms
+$H_0+\eta H_1$, the density of Gauss-law violations changes by at most $2\norm{H_0+\eta H_1}/(VL)$.
 \item \emph{What \cite{ADHH2017} adds.}  We checked the statements against the arXiv text (arXiv:1509.05386v3).
 In the time-independent setting, \cite[Thm.~3.1]{ADHH2017} assumes a spin system on $(\C^{\mathsf q})^{\otimes\Lambda}$,
 $\Lambda\subset\Z^d$ finite, and a Hamiltonian $\nu\mathcal N+H$ with $\mathcal N=\sum_x\mathcal N_x$, each $\mathcal N_x$ acting on
@@ -327,10 +335,11 @@ $Y(\nu\mathcal N+H)Y^*=\nu\mathcal N+\hat D+\hat V$, $[\hat D,\mathcal N]=0$, $\
 $\norm{\hat V}_{\kappa_{n_*}}\le(2/3)^{n_*}\norm V_{\kappa_0}$.  \cite[Thm.~3.2]{ADHH2017} gives
 $\abs\Lambda^{-1}\norm{U(t)^*Y^*\mathcal NYU(t)-Y^*\mathcal NY}\le tK_0'(2/3)^{n_*}$ for
 $U(t)=\e^{-\ii t(\nu\mathcal N+H)}$, and \cite[Thm.~3.3]{ADHH2017}
-gives the effective dynamics of local observables under $\nu\mathcal N+\hat D$ up to times $\e^{r_1n_*}$.  For the
-electric energy of a one-dimensional quantum link model, the local spaces are finite dimensional, the fermions
-can be mapped to spins by a Jordan--Wigner transformation (a hop between consecutive modes carries no string),
-and $\mathcal N_x=(E_x+\vartheta)^2$ has spectrum in $c+\Z$ if and only if $2\vartheta\in\Z$ (for rational $\vartheta$, in a
+gives the effective dynamics of local observables under $\nu\mathcal N+\hat D$, with errors $K_3(O)/\nu$, up to times
+$\e^{r_1n_*}$ ($0<r_1<\ln(3/2)/(d+1)$).  For the electric energy of a one-dimensional quantum link model, group site $j$
+and link $b_j$ into one lattice site $x=j$; then the local spaces are finite dimensional, the hopping couples nearest
+neighbours, the fermions can be mapped to spins by a Jordan--Wigner transformation (a hop between consecutive modes
+carries no string), and $\mathcal N_x=(E_x+\vartheta)^2$ acts on the single site $x$ and has spectrum in $c+\Z$ if and only if $2\vartheta\in\Z$ (for rational $\vartheta$, in a
 lattice $c+\frac1r\Z$, after which $\nu$ is rescaled).  With these identifications the hypotheses of
 \cite[Thm.~3.1]{ADHH2017} appear to be met, and one expects the \emph{dressed} electric energy to be conserved up to
 errors $t\,\e^{-cn_*}$, with $n_*$ of order $x/(1+\ln x)^3$, $x\propto g^2/(w+\abs m)$, together with an effective,
@@ -338,9 +347,10 @@ electric-energy-conserving
 (fragmented) dynamics generated by $\hat D$.  We have not written out the constants, and we therefore state this as
 a remark.  Compared with (a), the gain is the exponential accuracy for the dressed quantity and the effective
 dynamics, not the conservation of the bare density, which holds to $O(1/g^2)$ for all times anyway.
-\item \emph{Not covered.}  The gauge-protection penalty $\mathcal N=\sum_j(G_j-g_j)^2$ has commuting terms of
-finite range with integer spectrum, but $G_j$ acts on a site and two links, not on a single site; so
-\cite[Thm.~3.1]{ADHH2017} does not apply as stated.  By \cite{ADHH2017} one expects exponentially long gauge
+\item \emph{Not covered.}  The gauge-protection penalty $\mathcal N=\sum_j(G_j-Q_j)^2$ has commuting terms of
+finite range with integer spectrum, but $G_j$ acts on a site and two links, and consecutive $G_j$ share a link, so no
+grouping of sites and links makes all of them single-site operators; so \cite[Thm.~3.1]{ADHH2017} does not apply as
+stated.  By \cite{ADHH2017} one expects exponentially long gauge
 protection here too, but we have not checked the extension.  Wilson links have infinite-dimensional local spaces
 and are not covered.
 \end{enumerate}
@@ -354,8 +364,9 @@ and zero or random $Q$.  The number of values of $N_A$ never exceeds the caps; f
 $4S+1$ (bulk) are realized for $S=\frac12,1$, and equal-weight superpositions reach $\SN=\ln(2S+1)$, $\ln(4S+1)$.  Along
 the dynamics generated by a gauge-invariant Hamiltonian with random on-site potentials and a nearest-neighbour
 interaction ($S=1$, $t\le10^4$), $\sup_t\SN=0.97\le\ln3$ (edge) and $1.11\le\ln5$ (bulk).  For superpositions of
-$256$ (resp.\ $729$) background-charge sectors (bare-vacuum fermions, every link in an equal superposition of its
-electric eigenstates), $\SN(t)$ stays below $\ln(2S+1)+\Ush(\UQ_A)$, resp.\ $\ln(4S+1)+\Ush(\UQ_A)$.
+$256$ background-charge sectors ($S=\frac12$) and of $729$ sectors ($S=1$) (bare-vacuum fermions, every link in an equal
+superposition of its electric eigenstates), $\SN(t)$ stays below $\ln(2S+1)+\Ush(\UQ_A)$ for intervals at the
+fixed-flux edge and below $\ln(4S+1)+\Ush(\UQ_A)$ for bulk intervals.
 \item \Cref{prop:wilson} for the Schwinger model with $L=12$, $Q=0$, bare-vacuum initial state, $w=1$,
 $t\le10^4$, and the three parameter sets $(m,g^2)=(0,\frac14)$, $(\frac12,\frac12)$, $(0,2)$: (a) holds to machine
 precision, and the cut averages
@@ -366,6 +377,7 @@ diagonalization of $H_{\rm std}$ and projection onto the joint eigenspaces of th
 the two-fermion statements of (b).  For the eigenfunction correlator $\E\,\Qc^{[1,N]}(x_0,x_0+d)$ of the one-fermion operator ($N=600$, $x_0=300$,
 $200$ samples), the
 random-walk potential gives much smaller values than the i.i.d.\ Bernoulli potential at large $d$: for $h=J/2$,
-$6.7\times10^{-5}$ versus $3.1\times10^{-3}$ at $d=64$ and $10^{-13}$ versus $2.8\times10^{-5}$ at $d=128$.
+$6.7\times10^{-5}$ versus $3.1\times10^{-3}$ at $d=64$, and at $d=128$ a value of order $10^{-13}$, i.e.\ at the
+level of the round-off errors of the computed eigenvectors, versus $2.8\times10^{-5}$.
 \end{itemize}
 \end{remark}

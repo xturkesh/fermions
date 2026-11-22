@@ -18,7 +18,8 @@ constraint (\cref{thm:2dmap}).  We then determine the sector laws of two familie
 states (\cref{prop:2dlaws}): $\sigma^z$-polarized links give the two-dimensional Anderson model with
 Bernoulli potential, and $\sigma^x$-polarized links with a checkerboard charge-density wave give binary
 random $\pi$-flux with a staggered potential.  At strong coupling we prove a cluster-confinement estimate,
-valid up to times of order $h/J^2$ (\cref{prop:cluster}), and we explain why it cannot be pushed further.
+valid up to times of order $h/J^2$ (\cref{prop:cluster}), and we explain heuristically why this argument does not
+extend beyond that time scale.
 Finally we summarize what is (not) known about the two-dimensional one-body problems.  In contrast to one
 dimension, we do \emph{not} obtain sector-averaged localization for any $h$ in two dimensions: the
 required one-body input is not available (\cref{sec:2d:status}).
@@ -145,8 +146,9 @@ horizontal edges of the row $\{y=0\}$ (resp.\ the vertical edges of the column $
 $\beta=L_1L_2+1$, $\prod_pW_p=\one$, and $\{\partial p:p\neq p_0\}\cup\{\gamma_1,\gamma_2\}$ is a basis of
 $\TCyc(\TLat)$ for any fixed plaquette $p_0$.  Hence the sectors are labelled by $q$, the plaquette fluxes
 $(W_p)_p$ subject to $\prod_pW_p=1$, and the two non-contractible Wilson loops $W_{\gamma_1},W_{\gamma_2}$,
-which are independent labels; all $2^{\abs V+\beta}$ labels occur, and in $h_{q,s}$ the non-contractible
-loops act as $\Z_2$ twists of the boundary conditions in the two directions.
+which are independent labels; all $2^{\abs V+\beta}$ labels occur.  In $h_{q,s}$ the non-contractible loops are the
+products of the hopping signs along $\gamma_1,\gamma_2$; when all $W_p=1$ they act as $\Z_2$ twists of the boundary
+conditions in the two directions.
 \end{enumerate}
 \end{theorem}
 
@@ -236,8 +238,11 @@ the set of vertical edges joining $(x,0)$ and $(x,1)$.  The linear forms $\ell_k
 vanish on every $\partial p$ (a plaquette contains $0$ or $2$ edges of $C_k$), and
 $\ell_1(\gamma_1)=\ell_2(\gamma_2)=1$, $\ell_1(\gamma_2)=\ell_2(\gamma_1)=0$.  Hence $\gamma_1,\gamma_2$ are independent
 modulo $B$, and $\{\partial p:p\ne p_0\}\cup\{\gamma_1,\gamma_2\}$ consists of $L_1L_2+1=\beta$ independent cycles, a
-basis.  Choosing $s$ as in \cref{lem:2dgauge}(iii), $W_{\gamma_1}$ and $W_{\gamma_2}$ are the products of the hopping
-signs around the two non-contractible directions, i.e.\ twisted boundary conditions.
+basis.  For every $s\in O_\varphi$, $W_{\gamma_k}$ acts on $\operatorname{Ran}P_{q,\varphi}$ as the product of the hopping
+signs $s_b$ along the non-contractible loop $\gamma_k$.  If moreover all $W_p=1$, one may take $s_b:=\varphi(\gamma_k)$ for
+$b\in C_k$ ($k=1,2$) and $s_b:=1$ otherwise: every plaquette contains $0$ or $2$ edges of each $C_k$, so all plaquette
+fluxes of this $s$ equal $1$, while $\varphi_s(\gamma_k)=\varphi(\gamma_k)$.  Then $K_s$ is the hopping operator of the torus
+with the $\Z_2$-twisted boundary conditions $\varphi(\gamma_1)$, $\varphi(\gamma_2)$ across the seams $C_1$, $C_2$.
 \end{proof}
 
 \begin{remark}[Comparison with \cite{SKKM2018}]\label{rem:2dSKKM}
@@ -283,7 +288,7 @@ torus: $(W_p)$ uniform on $\{\prod_pW_p=1\}$, and $W_{\gamma_1},W_{\gamma_2}$ in
 carries the matter state $\ket{n^0}$, and
 \begin{equation}\label{eq:2dlawx}
   \langle\Psi(t),O\Psi(t)\rangle=2^{-\beta}\sum_{\varphi\in\TFlux}
-  \bigl\langle\Gamma(\e^{-\ii th_{q^0,s^\varphi}})n^0,\,O_{q^0,s^\varphi}\,\Gamma(\e^{-\ii th_{q^0,s^\varphi}})n^0\bigr\rangle ,
+  \bigl\langle\Gamma(\e^{-\ii th_{q^0,s^\varphi}})\ket{n^0},\,O_{q^0,s^\varphi}\,\Gamma(\e^{-\ii th_{q^0,s^\varphi}})\ket{n^0}\bigr\rangle ,
   \qquad s^\varphi\in O_\varphi .
 \end{equation}
 \item \emph{Checkerboard.}  In (b) let $\TLat$ be bipartite with sublattice signs $\epsilon_i\in\{\pm1\}$
@@ -293,12 +298,13 @@ $K_s\Gamma_\epsilon=-\Gamma_\epsilon K_s$, and for every $s$:
 \begin{enumerate}[label=(\roman*)]
 \item $h_{q^0,s}^2=K_s^2+4h^2$;
 \item $\sigma(h_{q^0,s})\subset(-\infty,-2\abs h]\cup[2\abs h,\infty)$, and for every Borel set $B\subset[0,\infty)$,
-$\one_B(\abs{h_{q^0,s}})=\one_{g^{-1}(B)}(\abs{K_s})$ with $g(e):=\sqrt{e^2+4h^2}$.  In particular
+$\one_B(\abs{h_{q^0,s}})=\one_{\omega^{-1}(B)}(\abs{K_s})$ with $\omega(e):=\sqrt{e^2+4h^2}$ ($e\ge0$).  In particular
 $\one_{\{2\abs h\}}(\abs{h_{q^0,s}})$ is the projection onto $\ker K_s$, and
 $\one_{[2\abs h,\sqrt{4h^2+\delta^2}]}(\abs{h_{q^0,s}})=\one_{[0,\delta]}(\abs{K_s})$ for $\delta\ge0$: the
 chiral point $E=0$ of the random-flux operator $K_s$ is mapped to the inner band edges $\abs E=2\abs h$;
 \item with $R_s:=(K_s^2+4h^2)^{1/2}$, $\e^{-\ii th_{q^0,s}}=\cos(tR_s)-\ii\,h_{q^0,s}R_s^{-1}\sin(tR_s)$;
-\item $(K_s^2)_{ii}=J^2\deg(i)$.  If $\TLat$ is a box in $\Z^2$, $K_s^2$ connects only sites of the same
+\item if $\TLat$ is simple (no multiple edges), $(K_s^2)_{ii}=J^2\deg(i)$.  (For parallel edges of opposite signs
+the hopping amplitudes cancel, and this fails.)  If $\TLat$ is a box in $\Z^2$, $K_s^2$ connects only sites of the same
 sublattice at distance $2$: $(K_s^2)_{ik}=J^2s_{ij}s_{jk}$ if $k=i\pm2e_\mu$ (with midpoint $j$), and
 $(K_s^2)_{ik}=J^2s_{ij_1}s_{j_1k}(1+W_p)$ if $i,k$ are opposite corners of the plaquette $p$ with the other
 corners $j_1,j_2$; here $s_{ij}$ is the sign of the edge joining $i$ and $j$.  Thus the diagonal amplitudes of
@@ -335,12 +341,12 @@ uniformly distributed element of $\{\pm1\}^k$ with respect to a basis are i.i.d.
 $q^0_i=(-1)^{n^0_i}=-\epsilon_i$, so $h_{q^0,s}=K_s-2h\Gamma_\epsilon$.  (i)
 $(K_s-2h\Gamma_\epsilon)^2=K_s^2-2h(K_s\Gamma_\epsilon+\Gamma_\epsilon K_s)+4h^2\Gamma_\epsilon^2=K_s^2+4h^2$.  (ii) By
 (i), $h_{q^0,s}^2\ge4h^2$, which gives the spectral inclusion, and by the functional calculus
-$\abs{h_{q^0,s}}=(K_s^2+4h^2)^{1/2}=g(\abs{K_s})$; hence $\one_B(\abs{h_{q^0,s}})=(\one_B\circ g)(\abs{K_s})
-=\one_{g^{-1}(B)}(\abs{K_s})$.  Take $B=\{2\abs h\}$ and $B=[2\abs h,\sqrt{4h^2+\delta^2}]$, for which
-$g^{-1}(B)=\{0\}$ and $[0,\delta]$.  (iii) For real $E\ne0$, $\e^{-\ii tE}=\cos(t\abs E)-\ii(E/\abs E)\sin(t\abs E)$;
+$\abs{h_{q^0,s}}=(K_s^2+4h^2)^{1/2}=\omega(\abs{K_s})$; hence $\one_B(\abs{h_{q^0,s}})=(\one_B\circ\omega)(\abs{K_s})
+=\one_{\omega^{-1}(B)}(\abs{K_s})$.  Take $B=\{2\abs h\}$ and $B=[2\abs h,\sqrt{4h^2+\delta^2}]$, for which
+$\omega^{-1}(B)=\{0\}$ and $[0,\delta]$.  (iii) For real $E\ne0$, $\e^{-\ii tE}=\cos(t\abs E)-\ii(E/\abs E)\sin(t\abs E)$;
 apply the functional calculus to $h_{q^0,s}$, whose spectrum avoids $(-2\abs h,2\abs h)$, and use
-$\abs{h_{q^0,s}}=R_s$.  (iv) $(K_s^2)_{ik}=J^2\sum_js_{ij}s_{jk}$, summed over the common neighbours $j$ of $i$
-and $k$.  In a box these exist only for $k=i$ ($\deg(i)$ terms equal to $1$), for $k=i\pm2e_\mu$ (one common
+$\abs{h_{q^0,s}}=R_s$.  (iv) For a simple graph, $(K_s^2)_{ik}=J^2\sum_js_{ij}s_{jk}$, summed over the common
+neighbours $j$ of $i$ and $k$; for $k=i$ each of the $\deg(i)$ terms equals $s_{ij}^2=1$.  In a box these exist only for $k=i$ ($\deg(i)$ terms equal to $1$), for $k=i\pm2e_\mu$ (one common
 neighbour), and for diagonal pairs, which have the two common neighbours $j_1,j_2$; then
 $s_{ij_2}s_{j_2k}=W_p\,s_{ij_1}s_{j_1k}$ because $W_p=s_{ij_1}s_{j_1k}s_{kj_2}s_{j_2i}$ and $s^2=1$.
 \end{proof}
@@ -349,7 +355,8 @@ $s_{ij_2}s_{j_2k}=W_p\,s_{ij_1}s_{j_1k}$ because $W_p=s_{ij_1}s_{j_1k}s_{kj_2}s_
 \leavevmode
 \begin{enumerate}[label=(\alph*)]
 \item \Cref{prop:2dlaws}(a) is the two-dimensional analogue of \cref{cor:sector}: for $\sigma^z$-polarized
-links all gauge-invariant dynamics is an average over the zero-flux Anderson model $h_{q,+}=-J\Delta+2h\diag(q)$
+links the dynamics of every observable commuting with all $G_i$ and $W_\gamma$ is an average over the zero-flux
+Anderson model $h_{q,+}=-J\Delta+2h\diag(q)$
 with Bernoulli potential, restricted to a parity hyperplane of charge configurations.  This is the setting of
 \cite{SKKM2018}.  A $\sigma^z$-product state with flipped links has the same charge law but a deterministic,
 in general non-zero, flux $\varphi_s$; if $\varphi_s\equiv1$, then $s=\theta\cdot+$ for some $\theta$
@@ -394,8 +401,9 @@ $\le1.2\%$ for $t\le1$, $2.5\%$ at $t=3$, $8.5\%$ at $t=10$, $14.5\%$ at $t=30$ 
 $h=6$ ($g=16$); at $h=4$ ($g=8$) it is $\le3\%$ for $t\le1$, $15\%$ at $t=10$ and $32$--$34\%$ for $100\le t\le1000$.  So
 the leakage sets in on the time scale $g/J^2$, as in \cref{rem:clusterstop}.  The worst-case operator-norm
 difference in \eqref{eq:clusterbound} is $0.26$ at $t=0.1$, $h=6$ (bound $0.8$) and reaches its maximal value $2$
-near $t=10$; with our constants the bound (b) is informative only for $t\lesssim0.4$ at these parameters, while the
-averaged leakage stays small up to $t\sim g/J^2$.  The equal-charge clusters are subcritical but not small:
+near $t=10$; with our constants the right-hand side of \eqref{eq:clusterbound} is $\frac12+3t$ at these parameters, so
+(b) is informative only for $t<\frac12$ (and the squared bound in (c) only for $t<\frac16$), while the averaged
+leakage stays small up to $t\sim g/J^2$.  The equal-charge clusters are subcritical but not small:
 for i.i.d.\ $q$ on $\Z^2$ ($200\times200$ samples, $4000$ clusters) the sup-norm radius $R$ of $\Tclus_q(x)$ satisfies
 $\Prob(R\ge r)\approx0.72,\,0.39,\,0.23$ for $r=4,10,14$, a decay length of about $9$ lattice spacings, since
 $\frac12$ is not far below $p_c^{\rm site}\approx0.593$.  So the probabilistic term in \eqref{eq:clusterprob} is small
@@ -427,7 +435,7 @@ Assume $\abs h>2J$ and set $g:=4\abs h-8J>0$.
 Consequently, for every $x\in\Lambda$, $\norm{\one_{\Lambda\setminus\Tclus_q(x)}\e^{-\ii th_{q,s}}\delta_x}\le8J/g+48\abs tJ^2/g$.
 \item Let the law of $q$ have density at most $K$ with respect to the i.i.d.\ Bernoulli$(1/2)$ law on
 $\{\pm1\}^\Lambda$ ($K=1$ for i.i.d.\ charges, $K=2$ for the parity hyperplane of \cref{prop:2dlaws}(a)).
-There is a numerical constant $c_*>0$ such that for all $x\in\Lambda$, $R\ge4$, $t\in\R$ and $s$,
+There is a numerical constant $c_*>0$ such that for all $x\in\Lambda$, all integers $R\ge4$, $t\in\R$ and $s$,
 \begin{equation}\label{eq:clusterprob}
   \E\,\norm{\one_{\Lambda\setminus B_R(x)}\,\e^{-\ii th_{q,s}}\delta_x}^2
   \le\Bigl(\frac{8J}{g}+\frac{48\,\abs t\,J^2}{g}\Bigr)^2+2K\,\e^{-c_*(2R+3)} .
@@ -494,7 +502,8 @@ Extend $q$ to an i.i.d.\ field on $\Z^2$; the cluster of $x$ in $\Lambda$ is con
 If the latter contains a point $y$ with $\abs{y-x}_\infty>R$, a path inside the cluster from $x$ to $y$ changes
 $\abs{\cdot-x}_\infty$ by at most one per step, so it reaches the inner boundary
 $\partial^-Q_{2R+3}(x)=\{z:\abs{z-x}_\infty=R+1\}$ of the box $Q_{2R+3}(x)=\{z:\abs{z-x}_\infty\le R+1\}$
-along sites of charge $q_x$.  For $q_x=-1$ this is the event $E^{2R+3}_{\rm per}(x)$ of \cite[Prop.~2.2]{LiL2022}, for the i.i.d.\
+along sites of charge $q_x$ (in the notation of \cite[Eq.~(1.7) and Def.~2.1]{LiL2022}, $Q_l(b)=\{z:\abs{z-b}_\infty\le\frac{l-1}2\}$
+and $\partial^-$ is the inner vertex boundary; here $l=2R+3$ is odd).  For $q_x=-1$ this is the event $E^{2R+3}_{\rm per}(x)$ of \cite[Prop.~2.2]{LiL2022}, for the i.i.d.\
 field $V(a):=\bar V\,\frac{1+q_a}2\in\{0,\bar V\}$ with $\Prob[V(a)=0]=\Prob[V(a)=\bar V]=\frac12$.  That proposition
 states that there is a numerical constant $c_*>0$ (called $c_0$ there) with $\Prob[E^l_{\rm per}(b)]<\e^{-c_*l}$ for
 every $l>10$ and $b\in\Z^2$.  For $q_x=+1$ the same bound follows from the symmetry $q\mapsto-q$ of the law.
@@ -510,8 +519,9 @@ box $\Lambda$ and a Fock state $\ket n$ with occupied set $S_n$,
 \]
 because $\langle\Psi(t),n_y\Psi(t)\rangle=2^{1-\abs V}\sum_{\Tpi_q=\Tpi}\sum_{a\in S_n}\abs{(\e^{-\ii th_{q,+}})_{ya}}^2$ and
 $\dist(y,S_n)>R$ implies $y\notin B_R(a)$ for every $a\in S_n$ (here $\dist$ is the $\ell^\infty$-distance).
-So every particle stays within distance $R$ of its initial position, up to probability
-$O((J/g)^2+(tJ^2/g)^2+\e^{-2c_*R})$, as long as $t\ll g/J^2\sim\abs h/J^2$.  (The clusters themselves are not small:
+(The bound uses $R\ge4$ integer, as in \cref{prop:cluster}(c).)  So the expected number of particles found at
+distance more than $R$ from the initial configuration is at most $\abs{S_n}\,O((J/g)^2+(tJ^2/g)^2+\e^{-2c_*R})$, which
+is small compared with $\abs{S_n}$ as long as $t\ll g/J^2\sim\abs h/J^2$, $J\ll g$ and $R$ is large.  (The clusters themselves are not small:
 their radius has a decay length of about $9$ lattice spacings at density $\frac12$, see \cref{rem:2dED}.)  The same holds in every flux
 sector, since \cref{prop:cluster} is uniform in $s$.  In terms of SKKM's discussion \cite[Sect.~I.C]{SKKM2018}:
 at strong coupling the charges, attached to the fermions, are confined to the finite clusters of their own sign.
@@ -523,15 +533,18 @@ at strong coupling the charges, attached to the fermions, are confined to the fi
 \item The leading correction in $h'-h^0$ is $\frac12[S,h^1]=O(J^2/g)$.  It is block diagonal with respect to the
 charges, and to leading order in $J/h$ its $(+,+)$ block is $YY^*/(4h)$, whose entries $J^2\sum_js_{ij}s_{jk}/(4h)$
 couple two sites $i,k$ of equal charge through a common neighbour $j$ of the opposite charge.  These are pairs at
-distance $2$: diagonal next-nearest neighbours, or $k=i\pm2e_\mu$.  On the time scale $g/J^2$ these processes
-connect different first-order clusters.  The relevant geometry is then that of equal-charge sites with
-nearest- \emph{and} next-nearest-neighbour adjacency (the ``$*$-lattice''), and at density $\frac12$ this
-percolates: at $p=\frac12$, infinite $*$-clusters of both signs coexist almost surely \cite{Higuchi1982}; numerically,
+distance $2$: diagonal next-nearest neighbours, or $k=i\pm2e_\mu$.  (For diagonal pairs whose two common neighbours
+both have the opposite charge, the two contributions cancel if the plaquette carries flux $\pi$, cf.\
+\cref{prop:2dlaws}(c)(iv); in the zero-flux sector of \cref{prop:2dlaws}(a) there is no such cancellation.)  On the time
+scale $g/J^2$ these processes connect different first-order clusters.  In the zero-flux sector the relevant
+adjacency of equal-charge sites then contains nearest- \emph{and} diagonal next-nearest-neighbour bonds (the
+``$*$-lattice''), and at density $\frac12$ the $*$-lattice percolates: at $p=\frac12$, infinite $*$-clusters of both
+signs coexist almost surely \cite{Higuchi1982}; numerically,
 $p_c^{*}=1-p_c^{\rm site}(\Z^2)\approx0.4073<\frac12$ (matching-lattice duality, \cite{Kesten1982}), while
 $p_c^{\rm site}(\Z^2)\approx0.5927>\frac12$.  The classical-percolation mechanism behind \cref{prop:cluster} is therefore
 exhausted at $t\sim g/J^2$.  What remains is a quantum-percolation problem of resonances between cluster
-eigenstates (the effective couplings $J^2/g$ are much smaller than the intra-cluster level spacings, which are of
-order $J$).  Whether it localizes is open; \cite{SKKM2018} discuss a possible quantum-percolation delocalization
+eigenstates (the effective couplings $J^2/g$ are much smaller than the level spacings of small clusters, which are of
+order $J$, but not than those of large clusters).  Whether it localizes is open; \cite{SKKM2018} discuss a possible quantum-percolation delocalization
 transition.
 \item On the triangular lattice ($p_c^{\rm site}=\frac12$, critical) and on $\Z^3$ ($p_c^{\rm site}\approx0.31<\frac12$),
 the equal-charge clusters at density $\frac12$ are not exponentially small, and even the first step fails.
@@ -586,8 +599,9 @@ and their images under $x\mapsto\bar V+8-x$.  The excluded energies are of the s
 cluster-confined states of \cref{prop:cluster}: for an equal-charge cluster $\Tclus$ of sites with $v=0$,
 $h^0_{q,+}|_\Tclus=J(-\Delta_{\rm Lap})^{\rm Dir}_\Tclus-4J-2\abs h$, so in the variables of \cite{LiL2022} the cluster
 energies are Dirichlet eigenvalues of finite connected sets (those of the sets used in \cite[Def.~2.12]{LiL2022}
-are excluded).  These windows carry a non-vanishing part of the local spectral weight.  For example, let $x$ be a site whose four neighbours have the opposite charge (probability
-$\frac1{16}$), so that $\Tclus_q(x)=\{x\}$, and let $q_x=-\operatorname{sgn}h$.  With $U$, $h'$ as in the proof of
+are excluded).  These windows carry a non-vanishing part of the local spectral weight.  For example, let $x$ be a
+site with $q_x=-\operatorname{sgn}h$ whose four neighbours have the opposite charge (probability $\frac1{32}$ for
+i.i.d.\ charges), so that $\Tclus_q(x)=\{x\}$.  With $U$, $h'$ as in the proof of
 \cref{prop:cluster} and $I:=[-2\abs h-\delta,-2\abs h+\delta]$, the spectral measure $\mu_x$ of $\delta_x$ for $h_{q,+}$
 satisfies
 \[
@@ -626,8 +640,12 @@ only $z$ lies in $S$.  The eigenvalue equation at $y$ reads $0=Eu(y)=(Hu)(y)=a_{
 
 \begin{remark}[Majorana matter]\label{rem:majorana}
 If the complex fermions are replaced by Majorana fermions hopping in a static $\Z_2$ gauge field, as in Kitaev's
-honeycomb model \cite{Kitaev2006}, then random flux configurations put the matter in the symmetry class D.  There
-numerical studies find a delocalized ``thermal metal'' \cite{Laumann2012,Self2019}.  So the two-dimensional
+honeycomb model \cite{Kitaev2006}, then random flux configurations act as binary gauge disorder for the Majorana
+matter.  Numerical studies find a delocalized ``thermal metal'' in such situations: for randomly pinned vortices in
+the symmetry class D, which arises when time reversal is broken (for instance by Kitaev's three-spin term)
+\cite{Laumann2012}, and for thermally fluctuating fluxes in Kitaev's model \cite{Self2019}.  (With nearest-neighbour
+Majorana hopping only, the bipartite structure gives an additional chiral symmetry, and the symmetry class is
+different.)  So the two-dimensional
 Majorana analogue of the disorder-free localization discussed here is expected to \emph{fail}.  This is a
 statement about numerics and field theory, not a theorem; we mention it only to stress that binary gauge disorder
 in two dimensions does not localize automatically.
