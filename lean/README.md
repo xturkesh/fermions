@@ -77,7 +77,9 @@ lake env lean Check.lean
   and fixes the odd links; it is a different but equivalent instance of the paper's
   Lemma `lem:productlaw`(e).
 - **Area law constant.** The Lean area law has constant `2` instead of the paper's `2 ln 2`. The
-  proof is elementary: `-t log t ≤ 2(√t - t)`.
+  formal proof never computes the spectrum of `ρ_A`. It bounds `S(ρ_A) ≤ 2 log ∑_i √λ_i` by
+  Jensen, then `∑_i √λ_i ≤ ∏_k (√ν_k + √(1-ν_k))` by a product decomposition of the Slater
+  determinant in canonical orbitals, and finally uses `log(√ν + √(1-ν)) ≤ √(ν(1-ν))`.
 - **Constant `K`.** The number-entropy and area-law constants are stated as `∃ K` (depending only on
   `J`, `h`, `F`), not with the paper's explicit expressions.
 

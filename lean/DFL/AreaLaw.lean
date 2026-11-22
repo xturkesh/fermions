@@ -7,9 +7,12 @@ import DFL.OneBody
 
 For a Fock state evolved by a quadratic Hamiltonian (a Slater determinant), the von Neumann
 entropy of a left segment `A = {0, …, ℓ-1}` satisfies
-`S(ρ_A) = ∑_k h(ν_k) ≤ 2 ∑_k √(ν_k (1 - ν_k)) ≤ 2 ∑_{x ∈ A, y ∉ A} |C_{xy}|`,
-where `ν_k` are the eigenvalues of the restricted correlation matrix `C_A`. Combined with the
-duality, the sector averaging and Hypothesis (EC), this gives a uniform-in-time area law for the
+`S(ρ_A) ≤ 2 ∑_k √(ν_k (1 - ν_k)) ≤ 2 ∑_{x ∈ A, y ∉ A} |C_{xy}|`,
+where `ν_k` are the eigenvalues of the restricted correlation matrix `C_A`. (Classically
+`S(ρ_A) = ∑_k h(ν_k)`; the formal proof does not compute the spectrum of `ρ_A` but bounds
+`S(ρ_A) ≤ 2 log ∑_i √λ_i` by Jensen and `∑_i √λ_i ≤ ∏_k (√ν_k + √(1 - ν_k))` through a
+product decomposition of the Slater determinant in canonical orbitals.) Combined with the duality,
+the sector averaging and Hypothesis (EC), this gives a uniform-in-time area law for the
 sector-averaged (charge-conditioned) entanglement `S_G` of the lattice gauge theory.
 
 For a left segment the Jordan–Wigner occupation basis factorizes canonically,
@@ -51,6 +54,25 @@ def vonNeumann {ι : Type*} [Fintype ι] [DecidableEq ι] (ρ : Matrix ι ι ℂ
   ∑ i, Real.negMulLog (hρ.eigenvalues i)
 
 namespace AreaLawAux
+
+/-!
+### Proof strategy for `vonNeumann_slater_le`
+
+1. (`evo_fockVec_eq`) By the Heisenberg relation `W c_z† = c†(U e_z) W` and `W |0⟩ = phase · |0⟩`,
+   the evolved Fock state is (up to a phase) the Slater determinant
+   `c†(u_1) ⋯ c†(u_M) |0⟩` of the orbitals `u_k = U e_{z_k}`.
+2. (`slaterAlt`, `slaterAlt_mul`) Via the exterior algebra (`c†(w)² = 0`), Slater determinants
+   form an alternating map, so a unitary change of orbitals only changes a phase.
+3. (`canonical_orbitals`) Diagonalizing the overlap matrix `⟨u_k, P_A u_l⟩` gives orbitals with
+   `⟨P_A u_k, P_A u_l⟩ = ν_k δ_kl` and `⟨P_B u_k, P_B u_l⟩ = (1 - ν_k) δ_kl`.
+4. (`slater_decomp`) Writing `c†(u) = c†(P_A u) + c†(P_B u)` and using the factorization of the
+   Jordan–Wigner basis for a left segment, the determinant is a sum of product vectors of total
+   cross norm `≤ ∏_k (‖P_A u_k‖ + ‖P_B u_k‖) = ∏_k (√ν_k + √(1-ν_k))`.
+5. (`vonNeumann_rdm_le`) For a unit vector `v = ∑_j X_j ⊗ Y_j`, the von Neumann entropy is at most
+   the Rényi-`1/2` entropy `2 log ∑_i √λ_i`, and `∑_i √λ_i ≤ ∑_j ‖X_j‖ ‖Y_j‖` (nuclear norm bound).
+6. `log(√ν + √(1-ν)) ≤ √(ν(1-ν))` and (`sum_sqrt_nu_le`) `∑_k √(ν_k(1-ν_k)) ≤ ∑_{x∈A,y∉A} |C_xy|`
+   (Cauchy–Schwarz and Bessel for the normalized restricted canonical orbitals).
+-/
 
 /-- Complexified matrices multiply like the real ones. -/
 lemma cplx_mul' {ι : Type*} [Fintype ι] [DecidableEq ι] (A B : Matrix ι ι ℝ) :
@@ -151,6 +173,7 @@ lemma slaterAlt_mul {M : ℕ} (Φ : Matrix (Fin N) (Fin M) ℂ) (V : Matrix (Fin
 
 /-! ### Action of creation and annihilation operators on vectors -/
 
+/-- The entries of `c_x†`. -/
 lemma cre_apply' (x : Fin N) (n m : Cfg N) :
     cre x n m = if n x = 1 ∧ m = Function.update n x 0 then sgn (jwPar n x) else 0 := rfl
 
@@ -264,6 +287,7 @@ lemma nsq_pi_single {α : Type*} [Fintype α] [DecidableEq α] (c : α) :
 
 /-! ### The CAR bound `‖c†(w) ψ‖ ≤ ‖w‖ ‖ψ‖` -/
 
+/-- `c†(w)† = ∑_x w̄_x c_x`. -/
 lemma crOp_conjTranspose (w : Fin N → ℂ) : (crOp w)ᴴ = ∑ x, star (w x) • cplx (ann x) := by
   simp [crOp, Matrix.conjTranspose_sum, Matrix.conjTranspose_smul, cplx_cre_conjTranspose]
 
@@ -1307,6 +1331,7 @@ namespace AreaLawAux
 
 /-! ### Averages over charge sectors -/
 
+/-- Averaging is monotone. -/
 lemma avgQ_mono' {f g : Cfg N → ℝ} (h : ∀ q, f q ≤ g q) : avgQ f ≤ avgQ g := by
   unfold avgQ
   exact mul_le_mul_of_nonneg_left (Finset.sum_le_sum fun q _ => h q) (by positivity)
@@ -1333,6 +1358,7 @@ lemma avgQ_sqrt_mul_sqrt_le (a b : Cfg N → ℝ) (ha : ∀ q, 0 ≤ a q) (hb : 
 
 /-! ### Counting pairs across the cut -/
 
+/-- A finite sum of values of `f` at injectively chosen points is at most `∑' f`. -/
 lemma sum_le_tsum_injOn {ι : Type*} (s : Finset ι) (k : ι → ℕ) (hk : Set.InjOn k s)
     (f : ℕ → ℝ) (hf0 : ∀ n, 0 ≤ f n) (hf : Summable f) : ∑ i ∈ s, f (k i) ≤ ∑' n, f n := by
   classical

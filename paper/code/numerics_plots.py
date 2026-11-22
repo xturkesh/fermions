@@ -202,7 +202,76 @@ def fig_entropies():
     return out
 
 
+def theta_sigma(F):
+    """constants of eq:main-constants for a non-increasing F on {0,...,len(F)-1} (truncated)."""
+    d = np.arange(len(F))
+    S1 = float((d[1:] * F[1:]).sum())
+    S1p = float((d[1:] * np.sqrt(F[1:])).sum())
+    Th = float(2 * (d[1:] * (2 * d[1:] + 1) * F[1:]).sum())
+    M2 = float(((d + 1.0) ** 2 * F).sum())
+    return S1, S1p, Th, M2
+
+
+def summary():
+    """numbers quoted in sections/numerics.tex (printed; see numerics_plots.out)."""
+    ib = {N: np.load(os.path.join(DATA, f"numerics_imbalance_ibar_N{N}.npz")) for N in (100, 200, 400)}
+    lams = ib[400]["lams"]
+    print("=== imbalance: Ibar(N) +- SE, kappa_N +- SE (max over all intervals), lower bounds of thm:imbalance ===")
+    print("    bounds use kappa_N + 2 SE; khat = max_N (kappa_N + 2 SE); kthm = 2 Sigma_1(F_emp) with F_emp from N=400")
+    khat = np.max(np.vstack([ib[N]["kappa"] + 2 * ib[N]["kappa_se"] for N in (100, 200, 400)]), axis=0)
+    for i, lam in enumerate(lams):
+        h = lam / 2.0
+        row = "  ".join(f"{ib[N]['ibar'][i]:.5f}({ib[N]['ibar_se'][i]:.5f})" for N in (100, 200, 400))
+        kap = "  ".join(f"{ib[N]['kappa'][i]:.2f}({ib[N]['kappa_se'][i]:.2f})" for N in (100, 200, 400))
+        k4 = ib[400]["kappa"][i] + 2 * ib[400]["kappa_se"][i]
+        glob, blk, Lb = imbalance_bounds(400, h, k4)
+        u, Ls = uniform_bound(h, khat[i])
+        S1 = float(ib[400]["S1emp"][i])
+        tail = float(ib[400]["Femp"][i][-1])
+        ut, Lt = uniform_bound(h, 2 * S1)
+        print(f"  lambda={lam:4.2f}: Ibar N=100,200,400: {row} | kappa_N: {kap}")
+        print(f"      N=400: global {glob:.2e}, block {blk:.2e} (L={Lb}), best(iii) {max(glob, blk):.2e}, "
+              f"ratio Ibar/best = {ib[400]['ibar'][i] / max(glob, blk):.0f} | (iv) khat={khat[i]:.2f}: L*={Ls}, "
+              f"{u:.2e}, ratio {ib[400]['ibar'][i] / u:.1e} | Sigma_1(F_emp)={S1:.3g} (F_emp(399)={tail:.1e}), "
+              f"(iv) with kthm={2*S1:.3g}: {ut:.2e}")
+    print("=== constants of thm:arealaw(b) and thm:numberentropy with F_emp (N=400, truncated at d<=399) ===")
+    for lam in (1.0, 2.0):
+        i = int(np.argmin(np.abs(lams - lam)))
+        F = ib[400]["Femp"][i]
+        S1, S1p, Th, M2 = theta_sigma(F)
+        print(f"  lambda={lam}: Sigma_1={S1:.3g}, Sigma'_1={S1p:.3g}, Theta={Th:.3g}, M_2={M2:.3g}; "
+              f"area-law bound 2ln2*Theta = {2*LN2*Th:.3g} (<= 8ln2*M_2 = {8*LN2*M2:.3g}); "
+              f"number-entropy bound 1/2 ln(2 pi e (Theta + Sigma'_1^2 + 1/12)) = "
+              f"{0.5*np.log(2*np.pi*np.e*(Th + S1p**2 + 1/12)):.2f}; per-sector bound {0.5*np.log(2*np.pi*np.e*(Th + 1/12)):.2f}")
+    for lam in (1.0, 2.0):
+        f = os.path.join(DATA, f"numerics_entropies_large_lam{lam:g}.npz")
+        if not os.path.exists(f):
+            continue
+        d = np.load(f)
+        t = d["times"]
+        late = t >= 1e3
+        print(f"=== large N, lambda={lam}: plateaus (time average over grid points t>=1e3; error over sectors) ===")
+        for N in (64, 128, 256):
+            vm = d[f"var_mix_N{N}"]
+            print(f"  N={N}: S_G = {float(d[f'SG_plateau_N{N}']):.4f}({float(d[f'SG_plateau_se_N{N}']):.4f}), "
+                  f"S_N = {float(d[f'SN_plateau_N{N}']):.4f}({float(d[f'SN_plateau_se_N{N}']):.4f}), "
+                  f"E_qH(p^q) = {d[f'EHq_N{N}'][late].mean():.3f}, Var_mix = {vm[late].mean():.3f} (max_t {vm.max():.3f}), "
+                  f"Massey with measured Var (non-rigorous) max_t = {0.5*np.log(2*np.pi*np.e*(vm.max()+1/12)):.3f}, "
+                  f"E_q max_grid S(rho^q_A) = {float(d[f'SGsup_N{N}']):.3f}({float(d[f'SGsup_se_N{N}']):.3f}), "
+                  f"max_t S_N = {d[f'SN_N{N}'].max():.3f}, max_t S_G = {d[f'SG_N{N}'].max():.3f}")
+            dd = d[f"SN_N{N}"] - d[f"SG_N{N}"]
+            e = d[f"DNG_se_N{N}"]
+            sig = (dd > 2 * e) & (t > 0)
+            print(f"      S_N - S_G: max = {dd.max():.4f}({e[np.argmax(dd)]:.4f}) at t = {t[np.argmax(dd)]:.3g}; "
+                  f"> 2 SE at grid times: " + (f"[{t[sig].min():.3g}, {t[sig].max():.3g}]" if sig.any() else "none")
+                  + "; values at t=1, 2.15, 4.64, 10: " + ", ".join(
+                      f"{dd[np.argmin(abs(t - tt))]:+.4f}({e[np.argmin(abs(t - tt))]:.4f})" for tt in (1, 2.154, 4.642, 10)))
+
+
 if __name__ == "__main__":
+    if sys.argv[1:] == ["summary"]:
+        summary()
+        sys.exit(0)
     which = sys.argv[1:] or ["imbalance", "entropies"]
     if "imbalance" in which:
         out, b = fig_imbalance()
