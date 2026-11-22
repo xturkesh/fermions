@@ -41,7 +41,7 @@ No `axiom` is introduced anywhere.
 
 | Paper | Lean | File |
 |---|---|---|
-| Model, Gauss law (Sec. 2) | `H`, `gauss`, `ann`, `cre`, `dGamma`, `hq`, `Hsec`, `Hdual` | `Basic.lean` |
+| Definition `def:model` (the model), Gauss law (Sec. 2) | `H`, `gauss`, `ann`, `cre`, `dGamma`, `hq`, `Hsec`, `Hdual` | `Basic.lean` |
 | Lemma `lem:gauss` (Gauss operators: self-adjoint involutions commuting with each other, `N_f` and `H`; 1D Gauss law `σˣ_{b_j} = (-1)^{N_{≤j}} ∏_{k≤j} G_k`, `∏_j G_j = (-1)^{N_f} σˣ_{b_{N-1}}`; sector projections of rank `2^N`) | `gauss_isSymm`, `gauss_mul_self`, `gauss_comm`, `gauss_comm_numF`, `gauss_comm_H`, `gauss_law_1d`, `gauss_prod`, `sxL_last_comm_H`, `gauss_mul_gaussProj`, `gaussProj_mul`, `sum_gaussProj`, `rank_gaussProj`, `gaussProj_comm_H` | `GaussLaw.lean` |
 | Theorem `thm:duality` (exact duality) | `duality`, `gauss_dual`, `dGamma_hq`, `hop_apply`, `numOp_dual` | `Duality.lean` |
 | Theorem `thm:duality`(c),(d),(e) (dictionary `U†f_jU = c_jτᶻ_j`, `U†σᶻ_{b_j}U = τᶻ_jτᶻ_{j+1}`, Wilson line to the boundary, `σˣ`, electric and hopping terms, parity; dressed fermions `c̃_j = Uc_jU† = f_j ∏_{k≥j} σᶻ_{b_k}`: CAR, gauge invariance, oddness, `c̃_x†c̃_y` = hopping with a Wilson line, `H` in dressed variables; `U†e^{-itH}U = ⊕_q e^{iht∑q}Γ(e^{-ith_q})` and the Heisenberg evolution of `c̃_x`) | `ann_dual`, `sz_dual`, `szTail_dual`, `sx_dual`, `elec_dual`, `hopTerm_dual`, `parity_dual`, `dressed_eq`, `dressed_anticomm`, `dressed_CAR`, `dressed_comm_gauss`, `dressed_odd`, `dressed_number`, `dressed_hop`, `H_dressed`, `evo_dual`, `heisenberg_dressed` | `DualityFull.lean` |
@@ -86,7 +86,7 @@ No `axiom` is introduced anywhere.
 | Theorem `thm:infvol`(e) (bulk intervals `A`: the law of `N_A` in `Ψ^{(M)}(t)` converges to `p_t = E PB(ν(K^ℤ_q(t)\|_A))`, `S_N^{(M)}(t) → H(p_t)`, and `H(p_t) ≤ ½ ln(2πe(2Θ(F) + 4Σ'₁(F)² + 1/12))`) | `KZ`, `KZA`, `pZ`, `tendsto_numDistM`, `tendsto_numberEntropyM`, `numberEntropyZ_le` | `InfVolNumber.lean` |
 | Proposition `prop:nocritical`(i),(ii),(iv) (hypotheses of Furstenberg's theorem; no critical energies) | `transferT_mul_inv`, `transferT_commutator`, `transferT_not_commute`, `unipotent_pow_unbounded`, `no_finite_invariant_lines` | `Furstenberg.lean` |
 | Remark `rem:randomwalk` (one charge of the standard ℤ₂ LGT in a random-walk potential) | `Hstd_dual_oneP`, `partialSum_bijective` | `RandomWalk.lean` |
-| Proposition `prop:dimerlaw` (dimer sector law) | `dimerInit_dual`, `card_isDimer`, `sector_average_dimer` | `Dimer.lean` |
+| Proposition `prop:dimerlaw` (dimer sector law; Definition `def:dimerstate`, for the CDW dimer state) | `dimerInit_dual`, `card_isDimer`, `sector_average_dimer` | `Dimer.lean` |
 | Lemma `lem:dimercritical`, JSBS hypotheses | `dimerTM_plus_crit`, `dimerTM_minus_elliptic`, `dimerTM_commute_crit`, `jsbs_condition`, `dimerTM_minus_not_elliptic` | `DimerCritical.lean` |
 | Lemma `lem:dimercritical`(i),(iii),(iv) and eq. `eq:dimerangles` (commutator `[D_+, D_-] = 2λ(λ²-E²)σ_x`; rotation normal form `S⁻¹D_+(λ)S = -1`, `S⁻¹D_-(λ)S = R_{2θ}`; averaged phases; `κ = ‖S‖‖S⁻¹‖ = ((1+λ)/(1-λ))^{1/2}`; `E_c = -λ`), Lemma `lem:dimertransfer` (`‖T^z(n,m)‖ ≤ K₁e^{K₂\|z-λ\|(n-m)}` for every dimer configuration) | `dimerD_commutator`, `dimerD_commute_iff`, `dimerTheta_spec`, `dimerS_conj_plus`, `dimerS_conj_tm`, `dimerS_conj_minus`, `dimer_angles`, `dimerS_kappa`, `gamma2_tmC`, `dimerS_conj_neg`, `dimer_transfer_bound` | `DimerTransfer.lean` |
 | Lemma `lem:dimerTL` (finite speed uniformly in the potential; finite-volume difference, for finite `Λ'`; ballistic bound `∑_y \|y\|^p \|⟨δ_y, e^{-isH}δ_0⟩\|² ≤ (2\|s\|)^p`) | `dimerTL_i`, `dimerTL_i'`, `dimerTL_ii`, `dimerTL_iii` | `DimerTL.lean` |
@@ -168,14 +168,17 @@ lake env lean Check.lean
 ## Not formalized
 
 - The literature theorems used as inputs: the uniform large-deviation estimate and the positivity
-  and continuity of the Lyapunov exponent (Furstenberg; the hypothesis `LDT`), the Zariski density
-  of `prop:nocritical`(iii), Ge–Zhao's annealed localization on `ℤ` (`prop:Zline`), the transport
-  bounds of Jitomirskaya–Schulz-Baldes–Stolz for the random dimer (`thm:dimer`(b),(c), and (d) for
-  `1/2 < p ≤ 1`), and the percolation
-  estimate of Li–Liang used in `prop:cluster`(c) (entering `cluster_avg` as the probability that the
-  cluster leaves the region).
+  and continuity of the Lyapunov exponent (Furstenberg; `prop:LDT`, entering as the hypothesis
+  `LDT`), the verification of the hypotheses of the cited theorems in their own formalism
+  (`lem:hypcheck`), the Zariski density of `prop:nocritical`(iii), Ge–Zhao's annealed localization
+  on `ℤ` (`prop:Zline`), the transport bounds of Jitomirskaya–Schulz-Baldes–Stolz for the random
+  dimer (`thm:dimer`(b),(c), and (d) for `1/2 < p ≤ 1`), and the percolation estimate of Li–Liang
+  used in `prop:cluster`(c) (entering `cluster_avg` as the probability that the cluster leaves the
+  region).
 - Infinite-volume statements beyond the one-body propagator and the number entropy: `thm:infvol`(a),(c),(d)
   (the quasi-free limit state, the infinite-volume Lieb–Robinson bound and the area-law limits),
   `cor:ECinfvol` for the full correlator `Q^X` (Borel functional calculus on `ℓ²(X)`; the
-  propagator bound is formalized), and part (iii) of `prop:dimerimbalance`.
+  propagator bound is formalized), part (iii) of `prop:dimerimbalance` and the density of states of
+  the dimer model (`lem:dimerdos`), which need spectral measures on `ℓ²(ℤ)`; `prop:LR`(d) (no
+  operator-norm zero-velocity bound, which uses the ballistic motion of the free chain on `ℤ`).
 - Remarks, conjectures and numerics.
