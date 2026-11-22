@@ -32,11 +32,15 @@ Schulz-Baldes and Stolz \cite{JSBS2003} (\cref{lem:dimercritical}).  We show:
 \begin{itemize}
 \item for \emph{every} charge configuration in the support of the dimer law, in every volume and up
 to times of the order of the distance to the boundary, a single dressed fermion spreads at least
-diffusively in the time-averaged sense (\cref{prop:dimerlower}, \cref{thm:dimer}(a));
+diffusively in the time-averaged sense (\cref{prop:dimerlower}, a finite-volume version of
+\cite[Thm.~1]{JSBS2003} with an explicit constant, and \cref{thm:dimer}(a));
 \item in the thermodynamic limit its sector-averaged, time-averaged mean-square displacement grows at
-least like $T^{3/2-\alpha}$ for every $\alpha>0$ (\cref{thm:dimer}(c));
+least like $T^{3/2-\alpha}$ for every $\alpha>0$ (\cref{thm:dimer}(c), which transfers
+\cite[Thm.~4]{JSBS2003} to the gauge theory);
 \item consequently the analogue of Hypothesis~\ref{hyp:EC} for the dimer law fails, and so does every
-sector-averaged moment bound that is uniform in $N$ (\cref{thm:dimer}(d)).
+bound on sector-averaged moments of order $p>\frac12$ that is uniform in $N$ (\cref{thm:dimer}(d)).  For
+$p>1$, and in particular for the failure of Hypothesis~\ref{hyp:EC}, this uses only the deterministic
+bound of the first item.
 \end{itemize}
 Moreover, for \emph{every} $h\neq0$ the infinite-time charge-density-wave imbalance of the dimer
 state vanishes in the thermodynamic limit (\cref{prop:dimerimbalance}), whereas for the i.i.d.\ law
@@ -172,10 +176,11 @@ random polymer model with the two polymers $(\lambda,-\lambda)$ and $(-\lambda,\
 of \cref{sec:dimer:critical}, with $a=-\lambda-E$ and $b=\lambda-E$, their transfer matrices are
 $\Tdim_a\Tdim_b$ and $\Tdim_b\Tdim_a$, and a direct computation gives
 \[
-  [\Tdim_a\Tdim_b,\Tdim_b\Tdim_a]=\begin{pmatrix}b^2-a^2&(a-b)ab\\(a-b)ab&a^2-b^2\end{pmatrix},\qquad
+  [\Tdim_a\Tdim_b,\Tdim_b\Tdim_a]=\begin{pmatrix}b^2-a^2&(a-b)ab\\-(a-b)ab&a^2-b^2\end{pmatrix},\qquad
   b^2-a^2=-4\lambda E,\quad (a-b)ab=2\lambda(\lambda^2-E^2).
 \]
-This never vanishes for $\lambda\neq0$, so the anti-dimer law has no critical energy.  Changing the
+Both entries vanish only if $E=0$ and $E^2=\lambda^2$, which is impossible for $\lambda\neq0$.  So the
+commutator never vanishes, and the anti-dimer law has no critical energy.  Changing the
 orientation of the even links thus changes the one-body problem qualitatively.
 \end{enumerate}
 \end{remark}
@@ -302,8 +307,9 @@ exponent), which we do not use.  Theorem~4 of \cite{JSBS2003}, used in \cref{thm
 besides the criticality of $E_c$, only $|\langle\e^{2\ii\eta_\pm}\rangle|<1$, which holds for \emph{all}
 $\lambda\in(0,1)$ by
 \eqref{eq:dimerangles}; at $\lambda=1/\sqrt2$ one even has $\langle\e^{2\ii\eta_\pm}\rangle=0$.  At
-$\lambda=\frac12$ ($h=J/4$, used in \cref{fig:dimer}), $D_-(\lambda)=\Rot_{4\pi/3}$ is a rotation of order
-$3$ and $|\langle\e^{2\ii\eta_\pm}\rangle|=\frac12$.  Rational rotation angles play no role in the
+$\lambda=\frac12$ ($h=J/4$, used in \cref{fig:dimer}), $\theta=2\pi/3$, so $S^{-1}D_-(\lambda)S=\Rot_{4\pi/3}$ and
+$D_-(\lambda)^3=\one$ (the matrix $D_-(\frac12)=\bigl(\begin{smallmatrix}0&1\\-1&-1\end{smallmatrix}\bigr)$ is conjugate to,
+but not equal to, a rotation of order $3$), and $|\langle\e^{2\ii\eta_\pm}\rangle|=\frac12$.  Rational rotation angles play no role in the
 hypotheses of the results we use.
 \end{remark}
 
@@ -595,8 +601,12 @@ Jacobi matrix, $|(\e^{-\ii t\hq})_{yx}|^2\le|(\e^{-\ii t\hq})_{yx}|\le Q^{[1,N]}
   \Edim\sum_y|y-x|^{p'}|(\e^{-\ii t\hq})_{yx}|^2\le\sum_y|y-x|^{p'}F(|y-x|)\le2\sum_{d\ge0}(d+1)^pF(d)<\infty
 \]
 uniformly in $N$, $x$ and $t$, contradicting \eqref{eq:dimerLGTd} for $p'$.  For $p>1$ and any
-$q^{(N)}\in\supp\mudim$, take $x=N/2$ and $JT=N/2-1$ in (a): the supremum over $t$ is at least
-$c_{\lambda,p}(N/2-1)^{p-1}\to\infty$.
+$q^{(N)}\in\supp\mudim$, take $x=N/2$ and $JT=N/2-1$ in (a) ($N\ge4$): the supremum over $t$ is at least
+$c_{\lambda,p}(N/2-1)^{p-1}\to\infty$.  The same choice in the last statement of (a) gives
+$\Mom^{(N)}_p(T;N/2)\ge c_{\lambda,p}(N/2-1)^{p-1}$, and since $\Mom^{(N)}_p$ is a time average of the
+expectation in \eqref{eq:dimerLGTd}, this proves \eqref{eq:dimerLGTd} for every $p>1$ without using
+\cite[Thm.~4]{JSBS2003}.  Since Hypothesis~\ref{hyp:EC} requires $M_2(F)<\infty$, the
+argument above with $p=2$ shows that its failure for $\mudim$ rests only on (a).
 \end{proof}
 
 \begin{remark}[Definite-charge states and single sectors]\label{rem:dimersingle}
@@ -632,9 +642,10 @@ for a real orthonormal eigenbasis $(\varphi_\alpha)$ of $\hq$.
 \end{proposition}
 
 For the i.i.d.\ law the corresponding quantity is bounded below uniformly in $N$ (\cref{thm:imbalance}).
-Numerically, $\bar I_N\approx c_\lambda/N$ for the dimer law, with $c_{0.5}\approx0.6$ and
-$c_{1.5}\approx0.21$ for $100\le N\le800$.  The i.i.d.\ values are $\approx0.015$--$0.02$ at
-$\lambda=0.5$ and $\approx0.13$ at $\lambda=1.5$ (\texttt{code/dimer\_check.out}, Part~C).
+Numerically, $\bar I_N\approx c_\lambda/N$ for the dimer law: for $100\le N\le800$, $N\bar I_N$ increases
+slowly from $0.61$ to $0.64$ at $\lambda=0.5$ and stays at $0.21$ at $\lambda=1.5$.  The i.i.d.\ values
+of $\bar I_N$ are $\approx0.015$--$0.02$ at $\lambda=0.5$ and $\approx0.13$ at $\lambda=1.5$
+(\texttt{code/dimer\_check.out}, Part~C).  The proof of (iii) gives no rate.
 
 \begin{lemma}[Density of states of the dimer model]\label{lem:dimerdos}
 Let $\lambda\in\R$, $H:=-\Delta+\lambda\diag(q)$ on $\ell^2(\Z)$ with $q_{2k-1}=q_{2k}=\eta_k$,
@@ -745,9 +756,12 @@ $[D_+(0),D_-(0)]\neq0$ by \cref{lem:dimercritical}(i), so $E=0$ is not critical 
 nor \cite{DeBievreGerminet2000} decides the transport.
 \item For $0<\lambda<1$, $\lambda\neq1/\sqrt2$, \cite[Thm.~2.2]{DeBievreGerminet2000} proves that the
 spectrum is almost surely pure point, and that dynamical localization holds on every compact energy
-interval not containing $\pm\lambda$.  So the superdiffusion of \cref{thm:dimer} coexists with pure
-point spectrum, as stressed in \cite{JSBS2003}, and it is carried by energies near the critical
-energies, as in the heuristics of \cite{DWP1990}.
+interval not containing $\pm\lambda$.  For $\lambda=1/\sqrt2$, \cite[Thm.~2.4]{DeBievreGerminet2000} gives
+the same conclusions, except that the intervals must also avoid the energies $\pm3/\sqrt2$, where the
+Lyapunov exponent vanishes as well.  So the superdiffusion of \cref{thm:dimer} coexists with pure
+point spectrum, as stressed in \cite{JSBS2003}.  It can only come from spectral components near the
+critical energies (and, for $\lambda=1/\sqrt2$, near $\pm3/\sqrt2$), as in the heuristics of
+\cite{DWP1990}.
 \end{enumerate}
 For the gauge theory with $\lambda>1$, $\lambda\neq\sqrt2$, (i) with $\psi=\delta_0$ (or $\delta_1$, for the
 other alignment) gives almost surely
@@ -776,17 +790,21 @@ factor of an i.i.d.\ sequence: $q_j$ is a function of $(x_{b_{j-1}},x_{b_j})$ an
 $(-1)^{n_j}$.  In particular $q_j$ and $q_k$ are independent for $|j-k|\ge2$.  For
 $\varrho\notin\{0,\frac12,1\}$ it is not i.i.d.: $(-1)^{n_j}q_j$ has mean $(2\varrho-1)^2$ for $j\ge2$, and
 $\Cov(q_j,q_{j+1})=\pm(2\varrho-1)^2(1-(2\varrho-1)^2)\neq0$ for $j\ge2$.  Its law on
-$\{\pm1\}^N$ has full support, and its density with respect to the i.i.d.\ law is at most
-$(2\max\{\varrho,1-\varrho\})^N$, which is unbounded in $N$; so \cref{rem:productlaws}(c) does not apply.
-The cases $\varrho=\frac12$ (the state $\ket{\uparrow\cdots\uparrow}_z$, i.i.d.\ law) and
-$\varrho\in\{0,1\}$ (a single sector, ballistic by \cref{rem:gaussproj}) are the endpoints of this
-family.  Every finite pattern of charges has positive probability.  So every finite product of the
+$\{\pm1\}^N$ has full support, and the maximum of its density with respect to the i.i.d.\ law is
+$(2\max\{\varrho,1-\varrho\})^N$ (attained where all $x_{b_j}$ take their more likely value), which is
+unbounded in $N$; so \cref{rem:productlaws}(c) does not apply.  The case $\varrho=\frac12$ is the state
+$\ket{\uparrow\cdots\uparrow}_z$ with the i.i.d.\ law.  The cases $\varrho\in\{0,1\}$ give a single sector,
+$q_j=(-1)^{n_j}$ for $j\ge2$ and $q_1=\pm(-1)^{n_1}$.  Whether this sector localizes depends on $n$: for
+$\varrho=1$ and $n=0$ it is the clean sector, ballistic by \cref{rem:gaussproj}.
+
+For $0<\varrho<1$, every finite pattern of charges has positive probability.  So every finite product of the
 matrices $\Tdim_{\pm\lambda-E}$ occurs with positive probability, exactly as for the i.i.d.\ law of
 \cref{prop:nocritical}, and no pattern is excluded as the mixed pairs are for the dimer law.  There is
-no mechanism of the dimer type.  We expect localization in the sense of Hypothesis~\ref{hyp:EC}, with
-constants that degenerate as $\varrho\to0$ or $1$.  A proof would require a version of
-Theorem~\ref{thm:EC} for products of transfer matrices driven by a stationary $1$-dependent
-sequence, which we do not attempt.  We have not checked whether existing localization results for
+no mechanism of the dimer type.  For $0<\varrho<1$ we expect localization in the sense of
+Hypothesis~\ref{hyp:EC}, with constants that in general degenerate as $\varrho\to0$ or $1$ (they must
+for $n=0$, whose limit is the clean sector).  A proof would require a version of Theorem~\ref{thm:EC}
+for products of transfer matrices driven by the $1$-dependent sequence $(x_{b_{j-1}}x_{b_j})_j$, which is
+stationary, modulated by the deterministic signs $(-1)^{n_j}$.  We do not attempt this.  We have not checked whether existing localization results for
 Markov-type potentials cover this case, so its status is open.
 \end{remark}
 
@@ -851,8 +869,9 @@ Theorem~\ref{thm:EC} gives uniform, sector-averaged dynamical localization for e
 the charges come in neutral pairs.  For $0<2|h|<J$ transport is then at least diffusive in every
 sector and superdiffusive on average (\cref{thm:dimer}), and for every $h\neq0$ the CDW imbalance
 relaxes to zero (\cref{prop:dimerimbalance}).  In the language of disordered systems, the initial state
-selects the statistics of the effective disorder, and correlations of the dimer type are known to
-create extended states \cite{DWP1990,JSBS2003}.  The strictly gauge-invariant sector $q\equiv1$ is not
+selects the statistics of the effective disorder.  Correlations of the dimer type are known to produce
+anomalous, superdiffusive transport \cite{DWP1990,JSBS2003}, although the spectrum remains almost surely
+pure point \cite{DeBievreGerminet2000} (\cref{rem:dimerstrong}(iii)).  The strictly gauge-invariant sector $q\equiv1$ is not
 localized at all (\cref{rem:gaussproj}).  Disorder-free localization is
 therefore a joint property of the Hamiltonian and of the sector law induced by the initial state.
 \end{remark}
