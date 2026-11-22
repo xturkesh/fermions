@@ -424,7 +424,7 @@ All 25 IDs resolve to the expected works. The v1 date is the API "published" fie
   — [HTML](https://arxiv.org/html/2611.00620)
 - **Failure.** The agent asserted that the data did not support spectral diffusion, from limited evidence. The authors conclude that "human expert supervision is still essential". — [HTML](https://arxiv.org/html/2611.00620)
 - **Cost** (Table 1, Sonnet 4.6, from the Claude Agent SDK).
-  - SnV: $30.99 total, 5.15 h. The stage costs as printed (5.72 + 4.38 + 23.25) sum to $33.35.
+  - SnV: $30.99 total, 5.15 h. The stage costs as extracted from the HTML table (5.72 + 4.38 + 23.25) sum to $33.35.
   - Single V_Si: $47.78, 8.78 h.
   - Multi-V_Si: $225.41, 59.6 h.
   — [HTML](https://arxiv.org/html/2611.00620)
@@ -640,7 +640,7 @@ Several capabilities appear once or a few times:
 - NV: the agent "autonomously designed a CPMG N = 8 follow up" that the human request had not asked for. — [HTML](https://arxiv.org/html/2607.25145)
 
 **Designing or validating its own verifier.**
-- Crichigno–Flammia, the only full case: the agent built the verifier, scorer and references and validated them (solved case, broken artifacts, published results), and the gate caught four defects of its own before freezing. — [HTML](https://arxiv.org/html/2610.31352)
+- Crichigno–Flammia, the only full case: the agent built the verifier, scorer and references and validated them (solved case, broken artifacts, published results), and the gate caught five defects in its own first implementations before freezing: two in the Hamiltonian, one in the verifier, two in the instance generator. — [HTML](https://arxiv.org/html/2610.31352)
 - QSim-Arena: an LLM coordinator lane "owns … the verifier", with blind cross-model re-pricing. — [HTML](https://arxiv.org/html/2611.15000)
 - NVIDIA: agents derived and formalized the certificate theorems, including a new, tighter bound, but within a human contract and human-led quantitative validation. — [HTML](https://arxiv.org/html/2611.03329)
 - TeXRA: the Verification Agent wrote all Lean proofs and even built exact arithmetic over ℚ(√2,√3,√5,i) from scratch, but "the human researcher set each proof goal". — [HTML](https://arxiv.org/html/2510.20728)
@@ -724,7 +724,7 @@ Capability matrix, derived from the findings above (Y = done; P = partial or wit
 | NVIDIA | N | P | P | **Y** (Theorem 2) | N | N | **Y** (external critic) | N |
 | RA / OmniQ | N | P (critic, judge) | N | N | N | **Y** (human-approved) | **Y** | P (reports) |
 | QuantumMatterExplorer | N | P (ED gate, critic) | P | N | N | N (future) | **Y** | P (research note) |
-| Kleidermacher | P (follow-ups) | P | P | N | N | N | **Y** | P (reports) |
+| Kleidermacher | P (follow-ups) | P (validates own tool library; gate human-defined) | P | N | N | N | **Y** | P (reports) |
 | NV agent | P (extra CPMG) | N | N | N | **Y** | P | P | P (reports) |
 | k-agents | N | N | N | N | **Y** | N | N | N |
 | Gu et al. | N | N | **Y** | P | N | N | P | not stated |
@@ -809,7 +809,7 @@ The mitigations with evidence are:
 - StabilizerBench: more self-correction attempts lowered scores, and detailed prompts underperformed minimal ones. — [HTML](https://arxiv.org/html/2604.21287)
 
 **Mitigations with evidence.**
-- *Exact, frozen and validated evaluators.* The Crichigno–Flammia validation gate caught four defects before search began, and "No accepted submission exploited a flaw in an evaluator". — [HTML](https://arxiv.org/html/2610.31352)
+- *Exact, frozen and validated evaluators.* The Crichigno–Flammia validation gate caught five defects in its own first implementations before search began, and "No accepted submission exploited a flaw in an evaluator". — [HTML](https://arxiv.org/html/2610.31352)
 - *External re-verification against a frozen specification.* The DeepMind Lean Comparator filtered broken proofs and proofs that had bypassed local checks. — [HTML](https://arxiv.org/html/2611.09822)
 - *Evidence-bound grading.* QIQCBench recomputes from raw records; calibrations are replayed on fresh draws. — [HTML](https://arxiv.org/html/2609.17439)
 - *A verifier isolated from search transcripts* (TeXRA), so "its output cannot be contaminated by earlier mistakes". — [HTML](https://arxiv.org/html/2510.20728)
@@ -872,7 +872,7 @@ Leaderboard and competition formats in the codes and circuits space (the Unitary
   - One participant's search-and-distill attempt (a small model trained on evaluator outputs) plateaued.
   — [HTML](https://arxiv.org/html/2609.09582)
 - **Google DeepMind multi-team format.**
-  - Up to seven teams per problem, a shared wiki with merge thresholds, and conferences every four hours.
+  - Seven participating teams on the non-Born–Oppenheimer problem, a shared wiki with merge thresholds, and conferences every four hours.
   - 61% of the cost reduction came from within-team ideas, 15% from the wiki and 24% from conferences; the cross-team share ranges from 13% (stopping power) to 63% (P450).
   - The largest single drop (−34%) began as one team's conference proposal that another team refined and proved.
   — [HTML](https://arxiv.org/html/2611.09822)
