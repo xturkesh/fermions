@@ -36,7 +36,7 @@ $1,\dots,\ell$ and the links $b_1,\dots,b_\ell$, with $\ell=N/2$, and $\Gamma=\d
 diagonalize it with LAPACK (through \texttt{scipy.linalg.eigh\_tridiagonal}) and use
 $U_q(t)=Ve^{-itE}V^{\top}$.  This is exact for every $t$: there is no time stepping, and late times cost no
 more than early ones.  The only time-dependent rounding error is in the phases $E_\alpha t$; it is of
-order $10^{-15}|t|$, hence at most $10^{-7}$ for $|t|\le10^8$.
+order $10^{-15}|t|$, hence at most of order $10^{-7}$ for $|t|\le10^8$.
 
 \paragraph{Observables in one sector.}
 \begin{itemize}
@@ -251,10 +251,22 @@ $N=10$ (computed on a grid of step $0.005$ in $[0.05,12]$), $\SN-\SG>0$ for $0.0
 $Jt\approx1.4$.  The difference then changes sign five times, at $Jt\approx2.58$, $2.93$, $3.63$, $4.25$ and $5.23$,
 staying below $0.044$ in modulus, and $\SG>\SN$ at all later grid times up to $Jt=10^6$.  The same happens in large systems at $\lambda=2$.  For $N=256$
 ($400$ sectors, $30$ times per decade), $\SN-\SG$ exceeds two standard errors at all grid times
-$0.015\le Jt\le2.33$, with maximum $0.124(11)$ at $Jt\approx1.5$.  On our grid it changes sign five times between
+$0.02\le Jt\le2.33$, with maximum $0.124(11)$ at $Jt\approx1.5$.  On our grid it changes sign five times between
 $Jt\approx2.5$ and $Jt\approx5.4$, staying below $0.044$ in modulus, and it is below minus two standard errors at all grid times
-$5.4\le Jt\le10^2$.  At $\lambda=1$ (again $N=256$) the difference never exceeds
-$2\times10^{-10}$, and it is below minus two standard errors for $Jt\ge0.074$.  Heuristically, the mechanism is the
+$5.4\le Jt\le10^2$.  At $\lambda=1$ (again $N=256$) the difference is positive only for $Jt\lesssim0.07$, where it stays
+below $2\times10^{-10}$, and it is below minus two standard errors for $Jt\ge0.074$.
+
+At the earliest times the difference is tiny.  Up to $O(t^6)$ the variance of $N_A$ in sector $q$ is
+$J^2t^2-2J^4t^4-\frac13J^2h^2(q_\ell-q_{\ell+1})^2t^4$, so it depends on $q$ only through the two charges at the cut.
+The resulting Jensen gap $\Hsh(\E_qp^q_t)-\E_q\Hsh(p^q_t)$ is $\lambda^4(Jt)^6/72$ to leading order.  We have not
+controlled the remainder, which includes the non-negative difference $\SG-\E_q\Hsh(p^q_t)$.  Still, the data agree with
+$\SN-\SG\approx\lambda^4(Jt)^6/72$ to within $11\%$ for $N=10$ and $0.01\le Jt\le0.1$, and to within $15\%$ for $N=256$ and
+$0.02\le Jt\le0.1$ (both at $\lambda=2$).  At $\lambda=1$ a negative correction of higher order takes over at
+$Jt\approx0.07$; in our data it is close to $-(Jt)^8\ln(1/(Jt))$.  For $N=256$ and $Jt<0.02$ the computed differences are
+of the order of the rounding errors of the $\ell=128$ eigenvalues of $P_AK_q(t)P_A$ that are close to $0$ or $1$ (together
+about $10^{-12}$), and they are not reliable.
+
+Heuristically, the mechanism is the
 one described in \cref{rem:main-SGSN}.  At early times about one particle crosses the cut, each $\rho^q_A$ is close to
 a mixture of two number sectors, and so $\SG\approx\E_q\Hsh(p^q_t)\le\Hsh(\E_qp^q_t)=\SN$, by concavity.  The gap $\Hsh(\E_qp^q_t)-\E_q\Hsh(p^q_t)$ is the mutual information between $N_A$ and the charges, and it
 grows with the spread of the per-sector laws.  At $Jt=1$ and $N=256$, the variance of the sector means
@@ -275,15 +287,16 @@ $\lambda=2$ & $1.27(2)$ & $1.31(2)$ & $1.29(2)$ & $1.011(7)$ & $1.028(7)$ & $1.0
 \end{tabular}
 \end{center}
 The values for different $N$ agree to within $3\%$.  The largest difference, $2.9$ standard errors, is between $N=64$
-and $N=128$ for $\SG$ at $\lambda=1$, and the value for $N=256$ lies between the two.  This is what
-\cref{thm:arealaw}(b) and \cref{thm:numberentropy} assert: both entropies are bounded uniformly in $t$ and $N$.  The
+and $N=128$ for $\SG$ at $\lambda=1$, and the value for $N=256$ lies between the two.  This is consistent with
+\cref{thm:arealaw}(b) and \cref{thm:numberentropy}, which assert that both entropies are bounded uniformly in $t$ and $N$.  The
 quantity bounded in \cref{thm:arealaw}(b) is $\E_q\sup_tS(\rho^q_A(t))$.  Its lower estimate
 $\E_q\max_{t\in\mathcal T}S(\rho^q_A(t))$ over our time grid $\mathcal T$ is $3.92(3)$, $4.02(3)$, $3.96(3)$ at
 $\lambda=1$ and $1.68(2)$, $1.74(2)$, $1.71(2)$ at $\lambda=2$, for $N=64,128,256$.
 
 \paragraph{Size of the constants.}  The theorems hold with the true function $F$ of Hypothesis~\ref{hyp:EC}, whose
 constants are not explicit (\cref{rem:rate}).  To indicate their size we insert the empirical envelope $\Femp$ of
-\cref{tab:numerics-imbalance} ($N=400$).  At $\lambda=2$ this gives $2\ln2\,\Theta(\Femp)\approx1.3\times10^3$ for the
+\cref{tab:numerics-imbalance}.  This is only an indication: $\Femp$ is a sample estimate at the single size $N=400$,
+whereas Hypothesis~\ref{hyp:EC} requires a majorant valid for all $N$.  At $\lambda=2$ this gives $2\ln2\,\Theta(\Femp)\approx1.3\times10^3$ for the
 area-law bound of \cref{thm:arealaw}(b), against a measured $\E_q\max_{t\in\mathcal T}S(\rho^q_A(t))\approx1.7$.  It gives
 $\frac12\ln(2\pi e(K_1+K_2+\frac1{12}))\approx6.3$ for the bound \eqref{eq:main-SN}, against a measured $\SN\approx1.0$.
 At $\lambda=1$ the two bounds are $1.5\times10^4$ and $7.8$, against $4.0$ and $1.4$.  The number-entropy bound is much
@@ -299,18 +312,19 @@ Two further figures appear in the sections they illustrate.
 
 \Cref{fig:correlator} (\cref{sec:onebody}) shows the annealed eigenfunction correlator $\E_qQ^{[1,N]}_q(x,x+d)$, the
 quantity of Hypothesis~\ref{hyp:EC}, for boundary pairs ($x=1$) and bulk pairs ($x=N/2$) and $N=100,200,400$.  The
-boundary and bulk correlators decay at the same rate and do not depend on $N$.  This is the content of
-\cref{thm:EC}: uniformity in $N$ and in the position of the pair, including pairs at the fixed left end of the chain.
-The fitted annealed rates reported in \cref{rem:onebodynumerics} lie well below the smallest Lyapunov exponent,
-increasingly so as $\lambda$ grows, in line with \cref{rem:rate}(ii).
+boundary and bulk correlators decay at the same rate, and at $\lambda=2$ the boundary correlator does not depend on $N$
+within the errors.  This illustrates \cref{thm:EC}, which asserts uniformity in $N$ and in the position of the pair,
+including pairs at the fixed left end of the chain.  The fitted annealed rates reported in \cref{rem:onebodynumerics} lie
+below the smallest Lyapunov exponent, by a factor that grows with $\lambda$ (from about $1.5$ at $\lambda=1$ to about
+$2.5$ at $\lambda=4$), in line with \cref{rem:rate}(ii).
 
 \Cref{fig:dimer} (\cref{sec:dimer}) shows one dressed fermion in a dimer product state, for which the sector law is the
 random dimer law (\cref{prop:dimerlaw}).  At $h=0.25J$, where $0<2h<J$ and the dimer model has critical energies, the
 sector-averaged mean-square displacement grows superdiffusively, roughly like $t^{3/2}$.  The time-averaged moment
 $\Mom_2(T)$ of every sampled sector is bounded below by a multiple of $JT$, as \cref{prop:dimerlower} and
 \cref{thm:dimer} assert.  For the i.i.d.\ law at the same $h$, and for the dimer law at $h=0.75J$, the mean-square displacement
-saturates (\cref{rem:dimernumerics}).  The Hamiltonian is the same in all these runs; only the initial state differs, and with
-it the sector law.  Together with \cref{fig:imbalance}, this illustrates that disorder-free localization is a
+saturates (\cref{rem:dimernumerics}).  At fixed $h$ the Hamiltonian is the same for the two laws; only the initial state
+differs, and with it the sector law.  Together with \cref{fig:imbalance}, this illustrates that disorder-free localization is a
 property of the sector law induced by the initial state (\cref{rem:dimermessage}).
 
 % ----------------------------------------------------------------------------
@@ -322,8 +336,8 @@ with the quoted errors.  They illustrate the theorems.  They cannot confirm stat
 $t\to\infty$, and they are not used in any proof.
 
 (ii) Every rigorous bound that we evaluated holds in the data, and none is close to sharp.  With the measured
-$\kappa_N$, the lower bounds on $\Ibar$ are $10^2$ to $3\times10^5$ times too small, and up to $1.5\times10^7$ times with
-the constant of \cref{thm:imbalance}(iv) evaluated with $\Femp$.  Evaluated with $\Femp$, the area-law bound exceeds the
+$\kappa_N$, the lower bounds on $\Ibar$ are $1.4\times10^2$ to $3\times10^5$ times too small, and, for $1\le\lambda\le8$, up to
+$1.5\times10^7$ times with the constant of \cref{thm:imbalance}(iv) evaluated with $\Femp$.  Evaluated with $\Femp$, the area-law bound exceeds the
 measured $\E_q\max_{t\in\mathcal T}S(\rho^q_A(t))$ by factors of about $8\times10^2$ ($\lambda=2$) and $4\times10^3$
 ($\lambda=1$), and the number-entropy bound exceeds the measured $\SN$ by factors of $5$--$6$.
 
