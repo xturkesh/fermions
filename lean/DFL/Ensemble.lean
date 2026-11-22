@@ -108,7 +108,17 @@ theorem expect_initZ_eq_trace_ensemble (n : Cfg N)
   simp only [hvec, sec_expect_smul, sec_norm_sq_prefactor, expect_single]
   rw [← Finset.mul_sum, ensemble, Matrix.smul_mul, trace_smul, smul_eq_mul]
   congr 1
-  done
+  have hbij : Function.Bijective (linkOf n) :=
+    Function.bijective_iff_has_inverse.mpr ⟨chargeOf n, chargeOf_linkOf n, linkOf_chargeOf n⟩
+  have hL : ∑ q, sectorBlock X q n n = ∑ x, X (n, x) (n, x) :=
+    hbij.sum_comp (fun x => X (n, x) (n, x))
+  have hR : ((diagonal fun p : Cfg N × Cfg N => if p.1 = n then (1 : ℂ) else 0) * X).trace =
+      ∑ x, X (n, x) (n, x) := by
+    rw [trace, Fintype.sum_prod_type, Fintype.sum_eq_single n]
+    · simp [diagonal_mul]
+    · intro n' hn'
+      simp [diagonal_mul, hn']
+  rw [hL, hR]
 
 /-- **Superposition = ensemble for all multi-time correlators of gauge-invariant observables**
 (paper: Proposition `prop:entropies`(d), eq. `eq:main-ens`). -/
@@ -116,6 +126,14 @@ theorem correlator_eq_ensemble (J h : ℝ) (n : Cfg N)
     (Os : List (Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℂ × ℝ)) (hOs : ∀ p ∈ Os, GaugeInv p.1) :
     expect ((Os.map (fun p => heis J h p.1 p.2)).prod) (initZ (Pi.single n 1)) =
       trace (ensemble n * (Os.map (fun p => heis J h p.1 p.2)).prod) := by
-  sorry
+  apply expect_initZ_eq_trace_ensemble
+  induction Os with
+  | nil =>
+    intro j
+    simp
+  | cons p Os ih =>
+    rw [List.map_cons, List.prod_cons]
+    exact gaugeInv_mul (gaugeInv_heis J h (hOs p List.mem_cons_self) p.2)
+      (ih fun p' hp' => hOs p' (List.mem_cons_of_mem _ hp'))
 
 end DFL
