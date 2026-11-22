@@ -645,6 +645,31 @@ $(\sqrt{L/2}-2\kappa)^2\ge L/8$.  If $N\ge2L$, then $\lfloor N/L\rfloor\ge N/L-1
 $\Ibar\ge h^2/(N(J+|h|)^2)>h^2/(2L(J+|h|)^2)$.
 \end{proof}
 
+\begin{corollary}[Imbalance on the open chain]\label{cor:imbalanceopen}
+Consider the open chain of \cref{prop:variants}(i), i.e.\ the model of \cite{SKKM2017} without the boundary link,
+with the density-wave matter state and $z$-polarized links, and let $\Ibar^{\rm open}$ be its infinite-time
+imbalance.  Under Hypothesis~\ref{hyp:EC}, for all even $N\ge4$,
+\[
+  \Ibar^{\rm open}\ \ge\ \frac{h^2}{16\,L'_*\,(J+|h|)^2},\qquad L'_*:=\max\{2,\lceil128\kappa^2\rceil\},
+\]
+with $\kappa$ as in \cref{thm:imbalance}(iv).
+\end{corollary}
+
+\begin{proof}
+By \cref{prop:variants}(i) the sector law is uniform on the parity hyperplane $\{q:\prod_jq_j=\pi\}$,
+$\pi=(-1)^{N/2}$, and the proof of \cref{thm:imbalance}(i) gives $\Ibar^{\rm open}=\E'_qN^{-1}\sum_\alpha a_\alpha^2$,
+where $\E'$ is the average over this hyperplane.  Three properties of $\E'$ replace the independence of the
+charges:
+(a) for every set $B$ with $|B|\le N-1$ the charges $(q_x)_{x\in B}$ are i.i.d.\ uniform under $\E'$, since for
+$x_0\notin B$ the restriction to $[1,N]\setminus\{x_0\}$ is a bijection from the hyperplane onto $\{\pm1\}^{N-1}$;
+(b) $\E'f\le2\,\E f$ for every $f\ge0$;
+(c) for $N\ge3$, $\E'(\sum_xr_x)^2=N$, by (a) applied to pairs of sites.
+Steps~1--3 of the proof of \cref{thm:imbalance} are deterministic.  In Step~4, (a) gives Szarek's bound for
+$|B|=L\le N-1$, and by (b) the quantity $\kappa'_N$ defined with $\E'$ satisfies $\kappa'_N\le2\kappa_N\le2\kappa$.
+Step~5 is used with blocks of length $L\le N/2$, and Step~6 with (c).  The argument of
+\cref{thm:imbalance}(iv), with $\kappa$ replaced by $2\kappa$, gives the claim.
+\end{proof}
+
 \begin{remark}[On \cref{thm:imbalance}]\label{rem:main-imbalance}
 (i) \emph{Constants.}  The factor $(J+|h|)^2$ comes from $\norm{\hq}\le2J+2|h|$; the proof gives the slightly
 better $\frac12(J^2+2h^2)$ in its place.  Writing $J+h$ instead of $J+|h|$ would be wrong for $h<0$: at
