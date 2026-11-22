@@ -44,6 +44,7 @@ No `axiom` is introduced anywhere.
 | Model, Gauss law (Sec. 2) | `H`, `gauss`, `ann`, `cre`, `dGamma`, `hq`, `Hsec`, `Hdual` | `Basic.lean` |
 | Lemma `lem:gauss` (Gauss operators: self-adjoint involutions commuting with each other, `N_f` and `H`; 1D Gauss law `σˣ_{b_j} = (-1)^{N_{≤j}} ∏_{k≤j} G_k`, `∏_j G_j = (-1)^{N_f} σˣ_{b_{N-1}}`; sector projections of rank `2^N`) | `gauss_isSymm`, `gauss_mul_self`, `gauss_comm`, `gauss_comm_numF`, `gauss_comm_H`, `gauss_law_1d`, `gauss_prod`, `sxL_last_comm_H`, `gauss_mul_gaussProj`, `gaussProj_mul`, `sum_gaussProj`, `rank_gaussProj`, `gaussProj_comm_H` | `GaussLaw.lean` |
 | Theorem `thm:duality` (exact duality) | `duality`, `gauss_dual`, `dGamma_hq`, `hop_apply`, `numOp_dual` | `Duality.lean` |
+| Theorem `thm:duality`(c),(d),(e) (dictionary `U†f_jU = c_jτᶻ_j`, `U†σᶻ_{b_j}U = τᶻ_jτᶻ_{j+1}`, Wilson line to the boundary, `σˣ`, electric and hopping terms, parity; dressed fermions `c̃_j = Uc_jU† = f_j ∏_{k≥j} σᶻ_{b_k}`: CAR, gauge invariance, oddness, `c̃_x†c̃_y` = hopping with a Wilson line, `H` in dressed variables; `U†e^{-itH}U = ⊕_q e^{iht∑q}Γ(e^{-ith_q})` and the Heisenberg evolution of `c̃_x`) | `ann_dual`, `sz_dual`, `szTail_dual`, `sx_dual`, `elec_dual`, `hopTerm_dual`, `parity_dual`, `dressed_eq`, `dressed_anticomm`, `dressed_CAR`, `dressed_comm_gauss`, `dressed_odd`, `dressed_number`, `dressed_hop`, `H_dressed`, `evo_dual`, `heisenberg_dressed` | `DualityFull.lean` |
 | Corollary `cor:sector` (exact sector averaging) | `sector_average`, `sector_average_matter`, `gaugeInv_submatrix` | `Sector.lean` |
 | Lemma `lem:sectornorm` (sector-diagonal operators: `X = ∑_q P_q X P_q`, `‖X‖ = max_q ‖P_q X P_q‖`, `\|Tr(ρX)\| ≤ ∑_q w_q ‖P_q X P_q‖`, weights `2^{-N}`, `⟨Ψ₀,\|X\|Ψ₀⟩ = 4^{-N} Tr\|X\| = E_q\|x_q\|`) | `gaugeInv_eq_sum`, `norm_gaugeInv`, `norm_trace_le`, `trace_mixed_gaussProj`, `trace_initZ_gaussProj`, `norm_trace_mixed_le`, `norm_expect_initZ_le`, `sectorDiag_abs`, `expect_sectorDiag_abs`, `trace_sectorDiag_abs` | `SectorNorm.lean` |
 | Lemma `lem:productlaw` (product initial states) | `sector_sum_prod`, `sector_average_prod_fock`, `sector_average_zprod`, `expect_xprod_fock` | `ProductLaw.lean` |
@@ -53,11 +54,12 @@ No `axiom` is introduced anywhere.
 | Free fermions: CAR, Heisenberg evolution, Wick | `ann_mul_cre_add`, `heisenberg_ann`, `two_point`, `density`, `number_variance` | `FreeDyn.lean` |
 | Lemma `lem:consequences`, Hypothesis `hyp:EC` | `corrQ`, `norm_evo_le_corrQ`, `transProb_le_corrQ`, `EC` | `OneBody.lean` |
 | Lemma `lem:normalization` (`Γ h_q Γ⁻¹ = J(Δ + λ diag q)`; `Q` independent of the hopping sign; law of `Q` invariant under `λ ↦ -λ`) | `stag_conj_hq`, `stag_conj_hq_eq_smul`, `corrQ_hq_neg`, `hq_neg_h`, `avgQ_law_neg_h` | `Normalization.lean` |
-| Theorem `thm:transport` (bounded transport) | `lgt_density`, `lgt_transport` | `Main.lean` |
+| Theorem `thm:transport` (bounded transport; constant `2Σ₁(F)`) | `lgt_density`, `lgt_transport` | `Main.lean` |
+| Theorem `thm:transport`(a)–(d) **with the constants of the paper** (dressed anticommutator `{c̃_x(t), c̃_y†} = ∑_q U_q(t)_{xy} P_q` and its localization; one-particle moments `≤ 2M_p(F)`; transport `≤ Σ₁(F)`, second moment `≤ Θ(F) + Σ'₁(F)²`; dressed correlations) and Theorem `thm:numberentropy` (`S_N(t) ≤ ½ ln(2πe(Θ(F) + Σ'₁(F)² + 1/12))`, single sector with `Θ(F)`) | `dressed_anticomm_t`, `norm_sector_anticomm`, `avg_sup_anticomm_le`, `expect_abs_anticomm_le`, `one_particle_moments`, `sector_transport_le`, `avg_sup_transport_le`, `lgt_transport_sharp`, `lgt_transport_sq`, `dressed_corr_le`, `lgt_numberEntropy_sharp`, `avg_sup_sector_numberEntropy_le` | `TransportSharp.lean` |
 | Proposition `prop:LR` (sector-averaged zero-velocity LR) | `avg_norm_evo_le`, `avg_iSup_norm_evo_le`, `avg_norm_comm_le` | `LiebRobinson.lean` |
 | Theorem `thm:imbalance` (persistent imbalance) | `stag_hq_anticomm`, `eigenvalue_mul_stagWeight`, `hq_eigenvalues_injective`, `imbOne_timeAvg`, `avg_imbInf_ge`, `avg_imbInf_uniform`, `lgtImbalance_eq`, `lgtImbalance_timeAvg`, `lgtImbalance_lower` | `Imbalance.lean`, `Main.lean` |
 | Corollary `cor:imbalanceopen` (persistent imbalance on the open chain of SKKM, without boundary link) | `lgtImbalanceOpen_lower`, `lgtImbalanceOpen_timeAvg`, `lgtImbalanceOpen_eq`, `avgPar_imbInf_uniform` | `OpenImbalance.lean` |
-| Theorem `thm:numberentropy` (bounded number entropy) | `lgt_numberEntropy`, `lgtNumDist_isProb` | `Main.lean` |
+| Theorem `thm:numberentropy` (bounded number entropy, `∃ K`; see `TransportSharp.lean` for the constant of the paper) | `lgt_numberEntropy`, `lgtNumDist_isProb` | `Main.lean` |
 | Lemma `lem:intentropy` (Massey) and entropy tools | `massey`, `shannon_le_log_card`, `pvar_mixture`, `binEntropy_le_two_sqrt` | `Entropy.lean` |
 | Theorem `thm:arealaw`(a),(b) (area law, `S_G`, with the constant `2` in place of `2 ln 2`; see below for the sharp form) | `vonNeumann_slater_le`, `lgt_areaLaw` | `AreaLaw.lean` |
 | Lemma `lem:slater`(a),(b) and `lem:quasifree`(b) for Slater determinants `Γ(e^{-itA})\|S⟩` and left segments (`S(ρ_A) = ∑_i h(ν_i)`, `ν_i ∈ [0,1]` the eigenvalues of `C_A = P_A K P_A`; `N_A` Poisson-binomial with generating function `det(1 + (z-1) C_A)`; `∑_i √(ν_i(1-ν_i)) ≤ ∑_{x∈A, y∉A} \|K_{xy}\|`) | `corrA_isHermitian`, `eig_corrA_mem`, `vonNeumann_rdm_slater`, `numDist_slater`, `genfun_slater`, `sum_sqrt_eig_le` | `SlaterExact.lean` |
@@ -76,6 +78,8 @@ No `axiom` is introduced anywhere.
 | Remark `rem:randomwalk` (one charge of the standard ℤ₂ LGT in a random-walk potential) | `Hstd_dual_oneP`, `partialSum_bijective` | `RandomWalk.lean` |
 | Proposition `prop:dimerlaw` (dimer sector law) | `dimerInit_dual`, `card_isDimer`, `sector_average_dimer` | `Dimer.lean` |
 | Lemma `lem:dimercritical`, JSBS hypotheses | `dimerTM_plus_crit`, `dimerTM_minus_elliptic`, `dimerTM_commute_crit`, `jsbs_condition`, `dimerTM_minus_not_elliptic` | `DimerCritical.lean` |
+| Lemma `lem:dimercritical`(i),(iii),(iv) and eq. `eq:dimerangles` (commutator `[D_+, D_-] = 2λ(λ²-E²)σ_x`; rotation normal form `S⁻¹D_+(λ)S = -1`, `S⁻¹D_-(λ)S = R_{2θ}`; averaged phases; `κ = ‖S‖‖S⁻¹‖ = ((1+λ)/(1-λ))^{1/2}`; `E_c = -λ`), Lemma `lem:dimertransfer` (`‖T^z(n,m)‖ ≤ K₁e^{K₂\|z-λ\|(n-m)}` for every dimer configuration) | `dimerD_commutator`, `dimerD_commute_iff`, `dimerTheta_spec`, `dimerS_conj_plus`, `dimerS_conj_tm`, `dimerS_conj_minus`, `dimer_angles`, `dimerS_kappa`, `gamma2_tmC`, `dimerS_conj_neg`, `dimer_transfer_bound` | `DimerTransfer.lean` |
+| Lemma `lem:dimerTL` (finite speed uniformly in the potential; finite-volume difference, for finite `Λ'`; ballistic bound `∑_y \|y\|^p \|⟨δ_y, e^{-isH}δ_0⟩\|² ≤ (2\|s\|)^p`) | `dimerTL_i`, `dimerTL_i'`, `dimerTL_ii`, `dimerTL_iii` | `DimerTL.lean` |
 | Proposition `prop:dimerimbalance`(i),(ii) | `dimer_stagWeight_identity`, `dimerImbalance_timeAvg` | `DimerImbalance.lean` |
 | Theorem `thm:2dmap` for `σᶻ`-polarized gauge states, on **any finite graph** | `FinGraph.sector_average_matter`, `FinGraph.gaussOp_comm_ham`, `FinGraph.dGamma_hq` | `Graph.lean` |
 | Lemma `lem:2dgauge`(i)–(iii), Theorem `thm:2dmap`(a) (fluxes = gauge classes, `2^β` flux sectors, orbits of size `2^{\|V\|-1}`; Wilson loops; `∏ G_i = (-1)^{N_f}`) | `FinGraph.flux_eq_iff_gauge`, `FinGraph.gaugeAct_eq_self_iff`, `FinGraph.card_gaugeOrbit`, `FinGraph.card_fluxClasses`, `FinGraph.wilsonLoop_comm_ham`, `FinGraph.wilsonLoop_comm_gaussOp`, `FinGraph.gaussOp_prod` | `GraphFlux.lean`, `GraphWilson.lean` |
@@ -135,10 +139,11 @@ lake env lean Check.lean
   `lem:binent` the constant of the paper, `2 ln 2 Θ(F)`. The reduced state is identified through its
   entropy and the law of `N_A` (the quasi-free density matrix `ρ_C` of `lem:quasifree`(a) is not
   defined in Lean).
-- **Constant `K`.** The number-entropy constant (and the constant of the first area-law proof) is
-  stated as `∃ K` (depending only on `J`, `h`, `F`), not with the paper's explicit expression; the
-  sharp area law has the explicit constant `2 ln 2 Θ(F)`. The constants `C, η` of (EC) are existential,
-  as in the paper.
+- **Constants.** `TransportSharp.lean` and `AreaLawSharp.lean` state transport, number entropy and the
+  area law with the explicit constants of the paper (`Σ₁(F)`, `Θ(F) + Σ'₁(F)²`, `2 ln 2 Θ(F)`). The
+  earlier versions in `Main.lean` and `AreaLaw.lean` have weaker or existential constants (transport
+  `2Σ₁(F)`, number entropy and area law `∃ K`). The constants `C, η` of (EC) are existential, as in
+  the paper.
 - **Proof routes that differ from the paper.** In `cluster_bound` (`‖e^{-ith} - e^{-ith⁰}‖ ≤ 8J/g +
   16|t|J²/g`, the propagator argument of the paper via `e^{iuh}(1-S)e^{-iuh⁰}`) the generator `S` with
   `[h⁰, S] = h¹`, `‖S‖ ≤ 4J/g` is obtained from the anticommutator equation for `Γ h⁰ ≥ g/2` instead of

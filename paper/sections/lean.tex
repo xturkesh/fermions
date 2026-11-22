@@ -43,7 +43,11 @@ only external input is this literature result (\texttt{lgt\_transport\_of\_ldt},
 \paragraph{Correspondence.}  Lean names, followed by their files:
 \begin{itemize}[leftmargin=1.5em,itemsep=1pt]
 \item \cref{thm:duality,cor:sector}: \texttt{duality}, \texttt{gauss\_dual},
-\texttt{numOp\_dual}, \texttt{sector\_average} (\texttt{Duality}, \texttt{Sector}).
+\texttt{numOp\_dual}, \texttt{sector\_average} (\texttt{Duality}, \texttt{Sector}); \cref{thm:duality}(c),(d),(e),
+i.e.\ the dictionary, the dressed fermions and their Heisenberg evolution: \texttt{ann\_dual}, \texttt{sz\_dual},
+\texttt{szTail\_dual}, \texttt{sx\_dual}, \texttt{hopTerm\_dual}, \texttt{dressed\_eq}, \texttt{dressed\_CAR},
+\texttt{dressed\_comm\_gauss}, \texttt{dressed\_hop}, \texttt{H\_dressed}, \texttt{evo\_dual},
+\texttt{heisenberg\_dressed} (\texttt{DualityFull}).
 \item \cref{lem:gauss}: \texttt{gauss\_comm\_H}, \texttt{gauss\_law\_1d}, \texttt{gauss\_prod},
 \texttt{sxL\_last\_comm\_H}, \texttt{rank\_gaussProj}, \texttt{gaussProj\_comm\_H} (\texttt{GaussLaw});
 \cref{lem:sectornorm}: \texttt{gaugeInv\_eq\_sum}, \texttt{norm\_gaugeInv}, \texttt{norm\_trace\_le},
@@ -73,14 +77,16 @@ $\Z$: \texttt{tendsto\_evoZ}, \texttt{lintegral\_iSup\_UZ\_le}, \texttt{infvol\_
 \texttt{InfVolTransport}).
 \item \cref{prop:nocritical}(i),(ii),(iv): \texttt{unipotent\_pow\_unbounded},
 \texttt{no\_finite\_invariant\_lines}, \texttt{transferT\_commutator} (\texttt{Furstenberg}).
-\item \cref{thm:transport}: \texttt{lgt\_transport}; \cref{prop:LR}: \texttt{avg\_norm\_comm\_le};
-\cref{lem:duhamel}: \texttt{avg\_colNorm\_evo\_sub\_le} (\texttt{Main}, \texttt{LiebRobinson},
-\texttt{Duhamel}).
+\item \cref{thm:transport}(a)--(d), with the constants of the text: \texttt{dressed\_anticomm\_t},
+\texttt{avg\_sup\_anticomm\_le}, \texttt{expect\_abs\_anticomm\_le}, \texttt{one\_particle\_moments},
+\texttt{lgt\_transport\_sharp}, \texttt{lgt\_transport\_sq}, \texttt{dressed\_corr\_le} (\texttt{TransportSharp});
+\cref{prop:LR}: \texttt{avg\_norm\_comm\_le}; \cref{lem:duhamel}: \texttt{avg\_colNorm\_evo\_sub\_le}
+(\texttt{LiebRobinson}, \texttt{Duhamel}).
 \item \cref{thm:imbalance}: \texttt{lgtImbalance\_timeAvg}, \texttt{lgtImbalance\_lower}
 (\texttt{Imbalance}, \texttt{Main}); \cref{cor:imbalanceopen}: \texttt{lgtImbalanceOpen\_lower},
 \texttt{avgPar\_imbInf\_uniform} (\texttt{OpenImbalance}).
-\item \cref{lem:intentropy,thm:numberentropy}: \texttt{massey}, \texttt{lgt\_numberEntropy}
-(\texttt{Entropy}, \texttt{Main}).
+\item \cref{lem:intentropy,thm:numberentropy}: \texttt{massey}, \texttt{lgt\_numberEntropy\_sharp},
+\texttt{avg\_sup\_sector\_numberEntropy\_le} (\texttt{Entropy}, \texttt{TransportSharp}).
 \item \cref{lem:slater}, and \cref{lem:quasifree}(b) for the reduced states of Slater determinants on left
 segments: \texttt{vonNeumann\_rdm\_slater} ($S(\rho_A)=\sum_i\bent(\nu_i)$), \texttt{numDist\_slater},
 \texttt{genfun\_slater}, \texttt{sum\_sqrt\_eig\_le} (\texttt{SlaterExact}); \cref{lem:binent}:
@@ -97,8 +103,12 @@ $2\ln2\,\Theta(F)$), \texttt{lgt\_areaLaw\_full} (\texttt{AreaLawSharp}, \texttt
 \texttt{correlator\_eq\_ensemble} (\texttt{Entropies}, \texttt{EntropyBlocks}, \texttt{Taxonomy},
 \texttt{Ensemble}).
 \item \cref{prop:dimerlaw,lem:dimercritical}, \cref{prop:dimerimbalance}(i),(ii):
-\texttt{sector\_average\_dimer}, \texttt{jsbs\_condition}, \texttt{dimerImbalance\_timeAvg}
-(\texttt{Dimer}, \texttt{DimerCritical}, \texttt{DimerImbalance}).
+\texttt{sector\_average\_dimer}, \texttt{jsbs\_condition}, \texttt{dimerD\_commutator},
+\texttt{dimerS\_conj\_plus}, \texttt{dimerS\_conj\_minus}, \texttt{dimer\_angles}, \texttt{dimerS\_kappa},
+\texttt{dimerS\_conj\_neg}, \texttt{dimerImbalance\_timeAvg} (\texttt{Dimer}, \texttt{DimerCritical},
+\texttt{DimerTransfer}, \texttt{DimerImbalance}); \cref{lem:dimertransfer}: \texttt{dimer\_transfer\_bound}
+(\texttt{DimerTransfer}); \cref{lem:dimerTL} (with $\Lambda'$ finite in (ii)): \texttt{dimerTL\_i},
+\texttt{dimerTL\_ii}, \texttt{dimerTL\_iii} (\texttt{DimerTL}).
 \item \cref{lem:2dgauge}, \cref{thm:2dmap}(a),(b), on arbitrary finite graphs:
 \texttt{flux\_eq\_iff\_gauge}, \texttt{card\_gaugeOrbit}, \texttt{card\_fluxClasses},
 \texttt{wilsonLoop\_comm\_ham}, \texttt{gaussOp\_prod}; the joint eigenvectors $V_{q,s}\ket n$:
@@ -125,9 +135,9 @@ for $s=+$); (b) \texttt{sector\_average\_xpol}, \texttt{xpol\_summand\_gauge}; (
 (\texttt{RandomWalk}).
 \end{itemize}
 
-\paragraph{Deviations.}  Sites and links are indexed from $0$.  The constants of
-\cref{thm:numberentropy}, \cref{thm:arealaw}, \cref{thm:imbalance}(iv) and \cref{thm:EC} appear as existential
-quantifiers, with values depending only on $J$, $h$ and the profile $F$ (resp.\ on $|\lambda|$).  The area law is
+\paragraph{Deviations.}  Sites and links are indexed from $0$.  \Cref{thm:transport,thm:numberentropy,thm:arealaw}
+are formalized with the constants of the text.  The constants of \cref{thm:imbalance}(iv) and \cref{thm:EC} appear as
+existential quantifiers, with values depending only on $J$, $h$ and the profile $F$ (resp.\ on $|\lambda|$).  The area law is
 formalized twice: with the constant $2\ln2\,\Theta(F)$ of the text, through the exact formula of \cref{lem:slater}(a),
 and, by a shorter argument that never computes the spectrum of $\rho_A$, with the constant $2$ in place of $2\ln2$.
 The quasi-free density matrix $\rhoqf{C}$ of \cref{lem:quasifree}(a) is not defined in Lean; the reduced state of a
