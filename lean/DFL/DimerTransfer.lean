@@ -216,7 +216,7 @@ theorem dimerS_conj_minus (lam : ℝ) (h0 : 0 < lam) (h1 : lam < 1) :
     (DimerTransferAux.tm_mul_S lam h0 h1)
   rw [DimerTransferAux.rotC_mul, ← two_mul] at h
   rw [← h, dimerDm]
-  congr 3 <;> ring1
+  congr 4 <;> ring1
 
 /-- **The averaged rotation phases** (paper: eq. `eq:dimerangles`), with `η₊ = π`, `η₋ = 2θ` and equal
 probabilities. -/
@@ -256,7 +256,7 @@ theorem dimerS_conj_neg (lam : ℝ) (h0 : 0 < lam) (h1 : lam < 1) :
   · have h := DimerTransferAux.conj_sq_of_mul_eq hU (DimerTransferAux.tm_mul_gS lam h0 h1)
     rw [neg_mul_neg, DimerTransferAux.rotC_mul, ← two_mul] at h
     rw [← h, dimerDp]
-    congr 3 <;> ring1
+    congr 4 <;> ring1
 
 /-! ### Lemma `lem:dimertransfer` -/
 
