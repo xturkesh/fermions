@@ -16,6 +16,7 @@ weight in the charge block `k` is at most the block weight `p_k`) and apply it t
 -/
 
 open Matrix Finset
+open scoped ComplexOrder
 
 noncomputable section
 

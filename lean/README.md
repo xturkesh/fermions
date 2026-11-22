@@ -45,12 +45,30 @@ introduced anywhere.
 | Theorem `thm:arealaw`(c), Lemma `lem:cutlocal`(c) (definite charges) | `vonNeumann_rdmLGT_xprod`, `lgt_areaLaw_full` | `CutLocal.lean` |
 | Proposition `prop:entropies`(d) (superposition = ensemble, all multi-time correlators) | `expect_initZ_eq_trace_ensemble`, `correlator_eq_ensemble`, `gaugeInv_heis` | `Ensemble.lean` |
 | Remark `rem:randomwalk` (one charge of the standard ℤ₂ LGT in a random-walk potential) | `Hstd_dual_oneP`, `partialSum_bijective` | `RandomWalk.lean` |
+| Proposition `prop:entropies`(c) (number entropy ≤ entanglement, per sector and for `S_full`) | `shannon_le_vonNeumann_of_block`, `numDist_shannon_le_vonNeumann_slater`, `lgt_numberEntropy_le_full` | `Taxonomy.lean` |
 | Lemma `lem:duhamel` | `colNorm_evo_sub_le`, `avg_colNorm_evo_sub_le` | `Duhamel.lean` |
 | Proposition `prop:dimerlaw` (dimer sector law) | `dimerInit_dual`, `card_isDimer`, `sector_average_dimer` | `Dimer.lean` |
 | Lemma `lem:dimercritical`, JSBS hypotheses | `dimerTM_plus_crit`, `dimerTM_minus_elliptic`, `dimerTM_commute_crit`, `jsbs_condition`, `dimerTM_minus_not_elliptic` | `DimerCritical.lean` |
 | Proposition `prop:dimerimbalance`(i),(ii) | `dimer_stagWeight_identity`, `dimerImbalance_timeAvg` | `DimerImbalance.lean` |
 | Theorem `thm:2dmap` for `σᶻ`-polarized gauge states, on **any finite graph** (2D square lattice included) | `FinGraph.sector_average_matter`, `FinGraph.gaussOp_comm_ham`, `FinGraph.dGamma_hq` | `Graph.lean` |
 | Proposition `prop:gausscap` (U(1) quantum links) | `countInt_gauss`, `qlm_numberEntropy_le`, `qlm_numberEntropy_le_edge` | `QLM.lean` |
+
+## Verification
+
+`lake build` compiles every module without `sorry`. Every theorem in the table depends only on
+Lean's standard axioms `propext`, `Classical.choice` and `Quot.sound`. To check:
+
+```
+cat > Check.lean <<'X'
+import DFL
+#print axioms DFL.lgt_transport
+#print axioms DFL.lgt_numberEntropy
+#print axioms DFL.lgtImbalance_lower
+#print axioms DFL.lgt_areaLaw
+#print axioms DFL.FinGraph.sector_average_matter
+X
+lake env lean Check.lean
+```
 
 ## Conventions and deviations from the paper
 
