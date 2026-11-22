@@ -11,7 +11,8 @@ import DFL.ECProof
 * `annealed_K`, `annealed_cut` (paper: `lem:annealed`(i),(ii)): under (EC),
   `E sup_t |K_q(t)_{xy}| ≤ 2 ∑_{2k ≥ |x-y|} F(k)` and `E sup_t ∑_{x ∈ A, y ∉ A} |K_q(t)_{xy}| ≤ Θ(F)`,
   `Θ(F) = 2 ∑_{k ≥ 1} k (2k+1) F(k)`.
-* `lgt_areaLaw_sharp` (paper: `thm:arealaw`(b)): `E_q sup_t S(ρ^q_A(t)) ≤ 2 ln 2 Θ(F) ≤ 8 ln 2 M_2(F)`.
+* `lgt_areaLaw_sharp` (paper: `thm:arealaw`(b)): `E_q sup_t S(ρ^q_A(t)) ≤ 2 ln 2 Θ(F) ≤ 8 ln 2 M_2(F)`;
+  `lgt_areaLaw_sharp_of_ldt`: the same with (EC) replaced by the large-deviation input (`ec_of_ldt`).
 -/
 
 open Matrix Finset
@@ -307,5 +308,16 @@ theorem thetaF_le (J h : ℝ) {F : ℕ → ℝ} (hEC : EC J h F) :
   have hk : (0 : ℝ) ≤ k := Nat.cast_nonneg k
   have hF := hEC.nonneg k
   nlinarith [mul_nonneg hk hF]
+
+/-- **Sharp area law from uniform large deviations** (paper: Theorems `thm:EC`, `thm:arealaw`(b)):
+`E_q sup_t S(ρ^q_A(t)) ≤ 2 ln 2 Θ(F)` with `F(d) = min(1, C e^{-ηd})`, uniformly in `N`, `ℓ` and the
+Fock state. -/
+theorem lgt_areaLaw_sharp_of_ldt (J h : ℝ) (hJ : J ≠ 0) (hL : LDT (-(2 * h / J))) :
+    ∃ C η : ℝ, 0 < η ∧ ∀ (N : ℕ) (ℓ : ℕ) (hℓ : ℓ ≤ N) (S : Finset (Fin N)),
+      avgQ (fun q : Cfg N => ⨆ t : ℝ,
+        vonNeumann (rdm ℓ hℓ (evo (dGamma (hq J h q)) t *ᵥ fockVec S)) (rdm_isHermitian ℓ hℓ _)) ≤
+        2 * Real.log 2 * thetaF (fun d => min 1 (C * Real.exp (-η * d))) := by
+  obtain ⟨C, η, hη, hEC⟩ := ec_of_ldt J h hJ hL
+  exact ⟨C, η, hη, fun N ℓ hℓ S => lgt_areaLaw_sharp J h hEC ℓ hℓ S⟩
 
 end DFL
