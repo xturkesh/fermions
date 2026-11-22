@@ -400,9 +400,9 @@ that a particle started at a bulk site $x$ is found outside $\Tclus_q(x)$, avera
 $\le1.2\%$ for $t\le1$, $2.5\%$ at $t=3$, $8.5\%$ at $t=10$, $14.5\%$ at $t=30$ and $19$--$22\%$ for $100\le t\le1000$ at
 $h=6$ ($g=16$); at $h=4$ ($g=8$) it is $\le3\%$ for $t\le1$, $15\%$ at $t=10$ and $32$--$34\%$ for $100\le t\le1000$.  So
 the leakage sets in on the time scale $g/J^2$, as in \cref{rem:clusterstop}.  The worst-case operator-norm
-difference in \eqref{eq:clusterbound} is $0.26$ at $t=0.1$, $h=6$ (bound $0.8$) and reaches its maximal value $2$
-near $t=10$; with our constants the right-hand side of \eqref{eq:clusterbound} is $\frac12+3t$ at these parameters, so
-(b) is informative only for $t<\frac12$ (and the squared bound in (c) only for $t<\frac16$), while the averaged
+difference in \eqref{eq:clusterbound} is $0.26$ at $t=0.1$, $h=6$ (bound $0.6$) and reaches its maximal value $2$
+near $t=10$; with our constants the right-hand side of \eqref{eq:clusterbound} is $\frac12+t$ at these parameters, so
+(b) is informative only for $t<\frac32$ (and the squared bound in (c) only for $t<\frac12$), while the averaged
 leakage stays small up to $t\sim g/J^2$.  The equal-charge clusters are subcritical but not small:
 for i.i.d.\ $q$ on $\Z^2$ ($200\times200$ samples, $4000$ clusters) the sup-norm radius $R$ of $\Tclus_q(x)$ satisfies
 $\Prob(R\ge r)\approx0.72,\,0.39,\,0.23$ for $r=4,10,14$, a decay length of about $9$ lattice spacings, since
@@ -430,15 +430,15 @@ Assume $\abs h>2J$ and set $g:=4\abs h-8J>0$.
 \item $h^0_{q,s}$ leaves $\ell^2(\Tclus)$ invariant for every equal-charge cluster $\Tclus$.
 \item For all $t\in\R$, uniformly in $\Lambda$, $q$ and $s$,
 \begin{equation}\label{eq:clusterbound}
-  \norm{\e^{-\ii th_{q,s}}-\e^{-\ii th^0_{q,s}}}\le\frac{8J}{g}+\frac{48\,\abs t\,J^2}{g} .
+  \norm{\e^{-\ii th_{q,s}}-\e^{-\ii th^0_{q,s}}}\le\frac{8J}{g}+\frac{16\,\abs t\,J^2}{g} .
 \end{equation}
-Consequently, for every $x\in\Lambda$, $\norm{\one_{\Lambda\setminus\Tclus_q(x)}\e^{-\ii th_{q,s}}\delta_x}\le8J/g+48\abs tJ^2/g$.
+Consequently, for every $x\in\Lambda$, $\norm{\one_{\Lambda\setminus\Tclus_q(x)}\e^{-\ii th_{q,s}}\delta_x}\le8J/g+16\abs tJ^2/g$.
 \item Let the law of $q$ have density at most $K$ with respect to the i.i.d.\ Bernoulli$(1/2)$ law on
 $\{\pm1\}^\Lambda$ ($K=1$ for i.i.d.\ charges, $K=2$ for the parity hyperplane of \cref{prop:2dlaws}(a)).
 There is a numerical constant $c_*>0$ such that for all $x\in\Lambda$, all integers $R\ge4$, $t\in\R$ and $s$,
 \begin{equation}\label{eq:clusterprob}
   \E\,\norm{\one_{\Lambda\setminus B_R(x)}\,\e^{-\ii th_{q,s}}\delta_x}^2
-  \le\Bigl(\frac{8J}{g}+\frac{48\,\abs t\,J^2}{g}\Bigr)^2+2K\,\e^{-c_*(2R+3)} .
+  \le\Bigl(\frac{8J}{g}+\frac{16\,\abs t\,J^2}{g}\Bigr)^2+2K\,\e^{-c_*(2R+3)} .
 \end{equation}
 \end{enumerate}
 \end{proposition}
@@ -447,8 +447,8 @@ The constant $c_*$ is the one of \cite[Prop.~2.2]{LiL2022}, which rests on $p_c^
 \cite{GrimmettStacey1998} and on the sharpness of the phase transition \cite[Thm.~7.3]{AizenmanBarsky1987} (see
 also \cite{Menshikov1986}); we quote it in the proof.  No smallness condition on $J/g$ is needed for (b): the bound is proved for all
 $\abs h>2J$.  It is informative only when its right-hand side is below $2$, which requires $J/g<\frac14$ and
-$\abs t<(2g-8J)/(48J^2)$; in the complementary range (in particular for $J/g\ge\frac14$) it holds trivially,
-since the left-hand side never exceeds $2$.  We made no attempt to optimize the constants $8$ and $48$.
+$\abs t<(2g-8J)/(16J^2)$; in the complementary range (in particular for $J/g\ge\frac14$) it holds trivially,
+since the left-hand side never exceeds $2$.  We made no attempt to optimize the constants $8$ and $16$.
 
 \begin{proof}
 Replacing $(h,q)$ by $(-h,-q)$ changes neither $h_{q,s}$, $h^0_{q,s}$ nor the clusters, and preserves the laws in
@@ -476,24 +476,24 @@ here because $\sigma(h^0_-)$ lies entirely below $\sigma(h^0_+)$.)  Let $S:=X-X^
 with $\norm S=\norm X\le\norm{h^1}/g$.  Since $h^1=Y+Y^*$ and
 $X^*h^0_+-h^0_-X^*=(h^0_+X-Xh^0_-)^*=Y^*$, we get $[h^0,S]=h^1$.
 
-\emph{Rotation.}  Let $U:=\e^S$, a unitary with $\norm{U-\one}\le\norm S$ (the spectrum of $S$ is imaginary and
-$\abs{\e^{\ii\vartheta}-1}\le\abs\vartheta$), and $h':=UhU^*$.  From
+\emph{Propagators.}  Let $Z(u):=\e^{\ii uh}(\one-S)\e^{-\ii uh^0}$.  Since $h=h^0+h^1$ and $[h^0,S]=h^1$,
+$h(\one-S)-(\one-S)h^0=h^1-[h^0,S]-h^1S=-h^1S$, so $Z'(u)=-\ii\,\e^{\ii uh}h^1S\e^{-\ii uh^0}$ and
+$\norm{Z(t)-Z(0)}\le\abs t\norm{h^1}\norm S$.  As $\e^{\ii th}\e^{-\ii th^0}-\one=Z(t)-Z(0)+\e^{\ii th}S\e^{-\ii th^0}-S$,
+\[
+  \norm{\e^{-\ii th}-\e^{-\ii th^0}}=\norm{\e^{\ii th}\e^{-\ii th^0}-\one}\le\abs t\norm{h^1}\norm S+2\norm S
+  \le\frac{\abs t\norm{h^1}^2}{g}+\frac{2\norm{h^1}}{g},
+\]
+which gives \eqref{eq:clusterbound} with $\norm{h^1}\le4J$.  By (a), $\e^{-\ii th^0}\delta_x\in\ell^2(\Tclus_q(x))$, so
+$\one_{\Lambda\setminus\Tclus_q(x)}\e^{-\ii th}\delta_x=\one_{\Lambda\setminus\Tclus_q(x)}(\e^{-\ii th}-\e^{-\ii th^0})\delta_x$.
+
+\emph{Rotation} (used in \cref{sec:2d:status}).  Let $U:=\e^S$, a unitary with $\norm{U-\one}\le\norm S$ (the
+spectrum of $S$ is imaginary and $\abs{\e^{\ii\vartheta}-1}\le\abs\vartheta$), and $h':=UhU^*$.  From
 $\frac{\dd}{\dd u}\e^{uS}h\e^{-uS}=\e^{uS}[S,h]\e^{-uS}$ and $[S,h]=-[h^0,S]+[S,h^1]=-h^1+[S,h^1]$,
 \[
   h'=h^0+\int_0^1\bigl(h^1-\e^{uS}h^1\e^{-uS}\bigr)\dd u+\int_0^1\e^{uS}[S,h^1]\e^{-uS}\dd u .
 \]
 As $\norm{h^1-\e^{uS}h^1\e^{-uS}}=\norm{\int_0^u\e^{vS}[S,h^1]\e^{-vS}\dd v}\le u\norm{[S,h^1]}$, we obtain
-$\norm{h'-h^0}\le\frac32\norm{[S,h^1]}\le3\norm S\norm{h^1}\le3\norm{h^1}^2/g$.  No series is involved.
-
-\emph{Propagators.}  $\e^{-\ii th}=U^*\e^{-\ii th'}U$, and for unitaries $W$,
-$\norm{U^*WU-W}\le\norm{U^*W(U-\one)}+\norm{(U^*-\one)W}\le2\norm{U-\one}$.  With Duhamel's formula
-$\norm{\e^{-\ii th'}-\e^{-\ii th^0}}\le\abs t\norm{h'-h^0}$,
-\[
-  \norm{\e^{-\ii th}-\e^{-\ii th^0}}\le\norm{\e^{-\ii th'}-\e^{-\ii th^0}}+\norm{U^*\e^{-\ii th^0}U-\e^{-\ii th^0}}
-  \le\frac{3\abs t\norm{h^1}^2}{g}+\frac{2\norm{h^1}}{g},
-\]
-which gives \eqref{eq:clusterbound} with $\norm{h^1}\le4J$.  By (a), $\e^{-\ii th^0}\delta_x\in\ell^2(\Tclus_q(x))$, so
-$\one_{\Lambda\setminus\Tclus_q(x)}\e^{-\ii th}\delta_x=\one_{\Lambda\setminus\Tclus_q(x)}(\e^{-\ii th}-\e^{-\ii th^0})\delta_x$.
+$\norm{h'-h^0}\le\frac32\norm{[S,h^1]}\le3\norm S\norm{h^1}\le3\norm{h^1}^2/g$.
 
 (c) Let $\epsilon(t)$ be the right-hand side of \eqref{eq:clusterbound}.  If $\Tclus_q(x)\subset B_R(x)$, then
 $\norm{\one_{\Lambda\setminus B_R(x)}\e^{-\ii th}\delta_x}\le\epsilon(t)$ by (b); otherwise the norm is at most $1$.
@@ -515,7 +515,7 @@ Combining \cref{prop:cluster}(c) with \cref{prop:2dlaws}(a) (density $K=2$): for
 box $\Lambda$ and a Fock state $\ket n$ with occupied set $S_n$,
 \[
   \sum_{y:\ \dist(y,S_n)>R}\langle\Psi(t),n_y\Psi(t)\rangle
-  \le\abs{S_n}\Bigl[\Bigl(\frac{8J}{g}+\frac{48\abs tJ^2}{g}\Bigr)^2+4\e^{-c_*(2R+3)}\Bigr],
+  \le\abs{S_n}\Bigl[\Bigl(\frac{8J}{g}+\frac{16\abs tJ^2}{g}\Bigr)^2+4\e^{-c_*(2R+3)}\Bigr],
 \]
 because $\langle\Psi(t),n_y\Psi(t)\rangle=2^{1-\abs V}\sum_{\Tpi_q=\Tpi}\sum_{a\in S_n}\abs{(\e^{-\ii th_{q,+}})_{ya}}^2$ and
 $\dist(y,S_n)>R$ implies $y\notin B_R(a)$ for every $a\in S_n$ (here $\dist$ is the $\ell^\infty$-distance).
@@ -554,7 +554,7 @@ the equal-charge clusters at density $\frac12$ are not exponentially small, and 
 \begin{remark}[The checkerboard state at strong coupling]\label{rem:checkerstrong}
 For the initial state of \cref{prop:2dlaws}(c) on a box, $q^0=-\epsilon$ alternates, so every equal-charge cluster
 is a single site, $h^0_{q^0,s}=2h\diag(q^0)$, and \cref{prop:cluster}(b) gives
-$\abs{\langle\delta_x,\e^{-\ii th_{q^0,s}}\delta_x\rangle}\ge1-8J/g-48\abs tJ^2/g$ deterministically, in every
+$\abs{\langle\delta_x,\e^{-\ii th_{q^0,s}}\delta_x\rangle}\ge1-8J/g-16\abs tJ^2/g$ deterministically, in every
 flux sector.  Beyond $t\sim\abs h/J^2$ the dynamics is generated, by \cref{prop:2dlaws}(c)(iii), by
 $R_s=(K_s^2+4h^2)^{1/2}$.  Since $0\le1+\frac y2-\sqrt{1+y}\le\frac{y^2}8$ for $y\ge0$ and $\norm{K_s}\le4J$,
 \[

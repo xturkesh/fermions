@@ -118,12 +118,9 @@ the norm of the product is bounded through its action on two basis vectors.
 \item In \cref{thm:imbalance}(iv) the anticoncentration step uses the elementary fourth-moment bound of
 \cref{rem:main-imbalance}(i), on blocks of length $3m^2$, instead of Szarek's inequality, together with a different
 bound on $\kappa_N$; the Lean statement is the positivity of the time average, uniformly in $N$.
-\item In \cref{prop:cluster}(b) the generator $S$ is obtained from the anticommutator equation
-$\Gamma h^0S+S\Gamma h^0=\Gamma h^1$ with $\Gamma=\operatorname{sgn}(h)\diag(q)$, so that
-$[h^0,S]=h^1$ and $\norm S\le\norm{h^1}/g$, using $\Gamma h^0\ge g/2$.  The mean value inequality
-for $u\mapsto\e^{\ii uh}(\one-S)\e^{-\ii uh^0}$ then gives
-$\norm{\e^{-\ii th}-\e^{-\ii th^0}}\le2\norm S+\abs t\norm{h^1}\norm S$, i.e.\ \eqref{eq:clusterbound}
-with $16$ in place of $48$.
+\item In \cref{prop:cluster}(b) the generator $S$ with $[h^0,S]=h^1$ and $\norm S\le\norm{h^1}/g$ is obtained
+from the anticommutator equation $\Gamma h^0S+S\Gamma h^0=\Gamma h^1$, $\Gamma=\operatorname{sgn}(h)\diag(q)$,
+using $\Gamma h^0\ge g/2$, instead of from the integral formula; the propagator estimate is the one of the text.
 \end{itemize}
 
 \paragraph{Not formalized.}  The following are not formalized:

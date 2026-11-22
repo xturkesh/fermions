@@ -123,11 +123,11 @@ lake env lean Check.lean
   determinant in canonical orbitals, and finally uses `log(√ν + √(1-ν)) ≤ √(ν(1-ν))`.
 - **Constant `K`.** The number-entropy and area-law constants are stated as `∃ K` (depending only on
   `J`, `h`, `F`), not with the paper's explicit expressions; likewise the constants `C, η` of (EC).
-- **Proof routes that differ from the paper.** `cluster_bound` (the paper's constants `8J/g` and
-  `48|t|J²/g`) is proved without the integral representation of the Sylvester solution and without
-  the rotation `e^S`: the generator `S` solves `[h⁰, S] = h¹` with `‖S‖ ≤ 4J/g` (anticommutator
-  equation for `Γ h⁰ ≥ g/2`), and the mean value inequality for `e^{iuh}(1-S)e^{-iuh⁰}` gives
-  `‖e^{-ith} - e^{-ith⁰}‖ ≤ 2‖S‖ + |t| ‖h¹‖ ‖S‖`, i.e. the constant `16` in place of `48`. The
+- **Proof routes that differ from the paper.** In `cluster_bound` (`‖e^{-ith} - e^{-ith⁰}‖ ≤ 8J/g +
+  16|t|J²/g`, the propagator argument of the paper via `e^{iuh}(1-S)e^{-iuh⁰}`) the generator `S` with
+  `[h⁰, S] = h¹`, `‖S‖ ≤ 4J/g` is obtained from the anticommutator equation for `Γ h⁰ ≥ g/2` instead of
+  the integral formula. (The paper's constant was `48` before this argument was found during the
+  formalization; it is now `16` in both.) The
   Green-function formula of `lem:green` is replaced by the Poisson identity
   `P_B(E) φ(x) = p_a(E) φ(a-1) + p_b(E) φ(b+1)` (Wronskians), and `lem:entry` uses only the vector
   form of the large-deviation estimate (the norm of the product is bounded through two vectors).
