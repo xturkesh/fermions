@@ -296,35 +296,110 @@ theorem parity_dual :
 /-- The dressed fermion `c̃_j = f_j ∏_{k ≥ j} σᶻ_{b_k}` (Wilson line to the boundary). -/
 def dressed (j : Fin N) : Matrix (Cfg N × Cfg N) (Cfg N × Cfg N) ℝ := ann j ⊗ₖ flipSet (tailOf j)
 
+namespace DualityFullAux
+
+/-- The transpose of a Kronecker product. -/
+lemma kronecker_transpose' {l m n p : Type*} (A : Matrix l m ℝ) (B : Matrix n p ℝ) :
+    (A ⊗ₖ B)ᵀ = Aᵀ ⊗ₖ Bᵀ :=
+  (kroneckerMap_transpose _ A B).symm
+
+/-- `(-A) ⊗ B = -(A ⊗ B)`. -/
+lemma neg_kronecker' {l m n p : Type*} (A : Matrix l m ℝ) (B : Matrix n p ℝ) :
+    (-A) ⊗ₖ B = -(A ⊗ₖ B) := by
+  ext ⟨a, b⟩ ⟨c, d⟩
+  simp [neg_mul]
+
+/-- `c̃_j† = c_j† ⊗ ∏_{k ≥ j} σᶻ_{b_k}`. -/
+lemma dressed_transpose (j : Fin N) : (dressed j)ᵀ = cre j ⊗ₖ flipSet (tailOf j) := by
+  rw [dressed, kronecker_transpose', flipSet_transpose]
+  rfl
+
+/-- `c̃_x c̃_y` in Kronecker form. -/
+lemma dressed_mul_dressed (x y : Fin N) :
+    dressed x * dressed y = (ann x * ann y) ⊗ₖ flipSet (symmDiff (tailOf x) (tailOf y)) := by
+  rw [dressed, dressed, ← mul_kronecker_mul, flipSet_mul]
+
+/-- `c̃_x c̃_y†` in Kronecker form. -/
+lemma dressed_mul_transpose (x y : Fin N) :
+    dressed x * (dressed y)ᵀ = (ann x * cre y) ⊗ₖ flipSet (symmDiff (tailOf x) (tailOf y)) := by
+  rw [dressed_transpose, dressed, ← mul_kronecker_mul, flipSet_mul]
+
+/-- `c̃_x† c̃_y` in Kronecker form. -/
+lemma transpose_mul_dressed (x y : Fin N) :
+    (dressed x)ᵀ * dressed y = (cre x * ann y) ⊗ₖ flipSet (symmDiff (tailOf x) (tailOf y)) := by
+  rw [dressed_transpose, dressed, ← mul_kronecker_mul, flipSet_mul]
+
+/-- Removing one particle flips the total parity: `c_j (-1)^{N} = -(-1)^{N} c_j`. -/
+lemma ann_mul_parityF (j : Fin N) : ann j * parityF = -(parityF * ann j) := by
+  ext n' n
+  simp only [parityF, mul_diagonal, diagonal_mul, Matrix.neg_apply, FreeDynAux.ann_apply]
+  split_ifs with h
+  · obtain ⟨hn, rfl⟩ := h
+    have hsum : ∑ k, n k = ∑ k, Function.update n j 0 k + 1 := by
+      rw [update_zero_eq hn]
+      simp only [Pi.add_apply, Finset.sum_add_distrib, fockCfg, Finset.mem_singleton,
+        Finset.sum_ite_eq', Finset.mem_univ, ite_true]
+      rw [add_assoc, GaussLawAux.zmod2_one_add_one, add_zero]
+    rw [hsum, GaussLawAux.sgn_add, FreeDynAux.sgn_one]
+    ring
+  · simp
+
+end DualityFullAux
+
 /-- **`c̃_j = U c_j U†`** (paper: eq. `eq:dressed`). -/
 theorem dressed_eq (j : Fin N) :
     dressed j =
       (ann j ⊗ₖ (1 : Matrix (Cfg N) (Cfg N) ℝ)).submatrix (dualEquiv (N := N)).symm dualEquiv.symm := by
-  sorry
+  have h1 : dressed j = (ann j ⊗ₖ (1 : Matrix (Cfg N) (Cfg N) ℝ)) *
+      ((1 : Matrix (Cfg N) (Cfg N) ℝ) ⊗ₖ flipSet (tailOf j)) := by
+    rw [dressed, ← mul_kronecker_mul, Matrix.mul_one, Matrix.one_mul]
+  have h2 : (dressed j).submatrix (dualEquiv (N := N)) dualEquiv =
+      ann j ⊗ₖ (1 : Matrix (Cfg N) (Cfg N) ℝ) := by
+    rw [h1, ← submatrix_mul_equiv _ _ _ dualEquiv _, ann_dual, szTail_dual, ← mul_kronecker_mul,
+      Matrix.mul_one, flipSet_mul_self]
+  rw [← h2, submatrix_submatrix, Equiv.self_comp_symm, submatrix_id_id]
 
 /-- CAR: `{c̃_x, c̃_y} = 0`. -/
 theorem dressed_anticomm (x y : Fin N) : dressed x * dressed y + dressed y * dressed x = 0 := by
-  sorry
+  rw [dressed_mul_dressed, dressed_mul_dressed, symmDiff_comm (tailOf y), ← add_kronecker,
+    ann_mul_ann_add, zero_kronecker]
 
 /-- CAR: `{c̃_x, c̃_y†} = δ_{xy}`. -/
 theorem dressed_CAR (x y : Fin N) :
     dressed x * (dressed y)ᵀ + (dressed y)ᵀ * dressed x = if x = y then 1 else 0 := by
-  sorry
+  rw [dressed_mul_transpose, transpose_mul_dressed, symmDiff_comm (tailOf y), ← add_kronecker,
+    ann_mul_cre_add]
+  split_ifs with hxy
+  · subst hxy
+    rw [symmDiff_self, Finset.bot_eq_empty, flipSet_empty, one_kronecker_one]
+  · rw [zero_kronecker]
 
 /-- The dressed fermions are gauge invariant. -/
 theorem dressed_comm_gauss (j k : Fin N) : dressed j * gauss k = gauss k * dressed j := by
-  sorry
+  have hsupp : ∀ a b : Cfg N × Cfg N, dressed j a b ≠ 0 → chargeOf a.1 a.2 = chargeOf b.1 b.2 := by
+    intro a b hab
+    rw [dressed_eq, submatrix_apply, dualEquiv_symm_apply, dualEquiv_symm_apply, kronecker_apply,
+      Matrix.one_apply] at hab
+    by_contra hc
+    exact hab (by simp [hc])
+  rw [GaussLawAux.gauss_eq]
+  exact (GaussLawAux.diagonal_comm_of_support _ _ fun a b hab => by
+    simp only [hsupp a b hab]).symm
 
 /-- The dressed fermions are odd. -/
 theorem dressed_odd (j : Fin N) :
     dressed j * (parityF ⊗ₖ (1 : Matrix (Cfg N) (Cfg N) ℝ)) =
       -((parityF ⊗ₖ (1 : Matrix (Cfg N) (Cfg N) ℝ)) * dressed j) := by
-  sorry
+  rw [dressed, ← mul_kronecker_mul, ← mul_kronecker_mul, ann_mul_parityF, Matrix.mul_one,
+    Matrix.one_mul, neg_kronecker']
 
 /-- `c̃_j† c̃_j = n_j`. -/
 theorem dressed_number (j : Fin N) :
     (dressed j)ᵀ * dressed j = numOp {j} ⊗ₖ (1 : Matrix (Cfg N) (Cfg N) ℝ) := by
-  sorry
+  rw [transpose_mul_dressed, symmDiff_self, Finset.bot_eq_empty, flipSet_empty, cre_mul_ann_self]
+  congr 1
+  unfold numOp count
+  simp
 
 /-- **Gauge-invariant hopping** (paper: Theorem `thm:duality`(d)): for `x < y`,
 `c̃_x† c̃_y = f_x† (∏_{x ≤ k < y} σᶻ_{b_k}) f_y`. -/
@@ -333,7 +408,8 @@ theorem dressed_hop (x y : Fin N) (hxy : x < y) :
       (cre x ⊗ₖ (1 : Matrix (Cfg N) (Cfg N) ℝ)) *
         ((1 : Matrix (Cfg N) (Cfg N) ℝ) ⊗ₖ flipSet (between x y)) *
           (ann y ⊗ₖ (1 : Matrix (Cfg N) (Cfg N) ℝ)) := by
-  sorry
+  rw [transpose_mul_dressed, tailOf_symmDiff_of_lt hxy, ← mul_kronecker_mul, ← mul_kronecker_mul,
+    Matrix.mul_one, Matrix.one_mul, Matrix.mul_one]
 
 /-- **`H` in terms of dressed fermions** (paper: eq. `eq:Hdressed`):
 `H = -J ∑_j (c̃_j† c̃_{j+1} + c̃_{j+1}† c̃_j) - h ∑_j G_j (-1)^{n_j}`. -/
@@ -342,9 +418,91 @@ theorem H_dressed (J h : ℝ) :
       (-J) • ∑ j : Fin N, (if hj : j.val + 1 < N then
           (dressed j)ᵀ * dressed ⟨j.val + 1, hj⟩ + (dressed ⟨j.val + 1, hj⟩)ᵀ * dressed j else 0) -
         h • ∑ j : Fin N, gauss j * (diagonal (fun n : Cfg N => sgn (n j)) ⊗ₖ (1 : Matrix (Cfg N) (Cfg N) ℝ)) := by
-  sorry
+  have e1 : ∀ j : Fin N, hop j ⊗ₖ sz j = (if hj : j.val + 1 < N then
+      (dressed j)ᵀ * dressed ⟨j.val + 1, hj⟩ + (dressed ⟨j.val + 1, hj⟩)ᵀ * dressed j else 0) := by
+    intro j
+    by_cases hj : j.val + 1 < N
+    · rw [dite_eq_left hj, hop, dite_eq_left hj, transpose_mul_dressed, transpose_mul_dressed,
+        add_kronecker, tailOf_symmDiff_succ j _ rfl, symmDiff_comm, tailOf_symmDiff_succ j _ rfl,
+        sz_eq_flipSet]
+    · rw [dite_eq_right hj, hop, dite_eq_right hj, zero_kronecker]
+  have e2 : ∀ j : Fin N, (1 : Matrix (Cfg N) (Cfg N) ℝ) ⊗ₖ elec j =
+      gauss j * (diagonal (fun n : Cfg N => sgn (n j)) ⊗ₖ (1 : Matrix (Cfg N) (Cfg N) ℝ)) := by
+    intro j
+    rw [elec, GaussLawAux.one_kronecker_diagonal, sec_diagonal_kronecker_one, gauss,
+      diagonal_mul_diagonal]
+    congr 1
+    funext p
+    rw [mul_comm (sgn (p.1 j)), mul_assoc, GaussLawAux.sgn_mul_self, mul_one]
+  simp only [H, e1, e2]
 
 /-! ### (e) Dynamics -/
+
+namespace DualityFullAux
+
+open NormedSpace in
+/-- The exponential of a scalar matrix is a scalar matrix. -/
+lemma exp_smul_one' {ι : Type*} [Fintype ι] [DecidableEq ι] (d : ℂ) :
+    exp (d • (1 : Matrix ι ι ℂ)) = exp d • (1 : Matrix ι ι ℂ) := by
+  rw [smul_one_eq_diagonal, smul_one_eq_diagonal, Matrix.exp_diagonal]
+  congr 1
+  ext i
+  exact Pi.coe_exp _ i
+
+/-- A real constant shift of the generator multiplies the propagator by a phase:
+`e^{-it(A - c)} = e^{itc} e^{-itA}`. -/
+lemma evo_sub_smul_one {ι : Type*} [Fintype ι] [DecidableEq ι] (A : Matrix ι ι ℝ) (c t : ℝ) :
+    evo (A - c • (1 : Matrix ι ι ℝ)) t =
+      Complex.exp (Complex.I * ((t * c : ℝ) : ℂ)) • evo A t := by
+  have hc : cplx (A - c • (1 : Matrix ι ι ℝ)) = cplx A + (-(c : ℂ)) • (1 : Matrix ι ι ℂ) := by
+    ext i j
+    by_cases h : i = j
+    · subst h; simp [cplx, sub_eq_add_neg]
+    · simp [cplx, one_apply_ne h]
+  unfold evo
+  rw [hc, smul_add, smul_smul, Matrix.exp_add_of_commute _ _ ((Commute.one_right _).smul_right _),
+    exp_smul_one', mul_smul_one, Complex.exp_eq_exp_ℂ]
+  congr 2
+  push_cast
+  ring
+
+/-- The one-body Hamiltonian `h_q` is symmetric. -/
+lemma hq_isSymm (J h : ℝ) (q : Cfg N) : (hq J h q).IsSymm := by
+  unfold hq
+  refine Matrix.IsSymm.add (Matrix.IsSymm.smul ?_ _) (Matrix.IsSymm.smul (isSymm_diagonal _) _)
+  refine Matrix.IsSymm.ext fun i j => ?_
+  simp only [pathAdj]
+  split_ifs <;> first | rfl | (exfalso; omega)
+
+/-- A phase has modulus one. -/
+lemma star_phase_mul_phase (θ : ℝ) :
+    star (Complex.exp (Complex.I * (θ : ℂ))) * Complex.exp (Complex.I * (θ : ℂ)) = 1 := by
+  rw [Complex.star_def, ← Complex.exp_conj, ← Complex.exp_add]
+  have : (starRingEnd ℂ) (Complex.I * (θ : ℂ)) + Complex.I * (θ : ℂ) = 0 := by
+    simp [Complex.conj_ofReal]
+  rw [this, Complex.exp_zero]
+
+/-- The complexification of a block-diagonal matrix is block diagonal. -/
+lemma cplx_blockDiagonal' {o ι : Type*} [Fintype o] [DecidableEq o] [Fintype ι] [DecidableEq ι]
+    (B : o → Matrix ι ι ℝ) : cplx (blockDiagonal B) = blockDiagonal (fun i => cplx (B i)) := by
+  unfold cplx
+  rw [blockDiagonal_map]
+  simp
+
+/-- `U† c̃_x U = c_x ⊗ 1`. -/
+lemma dressed_submatrix_dual (x : Fin N) :
+    (dressed x).submatrix (dualEquiv (N := N)) dualEquiv =
+      ann x ⊗ₖ (1 : Matrix (Cfg N) (Cfg N) ℝ) := by
+  rw [dressed_eq, submatrix_submatrix, Equiv.symm_comp_self, submatrix_id_id]
+
+/-- Matrix elements of `c̃_y` in the dual frame. -/
+lemma dressed_apply_dual (y : Fin N) (n' q' n q : Cfg N) :
+    dressed y (n', linkOf n' q') (n, linkOf n q) =
+      ann y n' n * (1 : Matrix (Cfg N) (Cfg N) ℝ) q' q := by
+  have := congrFun (congrFun (dressed_submatrix_dual y) (n', q')) (n, q)
+  rwa [submatrix_apply, dualEquiv_apply, dualEquiv_apply, kronecker_apply] at this
+
+end DualityFullAux
 
 /-- **The dynamics in the dual frame** (paper: Theorem `thm:duality`(e)):
 `U† e^{-itH} U = ⊕_q e^{iht ∑_j q_j} Γ(e^{-ith_q})`. -/
@@ -352,13 +510,60 @@ theorem evo_dual (J h : ℝ) (t : ℝ) :
     (evo (H J h) t).submatrix (dualEquiv (N := N)) dualEquiv =
       blockDiagonal (fun q : Cfg N =>
         Complex.exp (Complex.I * (h * t * ∑ j, sgn (q j) : ℝ)) • evo (dGamma (hq J h q)) t) := by
-  sorry
+  rw [evo_submatrix, duality, Hdual, evo_blockDiagonal]
+  congr 1
+  funext q
+  rw [Hsec, evo_sub_smul_one, show t * (h * ∑ j, sgn (q j)) = h * t * ∑ j, sgn (q j) by ring]
+
+namespace DualityFullAux
+
+/-- The Heisenberg-evolved dressed fermion in the dual frame is block diagonal, with blocks
+`∑_y (e^{-ith_q})_{xy} c_y`. -/
+lemma conj_dual (J h : ℝ) (x : Fin N) (t : ℝ) :
+    ((evo (H J h) t)ᴴ * cplx (dressed x) * evo (H J h) t).submatrix (dualEquiv (N := N))
+        dualEquiv =
+      blockDiagonal (fun q => ∑ y, evo (hq J h q) t x y • cplx (ann y)) := by
+  have hC : (cplx (dressed x)).submatrix (dualEquiv (N := N)) dualEquiv =
+      blockDiagonal (fun _ => cplx (ann x)) := by
+    change cplx ((dressed x).submatrix dualEquiv dualEquiv) = _
+    rw [dressed_submatrix_dual, kronecker_one, cplx_blockDiagonal']
+  rw [← submatrix_mul_equiv _ _ _ dualEquiv _, ← submatrix_mul_equiv _ _ _ dualEquiv _,
+    ← conjTranspose_submatrix, evo_dual, hC, blockDiagonal_conjTranspose, ← blockDiagonal_mul,
+    ← blockDiagonal_mul]
+  congr 1
+  funext q
+  simp only [conjTranspose_smul, Matrix.smul_mul, Matrix.mul_smul, smul_smul]
+  rw [mul_comm, star_phase_mul_phase, one_smul, heisenberg_ann _ (hq_isSymm J h q)]
+
+end DualityFullAux
 
 /-- **Heisenberg evolution of the dressed fermions** (paper: eq. `eq:heisenberg`):
 `e^{itH} c̃_x e^{-itH} = ∑_q P_q ∑_y (e^{-ith_q})_{xy} c̃_y`. -/
 theorem heisenberg_dressed (J h : ℝ) (x : Fin N) (t : ℝ) :
     (evo (H J h) t)ᴴ * cplx (dressed x) * evo (H J h) t =
       ∑ q : Cfg N, cplx (gaussProj q) * ∑ y : Fin N, evo (hq J h q) t x y • cplx (dressed y) := by
-  sorry
+  ext a b
+  obtain ⟨⟨n', q'⟩, rfl⟩ := (dualEquiv (N := N)).surjective a
+  obtain ⟨⟨n, q⟩, rfl⟩ := (dualEquiv (N := N)).surjective b
+  have hL := congrFun (congrFun (conj_dual J h x t) (n', q')) (n, q)
+  rw [submatrix_apply] at hL
+  rw [hL, blockDiagonal_apply']
+  simp only [dualEquiv_apply, Matrix.sum_apply, gaussProj, FreeDynAux.cplx_diagonal, diagonal_mul,
+    chargeOf_linkOf, Matrix.smul_apply, FreeDynAux.cplx_apply, smul_eq_mul, dressed_apply_dual]
+  rw [Finset.sum_eq_single q']
+  · rw [ite_eq_left rfl, Complex.ofReal_one, one_mul]
+    by_cases hq : q' = q
+    · subst hq
+      rw [ite_eq_left rfl]
+      refine Finset.sum_congr rfl fun y _ => ?_
+      rw [Matrix.one_apply_eq, mul_one]
+    · rw [ite_eq_right hq]
+      symm
+      refine Finset.sum_eq_zero fun y _ => ?_
+      rw [Matrix.one_apply_ne hq, mul_zero, Complex.ofReal_zero, mul_zero]
+  · intro b _ hb
+    rw [ite_eq_right (Ne.symm hb), Complex.ofReal_zero, zero_mul]
+  · intro hq'
+    exact absurd (Finset.mem_univ _) hq'
 
 end DFL
