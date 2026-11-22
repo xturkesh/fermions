@@ -80,24 +80,29 @@ No `axiom` is introduced anywhere.
 
 ## Verification
 
-`lake build` compiles every module without `sorry`. Every theorem in the table depends only on
-Lean's standard axioms `propext`, `Classical.choice` and `Quot.sound`. To check:
+`lake build` compiles all 38 modules (about 19,000 lines) without `sorry`; there is no `axiom`,
+`admit`, `native_decide` or `implemented_by` in the library. The script `CheckAxioms.lean` walks
+through every theorem declared in a `DFL` module (including private helper lemmas) and collects the
+axioms it depends on:
+
+```
+lake env lean CheckAxioms.lean
+# checked 2042 theorems in DFL modules; with non-standard axioms: 0
+```
+
+i.e. every theorem depends only on Lean's standard axioms `propext`, `Classical.choice` and
+`Quot.sound`. Individual theorems can be checked with `#print axioms`, e.g.
 
 ```
 cat > Check.lean <<'X'
 import DFL
-#print axioms DFL.lgt_transport
-#print axioms DFL.lgt_numberEntropy
-#print axioms DFL.lgtImbalance_lower
-#print axioms DFL.lgt_areaLaw
 #print axioms DFL.ec_of_ldt
 #print axioms DFL.lgt_transport_of_ldt
 #print axioms DFL.lgt_numberEntropy_of_ldt
+#print axioms DFL.lgtImbalance_lower_of_ldt
 #print axioms DFL.cutlocal_defect
-#print axioms DFL.sector_average_ring
 #print axioms DFL.FinGraph.sector_average_xpol
 #print axioms DFL.FinGraph.cluster_bound
-#print axioms DFL.wilson_numberEntropy_avg
 X
 lake env lean Check.lean
 ```
