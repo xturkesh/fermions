@@ -20,20 +20,27 @@
 \section{Main results: disorder-free localization}\label{sec:main}
 
 By the duality (\cref{thm:duality}) and the exact sector averaging (\cref{cor:sector}), every
-gauge-invariant quantity of the lattice gauge theory in the initial state
+expectation value of gauge-invariant observables (at any number of times) in the initial state
 $\Psi_0=\ket{\uparrow\cdots\uparrow}_z\otimes\psi$ is an average over $2^N$ independent free-fermion
 problems, one for each charge configuration $q$, with the i.i.d.\ Bernoulli one-body operators
 $\hq=-J\Delta_N+2h\,\diag(q)$.  In this section we turn annealed one-body bounds into
 statements about the gauge theory.
 
-\emph{Status of the results.}  In finite volume all results are stated under
+\emph{Status of the results.}  In finite volume all \emph{localization bounds} are stated under
 Hypothesis~\ref{hyp:EC}, with explicit constants in terms of the moments $M_p(F)$, $M'_p(F)$ of
-the function $F$ in \eqref{eq:hypEC}.  Theorem~\ref{thm:EC} proves Hypothesis~\ref{hyp:EC} for every
-$\lambda=2h/J\neq0$, with $F(d)=\min\{1,Ce^{-\eta d}\}$, so the finite-volume results hold
-unconditionally; but $C$ and $\eta$ are not explicit (\cref{rem:rate}).  The infinite-volume
+the function $F$ in \eqref{eq:hypEC}.  The structural results need no hypothesis: the lemmas of
+\S\ref{sec:main:prelim} other than \cref{lem:annealed}, \cref{prop:LR}(a),(c),(d),
+\cref{thm:imbalance}(i)--(iii), \cref{thm:arealaw}(a), \cref{prop:entropies}, \cref{lem:intentropy}
+and the first bound of \cref{lem:duhamel}.
+For every $\lambda=2h/J\neq0$, Theorem~\ref{thm:EC} proves Hypothesis~\ref{hyp:EC} with an exponential
+function, $F(d)=\min\{1,Ce^{-\eta d}\}$.  So the finite-volume results hold unconditionally, but $C$ and $\eta$
+are not explicit (\cref{rem:rate}).  The infinite-volume
 statements (\cref{thm:infvol}) use only the Ge--Zhao bound on $\Z$ (\cref{prop:Zline}) and are
 independent of Theorem~\ref{thm:EC}.  The constants are far from optimal; we state them because they
 are explicit.  Two statements are conjectures (Conjectures~\ref{conj:logent} and~\ref{conj:volmix}).
+Several arguments adapt methods developed for disordered XY chains
+\cite{HSS2012,AbdulRahmanStolz2015,ANSS2016}, with the sector average in place of the average over a random
+field; we say so where this applies (\cref{rem:main-transport,rem:main-LR,rem:main-arealaw}).
 
 \emph{Overview.}
 \Cref{thm:transport}: sector-averaged localization of the dressed-fermion propagator, bounded
@@ -106,6 +113,9 @@ $\norm{P_q\Psi_0}^2=2^{-N}=4^{-N}\Tr P_q$.
 \end{proof}
 
 \paragraph{Quasi-free density matrices.}
+\Cref{lem:quasifree,lem:slater} below are standard facts about quasi-free states.  We include short
+proofs because we use them for arbitrary, also non-contiguous, sets of modes, with an explicit
+identification of the tensor factors.
 Let $A$ be a finite set of fermionic modes, $\cF_A$ the Fock space over $\ell^2(A)$, $c_x$ ($x\in A$) the
 annihilation operators, $c(v):=\sum_x\overline{v(x)}c_x$, and $\Gamma(C)$ the second quantization of a
 matrix $C$ on $\ell^2(A)$ ($\Gamma(C)\ket0=\ket0$,
@@ -335,7 +345,8 @@ Then $P_q\{\cdr_x(t),\cdr_y^\dagger\}P_q=U_q(t)_{xy}P_q$ with $P_q\neq0$, which 
 \eqref{eq:main-prop}; the bound is \eqref{eq:cons1}.  The last statement is \cref{lem:sectornorm}(c), together with
 $\E_q|U_q(t)_{xy}|\le\E_q\sup_s|U_q(s)_{xy}|$.
 
-(b) Here $\psi_q(t)=c^\dagger(U_q(t)\delta_y)\ket0$, so $\langle\psi_q(t),n_x\psi_q(t)\rangle=|U_q(t)_{xy}|^2$, and
+(b) Here $\psi_q(t)=c^\dagger(U_q(t)\delta_y)\ket0$, so that
+$\langle\psi_q(t),n_x\psi_q(t)\rangle=|U_q(t)_{xy}|^2$, and
 $\langle\Psi(t),n_x\Psi(t)\rangle=\E_q|U_q(t)_{xy}|^2$ by \cref{cor:sector}(b),(c).  Exchange the finite sums,
 use $\sup_t\E\le\E\sup_t$, and apply \eqref{eq:cons4}.
 
@@ -373,10 +384,16 @@ $\sup_t\E_q$: in a typical sector the dressed fermion stays localized for all ti
 (ii) By \cref{lem:productlaw}(c), \cref{thm:transport} holds verbatim for every $\sigma^z$-product gauge
 state $\ket{s}_z$ in place of $\ket{\uparrow\cdots\uparrow}_z$.  For any gauge state whose sector law
 has density at most $K$ with respect to the uniform law (e.g.\ $K=2$ for the open chain,
-\cref{prop:variants}(i)), all bounds hold with an extra factor $K$.  For the dimer law of
-\cref{lem:productlaw}(e) they fail (\cref{sec:dimer}).
-(iii) Parts (a)--(c) use from Hypothesis~\ref{hyp:EC} only the decay of $\E\sup_t|U_q(t)_{xy}|$ and of
-$\E Q_q$; part (c) also uses \eqref{eq:cons3}.
+\cref{prop:variants}(i)), all bounds hold with an extra factor $K$ (for Fock $\psi$ every sector carries
+$\ket n$ up to a phase, by \cref{lem:productlaw}(b)).  For the dimer law of \cref{lem:productlaw}(e) and
+$0<2|h|<J$, the moment bound (b) fails uniformly in $N$, and so does the analogue of
+Hypothesis~\ref{hyp:EC} (\cref{thm:dimer}(d)).
+(iii) Hypothesis~\ref{hyp:EC} enters only through \eqref{eq:hypEC} and its consequences
+\eqref{eq:cons1}--\eqref{eq:cons4}:
+(a) uses \eqref{eq:cons1}, (b) uses \eqref{eq:cons4}, (c) uses \eqref{eq:hypEC} itself together with
+\eqref{eq:cons2} and \eqref{eq:cons3}, and (d) uses \eqref{eq:cons2}.  Part (c) is the gauge-theory analogue
+of the disorder-averaged particle-transport bound for disordered XX chains in
+\cite[Thm.~1.1]{ANSS2016}.
 (iv) \emph{Numerical check} (\texttt{code/main\_checks.py}, part A; $N=60$, $\lambda=2$, CDW, $300$
 sectors, $62$ times in $[0,10^5]$): the deterministic inequalities in the proof of (c) and the moment
 inequalities hold to $4\times10^{-14}$, and $U_q(t)^\top=U_q(t)$ to $3\times10^{-16}$.  The measured
@@ -410,17 +427,21 @@ Let $X,Y\subset[1,N]$ and $B\in\BAlg^+(Y)$.
 For general $A\in\Alg(X)$, $\norm{P_q[A(t),B]}\le8|A|_1\norm B\sum_{x\in X,y\in Y}|U_q(t)_{xy}|$.
 \item \emph{(Sector-averaged zero-velocity bound.)}  Under Hypothesis~\ref{hyp:EC},
 \begin{equation}\label{eq:main-LR}
-  \E_q\sup_{t\in\R}\norm{P_q[A(t),B]P_q}\le2\norm B\sum_{i=1}^k\sum_{y\in Y}F(|x_i-y|),\qquad\text{resp.}\quad
-  \le8|A|_1\norm B\sum_{x\in X,y\in Y}F(|x-y|).
+\begin{gathered}
+  \E_q\sup_{t\in\R}\norm{P_q[A(t),B]P_q}\le2\norm B\sum_{i=1}^k\sum_{y\in Y}F(|x_i-y|),\\
+  \text{resp.}\quad\E_q\sup_{t\in\R}\norm{P_q[A(t),B]P_q}\le8|A|_1\norm B\sum_{x\in X,y\in Y}F(|x-y|).
+\end{gathered}
 \end{equation}
-Consequently, if a density matrix $\rho$ has sector weights $\Tr(\rho P_q)\le K2^{-N}$, then
-$\sup_t|\Tr(\rho[A(t),B])|$ is at most $K$ times the right side of \eqref{eq:main-LR}.  This covers $K=1$ and
+Consequently, let $\rho$ be a density matrix whose sector weights satisfy $\Tr(\rho P_q)\le K2^{-N}$ for all
+$q$.  Then $\sup_t|\Tr(\rho[A(t),B])|$ is at most $K$ times the right side of \eqref{eq:main-LR}.  This covers $K=1$ and
 $\rho=\ket{\Psi_0}\bra{\Psi_0}$, $\Psi_0=\ket{\uparrow\cdots\uparrow}_z\otimes\psi$, with \emph{arbitrary} $\psi$, as well
 as $\rho=4^{-N}\one$.
 \item \emph{(The operator norm sees the clean sector.)}  For all $N$, $x,y\in[1,N]$ and $t$,
 \begin{equation}\label{eq:main-LRnorm}
-  \norm{\{\cdr_x(t),\cdr_y^\dagger\}}=\norm{[\cdr_x(t),n_y]}=\max_q|U_q(t)_{xy}|,\qquad
+\begin{gathered}
+  \norm{\{\cdr_x(t),\cdr_y^\dagger\}}=\norm{[\cdr_x(t),n_y]}=\max_q|U_q(t)_{xy}|,\\
   \norm{[n_x(t),n_y]}=\max_q|U_q(t)_{xy}|\bigl(1-|U_q(t)_{xy}|^2\bigr)^{1/2}.
+\end{gathered}
 \end{equation}
 The maximum includes the clean sector $q=\Zone=(1,\dots,1)$.  It has probability $2^{-N}$ under the sector
 law, which vanishes as $N\to\infty$.  In particular, for $N\ge2$,
@@ -513,6 +534,10 @@ this restriction is necessary: the operator norm is a maximum over sectors, and 
 background charges, the gauge-invariant sector of the usual LGT formulation; \cref{rem:gaussproj}) is ballistic.
 Even the on-site densities $n_1$, $n_N$, which are strictly local in the original variables, have a commutator
 of norm $\ge(3/(4(N+1)))^{1/2}$ at suitable times, which is not exponentially small in the distance $N-1$.
+Part (b) is the analogue, with the disorder average replaced by the sector average, of the disorder-averaged
+zero-velocity Lieb--Robinson bound of Hamza, Sims and Stolz for the disordered XY chain \cite{HSS2012}.  The
+difference is that here the randomness is not in the Hamiltonian but in the initial state, which is why the
+bound is state dependent.
 \emph{Numerical check} (\texttt{code/main\_checks.py}, parts B, C): for $N=4$ the identities
 \eqref{eq:main-anticomm} and \eqref{eq:main-LRnorm} hold to $10^{-14}$ in exact diagonalization of the full
 LGT.  The sector-wise bound \eqref{eq:main-LRsector} holds for $N=60$, $\lambda=2$, $200$ sectors and
@@ -559,10 +584,10 @@ $N$, and for all even $N\ge2$
 \begin{proof}
 (i) By \cref{cor:sector}(c), $\langle\psi_q(t),n_x\psi_q(t)\rangle=\sum_{s\in S}|U_{xs}|^2$ with $U=U_q(t)$ and
 $S$ the even sites, and $P_S=\frac12(\one+\Gamma)$.  Hence
-\[
-  I_q(t):=\frac2N\sum_x(-1)^x\langle\psi_q(t),n_x\psi_q(t)\rangle=\frac2N\Tr(P_SU^*\Gamma U)
-  =\frac1N\Tr\Gamma+\frac1N\Tr(\Gamma U^*\Gamma U)=\frac1N\Tr(\Gamma U^*\Gamma U),
-\]
+\begin{align*}
+  I_q(t)&:=\frac2N\sum_x(-1)^x\langle\psi_q(t),n_x\psi_q(t)\rangle=\frac2N\Tr(P_SU^*\Gamma U)\\
+  &=\frac1N\Tr\Gamma+\frac1N\Tr(\Gamma U^*\Gamma U)=\frac1N\Tr(\Gamma U^*\Gamma U),
+\end{align*}
 since $\Tr\Gamma=0$ for even $N$.  In the eigenbasis,
 $\Tr(\Gamma U^*\Gamma U)=\sum_{\alpha,\beta}e^{it(E_\beta-E_\alpha)}|\langle\varphi_\alpha,\Gamma\varphi_\beta\rangle|^2$, and
 $T^{-1}\int_0^Te^{i\omega t}dt\to\one[\omega=0]$.  The spectrum is simple (\cref{lem:consequences}(a)), so the
@@ -636,7 +661,9 @@ time-averaged, eigenfunction-level quantity.  A lower bound on $\inf_tI(t)$ is n
 \cref{thm:infvol}: $\Ibar$ is an infinite-time average of a volume average, and an infinite-volume version
 would require exchanging $T\to\infty$ and $N\to\infty$.  The natural thermodynamic-limit statement is the
 uniformity in $N$ of \eqref{eq:main-Iuniform}.  It relies on Hypothesis~\ref{hyp:EC} on finite intervals,
-i.e.\ on Theorem~\ref{thm:EC}, and \emph{cannot} be obtained from the Ge--Zhao bound on $\Z$ alone.
+i.e.\ on Theorem~\ref{thm:EC}.  We do not know how to obtain it from the Ge--Zhao bound on $\Z$ alone:
+$\kappa_N$ involves the infinite-time quantities $R_q$ of the finite chain, which finite propagation speed
+does not relate to their counterparts on $\Z$.
 (v) \emph{Numerical check} (\texttt{code/main\_checks.py}, part D).  The identity (ii) and Steps 1--3 hold to
 $10^{-13}$.  For $N=8$, $h=0.7J$ and all $256$ sectors, the exact time average up to $T=10^7$ agrees with
 $\E_qN^{-1}\sum_\alpha a_\alpha^2=0.190469$ to $10^{-8}$.  With $\kappa_N$ computed as the maximum over all
@@ -685,9 +712,15 @@ Markov's inequality.
 \end{proof}
 
 \begin{remark}\label{rem:main-arealaw}
-(i) For an interval $A=[a,b]$ in the bulk the same argument, with \cref{lem:annealed}(iii), bounds the
-sector-averaged entropy of the $c$-modes in $A$ by $4\ln2\,\ThF$ (two cuts).  This is used in \cref{thm:infvol}.
-(ii) \emph{Numerical check} (\texttt{code/main\_checks.py}, part E).  On a grid of $2\times10^6$ points
+(i) \emph{Method.}  The argument of (a)--(b) is that of Abdul-Rahman and Stolz \cite{AbdulRahmanStolz2015} and of
+Abdul-Rahman, Nachtergaele, Sims and Stolz \cite[proof of Thm.~1.2]{ANSS2016} for disordered XY chains: the
+binary-entropy bound of \cref{lem:binent} (inequality (61) of \cite{ANSS2016}), control of the entropy by the
+entries of the correlation matrix across the cut, and an averaged eigenfunction-correlator bound.  Here the
+average is over the sectors, not over a random Hamiltonian.
+(ii) For an interval $A=[a,b]$ in the bulk the same argument, with \cref{lem:annealed}(iii), bounds the
+sector-averaged entropy of the $c$-modes in $A$ by $4\ln2\,\ThF$ (two cuts).  The same counting, on $\Z$ and with
+$\FZ$ in place of $F$, gives \cref{thm:infvol}(d).
+(iii) \emph{Numerical check} (\texttt{code/main\_checks.py}, part E).  On a grid of $2\times10^6$ points
 $\bent(\nu)\le2\ln2\sqrt{\nu(1-\nu)}$ holds; $d_1=0.153$ and $d_k<0$ for $2\le k\le2\times10^5$.
 \cref{lem:slater} is confirmed to $10^{-15}$ against many-body Slater determinants ($8$ modes; left, interior and
 non-contiguous $A$).  The chain in (a) is confirmed along the dynamics ($N=60$, $\lambda=2$, $t\le10^5$).
@@ -824,6 +857,8 @@ above, Conjecture~\ref{conj:logent}), while the ensemble members have, on averag
 Gyawali et al.\ \cite{Gyawali2024} observed the same dichotomy on a quantum processor, for a $\Z_2$ LGT in one
 and two spatial dimensions prepared in superpositions over gauge sectors: local observables show localization,
 while R\'enyi entropy measurements distinguish superposition-prepared states from direct disorder sampling.
+Their model is a Trotterized $\Z_2$ LGT with qubit matter; it is non-integrable and does not reduce to free
+fermions, so it is not the model studied here.
 \Cref{prop:entropies}(d) is an exact version of this dichotomy for the 1D model of \cite{SKKM2017}, stated for von
 Neumann entropies.  We claim no more than this qualitative correspondence with the experiment.
 \end{remark}
@@ -905,9 +940,14 @@ $\E\,Q^\Z_q(x,y)\le\FZ(|x-y|)$ with
 \]
 where $\eta_\Z\in(0,\gamma^\E)$ and $C_\Z$ are as in \cref{prop:Zline}.  $\FZ$ is non-increasing, and all its moments
 $M_p(\FZ)$, $M'_p(\FZ)$ are finite.  (Lemma~\ref{lem:normalization} is stated on finite intervals; on $\Z$ the same
-diagonal unitary conjugates $h^\Z_q$ to $J(\Delta_\Z+\lambda\diag(q))$.)  By \cref{lem:propagation}(a), the entries of
-$U^\Z_q(t)$ are uniform limits of functions of finitely many $q_x$; hence $U^\Z_q(t)_{xy}$, $K^\Z_q(t)_{xy}$ and
-$Q^\Z_q(x,y)$ are measurable in $q$, and the suprema over $t$ below may be taken over rational $t$.
+diagonal unitary conjugates $h^\Z_q$ to $J(\Delta_\Z+\lambda\diag(q))$.)  By \cref{lem:propagation}(b), the entries of
+$U^\Z_q(t)$ are uniform limits of the entries of $U^{(M)}_q(t)$, which depend on finitely many $q_x$; hence
+$U^\Z_q(t)_{xy}$ and $K^\Z_q(t)_{xy}$ (an absolutely convergent series of products of such entries) are measurable
+in $q$.  By the
+proof of \cref{cor:ECinfvol}, $Q^\Z_q(x,y)$ is the supremum of $|f(h^\Z_q)_{xy}|$ over a countable dense subset of the
+continuous $f$ with $|f|\le1$ on $[-2J-2|h|,2J+2|h|]$, and each $f(h^\Z_q)_{xy}$ is a uniform limit of polynomial
+entries $p(h^\Z_q)_{xy}$; so $Q^\Z_q(x,y)$ is measurable too.  All functions of $t$ below are continuous, so the suprema
+over $t$ may be taken over rational $t$.
 
 \paragraph{Local gauge-invariant observables.}
 For a finite interval $X=[a,b]\subset\Z$ and $M$ with $X\subset[-M+1,M-1]$, let $\GAlg(X)$ be the $*$-algebra generated
@@ -939,7 +979,9 @@ transported charge
   \mathcal T_m(t):=\lim_{M\to\infty}\Bigl(\langle\Psi^{(M)}(t),N_{[-M,m]}\Psi^{(M)}(t)\rangle-|S\cap[-M,m]|\Bigr)
 \]
 exists for every $t$, and $\sup_t|\mathcal T_m(t)|\le\Sigma_1(\FZ)$.
-\item \emph{(Lieb--Robinson.)}  For finite $X,Y\subset\Z$, $A\in\Alg^+(X)$ and $B\in\GAlg(Y)$, and every $t$,
+\item \emph{(Lieb--Robinson.)}  Let $X\subset\Z$ be finite and $Y\subset\Z$ a finite interval.  Let $\Alg^+(X)$ be the
+even part of the algebra generated by the $\cdr^{(M)}_x$, $x\in X$; it is spanned by products of the even monomials
+$\cdr^{(M)\sharp}_x\cdr^{(M)\sharp}_y$, which do not depend on $M$.  Then for $A\in\Alg^+(X)$, $B\in\GAlg(Y)$ and every $t$,
 \[
   \limsup_{M\to\infty}\E\norm{P_q[A(t),B]}\le8|A|_1\norm B\sum_{x\in X,y\in Y}\FZ(|x-y|),
 \]
@@ -1110,8 +1152,9 @@ $\lim_{t\to\infty}\liminf_{N\to\infty}\Sfull(t)=\infty$.
 \emph{What is missing.}  \Cref{lem:duhamel} controls one-body propagators.  Turning it into an entanglement bound uniform in
 $N$ requires a decoupling argument for a coherent superposition of $2^N$ sectors.  Entropy continuity bounds
 (Fannes--Audenaert) cost $\varepsilon\ln\dim$, where $\dim$ is exponential in $N$.  A telescoping argument over the
-distance of the flipped charges, with summable errors (as in \cite{ANSS2016} for disordered XY chains), would be needed; we
-have not carried this out.  The lower bound would require a quantitative non-degeneracy of the sector phases
+distance of the flipped charges, with summable errors, would be needed; we have not carried this out.  The area-law
+arguments for disordered XY chains \cite{AbdulRahmanStolz2015,ANSS2016}, which we used for $\SG$, concern quasi-free
+states and do not apply to this superposition.  The lower bound would require a quantitative non-degeneracy of the sector phases
 $e^{iht\sum q}$ and of the overlaps $\langle\psi_{q'}(t),\psi_q(t)\rangle$.
 
 \begin{conjecture}[Volume law for the mixed entropies]\label{conj:volmix}
