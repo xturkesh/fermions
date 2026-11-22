@@ -529,6 +529,217 @@ lemma det_one_add_smul {ι κ : Type*} [Fintype ι] [DecidableEq ι] [Fintype κ
     · simp [h]
   rw [hD, Matrix.det_diagonal]
 
+/-! ### The Schmidt decomposition of the evolved Fock state -/
+
+/-- Setup: the evolved Fock state is `c ·` the Slater determinant of orthonormal canonical
+orbitals `Φ`, with `K = ΦΦ†` and diagonal overlaps on the left segment and on its complement. -/
+lemma slater_setup (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsSymm) (S : Finset (Fin N)) (t : ℝ)
+    (ℓ : ℕ) :
+    ∃ (M : ℕ) (Φ : Matrix (Fin N) (Fin M) ℂ) (c : ℂ) (ν : Fin M → ℝ), ‖c‖ = 1 ∧
+      evo (dGamma A) t *ᵥ fockVec S = c • slaterAlt N M (fun k x => Φ x k) ∧
+      corrMat A S t = Φ * Φᴴ ∧
+      (∀ k l, ∑ x ∈ segment ℓ, star (Φ x k) * Φ x l = if k = l then (ν k : ℂ) else 0) ∧
+      (∀ k l, ∑ x ∈ univ \ segment ℓ, star (Φ x k) * Φ x l =
+        if k = l then ((1 - ν k : ℝ) : ℂ) else 0) := by
+  classical
+  obtain ⟨M, z, c, hz, hzS, hc, hv⟩ := evo_fockVec_eq A hA t S
+  set Φ : Matrix (Fin N) (Fin M) ℂ := Matrix.of fun x k => evo A t x (z k) with hΦdef
+  have hΦ : Φᴴ * Φ = 1 := by
+    ext k l
+    have h := congrFun (congrFun (evo_unitary A hA t) (z k)) (z l)
+    simp only [Matrix.mul_apply, Matrix.conjTranspose_apply, Matrix.one_apply] at h ⊢
+    simp only [hΦdef, Matrix.of_apply]
+    rw [h]
+    exact if_congr hz.eq_iff rfl rfl
+  have hC : corrMat A S t = Φ * Φᴴ := by
+    ext x y
+    rw [corrMat, Matrix.mul_apply, Matrix.mul_apply]
+    simp only [Matrix.mul_diagonal, Matrix.conjTranspose_apply, mul_ite, mul_one, mul_zero,
+      ite_mul, zero_mul, hΦdef, Matrix.of_apply]
+    rw [Finset.sum_ite_mem, Finset.univ_inter]
+    have hS : S = Finset.univ.image z := by
+      ext x; simp [hzS x]
+    rw [hS, Finset.sum_image (fun k _ l _ h => hz h)]
+  obtain ⟨V, hVu, ν, h1, h2⟩ := canonical_orbitals Φ hΦ (segment ℓ)
+  have hV1 : star V * V = 1 := Matrix.mem_unitaryGroup_iff'.mp hVu
+  have hV2 : V * star V = 1 := Matrix.mem_unitaryGroup_iff.mp hVu
+  have hCC : (Φ * V) * (Φ * V)ᴴ = Φ * Φᴴ := by
+    rw [Matrix.conjTranspose_mul, Matrix.mul_assoc, ← Matrix.mul_assoc V,
+      ← Matrix.star_eq_conjTranspose, hV2, Matrix.one_mul]
+  have hdet : ‖V.det‖ = 1 := by
+    have h := congrArg Matrix.det hV1
+    rw [Matrix.det_mul, Matrix.star_eq_conjTranspose, Matrix.det_conjTranspose, Matrix.det_one,
+      Complex.star_def, Complex.conj_mul'] at h
+    have h' : ‖V.det‖ ^ 2 = 1 := by exact_mod_cast h
+    exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) two_ne_zero).mp h'
+  have hdet0 : V.det ≠ 0 := by
+    intro h0; rw [h0, norm_zero] at hdet; exact zero_ne_one hdet
+  refine ⟨M, Φ * V, c * (V.det)⁻¹, ν, ?_, ?_, ?_, h1, h2⟩
+  · rw [norm_mul, norm_inv, hc, hdet]; norm_num
+  · rw [hv, slaterAlt_mul Φ V, smul_smul, mul_assoc, inv_mul_cancel₀ hdet0, mul_one]
+    rfl
+  · rw [hC, hCC]
+
+/-- **Schmidt decomposition of a Slater determinant across the cut** (paper: proof of
+Lemma `lem:slater`(a)), summarized: there are canonical occupations `ν_k ∈ [0, 1]` with
+`C_A = B Bᴴ`, `Bᴴ B = diag(ν)` (so `C_A` and `diag(ν)` have the same nonzero spectrum),
+`S(ρ_A) = ∑_k h(ν_k)`, the law of `N_A` is the Poisson-binomial law of `ν`, and
+`∑_k √(ν_k(1-ν_k)) ≤ ∑_{x ∈ A, y ∉ A} |K_{xy}|`. -/
+lemma slater_core (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsSymm) (S : Finset (Fin N)) (t : ℝ)
+    (ℓ : ℕ) (hℓ : ℓ ≤ N) :
+    ∃ (M : ℕ) (B : Matrix (Fin ℓ) (Fin M) ℂ) (ν : Fin M → ℝ),
+      corrA A S t ℓ hℓ = B * Bᴴ ∧ Bᴴ * B = diagonal (fun k => (ν k : ℂ)) ∧
+      (∀ k, 0 ≤ ν k ∧ ν k ≤ 1) ∧
+      ∑ k, √(ν k * (1 - ν k)) ≤ ∑ x ∈ segment ℓ, ∑ y ∈ univ \ segment ℓ, ‖corrMat A S t x y‖ ∧
+      vonNeumann (rdm ℓ hℓ (evo (dGamma A) t *ᵥ fockVec S)) (rdm_isHermitian ℓ hℓ _) =
+        ∑ k, Real.binEntropy (ν k) ∧
+      ∀ n : ℕ, numDist (segment ℓ) (evo (dGamma A) t *ᵥ fockVec S) n = poissonBinomial ν n := by
+  classical
+  obtain ⟨M, Φ, c, ν, hc, hψ, hC, h1, h2⟩ := slater_setup A hA S t ℓ
+  -- the orbitals on the two sides of the cut
+  set a : Fin M → Fin ℓ → ℂ := fun k x => Φ (inL ℓ hℓ x) k with ha_def
+  set b : Fin M → Fin (N - ℓ) → ℂ := fun k y => Φ (inR ℓ hℓ y) k with hb_def
+  have ha : ∀ k l, star (a k) ⬝ᵥ a l = if k = l then (ν k : ℂ) else 0 := by
+    intro k l; rw [← h1 k l, sum_segment ℓ hℓ]; rfl
+  have hb : ∀ k l, star (b k) ⬝ᵥ b l = if k = l then ((1 - ν k : ℝ) : ℂ) else 0 := by
+    intro k l; rw [← h2 k l, sum_compl_segment ℓ hℓ]; rfl
+  have hν0 : ∀ k, 0 ≤ ν k := by
+    intro k
+    have h := ha k k
+    rw [ite_eq_left rfl, star_dotProduct_self] at h
+    have h' : nsq (a k) = ν k := by exact_mod_cast h
+    rw [← h']; exact nsq_nonneg _
+  have hν1 : ∀ k, ν k ≤ 1 := by
+    intro k
+    have h := hb k k
+    rw [ite_eq_left rfl, star_dotProduct_self] at h
+    have h' : nsq (b k) = 1 - ν k := by exact_mod_cast h
+    linarith [nsq_nonneg (b k)]
+  set B : Matrix (Fin ℓ) (Fin M) ℂ := Matrix.of fun x k => Φ (inL ℓ hℓ x) k with hB_def
+  have hCB : corrA A S t ℓ hℓ = B * Bᴴ := by
+    ext x y
+    simp [corrA, hC, Matrix.mul_apply, hB_def, Matrix.conjTranspose_apply]
+  have hBB : Bᴴ * B = diagonal (fun k => (ν k : ℂ)) := by
+    ext k l
+    rw [Matrix.mul_apply, Matrix.diagonal_apply, ← h1 k l, sum_segment ℓ hℓ]
+    rfl
+  have hsqrt := sum_sqrt_nu_le Φ (segment ℓ) ν h1 h2
+  rw [← hC] at hsqrt
+  -- the Schmidt decomposition
+  obtain ⟨s, hs, hexp⟩ := slater_expand ℓ hℓ (fun k x => Φ x k)
+  set X : (Fin M → Bool) → Cfg ℓ → ℂ := fun σ => prodSel a σ with hX_def
+  set Y : (Fin M → Bool) → Cfg (N - ℓ) → ℂ := fun σ => prodSel b (fun k => !σ k) with hY_def
+  set ψ := evo (dGamma A) t *ᵥ fockVec S with hψ_def
+  have hψ' : ψ = ∑ σ, (c * s σ) • tens ℓ hℓ (X σ) (Y σ) := by
+    rw [hψ, hexp, Finset.smul_sum]
+    simp only [smul_smul]
+    rfl
+  have hcs : ∀ σ, ‖c * s σ‖ = 1 := fun σ => by rw [norm_mul, hc, hs, one_mul]
+  have hX : ∀ σ τ, star (X σ) ⬝ᵥ X τ =
+      if σ = τ then ∏ k, (if σ k then (ν k : ℂ) else 1) else 0 :=
+    fun σ τ => gram_prodSel a _ ha σ τ
+  set μ : (Fin M → Bool) → ℝ := fun σ => ∏ k, (if σ k then 1 else 1 - ν k) with hμ_def
+  have hY : ∀ σ τ, star (Y τ) ⬝ᵥ Y σ = if σ = τ then (μ σ : ℂ) else 0 := by
+    intro σ τ
+    have hg := gram_prodSel b _ hb (fun k => !τ k) (fun k => !σ k)
+    by_cases h : σ = τ
+    · subst h
+      rw [hY_def]
+      simp only [hg, ite_true, hμ_def]
+      push_cast
+      refine Finset.prod_congr rfl fun k _ => ?_
+      cases σ k <;> simp
+    · have h' : (fun k => !τ k) ≠ (fun k => !σ k) := by
+        intro h'; apply h; funext k; have := congrFun h' k; simpa using this.symm
+      rw [hY_def]
+      simp only [hg, h, h', ite_false]
+  have hρ : ∀ x x', rdm ℓ hℓ ψ x x' = ∑ σ, (μ σ : ℂ) * (X σ x * star (X σ x')) :=
+    rdm_eq_sum ℓ hℓ ψ (fun σ => c * s σ) X Y (fun σ => (μ σ : ℂ)) hψ' hcs hY
+  have hμ0 : ∀ σ, 0 ≤ μ σ := fun σ =>
+    Finset.prod_nonneg fun k _ => by split_ifs <;> linarith [hν1 k]
+  have hXn : ∀ σ, nsq (X σ) = ∏ k, (if σ k then ν k else 1) := by
+    intro σ
+    have h := hX σ σ
+    rw [ite_eq_left rfl, star_dotProduct_self] at h
+    have h' : ((∏ k, (if σ k then ν k else 1) : ℝ) : ℂ) =
+        ∏ k, (if σ k then (ν k : ℂ) else 1) := by
+      rw [Complex.ofReal_prod]
+      exact Finset.prod_congr rfl fun k _ => by split_ifs <;> simp
+    rw [← h'] at h
+    exact_mod_cast h
+  set lam : (Fin M → Bool) → ℝ := fun σ => ∏ k, (if σ k then ν k else 1 - ν k) with hlam_def
+  have hlam : ∀ σ, μ σ * nsq (X σ) = lam σ := by
+    intro σ
+    rw [hXn, hμ_def, hlam_def]
+    simp only
+    rw [← Finset.prod_mul_distrib]
+    refine Finset.prod_congr rfl fun k _ => ?_
+    cases σ k <;> simp
+  -- the entropy
+  set Z : Matrix (Cfg ℓ) (Fin M → Bool) ℂ :=
+    Matrix.of fun x σ => ((√(μ σ) : ℝ) : ℂ) * X σ x with hZ_def
+  have hsq : ∀ σ, ((√(μ σ) : ℝ) : ℂ) * ((√(μ σ) : ℝ) : ℂ) = (μ σ : ℂ) := fun σ => by
+    rw [← Complex.ofReal_mul, Real.mul_self_sqrt (hμ0 σ)]
+  have hZZ : rdm ℓ hℓ ψ = Z * Zᴴ := by
+    ext x x'
+    rw [hρ, Matrix.mul_apply]
+    refine Finset.sum_congr rfl fun σ _ => ?_
+    simp only [hZ_def, Matrix.of_apply, Matrix.conjTranspose_apply, star_mul', Complex.star_def,
+      Complex.conj_ofReal]
+    rw [← hsq σ]
+    ring
+  have hZZ' : Zᴴ * Z = diagonal (fun σ => (lam σ : ℂ)) := by
+    ext σ τ
+    rw [Matrix.mul_apply, Matrix.diagonal_apply]
+    have e : ∑ x, Zᴴ σ x * Z x τ =
+        ((√(μ σ) : ℝ) : ℂ) * ((√(μ τ) : ℝ) : ℂ) * (star (X σ) ⬝ᵥ X τ) := by
+      rw [dotProduct, Finset.mul_sum]
+      refine Finset.sum_congr rfl fun x _ => ?_
+      simp only [hZ_def, Matrix.of_apply, Matrix.conjTranspose_apply, star_mul', Pi.star_apply,
+        Complex.star_def, Complex.conj_ofReal]
+      ring
+    rw [e, hX]
+    split_ifs with h
+    · subst h
+      rw [hsq, ← hlam σ, hXn, Complex.ofReal_mul, Complex.ofReal_prod]
+      congr 1
+      exact Finset.prod_congr rfl fun k _ => by split_ifs <;> simp
+    · simp
+  have hHd : (diagonal (fun σ => (lam σ : ℂ))).IsHermitian :=
+    hZZ' ▸ isHermitian_conjTranspose_mul_self Z
+  have hent : vonNeumann (rdm ℓ hℓ ψ) (rdm_isHermitian ℓ hℓ ψ) = ∑ k, Real.binEntropy (ν k) := by
+    rw [CutLocalAux.vonNeumann_congr _ (isHermitian_mul_conjTranspose_self Z) hZZ,
+      vonNeumann_mul_conjTranspose_comm, CutLocalAux.vonNeumann_congr _ hHd hZZ',
+      vonNeumann_diagonal, ← sum_negMulLog_prod_sel ν]
+  -- the law of `N_A`
+  have hnum : ∀ n : ℕ, numDist (segment ℓ) ψ n = poissonBinomial ν n := by
+    intro n
+    rw [numDist_eq_sum_rdm ℓ hℓ ψ n, ← sum_sel_eq_poissonBinomial]
+    simp only [hρ, Complex.re_sum]
+    rw [Finset.sum_comm]
+    refine Finset.sum_congr rfl fun σ _ => ?_
+    have hre : ∀ x, ((μ σ : ℂ) * (X σ x * star (X σ x))).re = μ σ * ‖X σ x‖ ^ 2 := by
+      intro x
+      rw [Complex.star_def, Complex.mul_conj', ← Complex.ofReal_pow, ← Complex.ofReal_mul,
+        Complex.ofReal_re]
+    simp only [hre, ← Finset.mul_sum]
+    have hsupp : IsNum (∑ k, if σ k then 1 else 0) (X σ) := isNum_prodSel a σ
+    by_cases hn : (∑ j, if σ j then 1 else 0) = n
+    · rw [ite_eq_left hn, ← hlam σ, nsq]
+      congr 1
+      rw [Finset.sum_filter_of_ne]
+      intro x _ hx
+      by_contra hcount
+      apply hx
+      simp [hsupp x (by rw [hn]; exact hcount)]
+    · rw [ite_eq_right hn]
+      apply mul_eq_zero_of_right
+      apply Finset.sum_eq_zero
+      intro x hx
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at hx
+      simp [hsupp x (by rw [hx]; exact_mod_cast (Ne.symm hn))]
+  exact ⟨M, B, ν, hCB, hBB, fun k => ⟨hν0 k, hν1 k⟩, hsqrt, hent, hnum⟩
+
 end SlaterExactAux
 
 /-- `C_A` is Hermitian. -/
