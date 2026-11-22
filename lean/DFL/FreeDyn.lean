@@ -329,13 +329,13 @@ end Cplx
 
 end FreeDynAux
 
-open NormedSpace in
 /-- **Heisenberg evolution of the annihilation operators** under a quadratic Hamiltonian:
 `e^{itdΓ(A)} c_x e^{-itdΓ(A)} = ∑_y (e^{-itA})_{xy} c_y`. -/
 theorem heisenberg_ann (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsSymm) (x : Fin N) (t : ℝ) :
-    (evo (dGamma A) t)ᴴ * cplx (ann x) * evo (dGamma A) t = ∑ y, evo A t x y • cplx (ann y) := by
+    (evo (dGamma A) t)ᴴ * cplx (ann x) * evo (dGamma A) t = ∑ y, evo A t x y • cplx (ann y) :=
+    open NormedSpace in by
   set X : Matrix (Cfg N) (Cfg N) ℂ := (-Complex.I) • cplx (dGamma A) with hXdef
-  set Y : Matrix (Fin N) (Fin N) ℂ := (-Complex.I) • cplx A with hYdef
+  set Y : Matrix (Fin N) (Fin N) ℂ := (-Complex.I) • cplx A
   have hW : evo (dGamma A) t = exp ((t : ℂ) • X) := by
     simp only [evo, X, smul_smul, mul_neg, neg_mul]
   have hWh : (evo (dGamma A) t)ᴴ = exp ((t : ℂ) • (-X)) := by
@@ -563,7 +563,6 @@ theorem wick4_entry (z w u v : Fin N) (s : Cfg N) :
     · rw [Function.update_of_ne huv]
       by_cases hz : s z = 1
       · have h1 : Function.update s z 1 = s := by rw [← hz]; exact Function.update_eq_self z s
-        have hne' : ¬ (z = v ∧ z = u) := fun h => huv (h.2.symm.trans h.1)
         by_cases hc : s v = 1 ∧ s u = 0
         · have hne : s ≠ Function.update (Function.update s v 0) u 1 := by
             intro h

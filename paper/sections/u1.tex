@@ -226,16 +226,17 @@ quantum links \cref{prop:gausscap} is stronger anyway.
 By \cref{prop:gausscap}, in a spin-$S$ quantum link model the distribution of $N_A$ in any state of a
 background-charge sector is the distribution of the electric flux difference $E_b-E_{a-1}$ across the
 interval, shifted by a constant.  Hence $\SN\le\ln(4S+1)$, or $\ln(2S+1)$ at a fixed-flux edge, at all times and
-for every gauge-invariant dynamics; superposing sectors adds the time-independent amount $\Ush(\UQ_A)$.  Saturation,
-or boundedness, of $\SN$ in such models, including studies of disorder-free localization in quantum link models
-and in truncated Schwinger models with background charges (cf.\ \cite{Brenes2018}), therefore carries
-\emph{no} information about localization.  Since the gauge fields can be eliminated by the Gauss law, the same
-holds for the equivalent spin chains with long-range interactions.
+for every gauge-invariant dynamics; superposing sectors adds at most the time-independent amount $\Ush(\UQ_A)$.  Saturation,
+or boundedness, of $\SN$ in such models, for instance in studies of disorder-free localization in quantum link
+models with background charges, therefore carries \emph{no} information about localization.  Since the gauge
+fields can be eliminated by the Gauss law, the same holds for the equivalent spin chains with long-range
+interactions, and for any truncation of the electric field to $\abs{E_j}\le S$.
 
 \paragraph{$U(1)$ with Wilson links: energetics.}
-Here $\SN([1,\ell])$ is the Shannon entropy of the electric field on the cut link
-(\cref{prop:wilson}(a)).  It is not kinematically bounded, but its average over cuts is bounded uniformly in
-time and system size by energy conservation (\cref{prop:wilson}(c)), whether or not the dynamics localizes.  A
+This is the setting of the lattice Schwinger model with background charges of \cite{Brenes2018}.  Here
+$\SN([1,\ell])$ is the Shannon entropy of the electric field on the cut link (\cref{prop:wilson}(a)).  It is not
+kinematically bounded, but its average over cuts is bounded uniformly in time and system size by energy
+conservation (\cref{prop:wilson}(c) and \cref{rem:wilson}(a)), whether or not the dynamics localizes.  A
 diagnostic based on the growth of $\SN$ must therefore look at individual cuts, where only $\frac12\ln O(L)$ is
 excluded, and must distinguish this from the energetic constraint.
 
@@ -362,7 +363,8 @@ $\sup_t\frac1L\sum_\ell\langle E_\ell^2\rangle_t=0.78,0.52,0.37$ against the bou
 $\sup_t\frac1L\sum_\ell\SN=1.06,0.95,0.76$ against the bounds $2.46,2.23,1.46$.
 \item \Cref{rem:randomwalk}: the one-fermion reduction sector by sector ($N=3,4,5$, all $2^N$ sectors, by exact
 diagonalization of $H_{\rm std}$ and projection onto the joint eigenspaces of the $G_j$; error $\le4\times10^{-15}$), and
-the two-fermion statements of (b).  For the eigenfunction correlator $\E\,Q(x_0,x_0+d)$ ($N=600$, $200$ samples), the
+the two-fermion statements of (b).  For the eigenfunction correlator $\E\,\Qc^{[1,N]}(x_0,x_0+d)$ of the one-fermion operator ($N=600$, $x_0=300$,
+$200$ samples), the
 random-walk potential gives much smaller values than the i.i.d.\ Bernoulli potential at large $d$: for $h=J/2$,
 $6.7\times10^{-5}$ versus $3.1\times10^{-3}$ at $d=64$ and $10^{-13}$ versus $2.8\times10^{-5}$ at $d=128$.
 \end{itemize}
