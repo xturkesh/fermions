@@ -62,3 +62,4 @@ import DFL.LRFull
 import DFL.InfVolNumber
 import DFL.DimerLower
 import DFL.SlaterBulk
+import DFL.AreaLawFull

@@ -72,6 +72,7 @@ No `axiom` is introduced anywhere.
 | Lemma `lem:annealed`(ii) (remaining bounds) and (iii) (bulk intervals: constants `2Θ(F)`, `2Σ₁(F)`, `4Σ'₁(F)²`) | `annealed_cut_Q`, `annealed_cut_Q_sq`, `annealed_ivl_K`, `annealed_ivl_Q`, `annealed_ivl_Q_sq` | `AnnealedInterval.lean` |
 | Number entropy of bulk intervals in finite volume (the finite-volume part of the proof of `thm:infvol`(e)): `⟨(N_B - s_B)²⟩ ≤ 2Θ(F) + 4Σ'₁(F)²`, `S_N(t) ≤ ½ ln(2πe(2Θ(F) + 4Σ'₁(F)² + 1/12))` | `lgt_bulk_transport_sq`, `lgt_numberEntropy_bulk` | `NumberEntropyBulk.lean` |
 | Theorem `thm:arealaw`(c), Lemma `lem:cutlocal`(c) (definite charges) | `vonNeumann_rdmLGT_xprod`, `lgt_areaLaw_full` | `CutLocal.lean` |
+| Theorem `thm:arealaw`(b),(c) **with the constants of the paper** (`E_ξ S_full(t) = S_G(t)`, `sup_t S_G ≤ 8 ln 2 M_2(F)`, `E_ξ sup_t S_full ≤ 8 ln 2 M_2(F)`, Markov bound `P_ξ(sup_t S_full ≥ s) ≤ 8 ln 2 M_2(F)/s`) | `avg_full_eq_SG`, `sup_SG_le`, `avg_sup_full_le`, `prob_sup_full_ge_le` | `AreaLawFull.lean` |
 | Lemma `lem:pinching`; concavity and mixing bound of the von Neumann entropy | `vonNeumann_le_pinching`, `vonNeumann_pinching_le`, `vonNeumann_concave`, `vonNeumann_mix_le`, `vonNeumann_le_diag`, `vonNeumann_le_log_card`, `vonNeumann_mul_conjTranspose_comm` | `VNEntropy.lean` |
 | Lemma `lem:cutlocal`(a) (in configuration form: `U⁻¹` of a split configuration is the split of the dual configurations after the controlled flip `C_ℓ` of the right links), (b),(d) (duality defect `≤ ln 2`, sharp) | `EntropiesAux.dualEquiv_symm_splitLGT`, `cutlocal_defect`, `exProd_entropy`, `exProd_U_entropy`, `exProd_Udag_entropy` | `Entropies.lean`, `CutLocalExamples.lean` |
 | Proposition `prop:entropies`(a)–(c) (entropy taxonomy) | `fullEntropy_eq_numberEntropy_add`, `bareEntropy_eq_numberEntropy_add`, `vonNeumann_block_decomp`, `lgt_duality_defect`, `mixRdm_eq_marginal`, `condEntropy_le_mix`, `mix_le_cond_add`, `mix_le_log`, `sectorLawEntropy_le`, `sectorLawEntropy_zero`, `lgtNumDist_eq_avg`, `numberEntropy_le_mix`, `numberEntropy_le_bare`, `avg_sector_shannon_le_cond`, `avg_sector_shannon_le_numberEntropy`, `numberEntropy_le_avg_add`; `shannon_le_vonNeumann_of_block`, `numDist_shannon_le_vonNeumann_slater`, `lgt_numberEntropy_le_full` | `Entropies.lean`, `Taxonomy.lean`, `EntropyBlocks.lean` |
@@ -104,14 +105,14 @@ No `axiom` is introduced anywhere.
 
 ## Verification
 
-`lake build` compiles all 64 modules (about 33,500 lines) without `sorry`; there is no `axiom`,
+`lake build` compiles all 65 modules (about 33,600 lines) without `sorry`; there is no `axiom`,
 `admit`, `native_decide` or `implemented_by` in the library. The script `CheckAxioms.lean` walks
 through every theorem declared in a `DFL` module (including private helper lemmas) and collects the
 axioms it depends on:
 
 ```
 lake env lean CheckAxioms.lean
-# checked 3666 theorems in DFL modules; with non-standard axioms: 0
+# checked 3677 theorems in DFL modules; with non-standard axioms: 0
 ```
 
 i.e. every theorem depends only on Lean's standard axioms `propext`, `Classical.choice` and
