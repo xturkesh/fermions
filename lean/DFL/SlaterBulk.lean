@@ -15,6 +15,21 @@ For a region `R` (e.g. a bulk interval) the paper identifies `𝓕_Λ ≅ 𝓕_R
 * `vonNeumann_rdmF_segment`: for a left segment this is the reduced state `rdm` of `DFL.AreaLaw`;
 * `lgt_areaLaw_bulk`: for an interval `B = [a, b]`, `E_q sup_t S(ρ^q_B(t)) ≤ 4 ln 2 Θ(F)` under (EC)
   (finite-volume form of Theorem `thm:infvol`(d)).
+
+## Proof outline (auxiliary lemmas in `DFL.SlaterBulkAux`)
+
+1. `ftens R X Y` (`(X ⋆ Y)(n) = ε(n) X(n|_R) Y(n|_{R^c})`) is the image of `X ⊗ Y`; a creation
+   operator of a mode in `R` acts on `X` (`cre_ftens_mem`), one of a mode outside `R` acts on `Y`
+   with the parity of `X` (`cre_ftens_not_mem`), hence `crOp_ftens` and, by induction, the
+   expansion `slater_expand_gen` of a Slater determinant in canonical orbitals as
+   `∑_σ s_σ X_σ ⋆ Y_σ`, `|s_σ| = 1`.
+2. Since `ε² = 1`, `ψ(α ⊔ β) = ε(α, β) ∑_σ c_σ X_σ(α) Y_σ(β)` gives `ρ_R = ∑_σ ‖Y_σ‖² |X_σ⟩⟨X_σ|`
+   (`rdmF_eq_sum`); the factors are orthogonal (`gram_prodSel`, restricted to `R`, resp. `R^c`, by
+   `dot_eq_sum_in`, `dot_eq_sum_out`), so `S(ρ_R) = ∑_k h(ν_k)` (`slater_core_bulk`), and the
+   eigenvalues transfer to `C_R` as in `DFL.SlaterGeneral`.
+3. For a left segment `ε = 1` (`reorderSign_segment`) and `ρ_R` is `rdm` up to reindexing.
+4. The bulk area law combines (2), `|K_{xy}| ≤ ∑_z Q(x,z) Q(y,z)`, the splitting of the boundary of
+   `[a, b]` into the cuts at `a` and `b + 1`, and the annealed cut bound `Θ(F)` for each cut.
 -/
 
 open Matrix Finset
