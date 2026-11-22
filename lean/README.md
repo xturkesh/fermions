@@ -60,6 +60,7 @@ No `axiom` is introduced anywhere.
 | Proposition `prop:LR` (sector-averaged zero-velocity LR) | `avg_norm_evo_le`, `avg_iSup_norm_evo_le`, `avg_norm_comm_le` | `LiebRobinson.lean` |
 | Proposition `prop:LR`(a),(b),(c) on the gauge-theory Hilbert space (dressed monomials and Majorana expansions with `8\|A\|₁`; `B` localized in `Y` (`LocB`, contains `𝔅⁺(Y)`); sector average under (EC); expectations for density matrices with sector weights `≤ K2^{-N}`; `‖{c̃_x(t), c̃_y†}‖ = ‖[c̃_x(t), n_y]‖ = max_q \|U_q(t)_{xy}\|`) | `LR_sector_mono`, `LR_sector_maj`, `LR_avg_mono`, `LR_avg_maj`, `LR_trace_mono`, `norm_dressedAnticomm_eq`, `norm_comm_number_eq` | `LRFull.lean` |
 | Proposition `prop:LR`(c), rest (`‖[n_x(t), n_y]‖ = max_q \|U\|(1-\|U\|²)^{1/2}`; clean sector: `sup_t ‖{c̃_1(t), c̃_N†}‖ ≥ (3/(2(N+1)))^{1/2}`, `sup_t ‖[n_1(t), n_N]‖ ≥ (3/(4(N+1)))^{1/2}`; sector average `≤ F(N-1)`) | `numComm`, `norm_comm_nn_eq`, `sup_norm_dressedAnticomm_ge`, `sup_norm_comm_nn_ge`, `avg_sup_anticomm_corner_le` | `LRNorm.lean` |
+| Proposition `prop:LR`(d) (no operator-norm zero-velocity bound: the clean sector is ballistic) | `no_uniform_LR_nn`, `no_uniform_LR_anticomm`, `no_uniform_LR_cn` | `LRNoGo.lean` |
 | Theorem `thm:imbalance` (persistent imbalance) | `stag_hq_anticomm`, `eigenvalue_mul_stagWeight`, `hq_eigenvalues_injective`, `imbOne_timeAvg`, `avg_imbInf_ge`, `avg_imbInf_uniform`, `lgtImbalance_eq`, `lgtImbalance_timeAvg`, `lgtImbalance_lower` | `Imbalance.lean`, `Main.lean` |
 | Corollary `cor:imbalanceopen` (persistent imbalance on the open chain of SKKM, without boundary link) | `lgtImbalanceOpen_lower`, `lgtImbalanceOpen_timeAvg`, `lgtImbalanceOpen_eq`, `avgPar_imbInf_uniform` | `OpenImbalance.lean` |
 | Theorem `thm:numberentropy` (bounded number entropy, `∃ K`; see `TransportSharp.lean` for the constant of the paper) | `lgt_numberEntropy`, `lgtNumDist_isProb` | `Main.lean` |
@@ -109,14 +110,14 @@ No `axiom` is introduced anywhere.
 
 ## Verification
 
-`lake build` compiles all 69 modules (about 35,800 lines) without `sorry`; there is no `axiom`,
+`lake build` compiles all 70 modules (about 36,400 lines) without `sorry`; there is no `axiom`,
 `admit`, `native_decide` or `implemented_by` in the library. The script `CheckAxioms.lean` walks
 through every theorem declared in a `DFL` module (including private helper lemmas) and collects the
 axioms it depends on:
 
 ```
 lake env lean CheckAxioms.lean
-# checked 3879 theorems in DFL modules; with non-standard axioms: 0
+# checked 3933 theorems in DFL modules; with non-standard axioms: 0
 ```
 
 i.e. every theorem depends only on Lean's standard axioms `propext`, `Classical.choice` and
@@ -180,6 +181,5 @@ lake env lean Check.lean
 - `thm:infvol`(a) (the quasi-free limit state of local gauge-invariant observables),
   `cor:ECinfvol` for the full correlator `Q^X` (Borel functional calculus on `ℓ²(X)`; the
   propagator bound is formalized), part (iii) of `prop:dimerimbalance` and the density of states of
-  the dimer model (`lem:dimerdos`), which need spectral measures on `ℓ²(ℤ)`; `prop:LR`(d) (no
-  operator-norm zero-velocity bound, which uses the ballistic motion of the free chain on `ℤ`).
+  the dimer model (`lem:dimerdos`), which need spectral measures on `ℓ²(ℤ)`.
 - Remarks, conjectures and numerics.
