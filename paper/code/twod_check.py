@@ -466,6 +466,8 @@ for rep in range(nrep):
             R = max(R, abs(x - x0), abs(y - y0))
             for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
                 u = (x + dx, y + dy)
+                if not (0 <= u[0] < Lp and 0 <= u[1] < Lp):
+                    continue      # a cluster reaching the boundary has radius >= 40 > max(Rs) anyway
                 if u not in seen and q[u] == q[x0, y0]:
                     seen.add(u); stack.append(u)
         tot += 1

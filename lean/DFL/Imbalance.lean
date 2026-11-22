@@ -682,10 +682,484 @@ theorem avg_imbInf_ge (J h : ℝ) (hJ : J ≠ 0) (hh : h ≠ 0) (hN : 1 ≤ N) :
   rw [this]
   nlinarith
 
+namespace ImbalanceAux
+
+/-! ### The block argument -/
+
+/-- The interval `{a, …, a+ℓ-1}` of sites. -/
+def Ival (a ℓ : ℕ) : Finset (Fin N) :=
+  Finset.univ.filter (fun x : Fin N => a ≤ x.val ∧ x.val < a + ℓ)
+
+/-- Membership in an interval. -/
+lemma mem_Ival {a ℓ : ℕ} {x : Fin N} : x ∈ Ival a ℓ ↔ a ≤ x.val ∧ x.val < a + ℓ := by
+  simp [Ival]
+
+/-- An interval inside `{0, …, N-1}` of length `ℓ` has `ℓ` sites. -/
+lemma card_Ival {a ℓ : ℕ} (h : a + ℓ ≤ N) : (Ival (N := N) a ℓ).card = ℓ := by
+  have : (Ival (N := N) a ℓ).card = (Finset.range ℓ).card := by
+    refine Finset.card_bij' (fun x _ => x.val - a)
+      (fun i hi => ⟨a + i, by rw [Finset.mem_range] at hi; omega⟩) ?_ ?_ ?_ ?_
+    · intro x hx; rw [mem_Ival] at hx; rw [Finset.mem_range]; omega
+    · intro i hi; rw [Finset.mem_range] at hi; rw [mem_Ival]; simp only; omega
+    · intro x hx; rw [mem_Ival] at hx; ext; simp only; omega
+    · intro i hi; simp
+  rw [this, Finset.card_range]
+
+/-- Disjoint consecutive blocks `[kℓ, (k+1)ℓ)` carry total mass at most the total. -/
+lemma blocks_sum_le (ℓ K : ℕ) (f : Fin N → ℝ) (hf : ∀ x, 0 ≤ f x) :
+    ∑ k ∈ Finset.range K, ∑ x ∈ Ival (N := N) (k * ℓ) ℓ, f x ≤ ∑ x, f x := by
+  simp only [Ival, Finset.sum_filter]
+  rw [Finset.sum_comm]
+  refine Finset.sum_le_sum fun x _ => ?_
+  rw [← Finset.sum_filter, Finset.sum_const, nsmul_eq_mul]
+  have hcard : (Finset.filter (fun k => k * ℓ ≤ x.val ∧ x.val < k * ℓ + ℓ)
+      (Finset.range K)).card ≤ 1 := by
+    refine Finset.card_le_one.mpr fun k1 hk1 k2 hk2 => ?_
+    simp only [Finset.mem_filter] at hk1 hk2
+    have a1 : k1 < k2 + 1 := by
+      have : k1 * ℓ < (k2 + 1) * ℓ := by rw [add_mul, one_mul]; omega
+      exact Nat.lt_of_mul_lt_mul_right this
+    have a2 : k2 < k1 + 1 := by
+      have : k2 * ℓ < (k1 + 1) * ℓ := by rw [add_mul, one_mul]; omega
+      exact Nat.lt_of_mul_lt_mul_right this
+    omega
+  have : ((Finset.filter (fun k => k * ℓ ≤ x.val ∧ x.val < k * ℓ + ℓ)
+      (Finset.range K)).card : ℝ) ≤ 1 := by exact_mod_cast hcard
+  nlinarith [hf x]
+
+/-- Weight `m_α(B) = ∑_{x ∈ B} φ_α(x)²` of the eigenvector `φ_α` of `h_q` on `B`. -/
+def wt (J h : ℝ) (q : Cfg N) (B : Finset (Fin N)) (α : Fin N) : ℝ :=
+  ∑ x ∈ B, ((hq_isHermitian J h q).eigenvectorBasis α x) ^ 2
+
+/-- Weights are nonnegative. -/
+lemma wt_nonneg (J h : ℝ) (q : Cfg N) (B : Finset (Fin N)) (α : Fin N) : 0 ≤ wt J h q B α :=
+  Finset.sum_nonneg fun _ _ => sq_nonneg _
+
+/-- The block observable `X_B(q) = ∑_α E_α a_α m_α(B)`. -/
+def Xb (J h : ℝ) (q : Cfg N) (B : Finset (Fin N)) : ℝ :=
+  ∑ α, (hq_isHermitian J h q).eigenvalues α * stagWeight J h q α * wt J h q B α
+
+/-- `∑_α E_α² m_α(B) = ∑_{x∈B} (h_q²)_{xx} ≤ |B| (2J² + 4h²)`. -/
+lemma sum_eig_sq_wt_le (J h : ℝ) (q : Cfg N) (B : Finset (Fin N)) :
+    ∑ α, (hq_isHermitian J h q).eigenvalues α ^ 2 * wt J h q B α ≤
+      B.card * (2 * J ^ 2 + 4 * h ^ 2) := by
+  set hH := hq_isHermitian J h q
+  have e : ∑ α, hH.eigenvalues α ^ 2 * wt J h q B α =
+      ∑ x ∈ B, ∑ α, (hH.eigenvalues α * hH.eigenvectorBasis α x) ^ 2 := by
+    simp only [wt, Finset.mul_sum]
+    rw [Finset.sum_comm]
+    exact Finset.sum_congr rfl fun x _ => Finset.sum_congr rfl fun α _ => by ring
+  rw [e]
+  calc ∑ x ∈ B, ∑ α, (hH.eigenvalues α * hH.eigenvectorBasis α x) ^ 2
+      = ∑ x ∈ B, ∑ y, (hq J h q x y) ^ 2 :=
+        Finset.sum_congr rfl fun x _ => sum_eig_sq_mul _ hH x
+    _ ≤ ∑ _x ∈ B, (2 * J ^ 2 + 4 * h ^ 2) := Finset.sum_le_sum fun x _ => hq_row_sq_le J h q x
+    _ = B.card * (2 * J ^ 2 + 4 * h ^ 2) := by rw [Finset.sum_const, nsmul_eq_mul]
+
+/-- Weighted Cauchy–Schwarz: `X_B² ≤ |B| (2J² + 4h²) ∑_α a_α² m_α(B)`. -/
+lemma Xb_sq_le (J h : ℝ) (q : Cfg N) (B : Finset (Fin N)) :
+    Xb J h q B ^ 2 ≤
+      (B.card * (2 * J ^ 2 + 4 * h ^ 2)) * ∑ α, stagWeight J h q α ^ 2 * wt J h q B α := by
+  have cs := Finset.sum_sq_le_sum_mul_sum_of_sq_le_mul Finset.univ
+    (r := fun α => (hq_isHermitian J h q).eigenvalues α * stagWeight J h q α * wt J h q B α)
+    (f := fun α => (hq_isHermitian J h q).eigenvalues α ^ 2 * wt J h q B α)
+    (g := fun α => stagWeight J h q α ^ 2 * wt J h q B α)
+    (fun α _ => mul_nonneg (sq_nonneg _) (wt_nonneg J h q B α))
+    (fun α _ => mul_nonneg (sq_nonneg _) (wt_nonneg J h q B α))
+    (fun α _ => le_of_eq (by ring))
+  have hg : 0 ≤ ∑ α, stagWeight J h q α ^ 2 * wt J h q B α :=
+    Finset.sum_nonneg fun α _ => mul_nonneg (sq_nonneg _) (wt_nonneg J h q B α)
+  exact cs.trans (mul_le_mul_of_nonneg_right (sum_eig_sq_wt_le J h q B) hg)
+
+/-- Rows of the transition probability sum to one: `∑_y R(x,y) = 1`. -/
+lemma transProb_row (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsHermitian) (x : Fin N) :
+    ∑ y, transProb A hA x y = 1 := by
+  unfold transProb
+  rw [Finset.sum_comm]
+  simp_rw [← Finset.mul_sum, sum_eig_sq' A hA, mul_one]
+  exact sum_eig_sq A hA x
+
+/-- `R(x,y) = R(y,x)`. -/
+lemma transProb_symm (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsHermitian) (x y : Fin N) :
+    transProb A hA x y = transProb A hA y x := by
+  unfold transProb; exact Finset.sum_congr rfl fun α _ => mul_comm _ _
+
+/-- `R(x,y) ≥ 0`. -/
+lemma transProb_nonneg (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsHermitian) (x y : Fin N) :
+    0 ≤ transProb A hA x y :=
+  Finset.sum_nonneg fun _ _ => mul_nonneg (sq_nonneg _) (sq_nonneg _)
+
+/-- `X_B = 2h ∑_x r_x R(x, B)`. -/
+lemma Xb_eq (J h : ℝ) (q : Cfg N) (B : Finset (Fin N)) :
+    Xb J h q B =
+      2 * h * ∑ x, rad q x * ∑ y ∈ B, transProb (hq J h q) (hq_isHermitian J h q) x y := by
+  set hH := hq_isHermitian J h q with hHdef
+  have e1 : ∀ α, hH.eigenvalues α * stagWeight J h q α =
+      ∑ x, 2 * h * (rad q x * (hH.eigenvectorBasis α x) ^ 2) := by
+    intro α
+    rw [eigenvalue_mul_stagWeight, Finset.mul_sum]
+    exact Finset.sum_congr rfl fun x _ => by rw [rad]
+  unfold Xb wt transProb
+  calc ∑ α, hH.eigenvalues α * stagWeight J h q α * ∑ y ∈ B, (hH.eigenvectorBasis α y) ^ 2
+      = ∑ α, ∑ x, ∑ y ∈ B, 2 * h * (rad q x *
+          ((hH.eigenvectorBasis α x) ^ 2 * (hH.eigenvectorBasis α y) ^ 2)) := by
+        refine Finset.sum_congr rfl fun α _ => ?_
+        rw [e1, Finset.sum_mul]
+        refine Finset.sum_congr rfl fun x _ => ?_
+        rw [Finset.mul_sum]
+        exact Finset.sum_congr rfl fun y _ => by ring
+    _ = ∑ x, ∑ y ∈ B, ∑ α, 2 * h * (rad q x *
+          ((hH.eigenvectorBasis α x) ^ 2 * (hH.eigenvectorBasis α y) ^ 2)) := by
+        rw [Finset.sum_comm]
+        exact Finset.sum_congr rfl fun x _ => Finset.sum_comm
+    _ = 2 * h * ∑ x, rad q x * ∑ y ∈ B, ∑ α,
+          (hH.eigenvectorBasis α x) ^ 2 * (hH.eigenvectorBasis α y) ^ 2 := by
+        simp only [Finset.mul_sum]
+
+/-- Boundary term `C_B(q) = ∑_{x ∈ B} ∑_{y ∉ B} R(x,y)`. -/
+def Cb (J h : ℝ) (q : Cfg N) (B : Finset (Fin N)) : ℝ :=
+  ∑ x ∈ B, ∑ y ∈ Bᶜ, transProb (hq J h q) (hq_isHermitian J h q) x y
+
+/-- `|X_B| ≥ 2|h| (|∑_{x∈B} r_x| - 2 C_B)`. -/
+lemma abs_Xb_ge (J h : ℝ) (q : Cfg N) (B : Finset (Fin N)) :
+    2 * |h| * (|∑ x ∈ B, rad q x| - 2 * Cb J h q B) ≤ |Xb J h q B| := by
+  set hH := hq_isHermitian J h q with hHdef
+  have hrow : ∀ x, ∑ y ∈ B, transProb (hq J h q) hH x y =
+      1 - ∑ y ∈ Bᶜ, transProb (hq J h q) hH x y := by
+    intro x
+    have := Finset.sum_add_sum_compl B (fun y => transProb (hq J h q) hH x y)
+    rw [transProb_row] at this
+    linarith
+  set S := ∑ x ∈ B, rad q x
+  set P := ∑ x ∈ B, rad q x * ∑ y ∈ Bᶜ, transProb (hq J h q) hH x y
+  set Q := ∑ x ∈ Bᶜ, rad q x * ∑ y ∈ B, transProb (hq J h q) hH x y
+  have hT : ∑ x, rad q x * ∑ y ∈ B, transProb (hq J h q) hH x y = S - (P - Q) := by
+    rw [← Finset.sum_add_sum_compl B (fun x => rad q x * ∑ y ∈ B, transProb (hq J h q) hH x y)]
+    have : ∑ x ∈ B, rad q x * ∑ y ∈ B, transProb (hq J h q) hH x y = S - P := by
+      simp only [S, P]
+      rw [← Finset.sum_sub_distrib]
+      refine Finset.sum_congr rfl fun x _ => ?_
+      rw [hrow x]; ring
+    rw [this]; ring
+  have hP : |P| ≤ Cb J h q B := by
+    refine (Finset.abs_sum_le_sum_abs _ _).trans (le_of_eq ?_)
+    refine Finset.sum_congr rfl fun x _ => ?_
+    rw [abs_mul, abs_rad, one_mul,
+      abs_of_nonneg (Finset.sum_nonneg fun y _ => transProb_nonneg _ _ _ _)]
+  have hQ : |Q| ≤ Cb J h q B := by
+    refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
+    have : ∑ x ∈ Bᶜ, |rad q x * ∑ y ∈ B, transProb (hq J h q) hH x y| =
+        ∑ x ∈ Bᶜ, ∑ y ∈ B, transProb (hq J h q) hH x y := by
+      refine Finset.sum_congr rfl fun x _ => ?_
+      rw [abs_mul, abs_rad, one_mul,
+        abs_of_nonneg (Finset.sum_nonneg fun y _ => transProb_nonneg _ _ _ _)]
+    rw [this, Finset.sum_comm]
+    exact le_of_eq (Finset.sum_congr rfl fun y _ =>
+      Finset.sum_congr rfl fun x _ => transProb_symm _ _ _ _)
+  have hTabs : |S| - 2 * Cb J h q B ≤ |S - (P - Q)| := by
+    have h1 := abs_sub_abs_le_abs_sub S (P - Q)
+    have h2 := abs_sub P Q
+    linarith
+  rw [Xb_eq, ← hHdef, hT, abs_mul, abs_mul, abs_two]
+  exact mul_le_mul_of_nonneg_left hTabs (by positivity)
+
+/-- `F(d) ≤ √F(u) √F(v)` when `u, v ≤ d` and `F` is antitone and nonnegative. -/
+lemma F_le_sqrt_mul {F : ℕ → ℝ} (hF0 : ∀ d, 0 ≤ F d) (hFa : Antitone F) {d u v : ℕ}
+    (hu : u ≤ d) (hv : v ≤ d) : F d ≤ Real.sqrt (F u) * Real.sqrt (F v) := by
+  calc F d = Real.sqrt (F d) * Real.sqrt (F d) := (Real.mul_self_sqrt (hF0 d)).symm
+    _ ≤ Real.sqrt (F u) * Real.sqrt (F v) :=
+      mul_le_mul (Real.sqrt_le_sqrt (hFa hu)) (Real.sqrt_le_sqrt (hFa hv)) (Real.sqrt_nonneg _)
+        (Real.sqrt_nonneg _)
+
+/-- A finite sum along an injective relabelling into `ℕ` is bounded by the series. -/
+lemma sum_le_tsum_inj (s : Finset (Fin N)) (f : Fin N → ℕ) (hf : Set.InjOn f s) (g : ℕ → ℝ)
+    (hg : ∀ d, 0 ≤ g d) (hs : Summable g) : ∑ x ∈ s, g (f x) ≤ ∑' d, g d := by
+  rw [← Finset.sum_image hf]
+  exact hs.sum_le_tsum _ (fun d _ => hg d)
+
+/-- Geometric bound: `∑_{x ∈ I, y ∉ I} F(|x-y|) ≤ 2 (∑_d √F(d))²` for an interval `I`. -/
+lemma geom_bound {F : ℕ → ℝ} (hF0 : ∀ d, 0 ≤ F d) (hFa : Antitone F)
+    (hs : Summable (fun d => Real.sqrt (F d))) (a ℓ : ℕ) :
+    ∑ x ∈ Ival (N := N) a ℓ, ∑ y ∈ (Ival (N := N) a ℓ)ᶜ, F (Nat.dist x.val y.val) ≤
+      2 * (∑' d, Real.sqrt (F d)) ^ 2 := by
+  set σ := ∑' d, Real.sqrt (F d) with hσ
+  have hg0 : ∀ d, 0 ≤ Real.sqrt (F d) := fun d => Real.sqrt_nonneg _
+  have hσ0 : 0 ≤ σ := tsum_nonneg hg0
+  have hpt : ∀ x ∈ Ival (N := N) a ℓ, ∀ y ∈ (Ival (N := N) a ℓ)ᶜ, F (Nat.dist x.val y.val) ≤
+      (if y.val < a then Real.sqrt (F (x.val - a)) * Real.sqrt (F (a - 1 - y.val)) else 0) +
+      (if a + ℓ ≤ y.val then
+        Real.sqrt (F (a + ℓ - 1 - x.val)) * Real.sqrt (F (y.val - (a + ℓ))) else 0) := by
+    intro x hx y hy
+    rw [mem_Ival] at hx
+    rw [Finset.mem_compl, mem_Ival] at hy
+    by_cases h1 : y.val < a
+    · have h2 : ¬ (a + ℓ ≤ y.val) := by omega
+      rw [ite_eq_left h1, ite_eq_right h2, add_zero]
+      exact F_le_sqrt_mul hF0 hFa (by unfold Nat.dist; omega) (by unfold Nat.dist; omega)
+    · have h2 : a + ℓ ≤ y.val := by omega
+      rw [ite_eq_right h1, ite_eq_left h2, zero_add]
+      exact F_le_sqrt_mul hF0 hFa (by unfold Nat.dist; omega) (by unfold Nat.dist; omega)
+  have hL : ∑ y : Fin N, (if y.val < a then Real.sqrt (F (a - 1 - y.val)) else 0) ≤ σ := by
+    rw [← Finset.sum_filter]
+    refine sum_le_tsum_inj _ (fun y => a - 1 - y.val) ?_ _ hg0 hs
+    intro y1 hy1 y2 hy2 e
+    have h1 := (Finset.mem_filter.mp (Finset.mem_coe.mp hy1)).2
+    have h2 := (Finset.mem_filter.mp (Finset.mem_coe.mp hy2)).2
+    simp only at e
+    exact Fin.ext (by omega)
+  have hR : ∑ y : Fin N, (if a + ℓ ≤ y.val then Real.sqrt (F (y.val - (a + ℓ))) else 0) ≤ σ := by
+    rw [← Finset.sum_filter]
+    refine sum_le_tsum_inj _ (fun y => y.val - (a + ℓ)) ?_ _ hg0 hs
+    intro y1 hy1 y2 hy2 e
+    have h1 := (Finset.mem_filter.mp (Finset.mem_coe.mp hy1)).2
+    have h2 := (Finset.mem_filter.mp (Finset.mem_coe.mp hy2)).2
+    simp only at e
+    exact Fin.ext (by omega)
+  have hI1 : ∑ x ∈ Ival (N := N) a ℓ, Real.sqrt (F (x.val - a)) ≤ σ := by
+    refine sum_le_tsum_inj _ (fun x => x.val - a) ?_ _ hg0 hs
+    intro y1 hy1 y2 hy2 e
+    have h1 := mem_Ival.mp (Finset.mem_coe.mp hy1)
+    have h2 := mem_Ival.mp (Finset.mem_coe.mp hy2)
+    simp only at e
+    exact Fin.ext (by omega)
+  have hI2 : ∑ x ∈ Ival (N := N) a ℓ, Real.sqrt (F (a + ℓ - 1 - x.val)) ≤ σ := by
+    refine sum_le_tsum_inj _ (fun x => a + ℓ - 1 - x.val) ?_ _ hg0 hs
+    intro y1 hy1 y2 hy2 e
+    have h1 := mem_Ival.mp (Finset.mem_coe.mp hy1)
+    have h2 := mem_Ival.mp (Finset.mem_coe.mp hy2)
+    simp only at e
+    exact Fin.ext (by omega)
+  calc ∑ x ∈ Ival (N := N) a ℓ, ∑ y ∈ (Ival (N := N) a ℓ)ᶜ, F (Nat.dist x.val y.val)
+      ≤ ∑ x ∈ Ival (N := N) a ℓ, ∑ y ∈ (Ival (N := N) a ℓ)ᶜ,
+          ((if y.val < a then Real.sqrt (F (x.val - a)) * Real.sqrt (F (a - 1 - y.val)) else 0) +
+          (if a + ℓ ≤ y.val then
+            Real.sqrt (F (a + ℓ - 1 - x.val)) * Real.sqrt (F (y.val - (a + ℓ))) else 0)) :=
+        Finset.sum_le_sum fun x hx => Finset.sum_le_sum fun y hy => hpt x hx y hy
+    _ ≤ ∑ x ∈ Ival (N := N) a ℓ, ∑ y : Fin N,
+          ((if y.val < a then Real.sqrt (F (x.val - a)) * Real.sqrt (F (a - 1 - y.val)) else 0) +
+          (if a + ℓ ≤ y.val then
+            Real.sqrt (F (a + ℓ - 1 - x.val)) * Real.sqrt (F (y.val - (a + ℓ))) else 0)) := by
+        refine Finset.sum_le_sum fun x _ => ?_
+        refine Finset.sum_le_sum_of_subset_of_nonneg (Finset.subset_univ _) fun y _ _ => ?_
+        apply add_nonneg
+        · split_ifs
+          · exact mul_nonneg (hg0 _) (hg0 _)
+          · exact le_rfl
+        · split_ifs
+          · exact mul_nonneg (hg0 _) (hg0 _)
+          · exact le_rfl
+    _ = ∑ x ∈ Ival (N := N) a ℓ,
+          (Real.sqrt (F (x.val - a)) *
+            ∑ y : Fin N, (if y.val < a then Real.sqrt (F (a - 1 - y.val)) else 0) +
+          Real.sqrt (F (a + ℓ - 1 - x.val)) *
+            ∑ y : Fin N, (if a + ℓ ≤ y.val then Real.sqrt (F (y.val - (a + ℓ))) else 0)) := by
+        refine Finset.sum_congr rfl fun x _ => ?_
+        rw [Finset.sum_add_distrib, Finset.mul_sum, Finset.mul_sum]
+        congr 1 <;> refine Finset.sum_congr rfl fun y _ => ?_ <;> split_ifs <;> simp
+    _ ≤ ∑ x ∈ Ival (N := N) a ℓ,
+          (Real.sqrt (F (x.val - a)) * σ + Real.sqrt (F (a + ℓ - 1 - x.val)) * σ) :=
+        Finset.sum_le_sum fun x _ => add_le_add (mul_le_mul_of_nonneg_left hL (hg0 _))
+          (mul_le_mul_of_nonneg_left hR (hg0 _))
+    _ = (∑ x ∈ Ival (N := N) a ℓ, Real.sqrt (F (x.val - a))) * σ +
+          (∑ x ∈ Ival (N := N) a ℓ, Real.sqrt (F (a + ℓ - 1 - x.val))) * σ := by
+        rw [Finset.sum_add_distrib, Finset.sum_mul, Finset.sum_mul]
+    _ ≤ σ * σ + σ * σ :=
+        add_le_add (mul_le_mul_of_nonneg_right hI1 hσ0) (mul_le_mul_of_nonneg_right hI2 hσ0)
+    _ = 2 * σ ^ 2 := by ring
+
+/-- `√F` is summable under (EC). -/
+lemma summable_sqrt_F (J h : ℝ) {F : ℕ → ℝ} (hEC : EC J h F) :
+    Summable (fun d => Real.sqrt (F d)) := by
+  refine Summable.of_nonneg_of_le (fun d => Real.sqrt_nonneg _) (fun d => ?_) hEC.summable_sqrt
+  have : (1 : ℝ) ≤ ((d : ℝ) + 1) ^ 2 := by
+    have : (1 : ℝ) ≤ (d : ℝ) + 1 := by linarith [Nat.cast_nonneg (α := ℝ) d]
+    nlinarith
+  exact le_mul_of_one_le_left (Real.sqrt_nonneg _) this
+
+/-- The averaged boundary term is bounded uniformly: `E C_I ≤ 2 (∑_d √F(d))²`. -/
+lemma avgQ_Cb_le (J h : ℝ) {F : ℕ → ℝ} (hEC : EC J h F) (a ℓ : ℕ) :
+    avgQ (fun q : Cfg N => Cb J h q (Ival a ℓ)) ≤ 2 * (∑' d, Real.sqrt (F d)) ^ 2 := by
+  calc avgQ (fun q : Cfg N => Cb J h q (Ival a ℓ))
+      ≤ avgQ (fun q : Cfg N => ∑ x ∈ Ival (N := N) a ℓ, ∑ y ∈ (Ival (N := N) a ℓ)ᶜ,
+          corrQ (hq J h q) (hq_isHermitian J h q) x y) :=
+        avgQ_mono fun q => Finset.sum_le_sum fun x _ => Finset.sum_le_sum fun y _ =>
+          transProb_le_corrQ _ _ _ _
+    _ = ∑ x ∈ Ival (N := N) a ℓ, ∑ y ∈ (Ival (N := N) a ℓ)ᶜ,
+          avgQ (fun q : Cfg N => corrQ (hq J h q) (hq_isHermitian J h q) x y) := by
+        rw [avgQ_sum]
+        exact Finset.sum_congr rfl fun x _ => avgQ_sum _ _
+    _ ≤ ∑ x ∈ Ival (N := N) a ℓ, ∑ y ∈ (Ival (N := N) a ℓ)ᶜ, F (Nat.dist x.val y.val) :=
+        Finset.sum_le_sum fun x _ => Finset.sum_le_sum fun y _ => hEC.bound N x y
+    _ ≤ 2 * (∑' d, Real.sqrt (F d)) ^ 2 :=
+        geom_bound hEC.nonneg hEC.antitone (summable_sqrt_F J h hEC) a ℓ
+
+/-- Pointwise inequality `|s| ≥ s²/(2m) - s⁴/(54m³)` (equality at `|s| = 3m`). -/
+lemma abs_ge_poly (s m : ℝ) (hm : 0 < m) : s ^ 2 / (2 * m) - s ^ 4 / (54 * m ^ 3) ≤ |s| := by
+  have ha0 : 0 ≤ |s| := abs_nonneg s
+  have hs2 : s ^ 2 = |s| ^ 2 := (sq_abs s).symm
+  have hs4 : s ^ 4 = |s| ^ 4 := by rw [show s ^ 4 = (s ^ 2) ^ 2 by ring, hs2]; ring
+  rw [hs2, hs4]
+  have key : 0 ≤ |s| * (|s| - 3 * m) ^ 2 * (|s| + 6 * m) :=
+    mul_nonneg (mul_nonneg ha0 (sq_nonneg _)) (by linarith)
+  have e : |s| ^ 2 / (2 * m) - |s| ^ 4 / (54 * m ^ 3) =
+      (27 * m ^ 2 * |s| ^ 2 - |s| ^ 4) / (54 * m ^ 3) := by
+    field_simp; ring
+  rw [e, div_le_iff₀ (by positivity)]
+  nlinarith [key]
+
+/-- Khintchine-type lower bound: `E |∑_{x∈B} r_x| ≥ m` when `|B| = 3m²`. -/
+lemma avgQ_abs_S_ge (B : Finset (Fin N)) (m : ℕ) (hm : 1 ≤ m) (hB : B.card = 3 * m ^ 2) :
+    (m : ℝ) ≤ avgQ (fun q : Cfg N => |∑ x ∈ B, rad q x|) := by
+  have hm' : (0 : ℝ) < m := by exact_mod_cast hm
+  have h2 : avgQ (fun q : Cfg N => (∑ x ∈ B, rad q x) ^ 2) = B.card := by
+    rw [avgQ, moment2]; field_simp
+  have h4 : avgQ (fun q : Cfg N => (∑ x ∈ B, rad q x) ^ 4) =
+      3 * (B.card : ℝ) ^ 2 - 2 * B.card := by
+    rw [avgQ, moment4]; field_simp
+  have hmono := avgQ_mono (fun q : Cfg N => abs_ge_poly (∑ x ∈ B, rad q x) m hm')
+  have e : avgQ (fun q : Cfg N => (∑ x ∈ B, rad q x) ^ 2 / (2 * m) -
+      (∑ x ∈ B, rad q x) ^ 4 / (54 * m ^ 3)) =
+      (1 / (2 * m)) * avgQ (fun q : Cfg N => (∑ x ∈ B, rad q x) ^ 2) -
+        (1 / (54 * m ^ 3)) * avgQ (fun q : Cfg N => (∑ x ∈ B, rad q x) ^ 4) := by
+    rw [← avgQ_mul_left, ← avgQ_mul_left, ← avgQ_sub]
+    congr 1; ext q; ring
+  rw [e, h2, h4, hB] at hmono
+  push_cast at hmono
+  have e2 : 1 / (2 * (m : ℝ)) * (3 * (m : ℝ) ^ 2) -
+      1 / (54 * (m : ℝ) ^ 3) * (3 * (3 * (m : ℝ) ^ 2) ^ 2 - 2 * (3 * (m : ℝ) ^ 2)) =
+      m + 1 / (9 * m) := by
+    field_simp; ring
+  rw [e2] at hmono
+  have : (0 : ℝ) < 1 / (9 * m) := by positivity
+  linarith
+
+/-- Block estimate: `E X_I² ≥ h² m²` for an interval `I` of length `3m²` with `m ≥ 4κ`. -/
+lemma avgQ_Xb_sq_ge (J h : ℝ) {F : ℕ → ℝ} (hEC : EC J h F) (a m : ℕ) (hm : 1 ≤ m)
+    (hκ : 4 * (2 * (∑' d, Real.sqrt (F d)) ^ 2) ≤ m) (hN : a + 3 * m ^ 2 ≤ N) :
+    h ^ 2 * m ^ 2 ≤ avgQ (fun q : Cfg N => Xb J h q (Ival a (3 * m ^ 2)) ^ 2) := by
+  have hS := avgQ_abs_S_ge (Ival (N := N) a (3 * m ^ 2)) m hm (card_Ival hN)
+  have hC := avgQ_Cb_le (N := N) J h hEC a (3 * m ^ 2)
+  have hX : 2 * |h| * (avgQ (fun q : Cfg N => |∑ x ∈ Ival a (3 * m ^ 2), rad q x|) -
+      2 * avgQ (fun q : Cfg N => Cb J h q (Ival a (3 * m ^ 2)))) ≤
+      avgQ (fun q : Cfg N => |Xb J h q (Ival a (3 * m ^ 2))|) := by
+    have := avgQ_mono (fun q : Cfg N => abs_Xb_ge J h q (Ival a (3 * m ^ 2)))
+    rwa [avgQ_mul_left, avgQ_sub, avgQ_mul_left] at this
+  have hh0 : 0 ≤ |h| := abs_nonneg h
+  have hpos : |h| * m ≤ avgQ (fun q : Cfg N => |Xb J h q (Ival a (3 * m ^ 2))|) := by
+    nlinarith [mul_nonneg hh0 (sub_nonneg.mpr hS), mul_nonneg hh0 (sub_nonneg.mpr hC),
+      mul_nonneg hh0 (sub_nonneg.mpr hκ)]
+  have hsq := sq_avgQ_le (fun q : Cfg N => |Xb J h q (Ival a (3 * m ^ 2))|)
+  simp only [sq_abs] at hsq
+  calc h ^ 2 * (m : ℝ) ^ 2 = (|h| * m) ^ 2 := by rw [mul_pow, sq_abs]
+    _ ≤ (avgQ fun q : Cfg N => |Xb J h q (Ival a (3 * m ^ 2))|) ^ 2 :=
+        pow_le_pow_left₀ (by positivity) hpos 2
+    _ ≤ _ := hsq
+
+/-- Per-sector block inequality: `Ī_q ≥ N⁻¹ ∑_k X_{B_k}² / (ℓ (2J² + 4h²))`. -/
+lemma imbInf_ge_blocks (J h : ℝ) (q : Cfg N) (ℓ K : ℕ) (hKN : K * ℓ ≤ N)
+    (hM : 0 < 2 * J ^ 2 + 4 * h ^ 2) (hℓ : 0 < ℓ) :
+    (1 / N : ℝ) * ∑ k ∈ Finset.range K,
+        Xb J h q (Ival (k * ℓ) ℓ) ^ 2 / (ℓ * (2 * J ^ 2 + 4 * h ^ 2)) ≤ imbInf J h q := by
+  rw [imbInf]
+  refine mul_le_mul_of_nonneg_left ?_ (by positivity)
+  calc ∑ k ∈ Finset.range K, Xb J h q (Ival (k * ℓ) ℓ) ^ 2 / (ℓ * (2 * J ^ 2 + 4 * h ^ 2))
+      ≤ ∑ k ∈ Finset.range K, ∑ α, stagWeight J h q α ^ 2 * wt J h q (Ival (k * ℓ) ℓ) α := by
+        refine Finset.sum_le_sum fun k hk => ?_
+        have hk' : k * ℓ + ℓ ≤ N := by
+          have : (k + 1) * ℓ ≤ K * ℓ :=
+            Nat.mul_le_mul_right ℓ (by rw [Finset.mem_range] at hk; omega)
+          rw [add_mul, one_mul] at this
+          omega
+        have hcs := Xb_sq_le J h q (Ival (k * ℓ) ℓ)
+        rw [card_Ival hk'] at hcs
+        rw [div_le_iff₀ (by positivity)]
+        linarith
+    _ = ∑ α, stagWeight J h q α ^ 2 * ∑ k ∈ Finset.range K, wt J h q (Ival (k * ℓ) ℓ) α := by
+        rw [Finset.sum_comm]
+        exact Finset.sum_congr rfl fun α _ => (Finset.mul_sum _ _ _).symm
+    _ ≤ ∑ α, stagWeight J h q α ^ 2 * 1 := by
+        refine Finset.sum_le_sum fun α _ => mul_le_mul_of_nonneg_left ?_ (sq_nonneg _)
+        unfold wt
+        exact (blocks_sum_le ℓ K _ (fun x => sq_nonneg _)).trans
+          (le_of_eq (sum_eig_sq' _ (hq_isHermitian J h q) α))
+    _ = ∑ α, stagWeight J h q α ^ 2 := by simp
+
+end ImbalanceAux
+
 /-- **Uniform lower bound** under Hypothesis (EC): the averaged infinite-time imbalance is bounded
 below by a positive constant independent of the volume. -/
 theorem avg_imbInf_uniform (J h : ℝ) (hJ : J ≠ 0) (hh : h ≠ 0) {F : ℕ → ℝ} (hEC : EC J h F) :
     ∃ c : ℝ, 0 < c ∧ ∀ (N : ℕ), 1 ≤ N → c ≤ avgQ (fun q : Cfg N => imbInf J h q) := by
-  sorry
+  set κ : ℝ := 2 * (∑' d, Real.sqrt (F d)) ^ 2 with hκdef
+  set m : ℕ := ⌊4 * κ⌋₊ + 1 with hmdef
+  have hm1 : 1 ≤ m := Nat.le_add_left 1 _
+  have hmκ : 4 * κ ≤ (m : ℝ) := by
+    have := Nat.lt_floor_add_one (4 * κ)
+    rw [hmdef]; push_cast; linarith
+  set ℓ : ℕ := 3 * m ^ 2 with hℓdef
+  have hℓ : 0 < ℓ := by positivity
+  have hℓR : (ℓ : ℝ) = 3 * (m : ℝ) ^ 2 := by rw [hℓdef]; push_cast; ring
+  set M : ℝ := 2 * J ^ 2 + 4 * h ^ 2 with hMdef
+  have hJ2 : 0 < J ^ 2 := by positivity
+  have hM : 0 < M := by positivity
+  have hJh : 0 < |J| + |h| := by have := abs_pos.mpr hJ; positivity
+  have hm' : (0 : ℝ) < m := by exact_mod_cast hm1
+  refine ⟨min (h ^ 2 / (ℓ * (|J| + |h|) ^ 2)) (h ^ 2 / (6 * ℓ * M)), ?_, ?_⟩
+  · have hh2 : 0 < h ^ 2 := by positivity
+    apply lt_min <;> positivity
+  · intro N hN
+    by_cases hNℓ : N < ℓ
+    · refine (min_le_left _ _).trans (le_trans ?_ (avg_imbInf_ge J h hJ hh hN))
+      have hN' : (0 : ℝ) < N := by exact_mod_cast hN
+      apply div_le_div_of_nonneg_left (sq_nonneg _) (by positivity)
+      have : (N : ℝ) ≤ ℓ := by exact_mod_cast hNℓ.le
+      nlinarith [sq_nonneg (|J| + |h|)]
+    · replace hNℓ : ℓ ≤ N := not_lt.mp hNℓ
+      set K := N / ℓ with hKdef
+      have hK1 : 1 ≤ K := Nat.div_pos hNℓ hℓ
+      have hKN : K * ℓ ≤ N := Nat.div_mul_le_self N ℓ
+      have hNK : N ≤ 2 * K * ℓ := by
+        have h1 := Nat.div_add_mod N ℓ
+        have h2 := Nat.mod_lt N hℓ
+        have h3 : ℓ ≤ K * ℓ := Nat.le_mul_of_pos_left ℓ hK1
+        rw [← hKdef] at h1
+        have : ℓ * K = K * ℓ := Nat.mul_comm _ _
+        rw [mul_assoc]
+        omega
+      have hN' : (0 : ℝ) < N := by exact_mod_cast hN
+      have havg := ImbalanceAux.avgQ_mono
+        (fun q : Cfg N => ImbalanceAux.imbInf_ge_blocks J h q ℓ K hKN hM hℓ)
+      rw [ImbalanceAux.avgQ_mul_left, ImbalanceAux.avgQ_sum] at havg
+      have hblock : ∀ k ∈ Finset.range K, h ^ 2 * m ^ 2 / (ℓ * M) ≤
+          avgQ (fun q : Cfg N => ImbalanceAux.Xb J h q (ImbalanceAux.Ival (k * ℓ) ℓ) ^ 2 /
+            (ℓ * M)) := by
+        intro k hk
+        have hk' : k * ℓ + 3 * m ^ 2 ≤ N := by
+          have : (k + 1) * ℓ ≤ K * ℓ :=
+            Nat.mul_le_mul_right ℓ (by rw [Finset.mem_range] at hk; omega)
+          rw [add_mul, one_mul] at this
+          omega
+        have hb := ImbalanceAux.avgQ_Xb_sq_ge J h hEC (k * ℓ) m hm1 hmκ hk'
+        have e : avgQ (fun q : Cfg N =>
+            ImbalanceAux.Xb J h q (ImbalanceAux.Ival (k * ℓ) ℓ) ^ 2 / (ℓ * M)) =
+            (1 / (ℓ * M)) *
+              avgQ (fun q : Cfg N => ImbalanceAux.Xb J h q (ImbalanceAux.Ival (k * ℓ) ℓ) ^ 2) := by
+          rw [← ImbalanceAux.avgQ_mul_left]
+          congr 1; ext q; ring
+        rw [e, div_eq_mul_one_div, mul_comm]
+        exact mul_le_mul_of_nonneg_left hb (by positivity)
+      have hsum := Finset.sum_le_sum hblock
+      rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul] at hsum
+      refine (min_le_right _ _).trans ?_
+      refine le_trans ?_ havg
+      refine le_trans ?_ (mul_le_mul_of_nonneg_left hsum (by positivity))
+      have hNK' : (N : ℝ) ≤ 2 * K * ℓ := by exact_mod_cast hNK
+      have hK' : (0 : ℝ) < K := by exact_mod_cast hK1
+      rw [hℓR] at hNK' ⊢
+      have hh2 : 0 < h ^ 2 := by positivity
+      rw [show 1 / (N : ℝ) * (K * (h ^ 2 * m ^ 2 / (3 * m ^ 2 * M))) = K * h ^ 2 / (3 * N * M) by
+        field_simp]
+      rw [div_le_div_iff₀ (by positivity) (by positivity)]
+      nlinarith [mul_pos hh2 hM]
 
 end DFL

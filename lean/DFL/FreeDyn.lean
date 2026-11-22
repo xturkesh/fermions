@@ -486,6 +486,270 @@ theorem density (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsSymm) (S : Finset (Fi
   refine Finset.sum_congr rfl (fun z _ => ?_)
   rw [Complex.star_def, Complex.mul_conj]
 
+namespace FreeDynAux
+
+/-- `N_R = ∑_{x ∈ R} c_x† c_x`. -/
+theorem numOp_eq_sum (R : Finset (Fin N)) : numOp R = ∑ x ∈ R, cre x * ann x := by
+  simp only [cre_mul_ann_self, numOp]
+  ext n' n
+  rw [Matrix.sum_apply]
+  by_cases h : n' = n
+  · subst h; simp [count]
+  · simp [h]
+
+/-- Column `s` of `c_a† c_b`: it is supported on the single configuration obtained from `s` by
+emptying `b` and filling `a`. -/
+theorem cre_mul_ann_col (a b : Fin N) (m s : Cfg N) :
+    (cre a * ann b) m s = if m = Function.update (Function.update s b 0) a 1 then
+      (if s b = 1 ∧ Function.update s b 0 a = 0 then
+        sgn (jwPar s b) * sgn (jwPar (Function.update s b 0) a) else 0) else 0 := by
+  rw [mul_ann_apply, cre_apply]
+  by_cases h1 : s b = 1 <;> by_cases h2 : Function.update s b 0 a = 0 <;>
+    by_cases h3 : m = Function.update (Function.update s b 0) a 1 <;> simp [h1, h2, h3]
+
+/-- Two "hopping" configurations `s - e_z + e_w` and `s - e_v + e_u` coincide only if
+`(z, w) = (v, u)`. -/
+theorem upd_upd_eq_iff {s : Cfg N} {z w u v : Fin N} (hzw : z ≠ w) (huv : u ≠ v)
+    (hz : s z = 1) (hw : s w = 0) (hv : s v = 1) (hu : s u = 0) :
+    Function.update (Function.update s z 0) w 1 = Function.update (Function.update s v 0) u 1 ↔
+      z = v ∧ w = u := by
+  constructor
+  · intro h
+    have hzv : z = v := by
+      by_contra hzv
+      have h' := congrFun h z
+      rw [Function.update_of_ne hzw, Function.update_self] at h'
+      by_cases hzu : z = u
+      · subst hzu
+        rw [Function.update_self] at h'
+        exact zero_ne_one h'
+      · rw [Function.update_of_ne hzu, Function.update_of_ne hzv, hz] at h'
+        exact zero_ne_one h'
+    subst hzv
+    refine ⟨rfl, ?_⟩
+    by_contra hwu
+    have h' := congrFun h w
+    rw [Function.update_self, Function.update_of_ne hwu, Function.update_of_ne hzw.symm, hw] at h'
+    exact one_ne_zero h'
+  · rintro ⟨rfl, rfl⟩
+    rfl
+
+/-- Diagonal matrix elements of `c_z† c_w c_u† c_v` (Wick's theorem for a basis state). -/
+theorem wick4_entry (z w u v : Fin N) (s : Cfg N) :
+    (cre z * ann w * (cre u * ann v)) s s =
+      (if z = w ∧ s z = 1 then 1 else 0) * (if u = v ∧ s u = 1 then 1 else 0) +
+      (if z = v ∧ w = u ∧ s z = 1 ∧ s w = 0 then 1 else 0) := by
+  have hT : ∀ m, (cre z * ann w) s m = (cre w * ann z) m s := by
+    intro m
+    have h : (cre z * ann w)ᵀ = cre w * ann z := by
+      simp [Matrix.transpose_mul, cre]
+    rw [← h, transpose_apply]
+  rw [Matrix.mul_apply]
+  simp only [hT, cre_mul_ann_col, ite_mul, zero_mul, Finset.sum_ite_eq', Finset.mem_univ,
+    ite_true]
+  rcases eq_or_ne z w with rfl | hzw
+  · simp only [Function.update_self, Function.update_idem, jwPar_update_self, sgn_mul_self,
+      and_true]
+    rcases eq_or_ne u v with rfl | huv
+    · simp only [Function.update_self, Function.update_idem, jwPar_update_self, sgn_mul_self,
+        and_true]
+      by_cases hz : s z = 1
+      · have h1 : Function.update s z 1 = s := by rw [← hz]; exact Function.update_eq_self z s
+        by_cases hu : s u = 1
+        · have h2 : Function.update s u 1 = s := by rw [← hu]; exact Function.update_eq_self u s
+          simp [hz, hu, h1, h2]
+        · simp [hz, hu]
+      · simp [hz]
+    · rw [Function.update_of_ne huv]
+      by_cases hz : s z = 1
+      · have h1 : Function.update s z 1 = s := by rw [← hz]; exact Function.update_eq_self z s
+        have hne' : ¬ (z = v ∧ z = u) := fun h => huv (h.2.symm.trans h.1)
+        by_cases hc : s v = 1 ∧ s u = 0
+        · have hne : s ≠ Function.update (Function.update s v 0) u 1 := by
+            intro h
+            have h' := congrFun h u
+            rw [Function.update_self, hc.2] at h'
+            exact zero_ne_one h'
+          simp [hz, h1, hne, huv]
+        · simp [hz, h1, hc, huv]
+      · simp [hz]
+  · rw [Function.update_of_ne (Ne.symm hzw)]
+    rcases eq_or_ne u v with rfl | huv
+    · simp only [Function.update_self, Function.update_idem, jwPar_update_self, sgn_mul_self,
+        and_true]
+      have hne' : ¬ (z = u ∧ w = u) := fun h => hzw (h.1.trans h.2.symm)
+      by_cases hc : s z = 1 ∧ s w = 0
+      · by_cases hu : s u = 1
+        · have h2 : Function.update s u 1 = s := by rw [← hu]; exact Function.update_eq_self u s
+          have hne : Function.update (Function.update s z 0) w 1 ≠ s := by
+            intro h
+            have h' := congrFun h w
+            rw [Function.update_self, hc.2] at h'
+            exact one_ne_zero h'
+          simp [hc, h2, hne, hzw, hne']
+        · simp [hc, hu, hzw, hne']
+      · simp [hc, hzw]
+    · rw [Function.update_of_ne huv]
+      by_cases hc : s z = 1 ∧ s w = 0 ∧ s v = 1 ∧ s u = 0
+      · obtain ⟨hz, hw, hv, hu⟩ := hc
+        simp only [upd_upd_eq_iff hzw huv hz hw hv hu]
+        by_cases he : z = v ∧ w = u
+        · obtain ⟨rfl, rfl⟩ := he
+          simp only [hz, hw, and_self, ite_true, hzw, false_and, zero_add, ite_false]
+          rw [mul_mul_mul_comm, sgn_mul_self, sgn_mul_self, mul_one]
+        · simp [hz, hw, hzw, he]
+      · have hR : ¬ (z = v ∧ w = u ∧ s z = 1 ∧ s w = 0) := by
+          rintro ⟨rfl, rfl, hz, hw⟩
+          exact hc ⟨hz, hw, hz, hw⟩
+        by_cases h1 : s z = 1 ∧ s w = 0
+        · have h2 : ¬ (s v = 1 ∧ s u = 0) := fun h2 => hc ⟨h1.1, h1.2, h2.1, h2.2⟩
+          have hR' : ¬ (z = v ∧ w = u) := fun h => hR ⟨h.1, h.2, h1.1, h1.2⟩
+          simp [h1, h2, hzw]
+          exact fun a b => hR' ⟨a, b⟩
+        · simp [h1, hzw]
+
+/-- Expectation of a quadratic form `∑ K_{zw} c_z† c_w` in a basis state. -/
+theorem wick2_sum (K : Matrix (Fin N) (Fin N) ℂ) (s : Cfg N) :
+    (∑ z, ∑ w, K z w • cplx (cre z * ann w)) s s = ∑ z, if s z = 1 then K z z else 0 := by
+  simp only [Matrix.sum_apply, Matrix.smul_apply, cplx_apply, cre_mul_ann_diag, smul_eq_mul,
+    apply_ite (fun r : ℝ => (r : ℂ)), Complex.ofReal_one, Complex.ofReal_zero, ite_and, mul_ite,
+    mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
+
+/-- Expectation of a product of two quadratic forms in a basis state (Wick's theorem). -/
+theorem wick4_sum (K L : Matrix (Fin N) (Fin N) ℂ) (s : Cfg N) :
+    ((∑ z, ∑ w, K z w • cplx (cre z * ann w)) * (∑ u, ∑ v, L u v • cplx (cre u * ann v))) s s =
+      (∑ z, if s z = 1 then K z z else 0) * (∑ u, if s u = 1 then L u u else 0) +
+      ∑ z, ∑ w, if s z = 1 ∧ s w = 0 then K z w * L w z else 0 := by
+  have expand : (∑ z, ∑ w, K z w • cplx (cre z * ann w)) *
+      (∑ u, ∑ v, L u v • cplx (cre u * ann v)) =
+      ∑ z, ∑ w, ∑ u, ∑ v, (K z w * L u v) • cplx (cre z * ann w * (cre u * ann v)) := by
+    simp only [Finset.sum_mul]
+    simp only [Finset.mul_sum]
+    refine Finset.sum_congr rfl (fun z _ => Finset.sum_congr rfl (fun w _ =>
+      Finset.sum_congr rfl (fun u _ => Finset.sum_congr rfl (fun v _ => ?_))))
+    rw [Matrix.smul_mul, Matrix.mul_smul, smul_smul, ← cplx_mul]
+  rw [expand]
+  simp only [Matrix.sum_apply, Matrix.smul_apply, cplx_apply, wick4_entry, smul_eq_mul,
+    Complex.ofReal_add, Complex.ofReal_mul, apply_ite (fun r : ℝ => (r : ℂ)), Complex.ofReal_one,
+    Complex.ofReal_zero, mul_add, Finset.sum_add_distrib]
+  congr 1
+  · have hK : ∀ M : Matrix (Fin N) (Fin N) ℂ,
+        (∑ z, ∑ w, M z w * (if z = w ∧ s z = 1 then (1 : ℂ) else 0)) =
+          ∑ z, if s z = 1 then M z z else 0 := by
+      intro M
+      simp only [ite_and, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ,
+        ite_true]
+    rw [← hK K, ← hK L]
+    simp only [Finset.sum_mul]
+    simp only [Finset.mul_sum]
+    refine Finset.sum_congr rfl (fun z _ => Finset.sum_congr rfl (fun w _ =>
+      Finset.sum_congr rfl (fun u _ => Finset.sum_congr rfl (fun v _ => ?_))))
+    ring
+  · simp only [ite_and, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
+
+/-- Matrix entries of `U† P_R U`. -/
+theorem conj_proj_apply (U : Matrix (Fin N) (Fin N) ℂ) (R : Finset (Fin N)) (z w : Fin N) :
+    (Uᴴ * diagonal (fun x => if x ∈ R then (1 : ℂ) else 0) * U) z w =
+      ∑ x ∈ R, star (U x z) * U x w := by
+  rw [Matrix.mul_apply]
+  simp only [Matrix.mul_diagonal, conjTranspose_apply, mul_ite, mul_one, mul_zero, ite_mul,
+    zero_mul]
+  rw [Finset.sum_ite_mem, Finset.univ_inter]
+
+/-- The Heisenberg-evolved number operator of a region is the quadratic form of `U† P_R U`. -/
+theorem conj_numOp (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsSymm) (R : Finset (Fin N)) (t : ℝ) :
+    (evo (dGamma A) t)ᴴ * cplx (numOp R) * evo (dGamma A) t =
+      ∑ z, ∑ w, ((evo A t)ᴴ * diagonal (fun x => if x ∈ R then (1 : ℂ) else 0) * evo A t) z w •
+        cplx (cre z * ann w) := by
+  have hW := evo_mul_conjTranspose (dGamma A) (dGamma_isSymm A hA) t
+  have h1 : ∀ x, (evo (dGamma A) t)ᴴ * cplx (cre x * ann x) * evo (dGamma A) t =
+      ∑ z, ∑ w, (star (evo A t x z) * evo A t x w) • cplx (cre z * ann w) := by
+    intro x
+    rw [cplx_mul, conj_mul _ _ _ hW, heisenberg_cre A hA, heisenberg_ann A hA]
+    simp only [Finset.sum_mul]
+    simp only [Finset.mul_sum]
+    refine Finset.sum_congr rfl (fun z _ => Finset.sum_congr rfl (fun w _ => ?_))
+    rw [Matrix.smul_mul, Matrix.mul_smul, smul_smul, ← cplx_mul]
+  rw [numOp_eq_sum, cplx_sum, Finset.mul_sum, Finset.sum_mul]
+  simp only [h1, conj_proj_apply, Finset.sum_smul]
+  rw [Finset.sum_comm (s := R)]
+  refine Finset.sum_congr rfl (fun z _ => ?_)
+  rw [Finset.sum_comm (s := R)]
+
+/-- The projection `P_S = diag(1_S)` is idempotent. -/
+theorem proj_mul_self (S : Finset (Fin N)) :
+    diagonal (fun z => if z ∈ S then (1 : ℂ) else 0) *
+      diagonal (fun z => if z ∈ S then (1 : ℂ) else 0) =
+      diagonal (fun z => if z ∈ S then (1 : ℂ) else 0) := by
+  rw [diagonal_mul_diagonal]
+  congr 1
+  ext z
+  by_cases h : z ∈ S <;> simp [h]
+
+/-- The correlation matrix is Hermitian. -/
+theorem corrMat_conjTranspose (A : Matrix (Fin N) (Fin N) ℝ) (S : Finset (Fin N)) (t : ℝ) :
+    (corrMat A S t)ᴴ = corrMat A S t := by
+  have hd : (diagonal (fun z => if z ∈ S then (1 : ℂ) else 0))ᴴ =
+      diagonal (fun z => if z ∈ S then (1 : ℂ) else 0) := by
+    rw [diagonal_conjTranspose]
+    congr 1
+    ext z
+    by_cases h : z ∈ S <;> simp [h]
+  simp only [corrMat, conjTranspose_mul, conjTranspose_conjTranspose, hd, Matrix.mul_assoc]
+
+/-- A "boundary" double sum as a trace: `∑_{z ∈ S, w ∉ S} M_{zw} M_{wz} = tr(P M (1 - P) M)`. -/
+theorem sum_eq_trace (M : Matrix (Fin N) (Fin N) ℂ) (S : Finset (Fin N)) :
+    (∑ z, ∑ w, if z ∈ S ∧ w ∉ S then M z w * M w z else 0) =
+      trace (diagonal (fun z => if z ∈ S then (1 : ℂ) else 0) * M *
+        (1 - diagonal (fun z => if z ∈ S then (1 : ℂ) else 0)) * M) := by
+  have h1 : (1 : Matrix (Fin N) (Fin N) ℂ) - diagonal (fun z => if z ∈ S then (1 : ℂ) else 0) =
+      diagonal (fun z => if z ∈ S then 0 else 1) := by
+    rw [← diagonal_one, diagonal_sub]
+    congr 1
+    ext z
+    by_cases h : z ∈ S <;> simp [h]
+  rw [h1, Matrix.trace]
+  refine Finset.sum_congr rfl (fun z _ => ?_)
+  rw [Matrix.diag_apply, Matrix.mul_apply]
+  refine Finset.sum_congr rfl (fun w _ => ?_)
+  simp only [Matrix.mul_diagonal, Matrix.diagonal_mul]
+  by_cases hz : z ∈ S <;> by_cases hw : w ∈ S <;> simp [hz, hw]
+
+/-- Rewriting a double sum over `R × Rᶜ` as a sum with an indicator. -/
+theorem sum_sdiff_eq_ite (R : Finset (Fin N)) (g : Fin N → Fin N → ℂ) :
+    (∑ x ∈ R, ∑ y ∈ univ \ R, g x y) = ∑ x, ∑ y, if x ∈ R ∧ y ∉ R then g x y else 0 := by
+  simp only [ite_and, Finset.sum_ite_irrel, Finset.sum_const_zero]
+  rw [Finset.sum_ite_mem, Finset.univ_inter]
+  refine Finset.sum_congr rfl (fun x _ => ?_)
+  rw [Finset.sdiff_eq_filter, Finset.sum_filter]
+
+/-- The trace identity behind the number variance:
+`tr(P K (1-P) K) = tr(Q C (1-Q) C)` with `K = U† Q U`, `C = U P U†`, `U` unitary and `P`, `Q`
+idempotent. -/
+theorem trace_identity (U P Q : Matrix (Fin N) (Fin N) ℂ) (hU1 : U * Uᴴ = 1) (hU2 : Uᴴ * U = 1)
+    (hP : P * P = P) (hQ : Q * Q = Q) :
+    trace (P * (Uᴴ * Q * U) * (1 - P) * (Uᴴ * Q * U)) =
+      trace (Q * (U * P * Uᴴ) * (1 - Q) * (U * P * Uᴴ)) := by
+  have hU1' : ∀ M : Matrix (Fin N) (Fin N) ℂ, U * (Uᴴ * M) = M := fun M => by
+    rw [← Matrix.mul_assoc, hU1, Matrix.one_mul]
+  have hU2' : ∀ M : Matrix (Fin N) (Fin N) ℂ, Uᴴ * (U * M) = M := fun M => by
+    rw [← Matrix.mul_assoc, hU2, Matrix.one_mul]
+  have hP' : ∀ M : Matrix (Fin N) (Fin N) ℂ, P * (P * M) = P * M := fun M => by
+    rw [← Matrix.mul_assoc, hP]
+  have hQ' : ∀ M : Matrix (Fin N) (Fin N) ℂ, Q * (Q * M) = Q * M := fun M => by
+    rw [← Matrix.mul_assoc, hQ]
+  have e1 : trace (P * (Uᴴ * (Q * U))) = trace (Q * (U * (P * Uᴴ))) := by
+    rw [← Matrix.mul_assoc P, Matrix.trace_mul_comm (P * Uᴴ), Matrix.mul_assoc]
+  have e2 : trace (P * (Uᴴ * (Q * (U * (P * (Uᴴ * (Q * U))))))) =
+      trace (Q * (U * (P * (Uᴴ * (Q * (U * (P * Uᴴ))))))) := by
+    rw [← Matrix.mul_assoc P, Matrix.trace_mul_comm (P * Uᴴ)]
+    simp only [Matrix.mul_assoc]
+  simp only [Matrix.mul_sub, Matrix.sub_mul, Matrix.mul_one, Matrix.mul_assoc, hU1', hU2', hP',
+    hQ', Matrix.trace_sub]
+  rw [e1, e2]
+
+end FreeDynAux
+
 /-- The variance of the particle number of a region `R` in an evolved Fock state:
 `⟨N_R²⟩ - ⟨N_R⟩² = ∑_{x ∈ R} ∑_{y ∉ R} |C(t)_{xy}|²`. -/
 theorem number_variance (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsSymm) (S R : Finset (Fin N))
@@ -493,7 +757,25 @@ theorem number_variance (A : Matrix (Fin N) (Fin N) ℝ) (hA : A.IsSymm) (S R : 
     expect (cplx (numOp R * numOp R)) (evo (dGamma A) t *ᵥ fockVec S) -
         expect (cplx (numOp R)) (evo (dGamma A) t *ᵥ fockVec S) ^ 2 =
       ((∑ x ∈ R, ∑ y ∈ univ \ R, Complex.normSq (corrMat A S t x y) : ℝ) : ℂ) := by
-  sorry
+  have hW := FreeDynAux.evo_mul_conjTranspose (dGamma A) (dGamma_isSymm A hA) t
+  have hU1 := FreeDynAux.evo_mul_conjTranspose A hA t
+  have hU2 := FreeDynAux.conjTranspose_mul_evo A hA t
+  rw [FreeDynAux.expect_mulVec, FreeDynAux.expect_mulVec, fockVec, FreeDynAux.expect_single,
+    FreeDynAux.expect_single, FreeDynAux.cplx_mul, FreeDynAux.conj_mul _ _ _ hW,
+    FreeDynAux.conj_numOp A hA R t, FreeDynAux.wick4_sum, FreeDynAux.wick2_sum, sq,
+    add_sub_cancel_left]
+  simp only [FreeDynAux.fockCfg_eq_one, FreeDynAux.fockCfg_eq_zero]
+  have hnorm : ∀ x y, (Complex.normSq (corrMat A S t x y) : ℂ) =
+      corrMat A S t x y * corrMat A S t y x := by
+    intro x y
+    rw [← Complex.mul_conj, ← Complex.star_def]
+    congr 1
+    rw [← conjTranspose_apply, FreeDynAux.corrMat_conjTranspose]
+  push_cast
+  simp only [hnorm]
+  rw [FreeDynAux.sum_sdiff_eq_ite, FreeDynAux.sum_eq_trace, FreeDynAux.sum_eq_trace]
+  exact FreeDynAux.trace_identity _ _ _ hU1 hU2 (FreeDynAux.proj_mul_self S)
+    (FreeDynAux.proj_mul_self R)
 
 /-! ### The distribution of the particle number -/
 
@@ -504,6 +786,14 @@ def numDist (R : Finset (Fin N)) (v : Cfg N → ℂ) (k : ℕ) : ℝ :=
 /-- The distribution `numDist` is the spectral measure of `N_R`: its moments are expectations. -/
 theorem numDist_eq_expect (R : Finset (Fin N)) (v : Cfg N → ℂ) (k : ℕ) :
     ((numDist R v k : ℝ) : ℂ) = expect (cplx (numProj R k)) v := by
-  sorry
+  unfold numDist expect numProj
+  rw [FreeDynAux.cplx_diagonal]
+  simp only [Matrix.mulVec_diagonal, dotProduct, Pi.star_apply]
+  push_cast
+  rw [Finset.sum_filter]
+  refine Finset.sum_congr rfl (fun n _ => ?_)
+  split_ifs with h
+  · rw [Complex.normSq_eq_conj_mul_self, Complex.star_def, Complex.ofReal_one, one_mul]
+  · simp
 
 end DFL

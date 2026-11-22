@@ -388,6 +388,14 @@ $\langle n_x(t)\rangle$ for $t\le8$ ($h\in\{0.4,1.3\}$; checkerboard and other F
 polarizations) agrees with \eqref{eq:2dlawz}, \eqref{eq:2dlawx} to $3\times10^{-13}$.
 \item \emph{\Cref{prop:2dlaws}(c)} on a $16\times16$ box with random fluxes: (i), (iii) and the entries in (iv) to
 $10^{-12}$, and $\min\abs{\sigma(h_{q^0,s})}\ge2\abs h$.
+\item \emph{\Cref{prop:cluster}} on a $24\times24$ box (zero flux, i.i.d.\ $q$, six samples, $J=1$): the probability
+that a particle started at a bulk site $x$ is found outside $\Tclus_q(x)$, averaged over $x$ and $q$, is
+$\le1.2\%$ for $t\le1$, $2.5\%$ at $t=3$, $8\%$ at $t=10$, $14\%$ at $t=30$ and $19$--$22\%$ for $100\le t\le1000$ at
+$h=6$ ($g=16$); at $h=4$ ($g=8$) it is $\le3\%$ for $t\le1$, $15\%$ at $t=10$ and $32$--$34\%$ for $100\le t\le1000$.  So
+the leakage sets in on the time scale $g/J^2$, as in \cref{rem:clusterstop}.  The worst-case operator-norm
+difference in \eqref{eq:clusterbound} is $0.26$ at $t=0.1$, $h=6$ (bound $0.8$) and reaches its maximal value $2$
+near $t=10$; with our constants the bound (b) is informative only for $t\lesssim0.4$ at these parameters, while the
+averaged leakage stays small up to $t\sim g/J^2$.
 \end{itemize}
 \end{remark}
 
@@ -424,8 +432,8 @@ There is a numerical constant $c_*>0$ such that for all $x\in\Lambda$, $R\ge4$, 
 \end{proposition}
 
 The constant $c_*$ is the one of \cite[Prop.~2.2]{LiL2022}, which rests on $p_c^{\rm site}(\Z^2)>\frac12$
-\cite{GrimmettStacey1998} and on the sharpness of the phase transition \cite[Thm.~7.3]{AizenmanBarsky1987};
-we quote it in the proof.  No smallness condition on $J/g$ is needed for (b): the bound is proved for all
+\cite{GrimmettStacey1998} and on the sharpness of the phase transition \cite[Thm.~7.3]{AizenmanBarsky1987} (see
+also \cite{Menshikov1986}); we quote it in the proof.  No smallness condition on $J/g$ is needed for (b): the bound is proved for all
 $\abs h>2J$.  It is informative only when its right-hand side is below $2$, which requires $J/g<\frac14$ and
 $\abs t<(2g-8J)/(48J^2)$; in the complementary range (in particular for $J/g\ge\frac14$) it holds trivially,
 since the left-hand side never exceeds $2$.  We made no attempt to optimize the constants $8$ and $48$.
@@ -536,10 +544,11 @@ $R_s=(K_s^2+4h^2)^{1/2}$.  Since $0\le1+\frac y2-\sqrt{1+y}\le\frac{y^2}8$ for $
 \]
 Hence, up to errors $O(\abs tJ^4/\abs h^3)$, the slow dynamics is that of $K_s^2/(4\abs h)$.  By
 \cref{prop:2dlaws}(c)(iv) this is a hopping operator on each sublattice, a square lattice rotated by $45^\circ$
-with spacing $\sqrt2$.  Its bonds of length $2$ always carry amplitudes $\pm J^2/(4\abs h)$, while its diagonal
-bonds carry $\pm J^2/(2\abs h)$ if $W_p=+1$ and vanish if $W_p=-1$.  So the effective problem is a random-sign
-hopping model in which the diagonal bonds are present independently with probability $\frac12$; the on-site terms
-are constant in the bulk.  We do not know whether it localizes.
+with spacing $\sqrt2$.  Its nearest-neighbour bonds (the diagonals of the plaquettes, of length $\sqrt2$) carry
+$\pm J^2/(2\abs h)$ if $W_p=+1$ and vanish if $W_p=-1$, while its next-nearest-neighbour bonds (of length $2$) always
+carry $\pm J^2/(4\abs h)$.  So the effective problem is a random-sign hopping model in which the nearest-neighbour
+bonds are present independently with probability $\frac12$; the on-site terms are constant in the bulk.  We do not
+know whether it localizes.
 \end{remark}
 
 \subsection{Status of the two-dimensional one-body problems}\label{sec:2d:status}
@@ -561,9 +570,9 @@ $-\Delta$ and, combined with $q\mapsto-q$, maps $h_{q,+}$ to $-h_{-q,+}$, so the
 $\varepsilon>0$ such that, almost surely, $-\Delta_{\rm Lap}+\delta v$ has Anderson localization in $[0,\varepsilon]$:
 every polynomially bounded generalized eigenfunction with energy in $[0,\varepsilon]$ decays exponentially.  By
 \eqref{eq:2dnormalization} and the symmetry above, almost surely $h_{q,+}$ has Anderson localization in windows of
-width $J\varepsilon(2\abs\lambda)$ at both edges $\pm(4J+2\abs h)$ of its spectrum.  This is a spectral statement for
-a part of the spectrum that carries little weight of the spectral measures of the vectors $\delta_x$; it gives no
-dynamical bound for Fock initial states.
+width $J\varepsilon(2\abs\lambda)$ at both edges $\pm(4J+2\abs h)$ of its spectrum.  This is a spectral statement
+about the band edges, where the density of states is small (Lifshitz tails); it gives no dynamical bound for Fock
+initial states, whose spectral measures are spread over the whole spectrum.
 \item \emph{Large disorder} (L.~Li \cite[Thm.~1.1]{LiL2022}).  For $d=2$ and $p=\frac12$ there are finitely many
 energies $\lambda^{(1)},\dots,\lambda^{(n)}\in[0,8]$, Dirichlet eigenvalues of $-\Delta_{\rm Lap}$ restricted to finite
 connected subsets of $\Z^2$, such that for all sufficiently large $\bar V$, almost surely $-\Delta_{\rm Lap}+\bar Vv$

@@ -742,10 +742,11 @@ $[D_+(0),D_-(0)]\neq0$ by \cref{lem:dimercritical}(i), so $E=0$ is not critical 
 \cite{JSBS2003}.  For $\lambda=1$ the Lyapunov exponent vanishes at $\pm1$
 \cite[Thm.~2.2(i)]{DeBievreGerminet2000}, $D_\mp(\pm1)$ is parabolic, and neither \cite{JSBS2003}
 nor \cite{DeBievreGerminet2000} decides the transport.
-\item For $0<\lambda<1$, $\lambda\neq1/\sqrt2$, \cite[Thm.~2.2]{DeBievreGerminet2000} proves dynamical
-localization on every compact energy interval not containing $\pm\lambda$.  So the superdiffusion of
-\cref{thm:dimer} is carried by energies near the critical energies, as in the heuristics of
-\cite{DWP1990}.
+\item For $0<\lambda<1$, $\lambda\neq1/\sqrt2$, \cite[Thm.~2.2]{DeBievreGerminet2000} proves that the
+spectrum is almost surely pure point, and that dynamical localization holds on every compact energy
+interval not containing $\pm\lambda$.  So the superdiffusion of \cref{thm:dimer} coexists with pure
+point spectrum, as stressed in \cite{JSBS2003}, and it is carried by energies near the critical
+energies, as in the heuristics of \cite{DWP1990}.
 \end{enumerate}
 For the gauge theory with $\lambda>1$, $\lambda\neq\sqrt2$, (i) with $\psi=\delta_0$ (or $\delta_1$, for the
 other alignment) gives almost surely
@@ -828,14 +829,17 @@ $10^{-4}$.  For the dimer law at $h=0.25J$, $\Mom_2(T)/(JT)\approx3.6$, $19$, $7
 $JT=1$, $10$, $10^2$ and $10^3$.  The smallest value over the $64$ sectors is $3.2$, $16$, $62$ and
 $2.1\times10^2$.
 \end{itemize}
-These numbers illustrate \cref{thm:dimer}; they are not used in any proof.  The script
-\texttt{code/dimer\_check.py} also verifies \cref{lem:dimercritical} to $3\times10^{-15}$ for
-$\lambda\in(0,3]$, and the bound \eqref{eq:dimerTbound} on $120$ random configurations, energies and
-segments, where the largest ratio of the two sides is $0.16$.  It verifies the identity
-\eqref{eq:dimerimbid} to $4\times10^{-14}$ ($100$ configurations, $N=200$), and the Plancherel formula
-\eqref{eq:plancherel} to $10^{-8}$.  Finally it checks \eqref{eq:dimerlower} on a chain of $600$
-sites for random, clean and periodic dimer configurations, where the left side exceeds
-$c_{\lambda,2}T$ by a factor of at least $10^8$.
+These numbers illustrate \cref{thm:dimer}; they are not used in any proof.  The check script of
+\cref{rem:dimerED} also tests \cref{lem:dimercritical}: the classification (ii) for $13$
+values of $\lambda\in(0,3]$, the identities \eqref{eq:dimerrot} to $3\times10^{-15}$, the values
+\eqref{eq:dimerangles} (computed independently from the eigenvalues of $D_-(\lambda)$), the commutator
+formula (i) on a grid of energies, and the absence of critical energies for the anti-dimer law of
+\cref{rem:dimersigns}.  It checks the bound \eqref{eq:dimerTbound} on $120$ random configurations,
+alignments, energies and segments; the largest ratio of the two sides is $0.16$.  It verifies
+\eqref{eq:quadid} to $10^{-15}$, \eqref{eq:dimerimbid} to $4\times10^{-14}$ ($100$ configurations,
+$N=200$), and the Plancherel formula \eqref{eq:plancherel} to $10^{-8}$.  Finally, it checks
+\eqref{eq:dimerlower} on a chain of $600$ sites for random, clean and periodic dimer configurations;
+there the left side exceeds $c_{\lambda,2}T$ by a factor of at least $10^8$.
 \end{remark}
 
 \begin{remark}[Summary: the role of the initial state]\label{rem:dimermessage}
