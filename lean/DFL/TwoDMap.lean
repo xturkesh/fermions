@@ -750,7 +750,27 @@ theorem ham_fluxVec (J h : ℝ) (q : Cfg N) (s : Cfg M) (n : Cfg N) :
     cplx (G.ham J h) *ᵥ G.fluxVec q s n =
       ∑ n', (((dGamma (G.hqs J h (fun i => sgn (q i)) (fun e => sgn (s e))) -
         (h * ∑ i, sgn (q i)) • 1) n' n : ℝ) : ℂ) • G.fluxVec q s n' := by
-  sorry
+  -- `H V_s = V_s H_dual,s`, complexified
+  have hint : cplx (G.ham J h) * (G.VSmat s).map (fun r => (r : ℂ)) =
+      (G.VSmat s).map (fun r => (r : ℂ)) * cplx (G.dualHamS J h s) := by
+    have := congrArg (fun X => X.map Complex.ofRealHom) (G.ham_mul_VSmat J h s)
+    simp only [Matrix.map_mul] at this
+    exact this
+  simp only [fluxVec_eq_VSc]
+  rw [mulVec_smul, mulVec_mulVec, hint, ← mulVec_mulVec]
+  funext ⟨m, x⟩
+  simp only [Pi.smul_apply, Finset.sum_apply, VSc_mulVec_apply, smul_eq_mul]
+  simp only [mulVec_single_one_apply, cplx, Matrix.map_apply, dualHamS_eq, blockDiagonal_apply,
+    Pi.single_apply, Prod.mk.injEq]
+  rw [Finset.sum_eq_single m]
+  · by_cases hq : m + G.bdry x = q
+    · subst hq
+      simp only [and_self, ite_true, mul_one]
+      ring
+    · simp [hq]
+  · intro n' _ hn'
+    simp [Ne.symm hn']
+  · simp
 
 end FinGraph
 

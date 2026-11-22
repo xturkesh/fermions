@@ -59,7 +59,7 @@ No `axiom` is introduced anywhere.
 | Theorem `thm:arealaw`(c), Lemma `lem:cutlocal`(c) (definite charges) | `vonNeumann_rdmLGT_xprod`, `lgt_areaLaw_full` | `CutLocal.lean` |
 | Lemma `lem:pinching`; concavity and mixing bound of the von Neumann entropy | `vonNeumann_le_pinching`, `vonNeumann_pinching_le`, `vonNeumann_concave`, `vonNeumann_mix_le`, `vonNeumann_le_diag`, `vonNeumann_le_log_card`, `vonNeumann_mul_conjTranspose_comm` | `VNEntropy.lean` |
 | Lemma `lem:cutlocal`(b),(d) (duality defect `≤ ln 2`, sharp) | `cutlocal_defect`, `exProd_entropy`, `exProd_U_entropy`, `exProd_Udag_entropy` | `Entropies.lean`, `CutLocalExamples.lean` |
-| Proposition `prop:entropies`(a)–(c) (entropy taxonomy) | `lgt_duality_defect`, `mixRdm_eq_marginal`, `condEntropy_le_mix`, `mix_le_cond_add`, `mix_le_log`, `sectorLawEntropy_le`, `sectorLawEntropy_zero`, `lgtNumDist_eq_avg`, `numberEntropy_le_mix`, `numberEntropy_le_bare`, `avg_sector_shannon_le_cond`, `avg_sector_shannon_le_numberEntropy`, `numberEntropy_le_avg_add`; `shannon_le_vonNeumann_of_block`, `numDist_shannon_le_vonNeumann_slater`, `lgt_numberEntropy_le_full` | `Entropies.lean`, `Taxonomy.lean` |
+| Proposition `prop:entropies`(a)–(c) (entropy taxonomy) | `fullEntropy_eq_numberEntropy_add`, `bareEntropy_eq_numberEntropy_add`, `vonNeumann_block_decomp`, `lgt_duality_defect`, `mixRdm_eq_marginal`, `condEntropy_le_mix`, `mix_le_cond_add`, `mix_le_log`, `sectorLawEntropy_le`, `sectorLawEntropy_zero`, `lgtNumDist_eq_avg`, `numberEntropy_le_mix`, `numberEntropy_le_bare`, `avg_sector_shannon_le_cond`, `avg_sector_shannon_le_numberEntropy`, `numberEntropy_le_avg_add`; `shannon_le_vonNeumann_of_block`, `numDist_shannon_le_vonNeumann_slater`, `lgt_numberEntropy_le_full` | `Entropies.lean`, `Taxonomy.lean`, `EntropyBlocks.lean` |
 | Proposition `prop:entropies`(d) (superposition = ensemble, all multi-time correlators) | `expect_initZ_eq_trace_ensemble`, `correlator_eq_ensemble`, `gaugeInv_heis` | `Ensemble.lean` |
 | Lemma `lem:duhamel` | `colNorm_evo_sub_le`, `avg_colNorm_evo_sub_le` | `Duhamel.lean` |
 | Theorem `thm:EC` (Hypothesis (EC) from uniform large deviations), with Lemmas `lem:green`, `lem:entry`, `lem:badset`, `lem:double` | `ec_of_ldt`, `corrQ_decay_of_ldt`; `poisson`, `box_right`, `box_left`, `dirL_eq_dirR`, `sl2_entry_ineq`, `eigvec_recursion`, `abs_eigenvalue_hq_le`; `decay_of_not_res`, `exists_resEnd`, `card_resEnds`; `LDT`, `entry_ldt`, `single_box`, `two_box` | `Transfer.lean`, `Resonance.lean`, `LDTEntry.lean`, `ECProof.lean` |
@@ -71,6 +71,7 @@ No `axiom` is introduced anywhere.
 | Proposition `prop:dimerimbalance`(i),(ii) | `dimer_stagWeight_identity`, `dimerImbalance_timeAvg` | `DimerImbalance.lean` |
 | Theorem `thm:2dmap` for `σᶻ`-polarized gauge states, on **any finite graph** | `FinGraph.sector_average_matter`, `FinGraph.gaussOp_comm_ham`, `FinGraph.dGamma_hq` | `Graph.lean` |
 | Lemma `lem:2dgauge`(i)–(iii), Theorem `thm:2dmap`(a) (fluxes = gauge classes, `2^β` flux sectors, orbits of size `2^{|V|-1}`; Wilson loops; `∏ G_i = (-1)^{N_f}`) | `FinGraph.flux_eq_iff_gauge`, `FinGraph.gaugeAct_eq_self_iff`, `FinGraph.card_gaugeOrbit`, `FinGraph.card_fluxClasses`, `FinGraph.wilsonLoop_comm_ham`, `FinGraph.wilsonLoop_comm_gaussOp`, `FinGraph.gaussOp_prod` | `GraphFlux.lean`, `GraphWilson.lean` |
+| Theorem `thm:2dmap`(b) (joint eigenbasis `Ψ_{n,q,s}` of the Gauss operators and Wilson loops, gauge covariance, completeness, sector Hamiltonians `dΓ(h_{q,s}) - h ∑ q_i`) | `FinGraph.fluxVec_gauss`, `FinGraph.fluxVec_wilson`, `FinGraph.fluxVec_occ`, `FinGraph.fluxVec_gaugeAct`, `FinGraph.fluxVec_norm`, `FinGraph.fluxVec_orthogonal`, `FinGraph.card_fluxLabels`, `FinGraph.ham_fluxVec` | `TwoDMap.lean` |
 | Proposition `prop:2dlaws`(a),(b) (any flux sector; `σˣ`-polarized links: random `π`-flux) | `FinGraph.sector_average_flux`, `FinGraph.sector_average_xpol`, `FinGraph.xpol_summand_gauge` | `GraphFlux.lean` |
 | Proposition `prop:2dlaws`(c)(i),(ii) (checkerboard: `h² = K_s² + 4h²`, chiral gap), gauge covariance of `h_{q,s}` | `FinGraph.checkerboard_sq`, `FinGraph.checkerboard_gap`, `FinGraph.checkerboard_edge_iff`, `FinGraph.Ks_anticomm`, `FinGraph.gauge_hqs`, `FinGraph.hqs_one` | `TwoD.lean` |
 | Proposition `prop:nocompact` (no compactly supported eigenvectors on `ℤ²`) | `no_compact_eigenvector`, `no_compact_eigenvector_hqs` | `TwoD.lean` |
@@ -80,14 +81,14 @@ No `axiom` is introduced anywhere.
 
 ## Verification
 
-`lake build` compiles all 38 modules (about 19,000 lines) without `sorry`; there is no `axiom`,
+`lake build` compiles all 40 modules (about 20,000 lines) without `sorry`; there is no `axiom`,
 `admit`, `native_decide` or `implemented_by` in the library. The script `CheckAxioms.lean` walks
 through every theorem declared in a `DFL` module (including private helper lemmas) and collects the
 axioms it depends on:
 
 ```
 lake env lean CheckAxioms.lean
-# checked 2042 theorems in DFL modules; with non-standard axioms: 0
+# checked 2140 theorems in DFL modules; with non-standard axioms: 0
 ```
 
 i.e. every theorem depends only on Lean's standard axioms `propext`, `Classical.choice` and
@@ -142,9 +143,6 @@ lake env lean Check.lean
 - Infinite-volume statements: `thm:infvol`, `cor:ECinfvol`, `thm:EC`(ii) (supremum over all
   intervals; not needed for (EC)), and part (iii) of `prop:dimerimbalance`. All of these need
   operators on `ℓ²(ℤ)`.
-- In two dimensions, the joint-eigenspace form of `thm:2dmap`(b)–(d) (ranks of the projections
-  `P_{q,φ}`, the intertwiners `V_{q,s}`, boxes and tori); what is formalized are the
-  flux/gauge-class classification and counting and the sector laws `prop:2dlaws`(a),(b), which are
-  what the quench needs; also `prop:2dlaws`(c)(iii),(iv).
-- The equality form of `prop:entropies`(c) (the inequalities `S_X ≥ S_N` are formalized).
+- In two dimensions, the specializations of `thm:2dmap` to planar boxes and tori ((c),(d)), and
+  `prop:2dlaws`(c)(iii),(iv) (the propagator formula and the entries of `K_s²`).
 - Remarks, conjectures and numerics.

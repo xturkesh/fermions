@@ -19,6 +19,7 @@ import DFL.VNEntropy
 import DFL.Taxonomy
 import DFL.Entropies
 import DFL.CutLocalExamples
+import DFL.EntropyBlocks
 import DFL.Transfer
 import DFL.Resonance
 import DFL.LDTEntry
@@ -35,4 +36,5 @@ import DFL.Graph
 import DFL.TwoD
 import DFL.GraphFlux
 import DFL.GraphWilson
+import DFL.TwoDMap
 import DFL.Cluster

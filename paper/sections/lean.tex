@@ -74,15 +74,20 @@ only external input is this literature result (\texttt{lgt\_transport\_of\_ldt},
 \item \cref{prop:entropies}: (a) \texttt{lgt\_duality\_defect}; (b) \texttt{mixRdm\_eq\_marginal},
 \texttt{condEntropy\_le\_mix}, \texttt{mix\_le\_cond\_add}, \texttt{mix\_le\_log},
 \texttt{sectorLawEntropy\_le}, \texttt{sectorLawEntropy\_zero}; (c) \texttt{lgtNumDist\_eq\_avg},
+\texttt{fullEntropy\_eq\_numberEntropy\_add}, \texttt{bareEntropy\_eq\_numberEntropy\_add},
 \texttt{lgt\_numberEntropy\_le\_full}, \texttt{numberEntropy\_le\_mix}, \texttt{numberEntropy\_le\_bare},
 \texttt{avg\_sector\_shannon\_le\_cond}, \texttt{numberEntropy\_le\_avg\_add}; (d)
-\texttt{correlator\_eq\_ensemble} (\texttt{Entropies}, \texttt{Taxonomy}, \texttt{Ensemble}).
+\texttt{correlator\_eq\_ensemble} (\texttt{Entropies}, \texttt{EntropyBlocks}, \texttt{Taxonomy},
+\texttt{Ensemble}).
 \item \cref{prop:dimerlaw,lem:dimercritical}, \cref{prop:dimerimbalance}(i),(ii):
 \texttt{sector\_average\_dimer}, \texttt{jsbs\_condition}, \texttt{dimerImbalance\_timeAvg}
 (\texttt{Dimer}, \texttt{DimerCritical}, \texttt{DimerImbalance}).
-\item \cref{lem:2dgauge}, \cref{thm:2dmap}(a), on arbitrary finite graphs:
+\item \cref{lem:2dgauge}, \cref{thm:2dmap}(a),(b), on arbitrary finite graphs:
 \texttt{flux\_eq\_iff\_gauge}, \texttt{card\_gaugeOrbit}, \texttt{card\_fluxClasses},
-\texttt{wilsonLoop\_comm\_ham}, \texttt{gaussOp\_prod} (\texttt{GraphFlux}, \texttt{GraphWilson}).
+\texttt{wilsonLoop\_comm\_ham}, \texttt{gaussOp\_prod}; the joint eigenvectors $V_{q,s}\ket n$:
+\texttt{fluxVec\_gauss}, \texttt{fluxVec\_wilson}, \texttt{fluxVec\_gaugeAct},
+\texttt{fluxVec\_orthogonal}, \texttt{card\_fluxLabels}, \texttt{ham\_fluxVec} (\texttt{GraphFlux},
+\texttt{GraphWilson}, \texttt{TwoDMap}).
 \item \cref{prop:2dlaws}: (a) \texttt{sector\_average\_flux} (and \texttt{sector\_average\_matter}
 for $s=+$); (b) \texttt{sector\_average\_xpol}, \texttt{xpol\_summand\_gauge}; (c)(i),(ii)
 \texttt{checkerboard\_sq}, \texttt{checkerboard\_gap}, \texttt{checkerboard\_edge\_iff}
@@ -127,8 +132,7 @@ the transport bounds of \cite{JSBS2003} behind \cref{thm:dimer}, and the percola
 region;
 \item the infinite-volume statements: \cref{thm:infvol}, \cref{cor:ECinfvol}, \cref{thm:EC}(ii) and
 \cref{prop:dimerimbalance}(iii);
-\item in two dimensions, the joint-eigenspace form of \cref{thm:2dmap}(b)--(d) and
+\item in two dimensions, \cref{thm:2dmap}(c),(d) (planar boxes and tori) and
 \cref{prop:2dlaws}(c)(iii),(iv);
-\item the identity in \cref{prop:entropies}(c), of which only the inequalities are formalized;
 \item remarks, conjectures and numerics.
 \end{itemize}
