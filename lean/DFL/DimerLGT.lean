@@ -1,5 +1,6 @@
 import DFL.DimerLower
 import DFL.Dimer
+import DFL.OneBody
 
 /-!
 # Delocalization for the dimer sector law (paper: Theorem `thm:dimer`(a), and (d) for `p > 1`)
@@ -33,7 +34,7 @@ def dimerAvg (f : Cfg N → ℝ) : ℝ :=
 
 /-- **Every dimer sector spreads at least diffusively, in every volume** (paper: Theorem `thm:dimer`(a)). -/
 theorem dimer_sector_moment_lower (J h : ℝ) (hJ : 0 < J) (hh0 : 0 < |h|) (hh1 : 2 * |h| < J)
-    (q : Cfg N) (hq : IsDimer q) (x : Fin N) (p T : ℝ) (hp : 0 < p) (hT1 : 1 ≤ J * T)
+    (q : Cfg N) (hqd : IsDimer q) (x : Fin N) (p T : ℝ) (hp : 0 < p) (hT1 : 1 ≤ J * T)
     (hT2 : J * T ≤ x.val) (hT3 : J * T ≤ (N : ℝ) - 1 - x.val) :
     dimerClp (2 * |h| / J) p * (J * T) ^ (p - 1) ≤
       ∫ t in Set.Ioi (0 : ℝ), (1 / T) * Real.exp (-t / T) *
