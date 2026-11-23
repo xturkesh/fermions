@@ -205,7 +205,9 @@ sectors: \texttt{wilson\_field\_bound\_super}, \texttt{wilson\_numberEntropy\_le
 \texttt{wilson\_numberEntropy\_avg\_super}, \texttt{bgEntropyS\_le\_log\_three} (\texttt{WilsonSuper}); \cref{rem:interior}, with the
 example of the text: \texttt{interior\_defect}, \texttt{interior\_defect\_attained\_vacuum}, \texttt{rdmMid\_parity\_block}
 (\texttt{Interior}); \cref{rem:ringEC}, with \cref{prop:LDT} as input for (ii): \texttt{ec\_open\_chain},
-\texttt{ringEC\_of\_ldt}, \texttt{ringEC\_par\_of\_ldt} (\texttt{RingEC}).
+\texttt{ringEC\_of\_ldt}, \texttt{ringEC\_par\_of\_ldt} (\texttt{RingEC}); \cref{rem:dimerstrong}, with the dynamical
+localization of \cite{DeBievreGerminet2000} as input: \texttt{dimerTailLGT\_eq}, \texttt{dimer\_TL\_tail},
+\texttt{dimer\_tight\_of\_dynLoc} (\texttt{DimerStrong}).
 \end{itemize}
 
 \paragraph{Deviations.}  Sites and links are indexed from $0$.  \Cref{thm:transport,thm:numberentropy,thm:arealaw}
@@ -234,8 +236,11 @@ using $\Gamma h^0\ge g/2$, instead of from the integral formula; the propagator 
 \paragraph{Not formalized.}  The following are not formalized:
 \begin{itemize}
 \item the literature results entering as inputs: the large-deviation estimate together with the
-positivity and continuity of the Lyapunov exponent, \cref{prop:Zline}, and the percolation estimate of
+positivity and continuity of the Lyapunov exponent, \cref{prop:Zline}, the percolation estimate of
 \cite{LiL2022}, which enters \texttt{cluster\_avg} as the probability that the cluster leaves the
-region, and the verification of the hypotheses of the cited theorems in their own formalism (\cref{lem:hypcheck});
-\item remarks, conjectures and numerics, except the remarks listed above.
+region, the dynamical localization of \cite{DeBievreGerminet2000}, which enters \texttt{dimer\_tight\_of\_dynLoc}
+as a hypothesis, and the verification of the hypotheses of the cited theorems in their own formalism
+(\cref{lem:hypcheck});
+\item the remaining remarks, which comment on the results, compare them with the literature or report numerical
+checks; the conjectures; and the numerics.
 \end{itemize}

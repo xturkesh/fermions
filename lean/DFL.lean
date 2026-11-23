@@ -91,3 +91,4 @@ import DFL.CheckerStrong
 import DFL.WilsonSuper
 import DFL.Interior
 import DFL.RingEC
+import DFL.DimerStrong
