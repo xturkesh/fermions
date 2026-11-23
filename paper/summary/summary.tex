@@ -1,0 +1,170 @@
+% Sintesi del paper e raccolta degli enunciati.
+% Compilare da paper/summary/ dopo aver compilato ../main.tex (serve ../main.aux):
+%   python3 make_statements.py && latexmk -pdf summary.tex
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{bm}
+\usepackage[margin=1in]{geometry}
+\usepackage[expansion=false]{microtype}
+\usepackage{enumitem}
+\usepackage{xr}
+\externaldocument{../main}
+\usepackage[capitalise]{cleveref}
+
+\crefname{hypothesis}{Hypothesis}{Hypotheses}
+\Crefname{hypothesis}{Hypothesis}{Hypotheses}
+\crefname{conjecture}{Conjecture}{Conjectures}
+\Crefname{conjecture}{Conjecture}{Conjectures}
+
+\providecommand{\texorpdfstring}[2]{#1}  % hyperref is not loaded
+\input{../macros}
+\input{localmacros}
+
+% Statements: heading "Theorem 4.7 (Title)." with the paper's number, read from ../main.aux.
+\newcommand{\stmtname}{}
+\newtheoremstyle{stmtplain}{12pt}{3pt}{\itshape}{}{\bfseries}{.}{.5em}{\thmname{#1}\thmnote{\ \normalfont(#3)}}
+\newtheoremstyle{stmtdef}{12pt}{3pt}{\normalfont}{}{\bfseries}{.}{.5em}{\thmname{#1}\thmnote{\ \normalfont(#3)}}
+\theoremstyle{stmtplain}
+\newtheorem*{stmtP}{\stmtname}
+\theoremstyle{stmtdef}
+\newtheorem*{stmtD}{\stmtname}
+\newcommand{\leanline}[1]{\par\nopagebreak\vspace{1pt}%
+  {\raggedright\footnotesize\textsf{Lean:}\ #1\par}\medskip}
+
+\renewcommand{\contentsname}{Indice}
+
+\title{Rigorous disorder-free localization in a $\mathbb{Z}_2$ lattice gauge theory\\[8pt]
+\large Sintesi del paper e raccolta degli enunciati}
+\author{}
+\date{23 novembre 2026}
+
+\begin{document}
+\maketitle
+
+\noindent Questo documento riassume il paper (Sezione~\ref{sec:sintesi}) e ne raccoglie tutti gli enunciati
+(Sezione~\ref{sec:enunciati}), con la numerazione del paper e, per ciascuno, i teoremi Lean che lo formalizzano.
+
+\tableofcontents
+
+% ------------------------------------------------------------------------------------------------
+\begingroup
+\hyphenpenalty=10000 \exhyphenpenalty=10000 \emergencystretch=4em
+\section{Sintesi}\label{sec:sintesi}
+
+\paragraph{Il problema.}
+Nei sistemi quantistici a molti corpi isolati ci si aspetta termalizzazione. La localizzazione a molti corpi (MBL)
+propone che un forte disordine congelato la impedisca anche in presenza di interazioni, ma il suo status è
+dibattuto e i risultati rigorosi sono pochi, tutti per Hamiltoniane con disordine. Smith, Knolle, Kovrizhin e
+Moessner (SKKM) hanno trovato numericamente un meccanismo in cui l'invarianza di gauge prende il posto del
+disordine. In una teoria di gauge $\Z_2$ unidimensionale con fermioni liberi, Hamiltoniana e stato iniziale sono
+invarianti per traslazione, eppure la memoria di un'onda di densità iniziale persiste e le correlazioni non si
+propagano: è la \emph{disorder-free localization} (DFL). Finora l'evidenza era solo numerica. Il paper ne dà una
+trattazione rigorosa.
+
+\paragraph{Modello e dualità (Sezione~\ref{sec:model}).}
+Fermioni senza spin saltano su una catena di $N$ siti, accoppiati minimamente a spin di Ising sui link, con un
+termine elettrico che accoppia link vicini (Definizione~\ref{def:model}). L'unica modifica rispetto a SKKM è un
+\emph{link di bordo}, un flusso $\Z_2$ statico all'estremo destro della catena. Con esso una dualità di tipo
+Kramers--Wannier è un'equivalenza unitaria esatta sull'intero spazio di Hilbert (Teorema~\ref{thm:duality}):
+\[
+  U^\dagger HU=\bigoplus_q\Bigl(\dGamma(\hq)-h\sum_jq_j\Bigr),\qquad \hq=-J\Delta_N+2h\diag(q),
+\]
+dove $q\in\{\pm1\}^N$ sono le cariche di Gauss, conservate. Per lo stato di gauge polarizzato lungo $z$ le cariche
+sono esattamente i.i.d.: ogni valore di aspettazione di osservabili gauge-invarianti, a qualunque numero di tempi,
+è una media su catene di Anderson con potenziale di Bernoulli $\pm2h$ (Corollario~\ref{cor:sector}). La dualità è
+locale attraverso un taglio a meno di una sola porta controllata, e cambia le entropie di entanglement al più di
+$\ln2$ (Lemma~\ref{lem:cutlocal}).
+
+\paragraph{L'input a un corpo (Sezione~\ref{sec:onebody}).}
+Tutti i risultati sulla teoria di gauge discendono da un'unica ipotesi sulla catena di Bernoulli,
+l'Ipotesi~\ref{hyp:EC}: il correlatore delle autofunzioni, mediato sulle cariche, decade in modo sommabile,
+uniformemente nel volume. Il Teorema~\ref{thm:EC} la dimostra con decadimento esponenziale,
+$\E\,Q^\Lambda(x,y)\le Ce^{-\eta|x-y|}$, per ogni intervallo finito $\Lambda$ e ogni coppia $x,y\in\Lambda$, anche
+al bordo, e anche con l'estremo superiore su $\Lambda$ dentro l'attesa. Le costanti dipendono solo da $|\lambda|$,
+con $\lambda=2h/J$, e non sono esplicite. La dimostrazione adatta l'argomento di risonanza a due punti di Macera e
+l'eliminazione delle risonanze di Macera e Sodin; i box troncati dal bordo sono trattati con una stima
+deterministica delle funzioni di Green (Lemma~\ref{lem:green}). L'input dalla letteratura sono le grandi deviazioni
+uniformi per prodotti di matrici di trasferimento di Bernoulli (Proposizione~\ref{prop:LDT}, teoria di
+Furstenberg), le cui ipotesi sono verificate nella Proposizione~\ref{prop:nocritical}.
+
+\paragraph{Localizzazione senza disordine della teoria di gauge (Sezione~\ref{sec:main}).}
+Per ogni $h\neq0$, uniformemente nel volume $N$ e nel tempo:
+\begin{itemize}[leftmargin=1.5em]
+\item i fermioni vestiti sono localizzati e la carica trasportata attraverso un taglio qualsiasi è limitata
+  (Teorema~\ref{thm:transport});
+\item vale un bound di Lieb--Robinson a velocità zero in media sui settori, per ogni stato che dà lo stesso peso a
+  tutti i settori; non esiste una versione in norma operatoriale, perché il settore pulito $q\equiv1$ è balistico
+  (Proposizione~\ref{prop:LR});
+\item l'imbalance a tempo infinito di un'onda di densità iniziale è strettamente positivo
+  (Teorema~\ref{thm:imbalance}), anche sulla catena aperta di SKKM senza link di bordo
+  (Corollario~\ref{cor:imbalanceopen});
+\item l'entanglement condizionato alle cariche, $\SG$, e, in media sulle cariche, l'entanglement completo materia
+  più gauge degli stati iniziali a carica definita soddisfano leggi d'area (Teorema~\ref{thm:arealaw}); la
+  Proposizione~\ref{prop:entropies} stabilisce le relazioni fra le entropie: l'entropia di numero $\SN$ è un
+  minorante di $\Sfull$, di $\Smix$ e dell'entropia della materia nuda, ma non di $\SG$;
+\item l'entropia di numero è limitata, con costante esplicita (Teorema~\ref{thm:numberentropy});
+\item i limiti termodinamici esistono su catene infinite in entrambe le direzioni, con le stesse stime per le
+  osservabili di bulk, imbalance escluso (Teorema~\ref{thm:infvol}).
+\end{itemize}
+Le costanti sono esplicite in termini del profilo di decadimento del Teorema~\ref{thm:EC}. Non è controllato
+l'entanglement $\Sfull$ dello stato sovrapposto, che dipende dalle coerenze fra settori. Il paper congettura che
+cresca logaritmicamente (Congettura~\ref{conj:logent}) e ne isola l'ingrediente rigoroso, una stima di sensibilità
+alle cariche lontane (Lemma~\ref{lem:duhamel}); congettura inoltre una legge di volume per le entropie miste mediate
+nel tempo (Congettura~\ref{conj:volmix}).
+
+\paragraph{La localizzazione dipende dallo stato iniziale (Sezione~\ref{sec:dimer}).}
+Cambiando solo lo stato dei link pari si ottiene uno stato prodotto la cui legge dei settori è la legge di dimero
+casuale (Definizione~\ref{def:dimerstate}, Proposizione~\ref{prop:dimerlaw}). Per $0<2|h|<J$ il modello di dimero
+ha energie critiche (Lemma~\ref{lem:dimercritical}). Un fermione vestito si propaga allora almeno in modo
+diffusivo, in ogni settore e in ogni volume, fino a tempi dell'ordine della distanza dal bordo
+(Proposizione~\ref{prop:dimerlower}), e in modo superdiffusivo nel limite termodinamico, con spostamento quadratico
+medio almeno dell'ordine di $T^{3/2}$ in media (Proposizione~\ref{prop:dimersuper}, Teorema~\ref{thm:dimer}). Per
+ogni $h\neq0$ la media a tempo infinito dell'imbalance tende a zero per $N\to\infty$
+(Proposizione~\ref{prop:dimerimbalance}).
+
+\paragraph{Due dimensioni (Sezione~\ref{sec:2d}).}
+La mappa è esatta su ogni grafo finito, con l'insieme completo delle etichette di superselezione, compresi i loop di
+Wilson non contrattili di un toro (Lemma~\ref{lem:2dgauge}, Teorema~\ref{thm:2dmap}). Gli stati prodotto portano al
+modello di Anderson bidimensionale con potenziale di Bernoulli, oppure a un flusso $\pi$ casuale binario
+(Proposizione~\ref{prop:2dlaws}). Ad accoppiamento forte le cariche restano confinate in cluster finiti fino a tempi
+dell'ordine di $|h|/J^2$ (Proposizione~\ref{prop:cluster}). La localizzazione in due dimensioni non è dimostrata:
+manca l'input a un corpo.
+
+\paragraph{Teorie di gauge $U(1)$ (Sezione~\ref{sec:u1}).}
+Con link quantistici di spin $S$, la legge di Gauss limita l'entropia di numero di ogni intervallo con
+$\ln(4S+1)$, in ogni settore di carica di fondo, per ogni stato e ogni dinamica gauge-invariante
+(Proposizione~\ref{prop:gausscap}). Con link di Wilson, la conservazione dell'energia ne limita la media sui tagli
+(Proposizione~\ref{prop:wilson}). Nella teoria di gauge $\Z_2$ standard, con termine elettrico a un solo link, una
+carica si muove in un potenziale di cammino aleatorio e due cariche interagiscono.
+
+\paragraph{Numerica e problemi aperti (Sezioni~\ref{sec:numerics} e~\ref{sec:discussion}).}
+Simulazioni esatte illustrano i risultati e confrontano le costanti rigorose con i dati. Per $N=10$ l'entanglement
+completo cresce per diverse decadi di tempo, in accordo con la Congettura~\ref{conj:logent}. Il principale problema
+aperto è la materia interagente: con un'interazione di densità la media sui settori resta esatta, e la
+localizzazione senza disordine diventa MBL di una catena XXZ in un campo casuale binario, fuori dalla portata dei
+metodi rigorosi attuali.
+
+\paragraph{Verifica formale in Lean (Appendice~\ref{app:lean}).}
+I risultati del paper, in volume finito e infinito, sono formalizzati in Lean~4 con Mathlib: 94 moduli (circa
+50\,500 righe) e 5601 teoremi, senza assiomi oltre ai tre standard di Lean. Sono formalizzate anche tutte le
+osservazioni con contenuto matematico, comprese la stima (EC) sull'anello e la localizzazione del fermione vestito
+ad accoppiamento forte. Restano fuori solo i risultati di letteratura usati come ipotesi (grandi deviazioni di
+Furstenberg, Ge--Zhao, la stima di percolazione di Li--Liang, la localizzazione dinamica di De Bièvre--Germinet) e
+la verifica delle loro ipotesi nel formalismo originale.
+\endgroup
+
+% ------------------------------------------------------------------------------------------------
+\clearpage
+\section{Enunciati}\label{sec:enunciati}
+
+\noindent Seguono tutti gli enunciati del paper (definizioni, ipotesi, lemmi, proposizioni, teoremi, corollari e
+congetture: 57 in tutto), nell'ordine e con la numerazione del paper. Il testo è quello del paper, in inglese; i
+rimandi a equazioni, osservazioni, figure e bibliografia si riferiscono al paper. Sotto ogni enunciato sono elencati
+i teoremi Lean che lo formalizzano, con i file della libreria (\texttt{lean/DFL/}), secondo la tabella di
+corrispondenza del README della formalizzazione. Le dimostrazioni non sono riportate.
+
+\input{statements}
+
+\end{document}
