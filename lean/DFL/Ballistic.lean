@@ -360,7 +360,7 @@ theorem no_uniform_decay_clean (J h : ℝ) (hJ : J ≠ 0) (F : ℕ → ℝ)
     linarith
   have key : 2 * J ^ 2 * s = C + 1 + 2 * J ^ 2 := by
     rw [hs]; field_simp
-  have h := hle s
+  have hs2 := hle s
   nlinarith [mul_le_mul_of_nonneg_left hs1 (by positivity : (0 : ℝ) ≤ 2 * J ^ 2 * s)]
 
 end DFL
