@@ -404,7 +404,7 @@ theorem biasedLaw_pure (θ : ℝ) (hθ : Real.sin θ = 0) (n q : Cfg N) :
 
 /-- An upper bound on a uniform average of a non-negative sector functional transfers to every law with
 density at most `K` with respect to the uniform law. -/
-theorem upper_bound_transfer (μ : Cfg N → ℝ) (K : ℝ) (hμ0 : ∀ q, 0 ≤ μ q)
+theorem upper_bound_transfer (μ : Cfg N → ℝ) (K : ℝ) (_hμ0 : ∀ q, 0 ≤ μ q)
     (hμK : ∀ q, μ q ≤ K * (1 / 2) ^ N) (F : Cfg N → ℝ) (hF : ∀ q, 0 ≤ F q) :
     ∑ q, μ q * F q ≤ K * avgQ F := by
   unfold avgQ

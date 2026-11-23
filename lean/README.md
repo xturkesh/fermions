@@ -103,6 +103,9 @@ No `axiom` is introduced anywhere.
 | Proposition `prop:dimerimbalance`(i)–(iii) (dimer identity; infinite-time imbalance `Ī_N = E_dim N⁻¹∑_α a_α²`; `Ī_N ≤ 8L²(2\|λ\|+1)^{2L}/N + 4/L + 4/N`, so `Ī_N → 0`), Lemma `lem:fewapprox` (at most `2(N/L+1)` eigenvalues in `[E-ε, E+ε]` if `εL(K+1)^L < 1`, for every potential) | `dimer_stagWeight_identity`, `dimerImbalance_timeAvg`, `card_eig_near_le`, `dimerImbInf_le`, `dimerImbInf_tendsto_zero` | `DimerImbalance.lean`, `DimerImbalanceLim.lean` |
 | Remarks `rem:gaussproj`(i),(ii), `rem:main-imbalance`(ii), `rem:dimersigns` (clean sector: `Q(1,N) = 1`, `a_α = 0` and vanishing infinite-time imbalance for even `N`; `a_α = 0` at `h = 0`; global reversal `h_{-q} = -Γh_qΓ`; reversing one dimer out of two changes `Tr h_q`; the anti-dimer transfer matrices never commute) | `corrQ_clean_ends`, `stagWeight_clean`, `imbInf_clean`, `imbOne_clean_timeAvg`, `stagWeight_h_zero`, `hq_flip_all`, `norm_evo_flip_all`, `trace_hq_dimer_example`, `not_similar_dimer_example`, `antidimer_commutator`, `antidimer_comm_ne` | `CleanSector.lean` |
 | Remark `rem:strings` (the left-anchored string fermion satisfies the CAR but anticommutes with `G_1`; `c̃_j` anticommutes with `σˣ_{b_N}`; the strings `∏_{k≥j}σᶻ_{b_k}` and the Gauss operators satisfy the Pauli relations and commute with the dressed fermions) | `leftDressed_eq`, `leftDressed_anticomm`, `leftDressed_CAR`, `leftDressed_anticomm_gauss0`, `dressed_anticomm_sxL_last`, `tailString_mul_self`, `tailString_comm`, `gauss_tailString`, `dressed_comm_tailString` | `Strings.lean` |
+| Remark `rem:gaussproj`(iii) (the clean sector on `ℤ` is ballistic: `∑_y (y-x)² \|⟨δ_y, e^{-ith_ℤ}δ_x⟩\|² = 2J²t²`; no bound `sup_t \|U_{xy}(t)\| ≤ F(\|x-y\|)` with `∑_d d²F(d)² < ∞`; columns of `U^ℤ_q(t)` orthonormal) | `ballistic_clean`, `summable_ballistic_clean`, `no_uniform_decay_clean`, `BallisticAux.hasSum_star_UZ_mul` | `Ballistic.lean` |
+| Remarks `rem:productlaws`(b),(c), `rem:biased` (biased product states: the law of the charges, `E s_0 = m`, `E s_j = m²`, `Cov(s_0, s_1) = m(1-m²)`, `Cov(q_j, q_{j+1}) = ±m²(1-m²)`, independence at distance `≥ 2`, density `≤ (2 max(ϱ, 1-ϱ))^N` attained, full support, the cases `ϱ ∈ {½, 1}`; transfer of upper bounds to laws with density `≤ K`; on `ℤ` the i.i.d. law and the dimer law are mutually singular) | `biasedLaw_eq`, `sum_biasedLaw`, `biasedE_first`, `biasedE_bulk`, `biased_cov01`, `biased_cov_bulk`, `biased_indep_far`, `biasedLaw_le`, `exists_biasedLaw_eq`, `biasedLaw_pos`, `biasedLaw_half`, `biasedLaw_pure`, `upper_bound_transfer`, `muZ_dimerEvent`, `muDimZ_dimerEvent_compl`, `muZ_mutuallySingular_muDimZ` | `LawRemarks.lean` |
+| Remarks `rem:adhh`(a), `rem:wilson`(c), `rem:gausscap`(b) (energy conservation: `\|⟨𝒩⟩_t - ⟨𝒩⟩_0\| ≤ 2C/ν`; `‖S⁺‖ = max_m ((S-m)(S+m+1))^{1/2}`, equal to `(S(S+1))^{1/2}` for integer and `S + ½` for half-integer `S`, `1 ≤ c_S ≤ 2/√3`; the caps of `prop:gausscap` are attained by equal-weight superpositions, `S_N = ln r`) | `energy_conservation_bound`, `spinPlus_opNorm`, `max_spinPlus_weight_even`, `max_spinPlus_weight_odd`, `cS_bounds`, `shannon_uniform`, `qlm_numberEntropy_attained` | `U1Remarks.lean` |
 | Theorem `thm:2dmap` for `σᶻ`-polarized gauge states, on **any finite graph** | `FinGraph.sector_average_matter`, `FinGraph.gaussOp_comm_ham`, `FinGraph.dGamma_hq` | `Graph.lean` |
 | Lemma `lem:2dgauge`(i)–(iii), Theorem `thm:2dmap`(a) (fluxes = gauge classes, `2^β` flux sectors, orbits of size `2^{\|V\|-1}`; Wilson loops; `∏ G_i = (-1)^{N_f}`) | `FinGraph.flux_eq_iff_gauge`, `FinGraph.gaugeAct_eq_self_iff`, `FinGraph.card_gaugeOrbit`, `FinGraph.card_fluxClasses`, `FinGraph.wilsonLoop_comm_ham`, `FinGraph.wilsonLoop_comm_gaussOp`, `FinGraph.gaussOp_prod` | `GraphFlux.lean`, `GraphWilson.lean` |
 | Theorem `thm:2dmap`(b) (joint eigenbasis `Ψ_{n,q,s}` of the Gauss operators and Wilson loops, gauge covariance, completeness, sector Hamiltonians `dΓ(h_{q,s}) - h ∑ q_i`) | `FinGraph.fluxVec_gauss`, `FinGraph.fluxVec_wilson`, `FinGraph.fluxVec_occ`, `FinGraph.fluxVec_gaugeAct`, `FinGraph.fluxVec_norm`, `FinGraph.fluxVec_orthogonal`, `FinGraph.card_fluxLabels`, `FinGraph.ham_fluxVec` | `TwoDMap.lean` |
@@ -117,14 +120,14 @@ No `axiom` is introduced anywhere.
 
 ## Verification
 
-`lake build` compiles all 79 modules (about 42,000 lines) without `sorry`; there is no `axiom`,
+`lake build` compiles all 82 modules (about 43,400 lines) without `sorry`; there is no `axiom`,
 `admit`, `native_decide` or `implemented_by` in the library. The script `CheckAxioms.lean` walks
 through every theorem declared in a `DFL` module (including private helper lemmas) and collects the
 axioms it depends on:
 
 ```
 lake env lean CheckAxioms.lean
-# checked 4639 theorems in DFL modules; with non-standard axioms: 0
+# checked 4815 theorems in DFL modules; with non-standard axioms: 0
 ```
 
 i.e. every theorem depends only on Lean's standard axioms `propext`, `Classical.choice` and
