@@ -159,7 +159,9 @@ lemma measurable_hZpow (J h : ℝ) (k : ℕ) :
     by_cases hxz : x = z
     · subst hxz
       simp only [ite_true]
-      exact Measurable.const_mul ((measurable_of_countable sgn).comp (measurable_pi_apply _)) _
+      have hm : Measurable fun η : CfgZ => sgn (η ((x + 1) / 2)) :=
+        (measurable_of_countable sgn).comp (measurable_pi_apply _)
+      exact hm.const_mul _
     · simp only [hxz, ite_false]
       exact measurable_const
 
