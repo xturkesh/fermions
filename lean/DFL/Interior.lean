@@ -508,6 +508,118 @@ theorem rdmMid_parity_block (ℓ₁ m : ℕ) (h : ℓ₁ + m ≤ N) (Ψ : Cfg N 
 
 /-! ### Sharpness -/
 
+namespace InteriorAux
+
+open EntropiesAux
+
+/-- The reduced density matrix of a product state `Ψ(a, b) = [C b] u a`: `|C| u u†`. -/
+lemma rdmMid_prod (ℓ₁ m : ℕ) (h : ℓ₁ + m ≤ N) (Ψ : Cfg N × Cfg N → ℂ)
+    (C : (Cfg ℓ₁ × Cfg ℓ₁) × (Cfg (N - ℓ₁ - m) × Cfg (N - ℓ₁ - m)) → Prop) [DecidablePred C]
+    (u : Cfg m × Cfg m → ℂ)
+    (hΨ : ∀ a b, Ψ ((splitMid ℓ₁ m h).symm (a, b)) = if C b then u a else 0)
+    (a a' : Cfg m × Cfg m) :
+    rdmMid ℓ₁ m h Ψ a a' = ((univ.filter C).card : ℂ) * (u a * star (u a')) := by
+  have e : ∀ b, (if C b then u a else 0) * star (if C b then u a' else 0) =
+      if C b then u a * star (u a') else 0 := by
+    intro b
+    split_ifs <;> simp
+  simp only [rdmMid, hΨ, e]
+  rw [Finset.sum_ite, Finset.sum_const_zero, add_zero, Finset.sum_const, nsmul_eq_mul]
+
+/-- The reduced density matrix of a state supported on the graph `b = g a` of a map from the
+configurations of the interval to those of the complement. -/
+lemma rdmMid_graph (ℓ₁ m : ℕ) (h : ℓ₁ + m ≤ N) (Ψ : Cfg N × Cfg N → ℂ)
+    (g : Cfg m × Cfg m → (Cfg ℓ₁ × Cfg ℓ₁) × (Cfg (N - ℓ₁ - m) × Cfg (N - ℓ₁ - m)))
+    (f : Cfg m × Cfg m → ℂ)
+    (hΨ : ∀ a b, Ψ ((splitMid ℓ₁ m h).symm (a, b)) = if b = g a then f a else 0)
+    (a a' : Cfg m × Cfg m) :
+    rdmMid ℓ₁ m h Ψ a a' = if g a = g a' then f a * star (f a') else 0 := by
+  simp only [rdmMid, hΨ, ite_mul, zero_mul]
+  rw [Finset.sum_ite_eq' Finset.univ (g a)]
+  simp only [Finset.mem_univ, ite_true]
+  split_ifs <;> simp
+
+/-- A rank-one projector `v v†` with `‖v‖ = 1` has entropy `0`. -/
+lemma vonNeumann_rankOne {ι : Type*} [Fintype ι] [DecidableEq ι] (v : ι → ℂ)
+    (hv : ∑ i, Complex.normSq (v i) = 1) (M : Matrix ι ι ℂ) (hM : M.IsHermitian)
+    (hMv : ∀ i j, M i j = v i * star (v j)) : vonNeumann M hM = 0 := by
+  obtain ⟨A, hA⟩ : ∃ A : Matrix ι Unit ℂ, A = Matrix.of fun i _ => v i := ⟨_, rfl⟩
+  have hMA : M = A * Aᴴ := by
+    ext i j
+    simp [hA, Matrix.mul_apply, hMv]
+  have hAA : Aᴴ * A = diagonal (fun _ : Unit => ((1 : ℝ) : ℂ)) := by
+    ext u u'
+    rw [Subsingleton.elim u' u, diagonal_apply_eq, Matrix.mul_apply]
+    simp only [conjTranspose_apply, hA, Matrix.of_apply]
+    rw [← hv, Complex.ofReal_sum]
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [mul_comm, mul_star_self_eq]
+  have hD : (diagonal (fun _ : Unit => ((1 : ℝ) : ℂ))).IsHermitian :=
+    hAA ▸ isHermitian_conjTranspose_mul_self A
+  rw [CutLocalAux.vonNeumann_congr hM (isHermitian_mul_conjTranspose_self A) hMA,
+    vonNeumann_mul_conjTranspose_comm, CutLocalAux.vonNeumann_congr _ hD hAA, vonNeumann_diagonal]
+  simp
+
+/-- `|2^{-1/2}|² = 1/2`. -/
+lemma invSqrtTwo_mul_star :
+    ((Real.sqrt 2 : ℝ) : ℂ)⁻¹ * star (((Real.sqrt 2 : ℝ) : ℂ)⁻¹) = ((1 / 2 : ℝ) : ℂ) := by
+  rw [← Complex.ofReal_inv, Complex.star_def, Complex.conj_ofReal, ← Complex.ofReal_mul]
+  congr 1
+  rw [← mul_inv, Real.mul_self_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
+  norm_num
+
+/-- The vector `2^{-1/2} [P a]` with two nonzero entries is normalized. -/
+lemma sum_normSq_invSqrtTwo {ι : Type*} [Fintype ι] (P : ι → Prop) [DecidablePred P]
+    (hP : (univ.filter P).card = 2) :
+    ∑ a, Complex.normSq (if P a then ((Real.sqrt 2 : ℝ) : ℂ)⁻¹ else 0) = 1 := by
+  have e : ∀ a, Complex.normSq (if P a then ((Real.sqrt 2 : ℝ) : ℂ)⁻¹ else 0) =
+      if P a then 1 / 2 else 0 := by
+    intro a
+    split_ifs
+    · rw [map_inv₀, Complex.normSq_ofReal, Real.mul_self_sqrt (by norm_num)]
+      norm_num
+    · simp
+  simp only [e]
+  rw [Finset.sum_ite, Finset.sum_const_zero, add_zero, Finset.sum_const, hP, nsmul_eq_mul]
+  norm_num
+
+/-- A state with amplitudes `½` on four configurations (and `0` elsewhere) is normalized. -/
+lemma sum_normSq_half {ι : Type*} [Fintype ι] (P : ι → Prop) [DecidablePred P]
+    (hP : (univ.filter P).card = 4) :
+    ∑ a, Complex.normSq (if P a then (1 / 2 : ℂ) else 0) = 1 := by
+  have e : ∀ a, Complex.normSq (if P a then (1 / 2 : ℂ) else 0) = if P a then 1 / 4 else 0 := by
+    intro a
+    split_ifs
+    · rw [Complex.normSq_div, Complex.normSq_one, Complex.normSq_ofNat]
+      norm_num
+    · simp
+  simp only [e]
+  rw [Finset.sum_ite, Finset.sum_const_zero, add_zero, Finset.sum_const, hP, nsmul_eq_mul]
+  norm_num
+
+/-- The Shannon entropy of four entries `1/4` (and zeros) is `2 ln 2`. -/
+lemma sum_negMulLog_quarter {ι : Type*} [Fintype ι] (P : ι → Prop) [DecidablePred P]
+    (hP : (univ.filter P).card = 4) :
+    ∑ a, Real.negMulLog (if P a then 1 / 4 else 0) = 2 * Real.log 2 := by
+  have e : ∀ a, Real.negMulLog (if P a then 1 / 4 else 0) =
+      if P a then Real.negMulLog (1 / 4) else 0 := by
+    intro a
+    split_ifs <;> simp
+  simp only [e]
+  rw [Finset.sum_ite, Finset.sum_const_zero, add_zero, Finset.sum_const, hP, nsmul_eq_mul]
+  have h4 : Real.log 4 = 2 * Real.log 2 := by
+    rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]
+    norm_num
+  simp only [Real.negMulLog, one_div, Real.log_inv, h4]
+  push_cast
+  ring
+
+/-- `|S - 0| = 2 ln 2` if `S = 2 ln 2`. -/
+lemma abs_two_log_two_sub_zero : |2 * Real.log 2 - 0| = 2 * Real.log 2 := by
+  rw [sub_zero, abs_of_nonneg (mul_nonneg zero_le_two (Real.log_nonneg one_le_two))]
+
+end InteriorAux
+
 /-- `Φ = ½ |n₀ = 0, n₂ = 0⟩ ⊗ (|n₁ = 0⟩ + |n₁ = 1⟩) ⊗ (|q₀ = 0⟩ + |q₀ = 1⟩) ⊗ |q₁ = 0, q₂ = 0⟩`
 (`N = 3`), a product state across the interval `I'` = (mode `1`, charge `1`). -/
 def exInt : Cfg 3 × Cfg 3 → ℂ :=
@@ -515,47 +627,126 @@ def exInt : Cfg 3 × Cfg 3 → ℂ :=
 
 namespace InteriorAux
 
+set_option synthInstance.maxSize 2048
+
 /-- Support of `exInt` in split coordinates: interval part `(n₁, q₁)`, complement
 `((n₀, q₀), (n₂, q₂))`. -/
-lemma exInt_support : ∀ (a : Cfg 1 × Cfg 1)
-    (b : (Cfg 1 × Cfg 1) × (Cfg (3 - 1 - 1) × Cfg (3 - 1 - 1))),
-    (((splitMid 1 1 (by norm_num)).symm (a, b)).1 0 = 0 ∧
-      ((splitMid 1 1 (by norm_num)).symm (a, b)).1 2 = 0 ∧
-      ((splitMid 1 1 (by norm_num)).symm (a, b)).2 1 = 0 ∧
-      ((splitMid 1 1 (by norm_num)).symm (a, b)).2 2 = 0) ↔
-      ((b.1.1 = 0 ∧ b.2.1 = 0 ∧ b.2.2 = 0) ∧ a.2 = 0) := by
+lemma exInt_support : ∀ (αI βI αL βL : Cfg 1) (γR δR : Cfg (3 - 1 - 1)),
+    (((splitMid 1 1 (by norm_num)).symm ((αI, βI), ((αL, βL), (γR, δR)))).1 0 = 0 ∧
+      ((splitMid 1 1 (by norm_num)).symm ((αI, βI), ((αL, βL), (γR, δR)))).1 2 = 0 ∧
+      ((splitMid 1 1 (by norm_num)).symm ((αI, βI), ((αL, βL), (γR, δR)))).2 1 = 0 ∧
+      ((splitMid 1 1 (by norm_num)).symm ((αI, βI), ((αL, βL), (γR, δR)))).2 2 = 0) ↔
+      ((αL = 0 ∧ γR = 0 ∧ δR = 0) ∧ βI = 0) := by
   decide
+
+/-- `exInt` in split coordinates: `[n₀ = 0, n₂ = 0, q₂ = 0] [q₁ = 0] / 2`. -/
+lemma exInt_split (a : Cfg 1 × Cfg 1)
+    (b : (Cfg 1 × Cfg 1) × (Cfg (3 - 1 - 1) × Cfg (3 - 1 - 1))) :
+    exInt ((splitMid 1 1 (by norm_num)).symm (a, b)) =
+      if (b.1.1 = 0 ∧ b.2.1 = 0 ∧ b.2.2 = 0) then (if a.2 = 0 then 1 / 2 else 0) else 0 := by
+  obtain ⟨αI, βI⟩ := a
+  obtain ⟨⟨αL, βL⟩, ⟨γR, δR⟩⟩ := b
+  have key := exInt_support αI βI αL βL γR δR
+  simp only [exInt]
+  by_cases hC : (αL = 0 ∧ γR = 0 ∧ δR = 0)
+  · by_cases hu : βI = 0
+    · rw [ite_eq_left (key.2 ⟨hC, hu⟩), ite_eq_left hC, ite_eq_left hu]
+    · rw [ite_eq_right (fun h => hu (key.1 h).2), ite_eq_left hC, ite_eq_right hu]
+  · rw [ite_eq_right (fun h => hC (key.1 h).1), ite_eq_right hC]
 
 /-- The complement configuration `((0, x₁ + n₁), (0, x₁))` carried by `U exInt`. -/
 def gU (a : Cfg 1 × Cfg 1) : (Cfg 1 × Cfg 1) × (Cfg (3 - 1 - 1) × Cfg (3 - 1 - 1)) :=
   ((0, fun _ => a.2 0 + a.1 0), (0, fun _ => a.2 0))
 
 /-- Support of `U exInt` in split coordinates. -/
-lemma exIntU_support : ∀ (a : Cfg 1 × Cfg 1)
-    (b : (Cfg 1 × Cfg 1) × (Cfg (3 - 1 - 1) × Cfg (3 - 1 - 1))),
-    ((dualEquiv.symm ((splitMid 1 1 (by norm_num)).symm (a, b))).1 0 = 0 ∧
-      (dualEquiv.symm ((splitMid 1 1 (by norm_num)).symm (a, b))).1 2 = 0 ∧
-      (dualEquiv.symm ((splitMid 1 1 (by norm_num)).symm (a, b))).2 1 = 0 ∧
-      (dualEquiv.symm ((splitMid 1 1 (by norm_num)).symm (a, b))).2 2 = 0) ↔ b = gU a := by
+lemma exIntU_support : ∀ (αI βI αL βL : Cfg 1) (γR δR : Cfg (3 - 1 - 1)),
+    ((dualEquiv.symm ((splitMid 1 1 (by norm_num)).symm ((αI, βI), ((αL, βL), (γR, δR))))).1 0
+        = 0 ∧
+      (dualEquiv.symm ((splitMid 1 1 (by norm_num)).symm ((αI, βI), ((αL, βL), (γR, δR))))).1 2
+        = 0 ∧
+      (dualEquiv.symm ((splitMid 1 1 (by norm_num)).symm ((αI, βI), ((αL, βL), (γR, δR))))).2 1
+        = 0 ∧
+      (dualEquiv.symm ((splitMid 1 1 (by norm_num)).symm ((αI, βI), ((αL, βL), (γR, δR))))).2 2
+        = 0) ↔
+      (αL = 0 ∧ βL = (fun _ => βI 0 + αI 0) ∧ γR = 0 ∧ δR = (fun _ => βI 0)) := by
+  decide
+
+/-- `U exInt` in split coordinates: supported on the graph of `gU`, with amplitude `½`. -/
+lemma exIntU_split (a : Cfg 1 × Cfg 1)
+    (b : (Cfg 1 × Cfg 1) × (Cfg (3 - 1 - 1) × Cfg (3 - 1 - 1))) :
+    exInt (dualEquiv.symm ((splitMid 1 1 (by norm_num)).symm (a, b))) =
+      if b = gU a then 1 / 2 else 0 := by
+  obtain ⟨αI, βI⟩ := a
+  obtain ⟨⟨αL, βL⟩, ⟨γR, δR⟩⟩ := b
+  have key := exIntU_support αI βI αL βL γR δR
+  have hb : ((αL, βL), (γR, δR)) = gU (αI, βI) ↔
+      (αL = 0 ∧ βL = (fun _ => βI 0 + αI 0) ∧ γR = 0 ∧ δR = (fun _ => βI 0)) := by
+    simp only [gU, Prod.mk.injEq, and_assoc]
+  simp only [exInt]
+  by_cases hg : ((αL, βL), (γR, δR)) = gU (αI, βI)
+  · rw [ite_eq_left (key.2 (hb.1 hg)), ite_eq_left hg]
+  · rw [ite_eq_right (fun h => hg (hb.2 (key.1 h))), ite_eq_right hg]
+
+/-- `gU` is injective. -/
+lemma gU_injective : ∀ a a' : Cfg 1 × Cfg 1, gU a = gU a' → a = a' := by
+  decide
+
+/-- Two complement configurations satisfy `n₀ = 0, n₂ = 0, q₂ = 0`. -/
+lemma card_exInt_compl : (univ.filter (fun b : (Cfg 1 × Cfg 1) × (Cfg (3 - 1 - 1) ×
+    Cfg (3 - 1 - 1)) => b.1.1 = 0 ∧ b.2.1 = 0 ∧ b.2.2 = 0)).card = 2 := by
+  decide
+
+/-- Two interval configurations satisfy `q₁ = 0`. -/
+lemma card_exInt_int : (univ.filter (fun a : Cfg 1 × Cfg 1 => a.2 = 0)).card = 2 := by
+  decide
+
+/-- There are four interval configurations. -/
+lemma card_exInt_all : (univ.filter (fun _ : Cfg 1 × Cfg 1 => True)).card = 4 := by
+  decide
+
+/-- Four configurations carry the amplitude of `exInt`. -/
+lemma card_exInt : (univ.filter (fun p : Cfg 3 × Cfg 3 =>
+    p.1 0 = 0 ∧ p.1 2 = 0 ∧ p.2 1 = 0 ∧ p.2 2 = 0)).card = 4 := by
   decide
 
 end InteriorAux
 
+open InteriorAux in
 /-- `exInt` is normalized. -/
-theorem exInt_norm : ∑ p, Complex.normSq (exInt p) = 1 := by
-  sorry
+theorem exInt_norm : ∑ p, Complex.normSq (exInt p) = 1 :=
+  sum_normSq_half _ card_exInt
 
+open InteriorAux in
 /-- `S_{I'}(Φ) = 0` for `Φ = exInt`, `I'` = (mode `1`, charge `1`). -/
 theorem exInt_entropy :
     vonNeumann (rdmMid 1 1 (by norm_num) exInt) (rdmMid_isHermitian 1 1 (by norm_num) _) = 0 := by
-  sorry
+  refine vonNeumann_rankOne (fun a : Cfg 1 × Cfg 1 => if a.2 = 0 then
+    ((Real.sqrt 2 : ℝ) : ℂ)⁻¹ else 0) (sum_normSq_invSqrtTwo _ card_exInt_int) _ _ ?_
+  intro a a'
+  rw [rdmMid_prod 1 1 _ exInt (fun b => b.1.1 = 0 ∧ b.2.1 = 0 ∧ b.2.2 = 0)
+    (fun a => if a.2 = 0 then 1 / 2 else 0) exInt_split a a', card_exInt_compl]
+  by_cases ha : a.2 = 0 <;> by_cases ha' : a'.2 = 0 <;>
+    simp only [ha, ha', ite_true, ite_false, star_zero, mul_zero, zero_mul, invSqrtTwo_mul_star]
+  norm_num
 
+open InteriorAux in
 /-- `S_I(UΦ) = 2 ln 2` for `Φ = exInt`, `I` = (site `1`, link `1`): the reduced state is maximally
 mixed. -/
 theorem exInt_U_entropy :
     vonNeumann (rdmMid 1 1 (by norm_num) (fun p => exInt (dualEquiv.symm p)))
       (rdmMid_isHermitian 1 1 (by norm_num) _) = 2 * Real.log 2 := by
-  sorry
+  have hD : rdmMid 1 1 (by norm_num) (fun p => exInt (dualEquiv.symm p)) =
+      diagonal (fun a : Cfg 1 × Cfg 1 => (((if True then 1 / 4 else 0 : ℝ)) : ℂ)) := by
+    ext a a'
+    rw [rdmMid_graph 1 1 _ _ gU (fun _ => 1 / 2) exIntU_split, diagonal_apply]
+    by_cases ha : a = a'
+    · rw [ite_eq_left (congrArg gU ha), ite_eq_left ha]
+      norm_num
+    · rw [ite_eq_right (fun hg => ha (gU_injective a a' hg)), ite_eq_right ha]
+  have hH : (diagonal (fun a : Cfg 1 × Cfg 1 => (((if True then 1 / 4 else 0 : ℝ)) : ℂ))).IsHermitian :=
+    hD ▸ rdmMid_isHermitian 1 1 (by norm_num) _
+  rw [CutLocalAux.vonNeumann_congr _ hH hD, vonNeumann_diagonal]
+  exact sum_negMulLog_quarter _ card_exInt_all
 
 /-- **The bound `2 ln 2` of `interior_defect` is attained.** -/
 theorem interior_defect_attained :
@@ -563,7 +754,8 @@ theorem interior_defect_attained :
         (rdmMid_isHermitian 1 1 (by norm_num) _) -
       vonNeumann (rdmMid 1 1 (by norm_num) exInt) (rdmMid_isHermitian 1 1 (by norm_num) _)| =
       2 * Real.log 2 := by
-  sorry
+  rw [exInt_U_entropy, exInt_entropy]
+  exact InteriorAux.abs_two_log_two_sub_zero
 
 /-- `Φ = ½ |0000⟩ ⊗ (|q₀ = 0⟩ + |q₀ = 1⟩) ⊗ |q₁ = 0⟩ ⊗ (|q₂ = 0⟩ + |q₂ = 1⟩) ⊗ |q₃ = 0⟩` (`N = 4`):
 the matter vacuum, a product state across the interval `I'` = (modes `1, 2`, charges `1, 2`). Its
@@ -571,20 +763,138 @@ image `UΦ = ½ |0000⟩ ⊗ ∑_{x₀, x₂} |x₀, x₀, x₂, x₂⟩` contai
 def exVac : Cfg 4 × Cfg 4 → ℂ :=
   fun p => if p.1 = 0 ∧ p.2 1 = 0 ∧ p.2 3 = 0 then 1 / 2 else 0
 
-/-- `exVac` is normalized. -/
-theorem exVac_norm : ∑ p, Complex.normSq (exVac p) = 1 := by
-  sorry
+namespace InteriorAux
 
+set_option synthInstance.maxSize 2048
+
+/-- Support of `exVac` in split coordinates: interval part `((n₁, n₂), (q₁, q₂))`, complement
+`((n₀, q₀), (n₃, q₃))`. -/
+lemma exVac_support : ∀ (αI βI : Cfg 2) (αL βL : Cfg 1) (γR δR : Cfg (4 - 1 - 2)),
+    (((splitMid 1 2 (by norm_num)).symm ((αI, βI), ((αL, βL), (γR, δR)))).1 = 0 ∧
+      ((splitMid 1 2 (by norm_num)).symm ((αI, βI), ((αL, βL), (γR, δR)))).2 1 = 0 ∧
+      ((splitMid 1 2 (by norm_num)).symm ((αI, βI), ((αL, βL), (γR, δR)))).2 3 = 0) ↔
+      ((αL = 0 ∧ γR = 0 ∧ δR = 0) ∧ (αI = 0 ∧ βI 0 = 0)) := by
+  decide
+
+/-- `exVac` in split coordinates: `[n₀ = 0, n₃ = 0, q₃ = 0] [n₁ = n₂ = 0, q₁ = 0] / 2`. -/
+lemma exVac_split (a : Cfg 2 × Cfg 2)
+    (b : (Cfg 1 × Cfg 1) × (Cfg (4 - 1 - 2) × Cfg (4 - 1 - 2))) :
+    exVac ((splitMid 1 2 (by norm_num)).symm (a, b)) =
+      if (b.1.1 = 0 ∧ b.2.1 = 0 ∧ b.2.2 = 0) then
+        (if a.1 = 0 ∧ a.2 0 = 0 then 1 / 2 else 0) else 0 := by
+  obtain ⟨αI, βI⟩ := a
+  obtain ⟨⟨αL, βL⟩, ⟨γR, δR⟩⟩ := b
+  have key := exVac_support αI βI αL βL γR δR
+  simp only [exVac]
+  by_cases hC : (αL = 0 ∧ γR = 0 ∧ δR = 0)
+  · by_cases hu : αI = 0 ∧ βI 0 = 0
+    · rw [ite_eq_left (key.2 ⟨hC, hu⟩), ite_eq_left hC, ite_eq_left hu]
+    · rw [ite_eq_right (fun h => hu (key.1 h).2), ite_eq_left hC, ite_eq_right hu]
+  · rw [ite_eq_right (fun h => hC (key.1 h).1), ite_eq_right hC]
+
+/-- The complement configuration `((0, x₁), (0, x₂))` carried by `U exVac`. -/
+def gV (a : Cfg 2 × Cfg 2) : (Cfg 1 × Cfg 1) × (Cfg (4 - 1 - 2) × Cfg (4 - 1 - 2)) :=
+  ((0, fun _ => a.2 0), (0, fun _ => a.2 1))
+
+/-- Support of `U exVac` in split coordinates. -/
+lemma exVacU_support : ∀ (αI βI : Cfg 2) (αL βL : Cfg 1) (γR δR : Cfg (4 - 1 - 2)),
+    ((dualEquiv.symm ((splitMid 1 2 (by norm_num)).symm ((αI, βI), ((αL, βL), (γR, δR))))).1
+        = 0 ∧
+      (dualEquiv.symm ((splitMid 1 2 (by norm_num)).symm ((αI, βI), ((αL, βL), (γR, δR))))).2 1
+        = 0 ∧
+      (dualEquiv.symm ((splitMid 1 2 (by norm_num)).symm ((αI, βI), ((αL, βL), (γR, δR))))).2 3
+        = 0) ↔
+      ((αL = 0 ∧ βL = (fun _ => βI 0) ∧ γR = 0 ∧ δR = (fun _ => βI 1)) ∧ αI = 0) := by
+  decide
+
+/-- `U exVac` in split coordinates: supported on the graph of `gV`, with amplitude `½ [n₁ = n₂ = 0]`. -/
+lemma exVacU_split (a : Cfg 2 × Cfg 2)
+    (b : (Cfg 1 × Cfg 1) × (Cfg (4 - 1 - 2) × Cfg (4 - 1 - 2))) :
+    exVac (dualEquiv.symm ((splitMid 1 2 (by norm_num)).symm (a, b))) =
+      if b = gV a then (if a.1 = 0 then 1 / 2 else 0) else 0 := by
+  obtain ⟨αI, βI⟩ := a
+  obtain ⟨⟨αL, βL⟩, ⟨γR, δR⟩⟩ := b
+  have key := exVacU_support αI βI αL βL γR δR
+  have hb : ((αL, βL), (γR, δR)) = gV (αI, βI) ↔
+      (αL = 0 ∧ βL = (fun _ => βI 0) ∧ γR = 0 ∧ δR = (fun _ => βI 1)) := by
+    simp only [gV, Prod.mk.injEq, and_assoc]
+  simp only [exVac]
+  by_cases hg : ((αL, βL), (γR, δR)) = gV (αI, βI)
+  · by_cases hα : αI = 0
+    · rw [ite_eq_left (key.2 ⟨hb.1 hg, hα⟩), ite_eq_left hg, ite_eq_left hα]
+    · rw [ite_eq_right (fun h => hα (key.1 h).2), ite_eq_left hg, ite_eq_right hα]
+  · rw [ite_eq_right (fun h => hg (hb.2 (key.1 h).1)), ite_eq_right hg]
+
+/-- On the configurations with empty interval, `gV` is injective. -/
+lemma gV_injective : ∀ a a' : Cfg 2 × Cfg 2, gV a = gV a' → a.1 = 0 → a'.1 = 0 → a = a' := by
+  decide
+
+/-- Two complement configurations satisfy `n₀ = 0, n₃ = 0, q₃ = 0`. -/
+lemma card_exVac_compl : (univ.filter (fun b : (Cfg 1 × Cfg 1) × (Cfg (4 - 1 - 2) ×
+    Cfg (4 - 1 - 2)) => b.1.1 = 0 ∧ b.2.1 = 0 ∧ b.2.2 = 0)).card = 2 := by
+  decide
+
+/-- Two interval configurations satisfy `n₁ = n₂ = 0, q₁ = 0`. -/
+lemma card_exVac_int : (univ.filter (fun a : Cfg 2 × Cfg 2 => a.1 = 0 ∧ a.2 0 = 0)).card = 2 := by
+  decide
+
+/-- Four interval configurations have empty sites. -/
+lemma card_exVac_empty : (univ.filter (fun a : Cfg 2 × Cfg 2 => a.1 = 0)).card = 4 := by
+  decide
+
+/-- Four configurations carry the amplitude of `exVac`. -/
+lemma card_exVac : (univ.filter (fun p : Cfg 4 × Cfg 4 =>
+    p.1 = 0 ∧ p.2 1 = 0 ∧ p.2 3 = 0)).card = 4 := by
+  decide
+
+end InteriorAux
+
+open InteriorAux in
+/-- `exVac` is normalized. -/
+theorem exVac_norm : ∑ p, Complex.normSq (exVac p) = 1 :=
+  sum_normSq_half _ card_exVac
+
+open InteriorAux in
 /-- `S_{I'}(Φ) = 0` for `Φ = exVac`, `I'` = (modes `1, 2`, charges `1, 2`). -/
 theorem exVac_entropy :
     vonNeumann (rdmMid 1 2 (by norm_num) exVac) (rdmMid_isHermitian 1 2 (by norm_num) _) = 0 := by
-  sorry
+  refine vonNeumann_rankOne (fun a : Cfg 2 × Cfg 2 => if a.1 = 0 ∧ a.2 0 = 0 then
+    ((Real.sqrt 2 : ℝ) : ℂ)⁻¹ else 0) (sum_normSq_invSqrtTwo _ card_exVac_int) _ _ ?_
+  intro a a'
+  rw [rdmMid_prod 1 2 _ exVac (fun b => b.1.1 = 0 ∧ b.2.1 = 0 ∧ b.2.2 = 0)
+    (fun a => if a.1 = 0 ∧ a.2 0 = 0 then 1 / 2 else 0) exVac_split a a', card_exVac_compl]
+  by_cases ha : a.1 = 0 ∧ a.2 0 = 0 <;> by_cases ha' : a'.1 = 0 ∧ a'.2 0 = 0 <;>
+    simp only [ha, ha', ite_true, ite_false, star_zero, mul_zero, zero_mul, invSqrtTwo_mul_star]
+  norm_num
 
+open InteriorAux in
 /-- `S_I(UΦ) = 2 ln 2` for `Φ = exVac`, `I` = (sites `1, 2`, links `1, 2`). -/
 theorem exVac_U_entropy :
     vonNeumann (rdmMid 1 2 (by norm_num) (fun p => exVac (dualEquiv.symm p)))
       (rdmMid_isHermitian 1 2 (by norm_num) _) = 2 * Real.log 2 := by
-  sorry
+  have hD : rdmMid 1 2 (by norm_num) (fun p => exVac (dualEquiv.symm p)) =
+      diagonal (fun a : Cfg 2 × Cfg 2 => (((if a.1 = 0 then 1 / 4 else 0 : ℝ)) : ℂ)) := by
+    ext a a'
+    rw [rdmMid_graph 1 2 _ _ gV (fun a => if a.1 = 0 then 1 / 2 else 0) exVacU_split,
+      diagonal_apply]
+    by_cases ha : a = a'
+    · subst ha
+      rw [ite_eq_left rfl, ite_eq_left rfl]
+      by_cases h0 : a.1 = 0
+      · simp only [h0, ite_true]
+        norm_num
+      · simp [h0]
+    · rw [ite_eq_right ha]
+      split_ifs with hg h0 h0'
+      · exact absurd (gV_injective a a' hg h0 h0') ha
+      · simp
+      · simp
+      · rfl
+  have hH : (diagonal (fun a : Cfg 2 × Cfg 2 =>
+      (((if a.1 = 0 then 1 / 4 else 0 : ℝ)) : ℂ))).IsHermitian :=
+    hD ▸ rdmMid_isHermitian 1 2 (by norm_num) _
+  rw [CutLocalAux.vonNeumann_congr _ hH hD, vonNeumann_diagonal]
+  exact sum_negMulLog_quarter _ card_exVac_empty
 
 /-- **The bound `2 ln 2` of `interior_defect` is attained by a state with empty matter.** -/
 theorem interior_defect_attained_vacuum :
@@ -592,6 +902,7 @@ theorem interior_defect_attained_vacuum :
         (rdmMid_isHermitian 1 2 (by norm_num) _) -
       vonNeumann (rdmMid 1 2 (by norm_num) exVac) (rdmMid_isHermitian 1 2 (by norm_num) _)| =
       2 * Real.log 2 := by
-  sorry
+  rw [exVac_U_entropy, exVac_entropy]
+  exact InteriorAux.abs_two_log_two_sub_zero
 
 end DFL
