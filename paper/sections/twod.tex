@@ -560,7 +560,9 @@ $R_s=(K_s^2+4h^2)^{1/2}$.  Since $0\le1+\frac y2-\sqrt{1+y}\le\frac{y^2}8$ for $
 \[
   \Bigl\|R_s-2\abs h-\frac{K_s^2}{4\abs h}\Bigr\|\le\frac{\norm{K_s}^4}{64\abs h^3}\le\frac{4J^4}{\abs h^3} .
 \]
-Hence, up to errors $O(\abs tJ^4/\abs h^3)$, the slow dynamics is that of $K_s^2/(4\abs h)$.  By
+Since both operators are functions of $K_s$, this gives
+$\norm{\e^{-\ii tR_s}-\e^{-\ii t(2\abs h+K_s^2/(4\abs h))}}\le4\abs tJ^4/\abs h^3$: up to this error the slow dynamics is
+that of $K_s^2/(4\abs h)$.  By
 \cref{prop:2dlaws}(c)(iv) this is a hopping operator on each sublattice, a square lattice rotated by $45^\circ$
 with spacing $\sqrt2$.  Its nearest-neighbour bonds (the diagonals of the plaquettes, of length $\sqrt2$) carry
 $\pm J^2/(2\abs h)$ if $W_p=+1$ and vanish if $W_p=-1$, while its next-nearest-neighbour bonds (of length $2$) always

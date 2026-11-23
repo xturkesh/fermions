@@ -543,8 +543,12 @@ reduced state of $A$ from $p_+\omega_++p_-\omega_-$ to $p_+\omega_++p_-V\omega_-
 $p_\pm\omega_\pm$ are the parts with $\sxb{\ell_1}=\pm1$ and $V=\prod_{\ell_1<k\le\ell_2}\szb{k}$.  Concavity of
 $S$ and the bound $S(p_+\omega'_++p_-\omega'_-)\le p_+S(\omega'_+)+p_-S(\omega'_-)+\ln2$ for density matrices
 $\omega'_\pm$ (proved as in \cref{lem:pinching}) show that this changes $S_A$ by at most $\ln2$.  Hence
-$\abs{S_A(U\Phi)-S_{A'}(\Phi)}\le2\ln2$, with the Jordan--Wigner partial trace on both sides.  Numerically
-the value $2\ln2$ is attained ($N=3$, $A$ consisting of site $2$ and link $b_2$).  We do not use this.
+$\abs{S_A(U\Phi)-S_{A'}(\Phi)}\le2\ln2$, with the Jordan--Wigner partial trace on both sides.  The value
+$2\ln2$ is attained, already with empty matter.  Take $N=4$ and $A$ consisting of sites $2,3$ and links $b_2,b_3$.  The vector
+$\Phi=\ket{0000}_c\otimes\frac12(\ket{+1}+\ket{-1})_{\tau_1}\ket{+1}_{\tau_2}(\ket{+1}+\ket{-1})_{\tau_3}\ket{+1}_{\tau_4}$
+is a product over $A'|B'$, while by \eqref{eq:xnq}
+$U\Phi=\ket{0000}\otimes\frac12(\ket{+}_{b_1}\ket{+}_{b_2}+\ket{-}_{b_1}\ket{-}_{b_2})(\ket{+}_{b_3}\ket{+}_{b_4}+\ket{-}_{b_3}\ket{-}_{b_4})$
+has a Bell pair across each end of $A$, so $S_A(U\Phi)=2\ln2$.  We do not use this.
 For interior intervals, odd elements of the algebra of $A$ carry the Jordan--Wigner string of the
 left part.  For states of definite total fermion parity, however, the partial trace over the
 complement is block diagonal with respect to the parity of $A$ and coincides with the fermionic

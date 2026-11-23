@@ -207,7 +207,12 @@ subadditivity as in \cref{prop:gausscap}(c).  The second term is independent of 
 initial states of \cite{Brenes2018}, $\rho_j\Psi_0=0$, so $\UQ_{[1,\ell]}=E_\ell-e_0$ on $\Psi_0$, and the second term is
 the entropy of the initial field on the cut link ($\le\ln3$ there).  For i.i.d.\ random background charges it
 typically grows like $\frac12\ln\ell$, but in no case does it grow in time: the time-dependent part of $\SN$ is
-bounded on average over cuts, uniformly in $t$ and $L$.
+bounded on average over cuts, uniformly in $t$ and $L$.  Indeed, by (b), \cref{lem:intentropy} for $E_\ell$ and Jensen's
+inequality as in (c),
+\[
+  \frac1L\sum_{\ell=1}^L\bigl(\SN(\Psi(t);[1,\ell])-\Ush_{\Psi_0}(\UQ_{[1,\ell]})\bigr)
+  \le\frac12\ln\Bigl(2\pi e\Bigl(\frac2{g^2}\bigl(\varepsilon_0+w+\abs m\bigr)+\frac1{12}\Bigr)\Bigr).
+\]
 \item \emph{What is not covered.}  For a single cut, (e) only gives $\frac12\ln O(L)$; we do not know whether
 growth of this kind can occur at an individual cut.  With $\vartheta\neq0$ the bound controls
 $\langle(E_\ell+\vartheta)^2\rangle\ge\Var E_\ell$, which is what enters.
