@@ -231,6 +231,55 @@ For quantum links \cref{prop:gausscap} is stronger anyway.
 \end{enumerate}
 \end{remark}
 
+\subsection{The initial states of Brenes et al.}\label{sec:u1:brenes}
+
+Brenes, Dalmonte, Heyl and Scardicchio \cite{Brenes2018} study \eqref{eq:HU1} with $w=1$, $m=0$, $\vartheta=0$
+and $J:=g^2/2$, starting from the bare vacuum of the staggered fermions with every link in an equal superposition of
+$E\in\{-1,0,1\}$ and $E_0=0$.  The following proposition makes the structure of these states explicit.
+
+\begin{proposition}[The states of \cite{Brenes2018}]\label{prop:brenes}
+Let $\ket{\rm vac}$ be the bare vacuum ($\rho_j\ket{\rm vac}=0$ for all $j$), $e_0\in\Z$, and
+\[
+  \Psi_0:=\ket{\rm vac}\otimes\bigotimes_{j=1}^L\tfrac1{\sqrt3}\bigl(\ket{-1}+\ket0+\ket1\bigr)_{E_j}
+  =3^{-L/2}\sum_{\bar e\in\{-1,0,1\}^L}\ket{\rm vac}\otimes\ket{\bar e}.
+\]
+\begin{enumerate}[label=(\alph*)]
+\item $\ket{\rm vac}\otimes\ket{\bar e}$ lies in the sector with background charges $Q_j=\bar e_j-\bar e_{j-1}$
+($\bar e_0:=e_0$), and $\bar e\mapsto Q$ is injective.  So every gauge-invariant expectation value in $\Psi(t)$, at any
+number of times, is the uniform average over the \emph{background fields} $\bar e$, which are i.i.d.\ uniform on
+$\{-1,0,1\}$, of the corresponding quantity in the sector of $\bar e$.  The background charges are not independent.
+\item In the sector of $\bar e$, $E_j=\bar e_j+F_j$ with $F_j:=\sum_{k\le j}\rho_k$, and
+\[
+  H=H_{\rm cl}+g^2\sum_{k=1}^LA_k\rho_k+\frac{g^2}2\sum_{j=1}^L(\bar e_j+\vartheta)^2,\qquad
+  A_k:=\sum_{j\ge k}(\bar e_j+\vartheta),
+\]
+where $H_{\rm cl}$ is \eqref{eq:HU1} in the sector $Q=0$ with $e_0=\vartheta=0$.  So the charges move in the clean
+model plus the random-walk potential $g^2A_k$, whose steps $g^2(\bar e_k+\vartheta)$ are i.i.d.  Creating a meson
+from $\ket{\rm vac}$ on the bond $(j,j+1)$ changes the energy by $2m+\frac{g^2}2\bigl(1+2(-1)^j(\bar e_j+\vartheta)\bigr)$:
+a tightly bound meson sees an i.i.d.\ potential.
+\item $\UQ_{[1,\ell]}=\bar e_\ell-e_0$ on $\Psi_0$, so $\Ush_{\Psi_0}(\UQ_{[1,\ell]})=\ln3$ for every $\ell$, and for all
+$t\in\R$ and $L\ge1$
+\[
+  \frac1L\sum_{\ell=1}^L\SN(\Psi(t);[1,\ell])\le\ln3+\frac12\ln\Bigl(2\pi e\Bigl(\frac2{g^2}\bigl(\varepsilon_0+w+\abs m\bigr)
+  +\frac1{12}\Bigr)\Bigr),\qquad \varepsilon_0=\frac{g^2}2\Bigl(\frac23+\vartheta^2\Bigr)-\frac{m\lceil L/2\rceil}L.
+\]
+\item For all $t\in\R$,
+$\bigl|\frac1L\sum_{j=1}^L\langle(E_j+\vartheta)^2\rangle_t-\bigl(\frac23+\vartheta^2\bigr)\bigr|\le4(w+\abs m)/g^2$.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(a) $G_j=E_j-E_{j-1}-\rho_j$ acts on $\ket{\rm vac}\otimes\ket{\bar e}$ as $\bar e_j-\bar e_{j-1}$, and $Q$ determines $\bar e$
+recursively from $\bar e_0=e_0$.  The rest is as in \cref{rem:wilson}(a): $H$ is block diagonal in the sectors.
+(b) In the sector, $E_j=e_0+\sum_{k\le j}(\rho_k+Q_k)=\bar e_j+F_j$.  Expand $(F_j+\bar e_j+\vartheta)^2$ and use
+$\sum_j(\bar e_j+\vartheta)F_j=\sum_k\rho_kA_k$.  The hop that creates a meson on $(j,j+1)$ changes only $F_j$, from $0$
+to $(-1)^j$, and changes the mass term by $2m$.  (c) $\sum_{k\le\ell}Q_k=\bar e_\ell-e_0$ telescopes and takes three values
+with probability $\frac13$ each.  Apply \cref{rem:wilson}(a), \cref{lem:intentropy} and Jensen's inequality, with
+$\varepsilon_0=\langle\Psi_0,H\Psi_0\rangle/L$: the hopping has zero expectation in $\ket{\rm vac}$, the mass term equals
+$-m\lceil L/2\rceil$ there, and $\E(\bar e_j+\vartheta)^2=\frac23+\vartheta^2$.  (d) As in \cref{rem:adhh}(a), energy is
+conserved in each sector, and the hopping and mass terms have expectations in $[-L(w+\abs m),L(w+\abs m)]$.
+\end{proof}
+
 \subsection{Consequences for number-entropy diagnostics}\label{sec:u1:diag}
 
 \paragraph{$U(1)$ with quantum links: kinematics.}
@@ -310,8 +359,11 @@ spectrum almost surely.  Pure point spectrum and dynamical localization are, to 
 stationary, so the Furstenberg and large-deviation theory behind \cref{sec:onebody} is not available, and integer
 increments produce exactly degenerate wells (returns of the walk) without a Wegner estimate.  The
 eigenfunction correlator decays much faster than for the i.i.d.\ Bernoulli potential of the same strength in
-our numerics (\cref{rem:u1numerics}), consistent with super-exponential decay away from returns of the walk.  A tightly bound $U(1)$ meson sees an analogous random-walk potential, and an
-isolated $U(1)$ charge an integrated walk $V\sim\abs x^{3/2}$ on top of the string tension.
+our numerics (\cref{rem:u1numerics}), consistent with super-exponential decay away from returns of the walk.  For $U(1)$ with i.i.d.\ background charges,
+a tightly bound meson sees an analogous random-walk potential, and an isolated charge an integrated walk
+$V\sim\abs x^{3/2}$ on top of the string tension.  For the states of \cite{Brenes2018} the background \emph{fields} are
+i.i.d., and everything moves down one level: a meson sees an i.i.d.\ potential and a charge a random walk
+(\cref{prop:brenes}(b)).
 \end{enumerate}
 \end{remark}
 

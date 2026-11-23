@@ -45,7 +45,8 @@ only external input is this literature result (\texttt{lgt\_transport\_of\_ldt},
 \paragraph{Correspondence.}  Lean names, followed by their files:
 \begin{itemize}[leftmargin=1.5em,itemsep=1pt]
 \item \cref{thm:duality,cor:sector}: \texttt{duality}, \texttt{gauss\_dual},
-\texttt{numOp\_dual}, \texttt{sector\_average} (\texttt{Duality}, \texttt{Sector}); \cref{thm:duality}(c),(d),(e),
+\texttt{numOp\_dual}, \texttt{sector\_average}, \texttt{correlator\_sector\_average} (\texttt{Duality}, \texttt{Sector},
+\texttt{Interacting}); \cref{thm:duality}(c),(d),(e),
 i.e.\ the dictionary, the dressed fermions and their Heisenberg evolution: \texttt{ann\_dual}, \texttt{sz\_dual},
 \texttt{szTail\_dual}, \texttt{sx\_dual}, \texttt{hopTerm\_dual}, \texttt{dressed\_eq}, \texttt{dressed\_CAR},
 \texttt{dressed\_comm\_gauss}, \texttt{dressed\_hop}, \texttt{H\_dressed}, \texttt{evo\_dual},
@@ -207,7 +208,10 @@ example of the text: \texttt{interior\_defect}, \texttt{interior\_defect\_attain
 (\texttt{Interior}); \cref{rem:ringEC}, with \cref{prop:LDT} as input for (ii): \texttt{ec\_open\_chain},
 \texttt{ringEC\_of\_ldt}, \texttt{ringEC\_par\_of\_ldt} (\texttt{RingEC}); \cref{rem:dimerstrong}, with the dynamical
 localization of \cite{DeBievreGerminet2000} as input: \texttt{dimerTailLGT\_eq}, \texttt{dimer\_TL\_tail},
-\texttt{dimer\_tight\_of\_dynLoc} (\texttt{DimerStrong}).
+\texttt{dimer\_tight\_of\_dynLoc} (\texttt{DimerStrong}); \cref{rem:interacting}: \texttt{duality\_int},
+\texttt{HsecInt\_eq\_xxzChain}, \texttt{nnInt\_one\_particle}, \texttt{sector\_average\_int},
+\texttt{correlator\_sector\_average\_int}, \texttt{correlator\_eq\_ensemble\_int}, \texttt{lgt\_duality\_defect\_int}
+(\texttt{Interacting}).
 \end{itemize}
 
 \paragraph{Deviations.}  Sites and links are indexed from $0$.  \Cref{thm:transport,thm:numberentropy,thm:arealaw}
