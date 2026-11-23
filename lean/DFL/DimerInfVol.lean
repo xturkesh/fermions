@@ -167,8 +167,7 @@ lemma schrZpow_shift (w : ℤ → ℝ) (x : ℤ) (k : ℕ) (y z : ℤ) :
     rw [schrZpow_succ, schrZpow_succ, show y + x - 1 = (y - 1) + x by ring,
       show y + x + 1 = (y + 1) + x by ring, ih, ih, ih]
 
-/-- Paths of length `k ≤ min(b, -a)` ending at `0` stay in `[a, b]`: the column `0` of `H_Λ^k` is
-that of `H_ℤ^k`. -/
+/-- Finite propagation: for `k ≤ min(b, -a)` the column `0` of `H_Λ^k` is that of `H_ℤ^k`. -/
 lemma pow_schrH_origin (a b : ℤ) (ha : a ≤ 0) (hb : 0 ≤ b) (w : ℤ → ℝ) (k : ℕ)
     (hk : (k : ℤ) ≤ min b (-a)) (y : Set.Icc a b) :
     ((schrH a b w) ^ k) y (origin a b ha hb) = schrZpow w k y.1 0 := by
@@ -697,6 +696,195 @@ theorem dimerMN_lower (J h : ℝ) (hJ : 0 < J) (hh0 : 0 < |h|) (hh1 : 2 * |h| < 
         dimer_sector_moment_lower J h hJ hh0 hh1 q (Finset.mem_filter.mp hq).2 x p T hp hT1 hT2
           hT3
 
+namespace DimerInfVolAux
+
+/-- The dimer charges seen from the site `x`: `Φ(η)_i = η_{⌊(i - x + r)/2⌋}`. -/
+def dimerPhi (N : ℕ) (x r : ℤ) (η : CfgZ) : Cfg N := fun i => η (((i.val : ℤ) - x + r) / 2)
+
+/-- `Φ` is measurable. -/
+lemma measurable_dimerPhi (N : ℕ) (x r : ℤ) : Measurable (dimerPhi N x r) :=
+  Measurable.of_eval fun _ => measurable_pi_apply _
+
+/-- `Φ(η)` is a dimer configuration when `x ≡ r (mod 2)`. -/
+lemma isDimer_dimerPhi (N : ℕ) (x r : ℤ) (hxr : x % 2 = r) (η : CfgZ) :
+    IsDimer (dimerPhi N x r η) := by
+  intro k hk hk1
+  simp only [dimerPhi]
+  congr 1
+  push_cast
+  omega
+
+/-- The preimage of a dimer configuration under `Φ` is a cylinder set. -/
+lemma dimerPhi_preimage (N : ℕ) (hN : Even N) (x r : ℤ) (hxr : x % 2 = r) (q : Cfg N)
+    (hq : IsDimer q) :
+    dimerPhi N x r ⁻¹' {q} = Set.pi ↑(Finset.Ico (-((x - r) / 2)) ((N / 2 : ℕ) - (x - r) / 2))
+      (fun z => {dimerExt q (2 * (z + (x - r) / 2)).toNat}) := by
+  set m := (x - r) / 2 with hm
+  have hm2 : x - r = 2 * m := by omega
+  obtain ⟨K, hK⟩ := hN
+  ext η
+  simp only [Set.mem_preimage, Set.mem_singleton_iff, Set.mem_pi, Finset.coe_Ico, Set.mem_Ico]
+  constructor
+  · rintro rfl z hz
+    have hi : (2 * (z + m)).toNat < K + K := by omega
+    rw [dimerExt_of_lt _ _ (by omega)]
+    simp only [dimerPhi]
+    congr 1
+    omega
+  · intro H
+    funext i
+    have hi := i.isLt
+    have h1 := H (((i.val : ℤ) - x + r) / 2) ⟨by omega, by omega⟩
+    simp only [dimerPhi]
+    rw [h1]
+    have e : (2 * (((i.val : ℤ) - x + r) / 2 + m)).toNat = 2 * (i.val / 2) := by omega
+    rw [e, dimerExt_of_lt _ _ (by omega)]
+    rcases Nat.even_or_odd' i.val with ⟨j, hj | hj⟩
+    · congr 1
+      ext
+      show 2 * (i.val / 2) = i.val
+      omega
+    · have h2 := hq ⟨2 * (i.val / 2), by omega⟩ (show 2 * (i.val / 2) % 2 = 0 by omega)
+        (show 2 * (i.val / 2) + 1 < N by omega)
+      rw [h2]
+      congr 1
+      ext
+      show 2 * (i.val / 2) + 1 = i.val
+      omega
+
+/-- Under `muZ`, each dimer configuration is hit by `Φ` with probability `2^{-N/2}`. -/
+lemma muZ_dimerPhi_preimage (N : ℕ) (hN : Even N) (x r : ℤ) (hxr : x % 2 = r) (q : Cfg N)
+    (hq : IsDimer q) :
+    muZ (dimerPhi N x r ⁻¹' {q}) = ((2 : ENNReal) ^ (N / 2))⁻¹ := by
+  rw [dimerPhi_preimage N hN x r hxr q hq, muZ,
+    Measure.infinitePi_pi _ (fun _ _ => MeasurableSet.of_discrete)]
+  simp only [InfVolAux.unifZ2_singleton]
+  rw [Finset.prod_const, Int.card_Ico, ENNReal.inv_pow]
+  congr 2
+  omega
+
+/-- Only dimer configurations are hit by `Φ`. -/
+lemma dimerPhi_preimage_eq_empty (N : ℕ) (x r : ℤ) (hxr : x % 2 = r) (q : Cfg N)
+    (hq : ¬ IsDimer q) : dimerPhi N x r ⁻¹' {q} = ∅ := by
+  refine Set.eq_empty_iff_forall_notMem.mpr fun η hη => hq ?_
+  rw [Set.mem_preimage, Set.mem_singleton_iff] at hη
+  rw [← hη]
+  exact isDimer_dimerPhi N x r hxr η
+
+/-- **The dimer law**: the law of `Φ` under `muZ` is the uniform law on the dimer configurations. -/
+lemma integral_comp_dimerPhi (N : ℕ) (hN : Even N) (x r : ℤ) (hxr : x % 2 = r)
+    (f : Cfg N → ℝ) : ∫ η, f (dimerPhi N x r η) ∂muZ = dimerAvg f := by
+  rw [← integral_map (measurable_dimerPhi N x r).aemeasurable
+    (measurable_of_countable f).aestronglyMeasurable, integral_fintype Integrable.of_finite]
+  unfold dimerAvg
+  rw [card_isDimer hN, Finset.sum_div, Finset.sum_filter]
+  refine Finset.sum_congr rfl fun q _ => ?_
+  rw [Measure.real, Measure.map_apply (measurable_dimerPhi N x r) (measurableSet_singleton q),
+    smul_eq_mul]
+  by_cases hq : IsDimer q
+  · rw [muZ_dimerPhi_preimage N hN x r hxr q hq, ite_eq_left hq, ENNReal.toReal_inv,
+      ENNReal.toReal_pow]
+    push_cast
+    norm_num
+    ring
+  · rw [dimerPhi_preimage_eq_empty N x r hxr q hq, measure_empty, ite_eq_right hq]
+    simp
+
+/-- The relabelling `Fin N ≃ [-x, N-1-x]`, `i ↦ i - x`. -/
+def shiftIcc (N : ℕ) (x : ℤ) : Fin N ≃ Set.Icc (-x) ((N : ℤ) - 1 - x) where
+  toFun i := ⟨(i.val : ℤ) - x, by have := i.isLt; constructor <;> omega⟩
+  invFun z := ⟨(z.1 + x).toNat, by have := z.2.1; have := z.2.2; omega⟩
+  left_inv i := by ext; simp
+  right_inv z := by ext; have := z.2.1; simp; omega
+
+/-- The relabelling is the translation by `-x`. -/
+@[simp] lemma shiftIcc_apply (N : ℕ) (x : ℤ) (i : Fin N) :
+    ((shiftIcc N x i : Set.Icc (-x) ((N : ℤ) - 1 - x)) : ℤ) = i.val - x := rfl
+
+/-- `h_{Φ(η)} = J (-Δ + diag(v^{(r)}))` after the relabelling `Fin N ≃ [-x, N-1-x]`. -/
+lemma hq_dimerPhi (J h : ℝ) (hJ : J ≠ 0) (N : ℕ) (x r : ℤ) (η : CfgZ) :
+    hq J h (dimerPhi N x r η) =
+      (J • schrH (-x) ((N : ℤ) - 1 - x) (dimerPotZ J h r η)).submatrix (shiftIcc N x)
+        (shiftIcc N x) := by
+  ext i j
+  simp only [hq, schrH, pathAdj, dimerPotZ, dimerPhi, Matrix.add_apply, Matrix.smul_apply,
+    Matrix.submatrix_apply, diagonal_apply, smul_eq_mul, shiftIcc_apply]
+  by_cases hij : i = j
+  · subst hij
+    simp
+    field_simp
+  · have hij' : (i.val : ℤ) - x ≠ (j.val : ℤ) - x := by
+      intro e
+      exact hij (Fin.ext (by omega))
+    simp only [hij, hij', ite_false, mul_zero, add_zero]
+    by_cases hadj : i.val + 1 = j.val ∨ j.val + 1 = i.val
+    · have h2 : |((i.val : ℤ) - x) - ((j.val : ℤ) - x)| = 1 := by
+        rw [abs_eq zero_le_one]; omega
+      simp only [hadj, h2, ite_true]
+      ring
+    · have h2 : ¬ |((i.val : ℤ) - x) - ((j.val : ℤ) - x)| = 1 := by
+        rw [abs_eq zero_le_one]; omega
+      simp only [hadj, h2, ite_false]
+      ring
+
+/-- The moment of `h_{Φ(η)}` at `x` is that of `-Δ + v^{(r)}` on `[-x, N-1-x]` at `0`, time `Jt`. -/
+lemma moment_dimerPhi (J h : ℝ) (hJ : J ≠ 0) (N : ℕ) (x : Fin N) (r : ℤ) (η : CfgZ) (p t : ℝ) :
+    ∑ y : Fin N, |((y.val : ℝ) - x.val)| ^ p * ‖evo (hq J h (dimerPhi N x.val r η)) t y x‖ ^ 2 =
+      ∑ y : Set.Icc (-(x.val : ℤ)) ((N : ℤ) - 1 - x.val), |((y.1 : ℤ) : ℝ)| ^ p *
+        ‖evo (schrH (-(x.val : ℤ)) ((N : ℤ) - 1 - x.val) (dimerPotZ J h r η)) (J * t) y
+          (origin _ _ (by omega) (by have := x.isLt; omega))‖ ^ 2 := by
+  rw [hq_dimerPhi J h hJ N x.val r η, ← evo_submatrix, DimerLGTAux.evo_smul,
+    ← (shiftIcc N x.val).sum_comp]
+  refine Finset.sum_congr rfl fun y _ => ?_
+  have ho : shiftIcc N x.val x = origin _ _ (by omega) (by have := x.isLt; omega) := by
+    ext
+    simp [origin]
+  rw [Matrix.submatrix_apply, ho, shiftIcc_apply]
+  push_cast
+  rfl
+
+/-- The time-averaged moment of `h_{Φ(η)}` is `M_p(JT; 0)` of `-Δ + v^{(r)}` on `[-x, N-1-x]`. -/
+lemma integral_moment_dimerPhi (J h : ℝ) (hJ : 0 < J) (N : ℕ) (x : Fin N) (r : ℤ) (η : CfgZ)
+    (p T : ℝ) :
+    ∫ t in Set.Ioi (0 : ℝ), (1 / T) * Real.exp (-t / T) *
+        ∑ y : Fin N, |((y.val : ℝ) - x.val)| ^ p * ‖evo (hq J h (dimerPhi N x.val r η)) t y x‖ ^ 2 =
+      dimerMom (-(x.val : ℤ)) ((N : ℤ) - 1 - x.val) (dimerPotZ J h r η) p (J * T)
+        (origin _ _ (by omega) (by have := x.isLt; omega)) := by
+  simp_rw [moment_dimerPhi J h hJ.ne' N x r η p]
+  refine (DimerLGTAux.integral_time_change (fun s => ∑ y : Set.Icc (-(x.val : ℤ))
+    ((N : ℤ) - 1 - x.val), |((y.1 : ℤ) : ℝ)| ^ p *
+      ‖evo (schrH (-(x.val : ℤ)) ((N : ℤ) - 1 - x.val) (dimerPotZ J h r η)) s y
+        (origin _ _ (by omega) (by have := x.isLt; omega))‖ ^ 2) J T hJ).trans ?_
+  unfold dimerMom
+  have e : ∀ y : Set.Icc (-(x.val : ℤ)) ((N : ℤ) - 1 - x.val),
+      y.1 - (origin (-(x.val : ℤ)) ((N : ℤ) - 1 - x.val) (by omega)
+        (by have := x.isLt; omega)).1 = y.1 := fun y => sub_zero _
+  simp only [e]
+
+/-- The sites `[-x_n, N_n - 1 - x_n]` exhaust `ℤ`. -/
+lemma tendsto_bounds (Ns : ℕ → ℕ) (xs : ∀ n, Fin (Ns n))
+    (hx1 : Tendsto (fun n => (xs n).val) atTop atTop)
+    (hx2 : Tendsto (fun n => Ns n - (xs n).val) atTop atTop) :
+    Tendsto (fun n => -((xs n).val : ℤ)) atTop atBot ∧
+      Tendsto (fun n => (Ns n : ℤ) - 1 - (xs n).val) atTop atTop := by
+  constructor
+  · rw [tendsto_atBot]
+    intro K
+    filter_upwards [hx1.eventually_ge_atTop (-K).toNat] with n hn
+    omega
+  · rw [tendsto_atTop]
+    intro K
+    filter_upwards [hx2.eventually_ge_atTop (K + 1).toNat] with n hn
+    have := (xs n).isLt
+    omega
+
+/-- `|v^{(r)}| ≤ |2h/J|`. -/
+lemma abs_dimerPotZ_le (J h : ℝ) (r : ℤ) (η : CfgZ) (y : ℤ) :
+    |dimerPotZ J h r η y| ≤ |2 * h / J| := by
+  simp only [dimerPotZ, abs_mul, InfVolAux.abs_sgn, mul_one, le_refl]
+
+end DimerInfVolAux
+
 /-- **Thermodynamic limit of the dimer moments** (paper: Theorem `thm:dimer`(b), first limit). -/
 theorem dimer_TL_D (J h : ℝ) (hJ : 0 < J) (r : ℤ) (Ns : ℕ → ℕ) (xs : ∀ n, Fin (Ns n))
     (hN : ∀ n, Even (Ns n)) (hpar : ∀ n, ((xs n).val : ℤ) % 2 = r)
@@ -705,7 +893,25 @@ theorem dimer_TL_D (J h : ℝ) (hJ : 0 < J) (r : ℤ) (Ns : ℕ → ℕ) (xs : �
     (hp2 : p ≤ 2) :
     Tendsto (fun n => dimerD J h (Ns n) p t (xs n)) atTop
       (𝓝 (∫ η, ∑' y : ℤ, |(y : ℝ)| ^ p * ‖evoZw (dimerPotZ J h r η) (J * t) y 0‖ ^ 2 ∂muZ)) := by
-  sorry
+  obtain ⟨has, hbs⟩ := DimerInfVolAux.tendsto_bounds Ns xs hx1 hx2
+  have ha : ∀ n, -((xs n).val : ℤ) ≤ 0 := fun n => by omega
+  have hb : ∀ n, 0 ≤ (Ns n : ℤ) - 1 - (xs n).val := fun n => by have := (xs n).isLt; omega
+  have hD : ∀ n, dimerD J h (Ns n) p t (xs n) = ∫ η, (fun q : Cfg (Ns n) => ∑ y : Fin (Ns n),
+      |((y.val : ℝ) - (xs n).val)| ^ p * ‖evo (hq J h q) t y (xs n)‖ ^ 2)
+        (DimerInfVolAux.dimerPhi (Ns n) (xs n).val r η) ∂muZ := fun n =>
+    (DimerInfVolAux.integral_comp_dimerPhi (Ns n) (hN n) (xs n).val r (hpar n) _).symm
+  simp_rw [hD]
+  refine tendsto_integral_of_dominated_convergence (fun _ => (2 * |J * t|) ^ p)
+    (fun n => ((measurable_of_countable (fun q : Cfg (Ns n) => ∑ y : Fin (Ns n),
+      |((y.val : ℝ) - (xs n).val)| ^ p * ‖evo (hq J h q) t y (xs n)‖ ^ 2)).comp
+      (DimerInfVolAux.measurable_dimerPhi (Ns n) (xs n).val r)).aestronglyMeasurable)
+    (integrable_const _) (fun n => ae_of_all _ fun η => ?_) (ae_of_all _ fun η => ?_)
+  · rw [DimerInfVolAux.moment_dimerPhi J h hJ.ne' (Ns n) (xs n) r η p t, Real.norm_eq_abs,
+      abs_of_nonneg (Finset.sum_nonneg fun y _ => by positivity)]
+    exact dimerTL_iii _ _ (ha n) (hb n) _ (J * t) p hp0 hp2
+  · simp_rw [DimerInfVolAux.moment_dimerPhi J h hJ.ne' (Ns _) (xs _) r η p t]
+    exact tendsto_moment_Z (dimerPotZ J h r η) |2 * h / J|
+      (DimerInfVolAux.abs_dimerPotZ_le J h r η) _ _ ha hb has hbs p (J * t) hp0
 
 /-- **Thermodynamic limit of the time-averaged dimer moments** (paper: Theorem `thm:dimer`(b), second
 limit). -/
@@ -715,14 +921,56 @@ theorem dimer_TL_M (J h : ℝ) (hJ : 0 < J) (r : ℤ) (Ns : ℕ → ℕ) (xs : �
     (hx2 : Tendsto (fun n => Ns n - (xs n).val) atTop atTop) (p T : ℝ) (hp0 : 0 < p)
     (hp2 : p ≤ 2) (hT : 0 < T) :
     Tendsto (fun n => dimerMN J h (Ns n) p T (xs n)) atTop (𝓝 (dimerMInf J h r p T)) := by
-  sorry
+  obtain ⟨has, hbs⟩ := DimerInfVolAux.tendsto_bounds Ns xs hx1 hx2
+  have ha : ∀ n, -((xs n).val : ℤ) ≤ 0 := fun n => by omega
+  have hb : ∀ n, 0 ≤ (Ns n : ℤ) - 1 - (xs n).val := fun n => by have := (xs n).isLt; omega
+  have hJT : 0 < J * T := mul_pos hJ hT
+  have hM : ∀ n, dimerMN J h (Ns n) p T (xs n) = ∫ η, (fun q : Cfg (Ns n) =>
+      ∫ t in Set.Ioi (0 : ℝ), (1 / T) * Real.exp (-t / T) * ∑ y : Fin (Ns n),
+        |((y.val : ℝ) - (xs n).val)| ^ p * ‖evo (hq J h q) t y (xs n)‖ ^ 2)
+        (DimerInfVolAux.dimerPhi (Ns n) (xs n).val r η) ∂muZ := fun n => by
+    rw [DimerInfVolAux.dimerMN_eq J h (Ns n) (xs n) p T hT]
+    exact (DimerInfVolAux.integral_comp_dimerPhi (Ns n) (hN n) (xs n).val r (hpar n) _).symm
+  simp_rw [hM]
+  unfold dimerMInf
+  refine tendsto_integral_of_dominated_convergence
+    (fun _ => ∫ s in Set.Ioi (0 : ℝ), DimerInfVolAux.momBound p (J * T) s)
+    (fun n => ((measurable_of_countable (fun q : Cfg (Ns n) =>
+      ∫ t in Set.Ioi (0 : ℝ), (1 / T) * Real.exp (-t / T) * ∑ y : Fin (Ns n),
+        |((y.val : ℝ) - (xs n).val)| ^ p * ‖evo (hq J h q) t y (xs n)‖ ^ 2)).comp
+      (DimerInfVolAux.measurable_dimerPhi (Ns n) (xs n).val r)).aestronglyMeasurable)
+    (integrable_const _) (fun n => ae_of_all _ fun η => ?_) (ae_of_all _ fun η => ?_)
+  · rw [DimerInfVolAux.integral_moment_dimerPhi J h hJ (Ns n) (xs n) r η p T]
+    exact DimerInfVolAux.norm_dimerMom_le _ _ (ha n) (hb n) _ p (J * T) hp0 hJT
+  · simp_rw [DimerInfVolAux.integral_moment_dimerPhi J h hJ (Ns _) (xs _) r η p T]
+    exact tendsto_dimerMom_Z (dimerPotZ J h r η) |2 * h / J|
+      (DimerInfVolAux.abs_dimerPotZ_le J h r η) _ _ ha hb has hbs p (J * T) hp0 hJT
 
 /-- **Superdiffusion, lower bound** (paper: Theorem `thm:dimer`(c), first statement):
 `M^{∞,r}_p(T) ≥ c_{λ,p} (JT)^{p-1}` for `JT ≥ 1`. -/
 theorem dimerMInf_lower (J h : ℝ) (hJ : 0 < J) (hh0 : 0 < |h|) (hh1 : 2 * |h| < J) (r : ℤ)
     (hr : r = 0 ∨ r = 1) (p T : ℝ) (hp0 : 0 < p) (hp2 : p ≤ 2) (hT : 1 ≤ J * T) :
     dimerClp (2 * |h| / J) p * (J * T) ^ (p - 1) ≤ dimerMInf J h r p T := by
-  sorry
+  have hT0 : 0 < T := by nlinarith
+  have hr1 : (r.toNat : ℝ) ≤ 1 := by exact_mod_cast (show r.toNat ≤ 1 by omega)
+  have hlim := dimer_TL_M J h hJ r (fun n => 4 * n + 4)
+    (fun n => (⟨2 * n + r.toNat, by omega⟩ : Fin (4 * n + 4)))
+    (fun n => ⟨2 * n + 2, show 4 * n + 4 = (2 * n + 2) + (2 * n + 2) by ring⟩)
+    (fun n => show ((2 * n + r.toNat : ℕ) : ℤ) % 2 = r by omega)
+    (tendsto_atTop_mono (fun n => show n ≤ 2 * n + r.toNat by omega) tendsto_id)
+    (tendsto_atTop_mono (fun n => show n ≤ 4 * n + 4 - (2 * n + r.toNat) by omega) tendsto_id)
+    p T hp0 hp2 hT0
+  refine ge_of_tendsto hlim ?_
+  filter_upwards [eventually_ge_atTop ⌈J * T⌉₊] with n hn
+  have hJTn : J * T ≤ n := (Nat.le_ceil _).trans (by exact_mod_cast hn)
+  have hn0 : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+  refine dimerMN_lower J h hJ hh0 hh1 _ p T hp0 hT ?_ ?_
+  · show J * T ≤ ((2 * n + r.toNat : ℕ) : ℝ)
+    push_cast
+    linarith [(Nat.cast_nonneg r.toNat : (0 : ℝ) ≤ r.toNat)]
+  · show J * T ≤ ((4 * n + 4 : ℕ) : ℝ) - 1 - ((2 * n + r.toNat : ℕ) : ℝ)
+    push_cast
+    linarith
 
 /-- **Failure of uniform localization for the dimer law** (paper: Theorem `thm:dimer`(d),
 eq. `eq:dimerLGTd`, for `p > 1`): `sup_{N even, x, t} D^{(N)}_p(t; x) = ∞`. -/
