@@ -495,6 +495,8 @@ Near $E_c=\lambda$ the dimer transfer matrices are, in the basis of \cref{lem:di
 angles $\pi$ and $2\theta$ up to perturbations of order $|z-\lambda|$.  \Cref{lem:dimertransfer} lets these perturbations
 add up coherently, which gives the diffusive exponent of \cref{prop:dimerlower}.  On average over the dimer signs the
 rotations randomize their phases, and the products stay bounded in mean square up to lengths of order $|z-\lambda|^{-2}$.
+The proof uses a quadratic form adapted to $E_c$, whose average over the two dimers grows only at second order in
+$\Re z-\lambda$.
 
 \begin{lemma}[Second moment near the critical energy]\label{lem:dimersecond}
 Let $0<\lambda<1$.  There are $C,K,\delta_0>0$, depending only on $\lambda$, such that for every $z\in\C$ with
@@ -506,28 +508,28 @@ where $\norm\cdot_2$ is the Hilbert--Schmidt norm.
 \end{lemma}
 
 \begin{proof}
-Let $M_\pm(z):=S^{-1}D_\pm(z)S$ and $\mathcal L_z(X):=\frac12\sum_\pm M_\pm(z)^*XM_\pm(z)$ for $2\times2$ matrices $X$.  The
-average of $P^*P$ over $\epsilon$, $P:=M_{\epsilon_n}(z)\cdots M_{\epsilon_1}(z)$, is $\mathcal L_z^n(\one)$, so the left side
-is at most $\kappa^2\Tr\mathcal L_z^n(\one)$.  $\mathcal L_z$ preserves the Hermitian matrices; write them as
-$X=x\one+y\sigma_y+w_1\sigma_z+w_2\sigma_x$ with $x,y,w_1,w_2\in\R$, so that $\Tr X=2x$, and put $\delta:=z-\lambda$.  In these
-coordinates $\mathcal L_z$ is a real $4\times4$ matrix whose entries are polynomials in $\Re z$ and $\Im z$.
-\begin{itemize}
-\item At $z=\lambda$, $M_+=\Rot_\pi$ and $M_-=\Rot_{2\theta}$ (\cref{lem:dimercritical}(iii)): $\mathcal L_\lambda$ fixes
-$\one$ and $\sigma_y$ and acts on $w$ as $\frac12(\one+\Rot_{4\theta})$, of norm $\kappa_0:=|\cos2\theta|=|2\lambda^2-1|<1$.
-\item For real $z$, $M_\pm(z)$ is real with determinant one, so $M_\pm^*\sigma_yM_\pm=\sigma_y$, and $M_\pm^*XM_\pm$ has no
-$\sigma_y$-component when $X$ is real symmetric.  Hence the entries coupling $y$ with $(x,w)$, and $1$ minus the
-$(y,y)$-entry, vanish for real $z$.
-\item The $(x,x)$-entry is $\frac14\sum_\pm\norm{M_\pm(z)}_2^2$.  Its first-order term in $\delta$ is proportional to
-$\Tr(M_\pm(\lambda)^{-1}M_\pm'(\lambda))=0$, because $\det M_\pm\equiv1$.
-\end{itemize}
-So there is $K_1\ge1$ such that for $|\delta|\le1$: the $(x,x)$-entry is within $K_1|\delta|^2$ of $1$, the $(y,y)$-entry
-within $K_1|\Im z|$ of $1$, the entries coupling $y$ with $(x,w)$ are at most $K_1|\Im z|$, the entries coupling $x$ with
-$w$ are at most $K_1|\delta|$, and the $w$-block has norm at most $\kappa_0+K_1|\delta|$.  For $\delta\ne0$ let
-$|||X|||:=|x|+|y|+c|w|$ with $c:=4K_1|\delta|/(1-\kappa_0)$.  If $|\delta|\le\delta_0:=(1-\kappa_0)/(4K_1)$, the
-coefficient of $|w|$ in $|||\mathcal L_zX|||$ is at most $c(\frac{1-\kappa_0}4+\frac{1-\kappa_0}2+\kappa_0+\frac{1-\kappa_0}4)=c$,
-those of $|x|$ and $|y|$ are at most $1+K_2(|\delta|^2+|\Im z|)$, and $|\delta|^2\le(\Re z-\lambda)^2+|\Im z|$.  Hence
-$\Tr\mathcal L_z^n(\one)\le2|||\mathcal L_z^n(\one)|||\le2(1+2K_2((\Re z-\lambda)^2+|\Im z|))^n$; for $\delta=0$,
-$\mathcal L_\lambda^n(\one)=\one$.  The lemma follows with $C:=2\kappa^2$ and $K:=2K_2$.
+Write $z-\lambda=u+\ii v$ with $u,v\in\R$, put $\varepsilon:=u^2+|v|$, $\delta_0:=(1-\lambda)/4$, and for $x\in\C^2$ let
+\[
+  G(x):=x^*Yx,\qquad Y:=\begin{pmatrix}1&\lambda\\\lambda&1-2\lambda u\end{pmatrix}.
+\]
+For $|z-\lambda|\le\delta_0$ the eigenvalues of $Y$ lie in $[\frac{1-\lambda}2,2]$.  At $z=\lambda$, $G$ is invariant under
+$D_\pm(\lambda)$ (it is a multiple of $|S^{-1}x|^2$); the term $-2\lambda u$ removes the first-order variation in $u$.  Indeed,
+since $D_+(z)=\Tdim_{-(u+\ii v)}^2$, $D_-(z)=\Tdim_{-(2\lambda+u+\ii v)}^2$ and
+$\Tdim_a^2=\bigl(\begin{smallmatrix}a^2-1&-a\\a&-1\end{smallmatrix}\bigr)$, a direct computation gives, for every
+$x=(x_1,x_2)\in\C^2$,
+\[
+  G(D_+(z)x)+G(D_-(z)x)=2G(x)+2x^*Ex,
+\]
+where $E$ is Hermitian with $E_{11}=|\delta|^4+(2\lambda^2-1)u^2+(2\lambda^2+3)v^2$, $E_{22}=|\delta|^2$ and
+$E_{12}=\lambda(v^2-u^2)+u|\delta|^2+\ii(2\lambda uv-v|\delta|^2-2v)$, $\delta:=z-\lambda$.  For $|\delta|\le1$ these entries
+are bounded by $6\varepsilon$, $\varepsilon$ and $7\varepsilon$, so $x^*Ex\le13\varepsilon|x|^2$ and
+\[
+  \tfrac12\textstyle\sum_\pm G(D_\pm(z)x)\le\bigl(1+26\varepsilon/(1-\lambda)\bigr)G(x).
+\]
+Applying this to $x=D_{\epsilon_{n-1}}(z)\cdots D_{\epsilon_1}(z)e_i$ and averaging over $\epsilon_n$, by induction the average of
+$G(D_{\epsilon_n}(z)\cdots D_{\epsilon_1}(z)e_i)$ is at most $(1+26\varepsilon/(1-\lambda))^nG(e_i)\le2\e^{26n\varepsilon/(1-\lambda)}$.  Since
+$\norm A_2^2=|Ae_1|^2+|Ae_2|^2\le\frac2{1-\lambda}(G(Ae_1)+G(Ae_2))$, the lemma holds with $C:=8/(1-\lambda)$,
+$K:=26/(1-\lambda)$ and $\delta_0=(1-\lambda)/4$.
 \end{proof}
 
 \begin{proposition}[Superdiffusion]\label{prop:dimersuper}
