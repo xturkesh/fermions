@@ -1,0 +1,158 @@
+% Summary of the paper and collected statements (English version of summary.tex).
+% Compile from paper/summary/ after compiling ../main.tex (needs ../main.aux):
+%   python3 make_statements.py && latexmk -pdf summary_en.tex
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{bm}
+\usepackage[margin=1in]{geometry}
+\usepackage[expansion=false]{microtype}
+\usepackage{enumitem}
+\usepackage{xr}
+\externaldocument{../main}
+\usepackage[capitalise]{cleveref}
+
+\crefname{hypothesis}{Hypothesis}{Hypotheses}
+\Crefname{hypothesis}{Hypothesis}{Hypotheses}
+\crefname{conjecture}{Conjecture}{Conjectures}
+\Crefname{conjecture}{Conjecture}{Conjectures}
+
+\providecommand{\texorpdfstring}[2]{#1}  % hyperref is not loaded
+\input{../macros}
+\input{localmacros}
+
+% Statements: heading "Theorem 4.7 (Title)." with the paper's number, read from ../main.aux.
+\newcommand{\stmtname}{}
+\newtheoremstyle{stmtplain}{12pt}{3pt}{\itshape}{}{\bfseries}{.}{.5em}{\thmname{#1}\thmnote{\ \normalfont(#3)}}
+\newtheoremstyle{stmtdef}{12pt}{3pt}{\normalfont}{}{\bfseries}{.}{.5em}{\thmname{#1}\thmnote{\ \normalfont(#3)}}
+\theoremstyle{stmtplain}
+\newtheorem*{stmtP}{\stmtname}
+\theoremstyle{stmtdef}
+\newtheorem*{stmtD}{\stmtname}
+\newcommand{\leanline}[1]{\par\nopagebreak\vspace{1pt}%
+  {\raggedright\footnotesize\textsf{Lean:}\ #1\par}\medskip}
+
+\title{Rigorous disorder-free localization in a $\mathbb{Z}_2$ lattice gauge theory\\[8pt]
+\large Summary of the paper and collected statements}
+\author{}
+\date{November 23, 2026}
+
+\begin{document}
+\maketitle
+
+\noindent This document summarizes the paper (\cref{sec:summary}) and collects all its statements
+(\cref{sec:statements}), with the numbering of the paper and, for each statement, the Lean theorems that
+formalize it.
+
+\tableofcontents
+
+% ------------------------------------------------------------------------------------------------
+\section{Summary}\label{sec:summary}
+
+\paragraph{The problem.}
+Isolated quantum many-body systems are expected to thermalize. Many-body localization (MBL) is the proposal that
+strong quenched disorder can prevent thermalization even in the presence of interactions; its status is debated, and
+the few rigorous results all concern Hamiltonians with disorder. Smith, Knolle, Kovrizhin and Moessner (SKKM) found
+numerically a mechanism in which gauge invariance takes the place of disorder. In a one-dimensional $\Z_2$ lattice
+gauge theory with free fermions, both the Hamiltonian and the initial state are translation invariant, yet the memory
+of an initial density wave persists and correlations do not spread: this is \emph{disorder-free localization} (DFL).
+The evidence so far was numerical. The paper gives a rigorous treatment.
+
+\paragraph{Model and duality (\cref{sec:model}).}
+Spinless fermions hop on a chain of $N$ sites, minimally coupled to Ising gauge spins on the links, with an electric
+term that couples neighbouring links (\cref{def:model}). The only change with respect to SKKM is a \emph{boundary
+link}, a static $\Z_2$ flux at the right end of the chain. With it, a Kramers--Wannier-type duality is an exact
+unitary equivalence on the full Hilbert space (\cref{thm:duality}):
+\[
+  U^\dagger HU=\bigoplus_q\Bigl(\dGamma(\hq)-h\sum_jq_j\Bigr),\qquad \hq=-J\Delta_N+2h\diag(q),
+\]
+where $q\in\{\pm1\}^N$ are the conserved Gauss charges. For the $z$-polarized gauge state the charges are exactly
+i.i.d.: every expectation value of gauge-invariant observables, at any number of times, is an average over Anderson
+chains with Bernoulli potential $\pm2h$ (\cref{cor:sector}). The duality is local across a cut up to a single
+controlled gate, and it changes entanglement entropies by at most $\ln2$ (\cref{lem:cutlocal}).
+
+\paragraph{The one-body input (\cref{sec:onebody}).}
+All results on the gauge theory follow from a single hypothesis on the Bernoulli chain, \cref{hyp:EC}: the
+eigenfunction correlator, averaged over the charges, decays summably, uniformly in the volume. \Cref{thm:EC} proves it
+with exponential decay, $\E\,Q^\Lambda(x,y)\le Ce^{-\eta|x-y|}$, for every finite interval $\Lambda$ and all
+$x,y\in\Lambda$, including pairs at the boundary, and also with the supremum over $\Lambda$ inside the expectation.
+The constants depend only on $|\lambda|$, with $\lambda=2h/J$, and are not explicit. The proof adapts the two-point
+resonance argument of Macera and the resonance elimination of Macera and Sodin; boxes truncated by the boundary are
+handled by a deterministic Green-function bound (\cref{lem:green}). The input from the literature is the uniform
+large-deviation estimate for products of Bernoulli transfer matrices (\cref{prop:LDT}, from Furstenberg's theory),
+whose hypotheses are verified in \cref{prop:nocritical}.
+
+\paragraph{Disorder-free localization of the gauge theory (\cref{sec:main}).}
+For every $h\neq0$, uniformly in the volume $N$ and in time:
+\begin{itemize}[leftmargin=1.5em]
+\item the dressed fermions are localized, and the charge transported across any cut is bounded
+  (\cref{thm:transport});
+\item a zero-velocity Lieb--Robinson bound holds on average over the sectors, for every state that gives all sectors
+  the same weight; no operator-norm version exists, because the clean sector $q\equiv1$ is ballistic
+  (\cref{prop:LR});
+\item the infinite-time imbalance of an initial density wave is strictly positive (\cref{thm:imbalance}), also on
+  the open chain of SKKM without the boundary link (\cref{cor:imbalanceopen});
+\item the entanglement conditional on the charges, $\SG$, and, on average over the charges, the full
+  matter-plus-gauge entanglement of definite-charge initial states obey area laws (\cref{thm:arealaw});
+  \cref{prop:entropies} establishes the relations between the entropies: the number entropy $\SN$ is a lower bound
+  for $\Sfull$, for $\Smix$ and for the bare-matter entropy, but not for $\SG$;
+\item the number entropy is bounded, with an explicit constant (\cref{thm:numberentropy});
+\item thermodynamic limits exist on two-sided infinite chains, with the same bounds for bulk observables, the
+  imbalance excepted (\cref{thm:infvol}).
+\end{itemize}
+The constants are explicit in terms of the decay profile of \cref{thm:EC}. The entanglement $\Sfull$ of the
+superposed state, which depends on the coherences between sectors, is not controlled. The paper conjectures that it
+grows logarithmically (\cref{conj:logent}) and isolates the rigorous input, a sensitivity estimate for distant
+charges (\cref{lem:duhamel}); it also conjectures a volume law for the time-averaged mixed entropies
+(\cref{conj:volmix}).
+
+\paragraph{Localization depends on the initial state (\cref{sec:dimer}).}
+Changing only the state of the even links gives a product state whose sector law is the random dimer law
+(\cref{def:dimerstate}, \cref{prop:dimerlaw}). For $0<2|h|<J$ the dimer model has critical energies
+(\cref{lem:dimercritical}). A dressed fermion then spreads at least diffusively, in every sector and in every volume,
+up to times of the order of the distance to the boundary (\cref{prop:dimerlower}), and superdiffusively in the
+thermodynamic limit, with mean-square displacement at least of order $T^{3/2}$ on average (\cref{prop:dimersuper},
+\cref{thm:dimer}). For every $h\neq0$ the infinite-time average of the imbalance vanishes as $N\to\infty$
+(\cref{prop:dimerimbalance}).
+
+\paragraph{Two dimensions (\cref{sec:2d}).}
+The mapping is exact on every finite graph, with the complete set of superselection labels, including the
+non-contractible Wilson loops of a torus (\cref{lem:2dgauge}, \cref{thm:2dmap}). Product states lead to the
+two-dimensional Anderson model with Bernoulli potential, or to binary random $\pi$-flux (\cref{prop:2dlaws}). At
+strong coupling the charges stay confined to finite clusters up to times of order $|h|/J^2$ (\cref{prop:cluster}).
+Localization in two dimensions is not proved: the one-body input is missing.
+
+\paragraph{$U(1)$ gauge theories (\cref{sec:u1}).}
+With spin-$S$ quantum links, the Gauss law caps the number entropy of any interval by $\ln(4S+1)$, in every
+background-charge sector, for every state and every gauge-invariant dynamics (\cref{prop:gausscap}). With Wilson
+links, energy conservation bounds its average over cuts (\cref{prop:wilson}). In the standard $\Z_2$ gauge theory,
+with a single-link electric term, one charge moves in a random-walk potential and two charges interact.
+
+\paragraph{Numerics and open problems (\cref{sec:numerics,sec:discussion}).}
+Exact numerics illustrate the results and compare the rigorous constants with the data. For $N=10$ the full
+entanglement keeps growing over several decades of time, consistent with \cref{conj:logent}. The main open problem is
+interacting matter: with a density interaction the sector average remains exact, and disorder-free localization
+becomes MBL of an XXZ chain in a binary random field, which is beyond the reach of current rigorous methods.
+
+\paragraph{Formal verification in Lean (\cref{app:lean}).}
+The results of the paper, in finite and in infinite volume, are formalized in Lean~4 with Mathlib: 94 modules (about
+50\,500 lines) and 5601 theorems, with no axioms beyond Lean's three standard ones. All remarks with mathematical
+content are formalized as well, including the bound (EC) on the ring and, given the dynamical localization of the
+dimer model, the tightness of the dressed fermion at strong coupling. Only the literature results used as hypotheses
+(Furstenberg's large deviations, Ge--Zhao, the percolation estimate of Li--Liang, the dynamical localization of
+De Bièvre--Germinet) and the verification of their hypotheses in their original formalism are not formalized.
+
+% ------------------------------------------------------------------------------------------------
+\clearpage
+\section{Statements}\label{sec:statements}
+
+\noindent All statements of the paper follow (definitions, the hypothesis, lemmas, propositions, theorems,
+corollaries and conjectures: 57 in total), in the order and with the numbering of the paper. The text is that of the
+paper; references to equations, remarks, figures and the bibliography refer to the paper. Below each statement we
+list the Lean theorems that formalize it, with their files in the library (\texttt{lean/DFL/}), following the
+correspondence table in the README of the formalization. Proofs are not included.
+
+\input{statements}
+
+\end{document}
