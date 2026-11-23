@@ -459,7 +459,8 @@ theorem interior_defect (ℓ₁ m : ℕ) (h : ℓ₁ + m ≤ N) (hm : 0 < m) (Φ
   -- `ρ'' = ρ_{I'}(Φ)` relabelled by `(α, β) ↦ (α, chargeOf α β)`
   have hρ'' : ((rdmMid ℓ₁ m h Φ).submatrix (dualEquiv (N := m)).symm
       dualEquiv.symm).PosSemidef := (rdmMid_posSemidef ℓ₁ m h Φ).submatrix _
-  have htr'' : ((rdmMid ℓ₁ m h Φ).submatrix (dualEquiv (N := m)).symm dualEquiv.symm).trace = 1 := by
+  have htr'' :
+      ((rdmMid ℓ₁ m h Φ).submatrix (dualEquiv (N := m)).symm dualEquiv.symm).trace = 1 := by
     rw [InteriorAux.trace_submatrix_equiv, trace_rdmMid, hΦ, Complex.ofReal_one]
   have hpin := pinching_omegaC ℓ₁ m h Φ
   -- `ρ̃ = ω₀ + ω₁` has trace one: its diagonal is that of `ρ''`
@@ -785,7 +786,8 @@ theorem exInt_U_entropy :
     · rw [ite_eq_left (congrArg gU ha), ite_eq_left ha]
       norm_num
     · rw [ite_eq_right (fun hg => ha (gU_injective a a' hg)), ite_eq_right ha]
-  have hH : (diagonal (fun a : Cfg 1 × Cfg 1 => (((if True then 1 / 4 else 0 : ℝ)) : ℂ))).IsHermitian :=
+  have hH : (diagonal (fun a : Cfg 1 × Cfg 1 =>
+      (((if True then 1 / 4 else 0 : ℝ)) : ℂ))).IsHermitian :=
     hD ▸ rdmMid_isHermitian 1 1 (by norm_num) _
   rw [CutLocalAux.vonNeumann_congr _ hH hD, vonNeumann_diagonal]
   exact sum_negMulLog_quarter _ card_exInt_all
@@ -849,7 +851,8 @@ lemma exVacU_support : ∀ (αI βI : Cfg 2) (αL βL : Cfg 1) (γR δR : Cfg (4
       ((αL = 0 ∧ βL = (fun _ => βI 0) ∧ γR = 0 ∧ δR = (fun _ => βI 1)) ∧ αI = 0) := by
   decide
 
-/-- `U exVac` in split coordinates: supported on the graph of `gV`, with amplitude `½ [n₁ = n₂ = 0]`. -/
+/-- `U exVac` in split coordinates: supported on the graph of `gV`, with amplitude
+`½ [n₁ = n₂ = 0]`. -/
 lemma exVacU_split (a : Cfg 2 × Cfg 2)
     (b : (Cfg 1 × Cfg 1) × (Cfg (4 - 1 - 2) × Cfg (4 - 1 - 2))) :
     exVac (dualEquiv.symm ((splitMid 1 2 (by norm_num)).symm (a, b))) =

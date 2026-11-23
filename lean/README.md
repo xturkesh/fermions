@@ -80,6 +80,7 @@ No `axiom` is introduced anywhere.
 | Theorem `thm:arealaw`(b),(c) **with the constants of the paper** (`E_ξ S_full(t) = S_G(t)`, `sup_t S_G ≤ 8 ln 2 M_2(F)`, `E_ξ sup_t S_full ≤ 8 ln 2 M_2(F)`, Markov bound `P_ξ(sup_t S_full ≥ s) ≤ 8 ln 2 M_2(F)/s`) | `avg_full_eq_SG`, `sup_SG_le`, `avg_sup_full_le`, `prob_sup_full_ge_le` | `AreaLawFull.lean` |
 | Lemma `lem:pinching`; concavity and mixing bound of the von Neumann entropy | `vonNeumann_le_pinching`, `vonNeumann_pinching_le`, `vonNeumann_concave`, `vonNeumann_mix_le`, `vonNeumann_le_diag`, `vonNeumann_le_log_card`, `vonNeumann_mul_conjTranspose_comm` | `VNEntropy.lean` |
 | Lemma `lem:cutlocal`(a) (in configuration form: `U⁻¹` of a split configuration is the split of the dual configurations after the controlled flip `C_ℓ` of the right links), (b),(d) (duality defect `≤ ln 2`, sharp) | `EntropiesAux.dualEquiv_symm_splitLGT`, `cutlocal_defect`, `exProd_entropy`, `exProd_U_entropy`, `exProd_Udag_entropy` | `Entropies.lean`, `CutLocalExamples.lean` |
+| Remark `rem:interior` (interior intervals `[ℓ₁, ℓ₁+m)`, sites and links, Jordan–Wigner partial trace: `\|S_I(UΦ) - S_{I'}(Φ)\| ≤ 2 ln 2`, by the controlled gates at the two ends; the value `2 ln 2` is attained, by the matter vacuum for `N = 4` and a two-site interval (a Bell pair across each end) and for `N = 3` by a state of indefinite parity; for states of definite parity the reduced state is block diagonal in the parity of the interval) | `splitMid`, `rdmMid`, `rdmMid_posSemidef`, `trace_rdmMid`, `interior_defect`, `rdmMid_parity_block`, `exVac`, `exVac_entropy`, `exVac_U_entropy`, `interior_defect_attained_vacuum`, `exInt`, `interior_defect_attained` | `Interior.lean` |
 | Proposition `prop:entropies`(a)–(c) (entropy taxonomy) | `fullEntropy_eq_numberEntropy_add`, `bareEntropy_eq_numberEntropy_add`, `vonNeumann_block_decomp`, `lgt_duality_defect`, `mixRdm_eq_marginal`, `condEntropy_le_mix`, `mix_le_cond_add`, `mix_le_log`, `sectorLawEntropy_le`, `sectorLawEntropy_zero`, `lgtNumDist_eq_avg`, `numberEntropy_le_mix`, `numberEntropy_le_bare`, `avg_sector_shannon_le_cond`, `avg_sector_shannon_le_numberEntropy`, `numberEntropy_le_avg_add`; `shannon_le_vonNeumann_of_block`, `numDist_shannon_le_vonNeumann_slater`, `lgt_numberEntropy_le_full` | `Entropies.lean`, `Taxonomy.lean`, `EntropyBlocks.lean` |
 | Proposition `prop:entropies`(d) (superposition = ensemble, all multi-time correlators) | `expect_initZ_eq_trace_ensemble`, `correlator_eq_ensemble`, `gaugeInv_heis` | `Ensemble.lean` |
 | Lemma `lem:duhamel` | `colNorm_evo_sub_le`, `avg_colNorm_evo_sub_le` | `Duhamel.lean` |
@@ -127,14 +128,14 @@ No `axiom` is introduced anywhere.
 
 ## Verification
 
-`lake build` compiles all 91 modules (about 48,700 lines) without `sorry`; there is no `axiom`,
+`lake build` compiles all 92 modules (about 49,600 lines) without `sorry`; there is no `axiom`,
 `admit`, `native_decide` or `implemented_by` in the library. The script `CheckAxioms.lean` walks
 through every theorem declared in a `DFL` module (including private helper lemmas) and collects the
 axioms it depends on:
 
 ```
 lake env lean CheckAxioms.lean
-# checked 5417 theorems in DFL modules; with non-standard axioms: 0
+# checked 5508 theorems in DFL modules; with non-standard axioms: 0
 ```
 
 i.e. every theorem depends only on Lean's standard axioms `propext`, `Classical.choice` and
