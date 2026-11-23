@@ -802,19 +802,104 @@ theorem tendsto_dosFin (lam : ℝ) (f : ℝ → ℝ) (hf : Continuous f) :
   rw [abs_lt] at h4 ⊢
   constructor <;> linarith [h1.1, h1.2, h3.1, h3.2, h4.1, h4.2]
 
+namespace DimerDOSAux
+
+/-! ### Consequences of the convergence -/
+
+/-- `N⁻¹ E_dim Tr c = c`. -/
+lemma dosFin_const (lam : ℝ) (M : ℕ) (hM : 0 < M) (c : ℝ) : dosFin lam M (fun _ => c) = c := by
+  have hM' : (0 : ℝ) < M := by exact_mod_cast hM
+  rw [dosFin_eq_integral]
+  simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul, integral_const,
+    probReal_univ, one_smul]
+  push_cast
+  field_simp
+
+/-- `N⁻¹ E_dim Tr f(h_q)` is additive in `f`. -/
+lemma dosFin_add (lam : ℝ) (M : ℕ) (f g : ℝ → ℝ) :
+    dosFin lam M (fun x => f x + g x) = dosFin lam M f + dosFin lam M g := by
+  unfold dosFin dimerAvg
+  simp only [Finset.sum_add_distrib, add_div, mul_add]
+
+/-- `N⁻¹ E_dim Tr f(h_q)` is homogeneous in `f`. -/
+lemma dosFin_smul (lam : ℝ) (M : ℕ) (c : ℝ) (f : ℝ → ℝ) :
+    dosFin lam M (fun x => c * f x) = c * dosFin lam M f := by
+  unfold dosFin dimerAvg
+  simp only [← Finset.mul_sum, mul_div_assoc]
+  ring
+
+/-- `ν` is additive. -/
+lemma dosFun_add (lam : ℝ) (f g : ℝ → ℝ) (hf : Continuous f) (hg : Continuous g) :
+    dosFun lam (fun x => f x + g x) = dosFun lam f + dosFun lam g := by
+  refine tendsto_nhds_unique (tendsto_dosFin lam _ (hf.add hg)) ?_
+  simp_rw [dosFin_add]
+  exact (tendsto_dosFin lam f hf).add (tendsto_dosFin lam g hg)
+
+/-- `ν` is homogeneous. -/
+lemma dosFun_smul (lam : ℝ) (c : ℝ) (f : ℝ → ℝ) (hf : Continuous f) :
+    dosFun lam (fun x => c * f x) = c * dosFun lam f := by
+  refine tendsto_nhds_unique (tendsto_dosFin lam _ (continuous_const.mul hf)) ?_
+  simp_rw [dosFin_smul]
+  exact (tendsto_dosFin lam f hf).const_mul c
+
+/-- `ν` is monotone. -/
+lemma dosFun_mono (lam : ℝ) (f g : ℝ → ℝ) (hf : Continuous f) (hg : Continuous g)
+    (hfg : ∀ x, f x ≤ g x) : dosFun lam f ≤ dosFun lam g := by
+  refine le_of_tendsto_of_tendsto' (tendsto_dosFin lam f hf) (tendsto_dosFin lam g hg)
+    fun M => ?_
+  unfold dosFin
+  exact mul_le_mul_of_nonneg_left (DimerLGTAux.dimerAvg_mono fun q _ =>
+    Finset.sum_le_sum fun α _ => hfg _) (by positivity)
+
+/-- `ν(f)` only depends on `f` on the spectral interval. -/
+lemma dosFun_congr (lam : ℝ) (f g : ℝ → ℝ) (hf : Continuous f) (hg : Continuous g)
+    (hfg : ∀ x ∈ Set.Icc (-(2 + |lam|)) (2 + |lam|), f x = g x) :
+    dosFun lam f = dosFun lam g := by
+  refine tendsto_nhds_unique (tendsto_dosFin lam f hf) ?_
+  have e : ∀ M, dosFin lam M f = dosFin lam M g := fun M => by
+    unfold dosFin
+    congr 2
+    funext q
+    exact Finset.sum_congr rfl fun α _ => hfg _ (abs_le.mp (abs_eig_le lam q α))
+  simp_rw [e]
+  exact tendsto_dosFin lam g hg
+
+/-- `ν(K) ≤ ∫ f dν` for a finite measure and `f ≥ 0` with `f = 1` on `K`. -/
+lemma measureReal_le_integral (ν : Measure ℝ) [IsFiniteMeasure ν] {K : Set ℝ}
+    (hK : MeasurableSet K) (f : CompactlySupportedContinuousMap ℝ ℝ) (h0 : ∀ x, 0 ≤ f x)
+    (h1 : ∀ x ∈ K, f x = 1) : ν.real K ≤ ∫ x, f x ∂ν := by
+  rw [← integral_indicator_one hK]
+  refine integral_mono ((integrable_const (1 : ℝ)).indicator hK) f.integrable fun x => ?_
+  by_cases hx : x ∈ K
+  · simp [Set.indicator_of_mem hx, h1 x hx]
+  · rw [Set.indicator_of_notMem hx]
+    exact h0 x
+
+end DimerDOSAux
+
 /-- `ν` is positive. -/
 theorem dosFun_nonneg (lam : ℝ) (f : ℝ → ℝ) (hf : Continuous f) (h0 : ∀ x, 0 ≤ f x) :
     0 ≤ dosFun lam f := by
-  sorry
+  refine ge_of_tendsto' (tendsto_dosFin lam f hf) fun M => ?_
+  unfold dosFin
+  exact mul_nonneg (by positivity)
+    (DimerLGTAux.dimerAvg_nonneg fun q => Finset.sum_nonneg fun α _ => h0 _)
 
 /-- `ν` is normalized. -/
 theorem dosFun_one (lam : ℝ) : dosFun lam (fun _ => 1) = 1 := by
-  sorry
+  refine tendsto_nhds_unique (tendsto_dosFin lam _ continuous_const) ?_
+  exact tendsto_const_nhds.congr'
+    (eventually_atTop.mpr ⟨1, fun M hM => (DimerDOSAux.dosFin_const lam M hM 1).symm⟩)
 
 /-- `ν` lives on the spectral interval `[-2-|λ|, 2+|λ|]`. -/
 theorem dosFun_eq_zero_of_support (lam : ℝ) (f : ℝ → ℝ) (hf : Continuous f)
     (hsupp : ∀ x ∈ Set.Icc (-2 - |lam|) (2 + |lam|), f x = 0) : dosFun lam f = 0 := by
-  sorry
+  have e := DimerDOSAux.dosFun_congr lam f (fun _ => 0) hf continuous_const fun x hx =>
+    hsupp x ⟨by linarith [hx.1], hx.2⟩
+  rw [e]
+  refine tendsto_nhds_unique (tendsto_dosFin lam _ continuous_const) ?_
+  exact tendsto_const_nhds.congr'
+    (eventually_atTop.mpr ⟨1, fun M hM => (DimerDOSAux.dosFin_const lam M hM 0).symm⟩)
 
 /-- **No concentration near any energy**: `ν(f) ≤ 2/L` for `0 ≤ f ≤ 1` supported in `[E - ε, E + ε]` with
 `ε L (|λ| + |E| + 1)^L < 1`. -/
@@ -822,12 +907,94 @@ theorem dosFun_le_of_near (lam : ℝ) (f : ℝ → ℝ) (hf : Continuous f)
     (h01 : ∀ x, 0 ≤ f x ∧ f x ≤ 1) (E ε : ℝ) (L : ℕ) (hL : 0 < L)
     (hε : ε * L * (|lam| + |E| + 1) ^ L < 1) (hsupp : ∀ x, f x ≠ 0 → |x - E| ≤ ε) :
     dosFun lam f ≤ 2 / L := by
-  sorry
+  have hε' : ε * L * ((2 * |lam / 2| + |E|) / |(1 : ℝ)| + 1) ^ L < |(1 : ℝ)| := by
+    rw [abs_one, div_one, abs_div, abs_two, mul_div_cancel₀ _ two_ne_zero]
+    exact hε
+  have hbound : ∀ M : ℕ, 0 < M → dosFin lam M f ≤ 2 / L + 1 / M := by
+    intro M hM
+    have hM' : (0 : ℝ) < M := by exact_mod_cast hM
+    have hL' : (0 : ℝ) < L := by exact_mod_cast hL
+    have hq : ∀ q : Cfg (2 * M), ∑ α, f ((hq_isHermitian 1 (lam / 2) q).eigenvalues α) ≤
+        2 * ((2 * M : ℝ) / L + 1) := by
+      intro q
+      have hc := card_eig_near_le 1 (lam / 2) one_ne_zero q E ε L hL hε'
+      push_cast at hc
+      calc ∑ α, f ((hq_isHermitian 1 (lam / 2) q).eigenvalues α)
+          ≤ ∑ α, (if |(hq_isHermitian 1 (lam / 2) q).eigenvalues α - E| ≤ ε then (1 : ℝ)
+              else 0) := Finset.sum_le_sum fun α _ => by
+            split_ifs with h
+            · exact (h01 _).2
+            · have : f ((hq_isHermitian 1 (lam / 2) q).eigenvalues α) = 0 := by
+                by_contra hne
+                exact h (hsupp _ hne)
+              rw [this]
+        _ = ((Finset.univ.filter (fun α : Fin (2 * M) =>
+              |(hq_isHermitian 1 (lam / 2) q).eigenvalues α - E| ≤ ε)).card : ℝ) := by
+            rw [Finset.sum_boole]
+        _ ≤ 2 * ((2 * M : ℝ) / L + 1) := hc
+    have hi : Integrable (fun η =>
+        ∑ α, f ((hq_isHermitian 1 (lam / 2) (DimerDOSAux.qOf M η)).eigenvalues α)) muZ :=
+      DimerDOSAux.integrable_comp_qOf M
+        (fun q => ∑ α, f ((hq_isHermitian 1 (lam / 2) q).eigenvalues α))
+    rw [DimerDOSAux.dosFin_eq_integral]
+    calc 1 / (2 * M : ℝ) *
+          ∫ η, ∑ α, f ((hq_isHermitian 1 (lam / 2) (DimerDOSAux.qOf M η)).eigenvalues α) ∂muZ
+        ≤ 1 / (2 * M : ℝ) * (2 * ((2 * M : ℝ) / L + 1)) := by
+          gcongr
+          calc ∫ η, ∑ α, f ((hq_isHermitian 1 (lam / 2) (DimerDOSAux.qOf M η)).eigenvalues α) ∂muZ
+              ≤ ∫ η, 2 * ((2 * M : ℝ) / L + 1) ∂muZ :=
+                integral_mono hi (integrable_const _) fun η => hq _
+            _ = 2 * ((2 * M : ℝ) / L + 1) := by simp
+      _ = 2 / L + 1 / M := by
+          field_simp
+  refine le_of_tendsto_of_tendsto (tendsto_dosFin lam f hf) ?_
+    (eventually_atTop.mpr ⟨1, fun M hM => hbound M hM⟩)
+  simpa using (tendsto_const_nhds (x := (2 / L : ℝ))).add
+    (tendsto_one_div_atTop_nhds_zero_nat (𝕜 := ℝ))
+
+namespace DimerDOSAux
+
+/-- The positive linear functional `f ↦ ν(f)` on `C_c(ℝ, ℝ)`. -/
+def dosPLM (lam : ℝ) : CompactlySupportedContinuousMap ℝ ℝ →ₚ[ℝ] ℝ where
+  toFun f := dosFun lam f
+  map_add' f g := by
+    rw [CompactlySupportedContinuousMap.coe_add]
+    exact dosFun_add lam f g f.continuous g.continuous
+  map_smul' c f := by
+    rw [CompactlySupportedContinuousMap.coe_smul, RingHom.id_apply, smul_eq_mul]
+    exact dosFun_smul lam c f f.continuous
+  monotone' f g hfg := dosFun_mono lam f g f.continuous g.continuous
+    (CompactlySupportedContinuousMap.le_def.mp hfg)
+
+end DimerDOSAux
 
 /-- **The density of states is a probability measure** (Riesz–Markov–Kakutani). -/
 theorem exists_dosMeasure (lam : ℝ) :
     ∃ ν : Measure ℝ, IsProbabilityMeasure ν ∧ ∀ f : CompactlySupportedContinuousMap ℝ ℝ, ∫ x, f x ∂ν = dosFun lam f := by
-  sorry
+  set Λ := DimerDOSAux.dosPLM lam with hΛ
+  have hΛf : ∀ f, Λ f = dosFun lam f := fun f => rfl
+  refine ⟨RealRMK.rieszMeasure Λ, ⟨le_antisymm ?_ ?_⟩,
+    fun f => (RealRMK.integral_rieszMeasure Λ f).trans (hΛf f)⟩
+  · rw [isOpen_univ.measure_eq_iSup_isCompact]
+    refine iSup_le fun K => iSup_le fun _ => iSup_le fun hK => ?_
+    obtain ⟨g, hg1, hg2, -, hg4⟩ :=
+      exists_continuousMap_one_of_isCompact_subset_isOpen hK isOpen_univ (Set.subset_univ K)
+    refine (RealRMK.rieszMeasure_le_of_eq_one Λ (f := ⟨g, hg2⟩) (fun x => (hg4 x).1) hK
+      fun x hx => hg1 hx).trans ?_
+    rw [hΛf, ENNReal.ofReal_le_one]
+    calc dosFun lam g ≤ dosFun lam (fun _ => 1) :=
+          DimerDOSAux.dosFun_mono lam g _ g.continuous continuous_const fun x => (hg4 x).2
+      _ = 1 := dosFun_one lam
+  · obtain ⟨g, hg1, hg2, -, hg4⟩ := exists_continuousMap_one_of_isCompact_subset_isOpen
+      (isCompact_Icc (a := -(2 + |lam|)) (b := 2 + |lam|)) isOpen_univ (Set.subset_univ _)
+    have h1 : dosFun lam g = 1 := (DimerDOSAux.dosFun_congr lam g (fun _ => 1) g.continuous
+      continuous_const fun x hx => hg1 hx).trans (dosFun_one lam)
+    calc (1 : ENNReal) = ENNReal.ofReal (Λ ⟨g, hg2⟩) := by
+          show (1 : ENNReal) = ENNReal.ofReal (dosFun lam g)
+          rw [h1, ENNReal.ofReal_one]
+      _ ≤ RealRMK.rieszMeasure Λ Set.univ :=
+          RealRMK.le_rieszMeasure_tsupport_subset Λ (f := ⟨g, hg2⟩)
+            (fun x => ⟨(hg4 x).1, (hg4 x).2⟩) (Set.subset_univ _)
 
 /-- The density of states `ν` of the dimer model. -/
 def dosMeasure (lam : ℝ) : Measure ℝ := Classical.choose (exists_dosMeasure lam)
@@ -844,10 +1011,56 @@ theorem integral_dosMeasure (lam : ℝ) (f : CompactlySupportedContinuousMap ℝ
 /-- `ν` is supported in `[-2-|λ|, 2+|λ|]` (paper: `rem:dimerdos`(i)). -/
 theorem dosMeasure_compl_Icc (lam : ℝ) :
     dosMeasure lam (Set.Icc (-2 - |lam|) (2 + |lam|))ᶜ = 0 := by
-  sorry
+  have := isProbabilityMeasure_dosMeasure lam
+  have hU : IsOpen (Set.Icc (-2 - |lam|) (2 + |lam|))ᶜ := isOpen_compl_iff.mpr isClosed_Icc
+  rw [hU.measure_eq_iSup_isCompact]
+  refine le_antisymm (iSup_le fun K => iSup_le fun hKU => iSup_le fun hK => ?_) zero_le
+  obtain ⟨g, hg1, hg2, hg3, hg4⟩ := exists_continuousMap_one_of_isCompact_subset_isOpen hK hU hKU
+  have hg0 : dosFun lam g = 0 := dosFun_eq_zero_of_support lam g g.continuous fun x hx =>
+    image_eq_zero_of_notMem_tsupport fun hx' => hg3 hx' hx
+  have h := DimerDOSAux.measureReal_le_integral (dosMeasure lam) hK.measurableSet ⟨g, hg2⟩
+    (fun x => (hg4 x).1) (fun x hx => hg1 hx)
+  rw [integral_dosMeasure] at h
+  have h' : (dosMeasure lam).real K = 0 :=
+    le_antisymm (h.trans (le_of_eq hg0)) measureReal_nonneg
+  rw [measureReal_eq_zero_iff (measure_ne_top _ _)] at h'
+  rw [h']
 
 /-- **`ν` has no atoms** (paper: `rem:dimerdos`(i)). -/
 theorem dosMeasure_singleton (lam E : ℝ) : dosMeasure lam {E} = 0 := by
-  sorry
+  have := isProbabilityMeasure_dosMeasure lam
+  have hbound : ∀ L : ℕ, 0 < L → (dosMeasure lam).real {E} ≤ 2 / L := by
+    intro L hL
+    have hL' : (0 : ℝ) < L := by exact_mod_cast hL
+    have hX : 0 < (|lam| + |E| + 1) ^ L := by positivity
+    set ε : ℝ := 1 / (2 * L * (|lam| + |E| + 1) ^ L) with hεdef
+    have hε0 : 0 < ε := by positivity
+    have hε : ε * L * (|lam| + |E| + 1) ^ L < 1 := by
+      have e : ε * L * (|lam| + |E| + 1) ^ L = 1 / 2 := by
+        rw [hεdef]
+        field_simp
+      rw [e]
+      norm_num
+    have hsub : ({E} : Set ℝ) ⊆ Set.Ioo (E - ε) (E + ε) := by
+      intro x hx
+      rw [Set.mem_singleton_iff] at hx
+      subst hx
+      exact ⟨by linarith, by linarith⟩
+    obtain ⟨g, hg1, hg2, hg3, hg4⟩ :=
+      exists_continuousMap_one_of_isCompact_subset_isOpen isCompact_singleton isOpen_Ioo hsub
+    have hsupp : ∀ x, g x ≠ 0 → |x - E| ≤ ε := fun x hx => by
+      have := hg3 (subset_tsupport _ hx)
+      rw [abs_le]
+      constructor <;> linarith [this.1, this.2]
+    have h1 := dosFun_le_of_near lam g g.continuous hg4 E ε L hL hε hsupp
+    have h2 := DimerDOSAux.measureReal_le_integral (dosMeasure lam) (measurableSet_singleton E)
+      ⟨g, hg2⟩ (fun x => (hg4 x).1) (fun x hx => hg1 hx)
+    rw [integral_dosMeasure] at h2
+    exact h2.trans h1
+  have h0 : (dosMeasure lam).real {E} ≤ 0 :=
+    le_of_tendsto_of_tendsto tendsto_const_nhds (tendsto_const_div_atTop_nhds_zero_nat 2)
+      (eventually_atTop.mpr ⟨1, fun L hL => hbound L hL⟩)
+  have h' : (dosMeasure lam).real {E} = 0 := le_antisymm h0 measureReal_nonneg
+  rwa [measureReal_eq_zero_iff (measure_ne_top _ _)] at h'
 
 end DFL

@@ -82,3 +82,4 @@ import DFL.U1Remarks
 import DFL.LawRemarks
 import DFL.Zariski
 import DFL.WeakDisorder
+import DFL.DimerDOS
