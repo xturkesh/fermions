@@ -87,3 +87,5 @@ import DFL.DimerSecond
 import DFL.DimerSuper
 import DFL.ClusterLGT
 import DFL.QLMEdge
+import DFL.CheckerStrong
+import DFL.WilsonSuper

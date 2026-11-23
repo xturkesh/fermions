@@ -120,19 +120,21 @@ No `axiom` is introduced anywhere.
 | Proposition `prop:nocompact` (no compactly supported eigenvectors on `ℤ²`) | `no_compact_eigenvector`, `no_compact_eigenvector_hqs` | `TwoD.lean` |
 | Proposition `prop:cluster` (strong-coupling cluster confinement; (c) with the percolation probability as input) | `FinGraph.hqs0_cluster`, `FinGraph.cluster_bound`, `FinGraph.cluster_leak`, `FinGraph.cluster_avg` | `Cluster.lean` |
 | Remark `rem:clusterLGT` (`σᶻ`-polarized links, Fock matter: the expected number of particles outside the regions `B a` of the occupied sites is at most `\|S_n\| [(8J/g + 16\|t\|J²/g)² + K P]`, with the percolation probability `P` as input and `K = 2^N/#sectors`) | `FinGraph.cluster_LGT` | `ClusterLGT.lean` |
+| Remark `rem:checkerstrong` (checkerboard state at strong coupling: single-site clusters, `h⁰_{q⁰,s} = 2h diag(q⁰)`, return amplitude `\|⟨δ_x, e^{-ith}δ_x⟩\| ≥ 1 - 8J/g - 16\|t\|J²/g` in every flux sector; `R_s = (K_s² + 4h²)^{1/2}` by the continuous functional calculus, `R_s² = K_s² + 4h²`, `0 ≤ 1 + y/2 - √(1+y) ≤ y²/8`, `‖K_s‖ ≤ 4J`, `‖R_s - 2\|h\| - K_s²/(4\|h\|)‖ ≤ ‖K_s‖⁴/(64\|h\|³) ≤ 4J⁴/\|h\|³`, `‖e^{-itR_s} - e^{-it(2\|h\| + K_s²/(4\|h\|))}‖ ≤ 4\|t\|J⁴/\|h\|³`; `K_s²` stays on the sublattices, equals `J² s s (1 + W_p)` on plaquette diagonals and `J² s s` on straight next-nearest-neighbour bonds, in general and on the box) | `checker_inCluster_iff`, `hqs0_checker`, `checker_return`, `one_add_half_sub_sqrt_bounds`, `norm_cplx_Ks_le`, `checkerR`, `checkerR_sq`, `norm_checkerR_sub_le`, `norm_checkerR_sub_le_J`, `norm_exp_checkerR_sub_le`, `norm_exp_checkerR_sub_le_J`, `Ks_sq_sublattice`, `Ks_sq_far`, `Ks_sq_plaquette`, `Ks_sq_line`, `box_simple`, `box_deg_le_four`, `box_Ks_sq_diag`, `box_Ks_sq_antidiag`, `box_Ks_sq_horiz`, `box_Ks_sq_vert` | `CheckerStrong.lean` |
 | Proposition `prop:gausscap` (U(1) quantum links: Gauss-law caps, superpositions of sectors, any dynamics) | `countInt_gauss`, `qlm_numberEntropy_le`, `qlm_numberEntropy_le_edge`, `qlm_numberEntropy_le_super`, `qlm_numberEntropy_le_super_edge`, `qlm_sector_preserved`, `bgEntropy_invariant` | `QLM.lean`, `QLMSuper.lean` |
 | Proposition `prop:wilson` (Wilson links: cut-averaged number entropy from energy conservation) | `wField_hop`, `wField_eq_count`, `wilson_field_bound`, `wilson_numberEntropy_avg`, `wilson_numberEntropy_most`, `wilson_numberEntropy_each` | `Wilson.lean` |
+| Remark `rem:wilson`(a) (finite superpositions of background-charge sectors: `prop:wilson`(b) still holds; `S_N(Ψ(t); [1,ℓ]) ≤ H_{Ψ(t)}(E_ℓ) + H_{Ψ₀}(UQ_{[1,ℓ]})`, the second term constant in time; `lem:intentropy` for integer-valued laws; `(1/L)∑_ℓ (S_N - H_{Ψ₀}(UQ_{[1,ℓ]})) ≤ ½ ln(2πe((2/g²)(ε₀ + w + \|m\|) + 1/12))`; bare vacuum: `H_{Ψ₀}(UQ_{[1,ℓ]}) = H_{Ψ₀}(E_ℓ) ≤ ln 3`) | `wStateS`, `energyDensityS`, `lawEntropy`, `wilson_field_bound_super`, `bgEntropyS_wStateS`, `wilson_numberEntropy_le_super`, `lawEntropy_le_massey`, `lawEntropy_le_log_card`, `wilson_numberEntropy_avg_super`, `bgEntropyS_bare_vacuum`, `bgEntropyS_le_log_three` | `WilsonSuper.lean` |
 
 ## Verification
 
-`lake build` compiles all 89 modules (about 47,200 lines) without `sorry`; there is no `axiom`,
+`lake build` compiles all 91 modules (about 48,700 lines) without `sorry`; there is no `axiom`,
 `admit`, `native_decide` or `implemented_by` in the library. The script `CheckAxioms.lean` walks
 through every theorem declared in a `DFL` module (including private helper lemmas) and collects the
 axioms it depends on:
 
 ```
 lake env lean CheckAxioms.lean
-# checked 5242 theorems in DFL modules; with non-standard axioms: 0
+# checked 5417 theorems in DFL modules; with non-standard axioms: 0
 ```
 
 i.e. every theorem depends only on Lean's standard axioms `propext`, `Classical.choice` and
