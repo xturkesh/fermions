@@ -304,7 +304,7 @@ lemma pow_le_factorial (c : ℝ) (hc : 0 ≤ c) (n : ℕ) (hn : 4 * Real.exp 2 *
   have he : 0 < Real.exp 1 := Real.exp_pos 1
   have hf : (0 : ℝ) < n.factorial := by positivity
   have h1 : (n : ℝ) ^ n / n.factorial ≤ Real.exp n :=
-    Real.pow_div_factorial_le_exp (Nat.cast_nonneg n) n
+    Real.pow_div_factorial_le_exp _ (Nat.cast_nonneg n) n
   have h2 : ((n : ℝ) / Real.exp 1) ^ n ≤ n.factorial := by
     rw [div_pow, Real.exp_one_pow, div_le_iff₀ (Real.exp_pos _)]
     rw [div_le_iff₀ hf] at h1
@@ -355,7 +355,7 @@ lemma norm_sq_evo_le (a b : ℤ) (ha : a ≤ 0) (hb : 0 ≤ b) (w : ℤ → ℝ)
   by_cases hy : 4 * Real.exp 2 * |s| ≤ (y.1.natAbs : ℝ)
   · exact (norm_sq_evo_le_far a b ha hb w s y hy).trans
       (le_mul_of_one_le_left (by positivity) (one_le_pow₀ (by norm_num)))
-  · push_neg at hy
+  · push Not at hy
     have hn : y.1.natAbs ≤ ⌈4 * Real.exp 2 * |s|⌉₊ := by
       have := Nat.le_ceil (4 * Real.exp 2 * |s|)
       exact_mod_cast hy.le.trans this
@@ -364,10 +364,9 @@ lemma norm_sq_evo_le (a b : ℤ) (ha : a ≤ 0) (hb : 0 ≤ b) (w : ℤ → ℝ)
           nlinarith [norm_nonneg (evo (schrH a b w) s y (origin a b ha hb))]
       _ = 4 ^ ⌈4 * Real.exp 2 * |s|⌉₊ * (1 / 4 : ℝ) ^ ⌈4 * Real.exp 2 * |s|⌉₊ := by
           rw [← mul_pow]; norm_num
-      _ ≤ 4 ^ ⌈4 * Real.exp 2 * |s|⌉₊ * (1 / 4 : ℝ) ^ y.1.natAbs := by
-          gcongr
-          · norm_num
-          · exact hn
+      _ ≤ 4 ^ ⌈4 * Real.exp 2 * |s|⌉₊ * (1 / 4 : ℝ) ^ y.1.natAbs :=
+          mul_le_mul_of_nonneg_left (pow_le_pow_of_le_one (by norm_num) (by norm_num) hn)
+            (by positivity)
 
 /-- `y ↦ |y|^p 4^{-|y|}` is summable on `ℤ`. -/
 lemma summable_weight (p : ℝ) (hp : 0 < p) :
@@ -419,7 +418,7 @@ theorem moment_poly_bound (a b : ℤ) (ha : a ≤ 0) (hb : 0 ≤ b) (w : ℤ →
         mul_le_mul_of_nonneg_left h1 (by positivity)
       have h3 : 0 ≤ R ^ p * ‖evo (schrH a b w) s y (origin a b ha hb)‖ ^ 2 := by positivity
       linarith
-    · push_neg at hy
+    · push Not at hy
       have h1 : |((y.1 : ℤ) : ℝ)| ^ p ≤ R ^ p := by
         rw [habs]
         exact Real.rpow_le_rpow (by positivity) hy.le hp.le
@@ -512,7 +511,7 @@ lemma continuous_integrand {ι : Type*} [Fintype ι] [DecidableEq ι] (A : Matri
     Continuous (fun t : ℝ => (1 / T) * Real.exp (-t / T) * ∑ y, c y * ‖evo A t y x‖ ^ 2) := by
   have hU := continuous_evo A
   refine (continuous_const.mul (Real.continuous_exp.comp (continuous_neg.div_const T))).mul ?_
-  exact continuous_finset_sum _ fun y _ => continuous_const.mul ((hU.matrix_elem y x).norm.pow 2)
+  exact continuous_finsetSum _ fun y _ => continuous_const.mul ((hU.matrix_elem y x).norm.pow 2)
 
 /-- The dominating function `(1/T) e^{-t/T} ((4e²|t|)^p + ∑_y |y|^p 4^{-|y|})`. -/
 def momBound (p T t : ℝ) : ℝ :=
@@ -527,7 +526,7 @@ lemma integrableOn_momBound (p T : ℝ) (hp : 0 < p) (hT : 0 < T) :
     integrableOn_rpow_mul_exp_neg_mul_rpow (by linarith) one_pos (by positivity)
   have h2 := (h1.const_mul ((1 / T) * (4 * Real.exp 2) ^ p)).add
     ((DimerLGTAux.integrableOn_weight T hT).mul_const S)
-  refine h2.congr_fun (fun t ht => ?_) measurableSet_Ioi
+  refine IntegrableOn.congr_fun (f := _) h2 (fun t ht => ?_) measurableSet_Ioi
   have ht' : 0 < t := ht
   simp only [momBound, Pi.add_apply, Real.rpow_one]
   rw [abs_of_pos ht', Real.mul_rpow (by positivity) ht'.le,
@@ -590,12 +589,8 @@ lemma isDimerCfgZ_shift (lam : ℝ) (r : ℤ) (v : ℤ → ℝ) (hv : IsDimerCfg
 lemma dimerMomZ_shift (v : ℤ → ℝ) (p T : ℝ) (x : ℤ) :
     dimerMomZ v p T x = dimerMomZ (fun z => v (z + x)) p T 0 := by
   unfold dimerMomZ
-  congr 1
-  funext t
-  congr 1
+  refine setIntegral_congr_fun measurableSet_Ioi fun t _ => ?_
   rw [← (Equiv.addRight x).tsum_eq]
-  congr 1
-  funext y
   simp only [Equiv.coe_addRight, add_sub_cancel_right, sub_zero, evoZw_shift]
 
 /-- `prop:dimerlower` on `ℤ`, at the origin. -/
@@ -646,13 +641,61 @@ theorem isDimerCfgZ_dimerPotZ (J h : ℝ) (hJ : 0 < J) (r : ℤ) (η : CfgZ) :
   · simp only [dimerPotZ]
     rw [show (2 * k - r + r) / 2 = k by omega, show (2 * k - r + 1 + r) / 2 = k by omega]
 
+namespace DimerInfVolAux
+
+/-- The moment of `h_q` is integrable against the time weight. -/
+lemma integrable_moment_hq (J h : ℝ) {N : ℕ} (x : Fin N) (p T : ℝ) (hT : 0 < T) (q : Cfg N) :
+    Integrable (fun t => (1 / T) * Real.exp (-t / T) *
+      ∑ y : Fin N, |((y.val : ℝ) - x.val)| ^ p * ‖evo (hq J h q) t y x‖ ^ 2)
+      (volume.restrict (Set.Ioi 0)) := by
+  set C := ∑ y : Fin N, |((y.val : ℝ) - x.val)| ^ p with hC
+  refine Integrable.mono' ((DimerLGTAux.integrableOn_weight T hT).mul_const C)
+    (continuous_integrand _ _ _ T).aestronglyMeasurable (ae_of_all _ fun t => ?_)
+  have h0 : 0 ≤ ∑ y : Fin N, |((y.val : ℝ) - x.val)| ^ p * ‖evo (hq J h q) t y x‖ ^ 2 :=
+    Finset.sum_nonneg fun y _ => by positivity
+  rw [Real.norm_eq_abs, abs_of_nonneg (by positivity)]
+  refine mul_le_mul_of_nonneg_left (Finset.sum_le_sum fun y _ => ?_) (by positivity)
+  have h1 := norm_evo_le_one (hq J h q) (hq_isSymm J h q) t y x
+  have h2 : ‖evo (hq J h q) t y x‖ ^ 2 ≤ 1 := by
+    nlinarith [norm_nonneg (evo (hq J h q) t y x)]
+  calc |((y.val : ℝ) - x.val)| ^ p * ‖evo (hq J h q) t y x‖ ^ 2
+      ≤ |((y.val : ℝ) - x.val)| ^ p * 1 := mul_le_mul_of_nonneg_left h2 (by positivity)
+    _ = |((y.val : ℝ) - x.val)| ^ p := mul_one _
+
+/-- The time average commutes with the dimer average. -/
+lemma dimerMN_eq (J h : ℝ) (N : ℕ) (x : Fin N) (p T : ℝ) (hT : 0 < T) :
+    dimerMN J h N p T x = dimerAvg (fun q => ∫ t in Set.Ioi (0 : ℝ), (1 / T) * Real.exp (-t / T) *
+        ∑ y : Fin N, |((y.val : ℝ) - x.val)| ^ p * ‖evo (hq J h q) t y x‖ ^ 2) := by
+  unfold dimerMN dimerD dimerAvg
+  rw [← integral_finsetSum _ (fun q _ => integrable_moment_hq J h x p T hT q), ← integral_div]
+  congr 1
+  funext t
+  rw [mul_div_assoc', Finset.mul_sum]
+
+end DimerInfVolAux
+
 /-- **Every dimer sector, averaged** (paper: Theorem `thm:dimer`(a), second statement, in sector form):
 `M^{(N)}_p(T; x) ≥ c_{λ,p} (JT)^{p-1}` for `1 ≤ JT ≤ min(x, N-1-x)` (0-indexed sites). -/
 theorem dimerMN_lower (J h : ℝ) (hJ : 0 < J) (hh0 : 0 < |h|) (hh1 : 2 * |h| < J) {N : ℕ}
     (x : Fin N) (p T : ℝ) (hp : 0 < p) (hT1 : 1 ≤ J * T) (hT2 : J * T ≤ x.val)
     (hT3 : J * T ≤ (N : ℝ) - 1 - x.val) :
     dimerClp (2 * |h| / J) p * (J * T) ^ (p - 1) ≤ dimerMN J h N p T x := by
-  sorry
+  have hT : 0 < T := by nlinarith
+  rw [DimerInfVolAux.dimerMN_eq J h N x p T hT]
+  have hcard : 0 < ((univ.filter (fun q : Cfg N => IsDimer q)).card : ℝ) := by
+    have h0 : (0 : Cfg N) ∈ univ.filter (fun q : Cfg N => IsDimer q) :=
+      Finset.mem_filter.mpr ⟨Finset.mem_univ _, fun k _ hk => rfl⟩
+    exact_mod_cast Finset.card_pos.mpr ⟨0, h0⟩
+  unfold dimerAvg
+  rw [le_div_iff₀ hcard]
+  calc dimerClp (2 * |h| / J) p * (J * T) ^ (p - 1) *
+        ((univ.filter (fun q : Cfg N => IsDimer q)).card : ℝ)
+      = ∑ q ∈ univ.filter (fun q : Cfg N => IsDimer q),
+          dimerClp (2 * |h| / J) p * (J * T) ^ (p - 1) := by
+        rw [Finset.sum_const, nsmul_eq_mul, mul_comm]
+    _ ≤ _ := Finset.sum_le_sum fun q hq =>
+        dimer_sector_moment_lower J h hJ hh0 hh1 q (Finset.mem_filter.mp hq).2 x p T hp hT1 hT2
+          hT3
 
 /-- **Thermodynamic limit of the dimer moments** (paper: Theorem `thm:dimer`(b), first limit). -/
 theorem dimer_TL_D (J h : ℝ) (hJ : 0 < J) (r : ℤ) (Ns : ℕ → ℕ) (xs : ∀ n, Fin (Ns n))
@@ -687,6 +730,25 @@ theorem dimerD_unbounded (J h : ℝ) (hJ : 0 < J) (hh0 : 0 < |h|) (hh1 : 2 * |h|
     (hp : 1 < p) :
     ¬ BddAbove (Set.range (fun r : (Σ M : ℕ, Fin (2 * M) × ℝ) =>
       dimerD J h (2 * r.1) p r.2.2 r.2.1)) := by
-  sorry
+  rintro ⟨C, hC⟩
+  rw [mem_upperBounds] at hC
+  have hl0 : 0 < 2 * |h| / J := by positivity
+  have hl1 : 2 * |h| / J < 1 := by rw [div_lt_one hJ]; exact hh1
+  have hc0 := DimerLGTAux.dimerClp_pos (2 * |h| / J) p hl0 hl1 (by linarith)
+  obtain ⟨s, hs1, hsC⟩ := DimerLGTAux.exists_large p hp _ hc0 C
+  have hsM : s ≤ ⌈s⌉₊ := Nat.le_ceil s
+  have hJT : J * (s / J) = s := by field_simp
+  set x : Fin (2 * (⌈s⌉₊ + 1)) := ⟨⌈s⌉₊ + 1, by omega⟩ with hx
+  have hlow := dimerMN_lower J h hJ hh0 hh1 x p (s / J) (by linarith) (by rw [hJT]; exact hs1)
+    (by rw [hJT]; show s ≤ ((⌈s⌉₊ + 1 : ℕ) : ℝ); push_cast; linarith)
+    (by rw [hJT]; show s ≤ ((2 * (⌈s⌉₊ + 1) : ℕ) : ℝ) - 1 - ((⌈s⌉₊ + 1 : ℕ) : ℝ); push_cast
+        linarith)
+  have hup : dimerMN J h (2 * (⌈s⌉₊ + 1)) p (s / J) x ≤ C :=
+    DimerLGTAux.integral_weight_le (s / J) C (by positivity)
+      (fun t => dimerD J h (2 * (⌈s⌉₊ + 1)) p t x)
+      (fun t => DimerLGTAux.dimerAvg_nonneg fun q => Finset.sum_nonneg fun y _ => by positivity)
+      (fun t => hC _ ⟨⟨⌈s⌉₊ + 1, x, t⟩, rfl⟩)
+  rw [hJT] at hlow
+  linarith
 
 end DFL

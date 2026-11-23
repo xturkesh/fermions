@@ -135,8 +135,8 @@ lemma pairDefect_eq_chargeOf (n x : Cfg N) (k : ℕ) (hk : 2 * k + 1 < N) :
     unfold prevOdd
     split_ifs <;> first | rfl | omega
   have h2 : prevLink x ⟨2 * k + 1, hk⟩ = x ⟨2 * k, by omega⟩ := by
-    rw [prevLink_mk]
-    split_ifs <;> first | omega | rfl
+    rw [prevLink_mk, dite_eq_right (by omega : ¬ 2 * k + 1 = 0)]
+    exact congrArg x (Fin.ext (by show 2 * k + 1 - 1 = 2 * k; omega))
   have key : ∀ a b c d e : ZMod 2, a + b + c + d = b + e + c + (e + a + d) := by decide
   simp only [pairDefect, chargeOf, h1, h2]
   exact key _ _ _ _ _
@@ -337,11 +337,7 @@ theorem normSq_dimerState (hN : Even N) (n : Cfg N) :
   rw [← (dualEquiv (N := N)).sum_comp, Fintype.sum_prod_type]
   simp only [dimerState_dual]
   rw [Finset.sum_eq_single n (fun m _ hm => by simp [hm]) (by simp)]
-  have e1 : ∀ y : Cfg N, Complex.normSq (if n = n ∧ IsDimer y then (1 : ℂ) else 0) =
-      if IsDimer y then 1 else 0 := by
-    intro y
-    by_cases hy : IsDimer y <;> simp [hy]
-  simp only [e1]
+  simp only [true_and, DimerStateAux.normSq_ite]
   rw [Finset.sum_boole, card_isDimer hN]
   push_cast
   rfl
@@ -392,6 +388,7 @@ theorem gauss_prefix_dimerState (n : Cfg N) (b : Fin N) (hb : b.val % 2 = 1) :
   funext p
   obtain ⟨m, x⟩ := p
   rw [mulVec_diagonal, DimerStateAux.sum_chargeOf_le]
+  dsimp only
   by_cases hp : m = n ∧ ∀ c : Fin N, c.val % 2 = 1 → x c = parityLe n c
   · rw [hp.1, hp.2 b hb, sub_self, FreeDynAux.sgn_zero, Complex.ofReal_one, one_mul]
   · rw [DimerStateAux.dimerState_apply, ite_eq_right hp, mul_zero]
@@ -474,15 +471,19 @@ theorem dimer_density_single (J h : ℝ) (hN : Even N) (x y : Fin N) (t : ℝ) :
       (expect (cplx (diagonal (fun n : Cfg N => occ (n y)) ⊗ₖ (1 : Matrix (Cfg N) (Cfg N) ℝ)))
         (evo (H J h) t *ᵥ dimerState (fockCfg {x}))).re =
       dimerAvg (fun q : Cfg N => ‖evo (hq J h q) t y x‖ ^ 2) := by
+  have hsum : (expect (cplx (diagonal (fun n : Cfg N => occ (n y)) ⊗ₖ
+        (1 : Matrix (Cfg N) (Cfg N) ℝ))) (evo (H J h) t *ᵥ dimerState (fockCfg {x}))).re =
+      ∑ q ∈ univ.filter (fun q : Cfg N => IsDimer q), ‖evo (hq J h q) t y x‖ ^ 2 := by
+    rw [sector_average_dimerState J h (fockCfg {x}) _ (gaugeInv_matter _) t, Complex.re_sum]
+    refine Finset.sum_congr rfl fun q _ => ?_
+    rw [sectorBlock_matter, Hsec, expect_evo_sub_smul_one]
+    have hv : (Pi.single (fockCfg {x}) 1 : Cfg N → ℂ) = fockVec {x} := rfl
+    rw [hv, density _ (hq_isSymm J h q), Complex.ofReal_re, Finset.sum_singleton, Complex.sq_norm]
+  rw [hsum]
   unfold dimerAvg
-  rw [card_isDimer hN, sector_average_dimerState J h (fockCfg {x}) _ (gaugeInv_matter _) t,
-    Complex.re_sum, div_eq_inv_mul, one_div]
+  rw [card_isDimer hN]
   push_cast
-  congr 1
-  refine Finset.sum_congr rfl fun q _ => ?_
-  rw [sectorBlock_matter, Hsec, expect_evo_sub_smul_one]
-  have hv : (Pi.single (fockCfg {x}) 1 : Cfg N → ℂ) = fockVec {x} := rfl
-  rw [hv, density _ (hq_isSymm J h q), Complex.ofReal_re, Finset.sum_singleton, Complex.sq_norm]
+  ring
 
 /-! ### Transport of the single-fermion dimer state (paper: Theorem `thm:dimer`) -/
 
@@ -492,7 +493,6 @@ theorem dimerDLGT_eq (J h : ℝ) (hN : Even N) (p t : ℝ) (x : Fin N) :
   unfold dimerDLGT dimerD
   have e := DimerLGTAux.dimerAvg_sum_mul (N := N) (fun y : Fin N => |((y.val : ℝ) - x.val)| ^ p)
     (fun y q => ‖evo (hq J h q) t y x‖ ^ 2)
-  simp only at e
   rw [e]
   simp only [← dimer_density_single J h hN x, DimerStateAux.expect_matter_re]
   simp only [Finset.sum_mul, Finset.mul_sum]
