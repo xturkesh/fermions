@@ -136,7 +136,10 @@ manca l'input a un corpo.
 Con link quantistici di spin $S$, la legge di Gauss limita l'entropia di numero di ogni intervallo con
 $\ln(4S+1)$, in ogni settore di carica di fondo, per ogni stato e ogni dinamica gauge-invariante
 (Proposizione~\ref{prop:gausscap}). Con link di Wilson, la conservazione dell'energia ne limita la media sui tagli
-(Proposizione~\ref{prop:wilson}). Nella teoria di gauge $\Z_2$ standard, con termine elettrico a un solo link, una
+(Proposizione~\ref{prop:wilson}). Per gli stati iniziali di Brenes et al.\ i campi di fondo sono i.i.d.\ e agiscono
+sulle cariche come un potenziale a cammino aleatorio (Proposizione~\ref{prop:brenes}); nella numerica esatta la loro
+memoria a tempi lunghi supera quella dovuta all'energia solo ad accoppiamento forte (Osservazione~\ref{rem:brenes}).
+Nella teoria di gauge $\Z_2$ standard, con termine elettrico a un solo link, una
 carica si muove in un potenziale di cammino aleatorio e due cariche interagiscono.
 
 \paragraph{Numerica e problemi aperti (Sezioni~\ref{sec:numerics} e~\ref{sec:discussion}).}
@@ -147,10 +150,10 @@ localizzazione senza disordine diventa MBL di una catena XXZ in un campo casuale
 metodi rigorosi attuali.
 
 \paragraph{Verifica formale in Lean (Appendice~\ref{app:lean}).}
-I risultati del paper, in volume finito e infinito, sono formalizzati in Lean~4 con Mathlib: 94 moduli (circa
-50\,500 righe) e 5601 teoremi, senza assiomi oltre ai tre standard di Lean. Sono formalizzate anche tutte le
-osservazioni con contenuto matematico, comprese la stima (EC) sull'anello e la localizzazione del fermione vestito
-ad accoppiamento forte. Restano fuori solo i risultati di letteratura usati come ipotesi (grandi deviazioni di
+I risultati del paper, in volume finito e infinito, sono formalizzati in Lean~4 con Mathlib: 96 moduli (circa
+51\,800 righe) e 5752 teoremi, senza assiomi oltre ai tre standard di Lean. Sono formalizzate anche tutte le
+osservazioni con contenuto matematico, comprese la stima (EC) sull'anello, la localizzazione del fermione vestito
+ad accoppiamento forte e la riduzione esatta del caso interagente. Restano fuori solo i risultati di letteratura usati come ipotesi (grandi deviazioni di
 Furstenberg, Ge--Zhao, la stima di percolazione di Li--Liang, la localizzazione dinamica di De Bièvre--Germinet) e
 la verifica delle loro ipotesi nel formalismo originale.
 \endgroup
@@ -160,7 +163,7 @@ la verifica delle loro ipotesi nel formalismo originale.
 \section{Enunciati}\label{sec:enunciati}
 
 \noindent Seguono tutti gli enunciati del paper (definizioni, ipotesi, lemmi, proposizioni, teoremi, corollari e
-congetture: 57 in tutto), nell'ordine e con la numerazione del paper. Il testo è quello del paper, in inglese; i
+congetture: 58 in tutto), nell'ordine e con la numerazione del paper. Il testo è quello del paper, in inglese; i
 rimandi a equazioni, osservazioni, figure e bibliografia si riferiscono al paper. Sotto ogni enunciato sono elencati
 i teoremi Lean che lo formalizzano, con i file della libreria (\texttt{lean/DFL/}), secondo la tabella di
 corrispondenza del README della formalizzazione. Le dimostrazioni non sono riportate.

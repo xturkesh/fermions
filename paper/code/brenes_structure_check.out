@@ -1,0 +1,3 @@
+identity H_ebar = H_clean + g^2 sum_k A_k rho_k + const: max error 1.7763568394002505e-15
+full space dim 87846
+particle density, full LGT vs sector average: [0.28585997 0.40473747 0.39141356] [0.28585997 0.40473747 0.39141356] max diff 1.2073675392798577e-13

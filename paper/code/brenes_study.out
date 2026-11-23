@@ -1,0 +1,32 @@
+==============================================================================================================
+Brenes et al. states: long-time charge density vs Gibbs state at the same energy (w=1, m=0, theta=0)
+==============================================================================================================
+L=6: sector dimension 20, sectors used 729 of 729
+  J= 0.10: n_pa long-time 0.4882 | Gibbs at E0 0.4982 | infinite T 0.5000 | E0 position in sector spectrum 0.475
+  J= 0.25: n_pa long-time 0.4737 | Gibbs at E0 0.4901 | infinite T 0.5000 | E0 position in sector spectrum 0.437
+  J= 0.50: n_pa long-time 0.4463 | Gibbs at E0 0.4711 | infinite T 0.5000 | E0 position in sector spectrum 0.369
+  J= 1.00: n_pa long-time 0.3945 | Gibbs at E0 0.4387 | infinite T 0.5000 | E0 position in sector spectrum 0.270
+  J= 2.00: n_pa long-time 0.2763 | Gibbs at E0 0.4069 | infinite T 0.5000 | E0 position in sector spectrum 0.196
+  J= 5.00: n_pa long-time 0.0882 | Gibbs at E0 0.3812 | infinite T 0.5000 | E0 position in sector spectrum 0.157
+  J=10.00: n_pa long-time 0.0293 | Gibbs at E0 0.3739 | infinite T 0.5000 | E0 position in sector spectrum 0.150
+  [time 1s]
+L=8: sector dimension 70, sectors used 6561 of 6561
+  J= 0.10: n_pa long-time 0.4914 | Gibbs at E0 0.4982 | infinite T 0.5000 | E0 position in sector spectrum 0.474
+  J= 0.25: n_pa long-time 0.4804 | Gibbs at E0 0.4909 | infinite T 0.5000 | E0 position in sector spectrum 0.426
+  J= 0.50: n_pa long-time 0.4581 | Gibbs at E0 0.4753 | infinite T 0.5000 | E0 position in sector spectrum 0.322
+  J= 1.00: n_pa long-time 0.4087 | Gibbs at E0 0.4488 | infinite T 0.5000 | E0 position in sector spectrum 0.210
+  J= 2.00: n_pa long-time 0.2909 | Gibbs at E0 0.4229 | infinite T 0.5000 | E0 position in sector spectrum 0.145
+  J= 5.00: n_pa long-time 0.0998 | Gibbs at E0 0.4040 | infinite T 0.5000 | E0 position in sector spectrum 0.115
+  J=10.00: n_pa long-time 0.0352 | Gibbs at E0 0.3991 | infinite T 0.5000 | E0 position in sector spectrum 0.109
+  [time 66s]
+L=10: sector dimension 252, sectors used 3000 of 59049
+  J= 0.10: n_pa long-time 0.4949 | Gibbs at E0 0.4982 | infinite T 0.5000 | E0 position in sector spectrum 0.473
+  J= 0.25: n_pa long-time 0.4854 | Gibbs at E0 0.4914 | infinite T 0.5000 | E0 position in sector spectrum 0.395
+  J= 0.50: n_pa long-time 0.4666 | Gibbs at E0 0.4778 | infinite T 0.5000 | E0 position in sector spectrum 0.263
+  J= 1.00: n_pa long-time 0.4190 | Gibbs at E0 0.4546 | infinite T 0.5000 | E0 position in sector spectrum 0.161
+  J= 2.00: n_pa long-time 0.2996 | Gibbs at E0 0.4320 | infinite T 0.5000 | E0 position in sector spectrum 0.108
+  J= 5.00: n_pa long-time 0.1019 | Gibbs at E0 0.4168 | infinite T 0.5000 | E0 position in sector spectrum 0.085
+  J=10.00: n_pa long-time 0.0349 | Gibbs at E0 0.4133 | infinite T 0.5000 | E0 position in sector spectrum 0.081
+  [time 1719s]
+
+[exited with code 0]

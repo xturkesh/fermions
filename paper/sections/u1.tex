@@ -261,8 +261,9 @@ a tightly bound meson sees an i.i.d.\ potential.
 $t\in\R$ and $L\ge1$
 \[
   \frac1L\sum_{\ell=1}^L\SN(\Psi(t);[1,\ell])\le\ln3+\frac12\ln\Bigl(2\pi e\Bigl(\frac2{g^2}\bigl(\varepsilon_0+w+\abs m\bigr)
-  +\frac1{12}\Bigr)\Bigr),\qquad \varepsilon_0=\frac{g^2}2\Bigl(\frac23+\vartheta^2\Bigr)-\frac{m\lceil L/2\rceil}L.
+  +\frac1{12}\Bigr)\Bigr),
 \]
+where $\varepsilon_0=\frac{g^2}2\bigl(\frac23+\vartheta^2\bigr)-m\lceil L/2\rceil/L$ is the energy density of $\Psi_0$.
 \item For all $t\in\R$,
 $\bigl|\frac1L\sum_{j=1}^L\langle(E_j+\vartheta)^2\rangle_t-\bigl(\frac23+\vartheta^2\bigr)\bigr|\le4(w+\abs m)/g^2$.
 \end{enumerate}
@@ -280,6 +281,46 @@ $-m\lceil L/2\rceil$ there, and $\E(\bar e_j+\vartheta)^2=\frac23+\vartheta^2$. 
 conserved in each sector, and the hopping and mass terms have expectations in $[-L(w+\abs m),L(w+\abs m)]$.
 \end{proof}
 
+\begin{remark}[On the observations of \cite{Brenes2018}]\label{rem:brenes}
+\leavevmode
+\begin{enumerate}[label=(\alph*)]
+\item \emph{Energetics.}  \Cref{prop:brenes}(c),(d) follow from energy conservation alone.  A memory of the initial
+state is evidence of non-ergodicity only relative to the Gibbs state of each sector at the energy of the initial
+state, not relative to infinite temperature.  For the density of charges $n_{\rm pa}:=\frac1L\sum_j\abs{\rho_j}$, which
+vanishes in $\Psi_0$ and equals $\frac12$ at infinite temperature (the staggered occupation of \cite{Brenes2018} is an affine
+function of it), the Gibbs value is well below $\frac12$ for $J\gtrsim1$.
+\item \emph{Exact numerics} (\texttt{code/brenes\_study.py}, \texttt{brenes\_study2.py}, \texttt{brenes\_study3.py};
+$w=1$, $m=\vartheta=0$; all $3^L$ sectors for $L\le8$, $3000$ and $300$ random sectors for $L=10,12$).  The infinite-time
+average $\bar n_{\rm pa}$ (diagonal ensemble in each sector, averaged over the sectors) and the Gibbs value
+$n^{\rm G}_{\rm pa}$ are, as $\bar n_{\rm pa}/n^{\rm G}_{\rm pa}$:
+\begin{center}
+\begin{tabular}{c|cccc}
+$J$ & $L=6$ & $L=8$ & $L=10$ & $L=12$\\\hline
+$0.25$ & $0.474/0.490$ & $0.480/0.491$ & $0.485/0.491$ & \\
+$0.5$ & $0.446/0.471$ & $0.458/0.475$ & $0.467/0.478$ & $0.472/0.478$\\
+$1$ & $0.395/0.439$ & $0.409/0.449$ & $0.419/0.455$ & $0.425/0.457$\\
+$2$ & $0.276/0.407$ & $0.291/0.423$ & $0.300/0.432$ & $0.303/0.436$\\
+$5$ & $0.088/0.381$ & $0.100/0.404$ & $0.102/0.417$ & $0.105/0.423$\\
+$10$ & $0.029/0.374$ & $0.035/0.399$ & $0.035/0.413$ &
+\end{tabular}
+\end{center}
+For $J\le1$ the gap $n^{\rm G}_{\rm pa}-\bar n_{\rm pa}$ decreases as $L$ grows (at $J=0.5$: $0.025$, $0.017$, $0.011$,
+$0.007$), as for thermalization at these energies.  For $J\ge2$ it does not (at $J=2$: $0.131$, $0.132$, $0.132$, $0.132$).
+These are infinite-time averages at small $L$; the observations of \cite{Brenes2018} concern finite times and
+$N\le30$, and the two sets of data address different questions.
+\item \emph{Strong coupling.}  With $\vartheta=0$ every hop changes the electric energy by an odd multiple of $g^2/2$,
+since $(E\pm1)^2-E^2=\pm2E+1$, so no state is resonant with $\ket{\rm vac}$ at first order.  At second order the only
+states of the electric-energy band of $\ket{\rm vac}$ that are reached are pairs of mesons on disjoint bonds with energies
+$\mp g^2/2$, and the two orders of creation cancel.  So in the second-order effective Hamiltonian the bare vacuum is
+isolated in its band; we checked this in all $3^8$ sectors for $L=8$, where the band has $6.3$ states on average.  For
+$J\to\infty$ the long-time charge density stays small.  At $J=80$ its median over sectors is $4\times10^{-4}$ for
+$6\le L\le12$, the size of the perturbative dressing, and its mean, $0.007$--$0.009$, comes from the few per cent of
+sectors with higher-order resonances.  This uses the gauge structure (odd changes of the electric energy) and not the
+randomness of the background fields; in the clean sector the bare vacuum is frozen at large $J$ for the same reason.
+Whether the memory at fixed large $J$ survives as $L\to\infty$ is not settled by these sizes.
+\end{enumerate}
+\end{remark}
+
 \subsection{Consequences for number-entropy diagnostics}\label{sec:u1:diag}
 
 \paragraph{$U(1)$ with quantum links: kinematics.}
@@ -293,7 +334,8 @@ fields can be eliminated by the Gauss law, the same holds for the equivalent spi
 interactions, and for any truncation of the electric field to $\abs{E_j}\le S$.
 
 \paragraph{$U(1)$ with Wilson links: energetics.}
-This is the setting of the lattice Schwinger model with background charges of \cite{Brenes2018}.  Here
+This is the setting of the lattice Schwinger model with background charges of \cite{Brenes2018} (for their initial
+states see \cref{prop:brenes,rem:brenes}).  Here
 $\SN([1,\ell])$ is the Shannon entropy of the electric field on the cut link (\cref{prop:wilson}(a)).  It is not
 kinematically bounded, but its average over cuts is bounded uniformly in time and system size by energy
 conservation (\cref{prop:wilson}(c) and \cref{rem:wilson}(a)), whether or not the dynamics localizes.  A

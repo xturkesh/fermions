@@ -126,7 +126,9 @@ Localization in two dimensions is not proved: the one-body input is missing.
 \paragraph{$U(1)$ gauge theories (\cref{sec:u1}).}
 With spin-$S$ quantum links, the Gauss law caps the number entropy of any interval by $\ln(4S+1)$, in every
 background-charge sector, for every state and every gauge-invariant dynamics (\cref{prop:gausscap}). With Wilson
-links, energy conservation bounds its average over cuts (\cref{prop:wilson}). In the standard $\Z_2$ gauge theory,
+links, energy conservation bounds its average over cuts (\cref{prop:wilson}). For the initial states of Brenes et al.\ the background fields are i.i.d.\ and act on the
+charges as a random-walk potential (\cref{prop:brenes}); in exact numerics their long-time memory exceeds the energetic
+one only at strong coupling (\cref{rem:brenes}). In the standard $\Z_2$ gauge theory,
 with a single-link electric term, one charge moves in a random-walk potential and two charges interact.
 
 \paragraph{Numerics and open problems (\cref{sec:numerics,sec:discussion}).}
@@ -136,10 +138,10 @@ interacting matter: with a density interaction the sector average remains exact,
 becomes MBL of an XXZ chain in a binary random field, which is beyond the reach of current rigorous methods.
 
 \paragraph{Formal verification in Lean (\cref{app:lean}).}
-The results of the paper, in finite and in infinite volume, are formalized in Lean~4 with Mathlib: 94 modules (about
-50\,500 lines) and 5601 theorems, with no axioms beyond Lean's three standard ones. All remarks with mathematical
-content are formalized as well, including the bound (EC) on the ring and, given the dynamical localization of the
-dimer model, the tightness of the dressed fermion at strong coupling. Only the literature results used as hypotheses
+The results of the paper, in finite and in infinite volume, are formalized in Lean~4 with Mathlib: 96 modules (about
+51\,800 lines) and 5752 theorems, with no axioms beyond Lean's three standard ones. All remarks with mathematical
+content are formalized as well, including the bound (EC) on the ring, the tightness of the dressed fermion at
+strong coupling (given the dynamical localization of the dimer model) and the exact reduction of the interacting case. Only the literature results used as hypotheses
 (Furstenberg's large deviations, Ge--Zhao, the percolation estimate of Li--Liang, the dynamical localization of
 De Bièvre--Germinet) and the verification of their hypotheses in their original formalism are not formalized.
 
@@ -148,7 +150,7 @@ De Bièvre--Germinet) and the verification of their hypotheses in their original
 \section{Statements}\label{sec:statements}
 
 \noindent All statements of the paper follow (definitions, the hypothesis, lemmas, propositions, theorems,
-corollaries and conjectures: 57 in total), in the order and with the numbering of the paper. The text is that of the
+corollaries and conjectures: 58 in total), in the order and with the numbering of the paper. The text is that of the
 paper; references to equations, remarks, figures and the bibliography refer to the paper. Below each statement we
 list the Lean theorems that formalize it, with their files in the library (\texttt{lean/DFL/}), following the
 correspondence table in the README of the formalization. Proofs are not included.

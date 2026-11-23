@@ -196,7 +196,7 @@ observables are Loschmidt echoes between sectors that differ by a local flip of 
 the sector-dependent phase in \eqref{eq:loschmidt} cannot be omitted.
 \end{enumerate}
 \end{stmtP}
-\leanline{\texttt{sector\_\allowbreak{}average}, \texttt{sector\_\allowbreak{}average\_\allowbreak{}matter}, \texttt{gaugeInv\_\allowbreak{}submatrix} \,(\texttt{Sector.\allowbreak{}lean})}
+\leanline{\texttt{sector\_\allowbreak{}average}, \texttt{sector\_\allowbreak{}average\_\allowbreak{}matter}, \texttt{gaugeInv\_\allowbreak{}submatrix}, \texttt{correlator\_\allowbreak{}sector\_\allowbreak{}average} \,(\texttt{Sector.\allowbreak{}lean}, \texttt{Interacting.\allowbreak{}lean})}
 \renewcommand{\stmtname}{\Cref{lem:productlaw}}
 \begin{stmtP}[Sector laws of product initial states]
 Let $\chi=\bigotimes_{j=1}^N\chi_j\in\LinkS_N$ be a product state of the links.  Write
@@ -1225,3 +1225,36 @@ for all but at most $\delta L$ values of $\ell$;
 \end{enumerate}
 \end{stmtP}
 \leanline{\texttt{wField\_\allowbreak{}hop}, \texttt{wField\_\allowbreak{}eq\_\allowbreak{}count}, \texttt{wilson\_\allowbreak{}field\_\allowbreak{}bound}, \texttt{wilson\_\allowbreak{}numberEntropy\_\allowbreak{}avg}, \texttt{wilson\_\allowbreak{}numberEntropy\_\allowbreak{}most}, \texttt{wilson\_\allowbreak{}numberEntropy\_\allowbreak{}each} \,(\texttt{Wilson.\allowbreak{}lean});\\ \texttt{wStateS}, \texttt{energyDensityS}, \texttt{lawEntropy}, \texttt{wilson\_\allowbreak{}field\_\allowbreak{}bound\_\allowbreak{}super}, \texttt{bgEntropyS\_\allowbreak{}wStateS}, \texttt{wilson\_\allowbreak{}numberEntropy\_\allowbreak{}le\_\allowbreak{}super}, \texttt{lawEntropy\_\allowbreak{}le\_\allowbreak{}massey}, \texttt{lawEntropy\_\allowbreak{}le\_\allowbreak{}log\_\allowbreak{}card}, \texttt{wilson\_\allowbreak{}numberEntropy\_\allowbreak{}avg\_\allowbreak{}super}, \texttt{bgEntropyS\_\allowbreak{}bare\_\allowbreak{}vacuum}, \texttt{bgEntropyS\_\allowbreak{}le\_\allowbreak{}log\_\allowbreak{}three} \,(\texttt{WilsonSuper.\allowbreak{}lean})}
+\renewcommand{\stmtname}{\Cref{prop:brenes}}
+\begin{stmtP}[The states of [19]]
+Let $\ket{\rm vac}$ be the bare vacuum ($\rho_j\ket{\rm vac}=0$ for all $j$), $e_0\in\Z$, and
+\[
+  \Psi_0:=\ket{\rm vac}\otimes\bigotimes_{j=1}^L\tfrac1{\sqrt3}\bigl(\ket{-1}+\ket0+\ket1\bigr)_{E_j}
+  =3^{-L/2}\sum_{\bar e\in\{-1,0,1\}^L}\ket{\rm vac}\otimes\ket{\bar e}.
+\]
+\begin{enumerate}[label=(\alph*)]
+\item $\ket{\rm vac}\otimes\ket{\bar e}$ lies in the sector with background charges $Q_j=\bar e_j-\bar e_{j-1}$
+($\bar e_0:=e_0$), and $\bar e\mapsto Q$ is injective.  So every gauge-invariant expectation value in $\Psi(t)$, at any
+number of times, is the uniform average over the \emph{background fields} $\bar e$, which are i.i.d.\ uniform on
+$\{-1,0,1\}$, of the corresponding quantity in the sector of $\bar e$.  The background charges are not independent.
+\item In the sector of $\bar e$, $E_j=\bar e_j+F_j$ with $F_j:=\sum_{k\le j}\rho_k$, and
+\[
+  H=H_{\rm cl}+g^2\sum_{k=1}^LA_k\rho_k+\frac{g^2}2\sum_{j=1}^L(\bar e_j+\vartheta)^2,\qquad
+  A_k:=\sum_{j\ge k}(\bar e_j+\vartheta),
+\]
+where $H_{\rm cl}$ is \eqref{eq:HU1} in the sector $Q=0$ with $e_0=\vartheta=0$.  So the charges move in the clean
+model plus the random-walk potential $g^2A_k$, whose steps $g^2(\bar e_k+\vartheta)$ are i.i.d.  Creating a meson
+from $\ket{\rm vac}$ on the bond $(j,j+1)$ changes the energy by $2m+\frac{g^2}2\bigl(1+2(-1)^j(\bar e_j+\vartheta)\bigr)$:
+a tightly bound meson sees an i.i.d.\ potential.
+\item $\UQ_{[1,\ell]}=\bar e_\ell-e_0$ on $\Psi_0$, so $\Ush_{\Psi_0}(\UQ_{[1,\ell]})=\ln3$ for every $\ell$, and for all
+$t\in\R$ and $L\ge1$
+\[
+  \frac1L\sum_{\ell=1}^L\SN(\Psi(t);[1,\ell])\le\ln3+\frac12\ln\Bigl(2\pi e\Bigl(\frac2{g^2}\bigl(\varepsilon_0+w+\abs m\bigr)
+  +\frac1{12}\Bigr)\Bigr),
+\]
+where $\varepsilon_0=\frac{g^2}2\bigl(\frac23+\vartheta^2\bigr)-m\lceil L/2\rceil/L$ is the energy density of $\Psi_0$.
+\item For all $t\in\R$,
+$\bigl|\frac1L\sum_{j=1}^L\langle(E_j+\vartheta)^2\rangle_t-\bigl(\frac23+\vartheta^2\bigr)\bigr|\le4(w+\abs m)/g^2$.
+\end{enumerate}
+\end{stmtP}
+\leanline{\texttt{fieldOf}, \texttt{brenesQ}, \texttt{bareVac}, \texttt{brenesInit}, \texttt{brenesPot}, \texttt{wField\_\allowbreak{}brenes}, \texttt{brenesPot\_\allowbreak{}succ}, \texttt{schwinger\_\allowbreak{}brenes}, \texttt{schwinger\_\allowbreak{}meson}, \texttt{bgSum\_\allowbreak{}brenes}, \texttt{bgEntropyS\_\allowbreak{}brenes}, \texttt{energyDensityS\_\allowbreak{}brenes}, \texttt{brenes\_\allowbreak{}numberEntropy\_\allowbreak{}avg}, \texttt{brenes\_\allowbreak{}field\_\allowbreak{}memory} \,(\texttt{BrenesU1.\allowbreak{}lean})}

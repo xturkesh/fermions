@@ -1,0 +1,11 @@
+(B) large-J scaling, L=8, all sectors: long-time n_pa and J^2 n_pa
+  J=   5.0: n_pa long-time 0.09981   J*n_pa 0.4991   J^2*n_pa 2.495
+  J=  10.0: n_pa long-time 0.03523   J*n_pa 0.3523   J^2*n_pa 3.523
+  J=  20.0: n_pa long-time 0.01653   J*n_pa 0.3305   J^2*n_pa 6.611
+  J=  40.0: n_pa long-time 0.01113   J*n_pa 0.4453   J^2*n_pa 17.812
+  J=  80.0: n_pa long-time 0.00908   J*n_pa 0.7265   J^2*n_pa 58.122
+(C) electric-energy band of the vacuum, L=8 (J large): second-order effective in-band dynamics
+  J=50.0: mean band size 6.34 (of 70), in-band infinite-T n_pa 0.3804, connected component of the vacuum under H_eff: mean size 1.00, isolated in 100.0% of sectors; long-time n_pa: H_eff 0.0000, exact 0.01058
+[time 1454s]
+
+[exited with code 0]
