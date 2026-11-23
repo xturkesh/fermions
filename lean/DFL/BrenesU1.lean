@@ -473,7 +473,6 @@ theorem fieldSqS_brenesInit (θ : ℝ) (e₀ : ℤ) (j : Fin L) :
   simp only [fieldSq_brenesInit, ← Finset.mul_sum, sum_eb_sq]
   rw [three_pow_eq hL]
   field_simp
-  ring
 
 /-- The initial field energy: `∑_j ⟨(E_j + ϑ)²⟩ = L (2/3 + ϑ²)`. -/
 theorem sum_fieldSqS_brenesInit (θ : ℝ) (e₀ : ℤ) :
