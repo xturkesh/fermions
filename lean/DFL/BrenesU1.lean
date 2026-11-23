@@ -12,8 +12,8 @@ background charges are not independent.
 
 * `wField_brenes`: in the sector of `ē`, `E_j = ē_j + F_j`, `F_j = ∑_{k ≤ j} ρ_k`;
 * `schwinger_brenes`: the sector Hamiltonian is the clean Schwinger model (`Q = 0`, `e₀ = 0`, `ϑ = 0`) plus the
-  potential `g² A_k` on the charges, `A_k = ∑_{j ≥ k} (ē_j + ϑ)` (`rwPot`, a random walk with i.i.d. steps,
-  `rwPot_succ`), plus a constant;
+  potential `g² A_k` on the charges, `A_k = ∑_{j ≥ k} (ē_j + ϑ)` (`brenesPot`, a random walk with i.i.d. steps,
+  `brenesPot_succ`), plus a constant;
 * `schwinger_meson`: a tightly bound meson on the bond `(j, j+1)` costs `2m + (g²/2)(1 + 2 s_j (ē_j + ϑ))`,
   an i.i.d. potential;
 * `bgSum_brenes`, `bgEntropyS_brenes`: the background term of Remark `rem:wilson`(a) is exactly `ln 3` for every
@@ -48,7 +48,7 @@ def brenesInit (_eb : Fin L → Fin 3) (n : Cfg L) : ℂ :=
   if n = bareVac then (((Real.sqrt 3) ^ L : ℝ) : ℂ)⁻¹ else 0
 
 /-- The random-walk potential `A_k = ∑_{j ≥ k} (ē_j + ϑ)` felt by the charges. -/
-def rwPot (θ : ℝ) (eb : Fin L → Fin 3) (k : Fin L) : ℝ :=
+def brenesPot (θ : ℝ) (eb : Fin L → Fin 3) (k : Fin L) : ℝ :=
   ∑ j ∈ univ.filter (fun j => k ≤ j), ((fieldOf (eb j) : ℝ) + θ)
 
 namespace BrenesU1Aux
@@ -147,8 +147,8 @@ theorem wField_brenes (e₀ : ℤ) (eb : Fin L → Fin 3) (n : Cfg L) (j : Fin L
   ring
 
 /-- The steps of the random walk are the background fields: `A_k - A_{k+1} = ē_k + ϑ`. -/
-theorem rwPot_succ (θ : ℝ) (eb : Fin L → Fin 3) (k : Fin L) (hk : k.val + 1 < L) :
-    rwPot θ eb k - rwPot θ eb ⟨k.val + 1, hk⟩ = (fieldOf (eb k) : ℝ) + θ := by
+theorem brenesPot_succ (θ : ℝ) (eb : Fin L → Fin 3) (k : Fin L) (hk : k.val + 1 < L) :
+    brenesPot θ eb k - brenesPot θ eb ⟨k.val + 1, hk⟩ = (fieldOf (eb k) : ℝ) + θ := by
   have hset : univ.filter (fun j : Fin L => k ≤ j) =
       insert k (univ.filter (fun j : Fin L => (⟨k.val + 1, hk⟩ : Fin L) ≤ j)) := by
     ext j
@@ -156,7 +156,7 @@ theorem rwPot_succ (θ : ℝ) (eb : Fin L → Fin 3) (k : Fin L) (hk : k.val + 1
     omega
   have hnot : k ∉ univ.filter (fun j : Fin L => (⟨k.val + 1, hk⟩ : Fin L) ≤ j) := by
     simp [Fin.le_def]
-  unfold rwPot
+  unfold brenesPot
   rw [hset, Finset.sum_insert hnot]
   ring
 
@@ -179,9 +179,9 @@ theorem wField_brenes_clean (e₀ : ℤ) (eb : Fin L → Fin 3) (n : Cfg L) (j :
 /-- Exchanging the sums: `∑_j a_j F_j = ∑_k A_k ρ_k` with `A_k = ∑_{j ≥ k} a_j`. -/
 theorem sum_mul_wField_clean (θ : ℝ) (eb : Fin L → Fin 3) (n : Cfg L) :
     ∑ j, ((fieldOf (eb j) : ℝ) + θ) * (wField 0 (fun _ => 0) n j : ℝ) =
-      ∑ k, rwPot θ eb k * (stagRho n k : ℝ) := by
+      ∑ k, brenesPot θ eb k * (stagRho n k : ℝ) := by
   simp only [wField_clean]
-  unfold rwPot
+  unfold brenesPot
   simp only [Finset.mul_sum, Finset.sum_mul, Finset.sum_filter]
   rw [Finset.sum_comm]
   refine Finset.sum_congr rfl (fun k _ => Finset.sum_congr rfl (fun j _ => ?_))
@@ -230,7 +230,7 @@ sector of `ē` is the Schwinger model without background charges, plus `g² ∑_
 theorem schwinger_brenes (w m g θ : ℝ) (e₀ : ℤ) (eb : Fin L → Fin 3) :
     schwinger w m g θ e₀ (brenesQ e₀ eb) =
       schwinger w m g 0 0 (fun _ => 0) +
-        diagonal (fun n => g ^ 2 * ∑ k, rwPot θ eb k * (stagRho n k : ℝ) +
+        diagonal (fun n => g ^ 2 * ∑ k, brenesPot θ eb k * (stagRho n k : ℝ) +
           g ^ 2 / 2 * ∑ j, ((fieldOf (eb j) : ℝ) + θ) ^ 2) := by
   unfold schwinger
   rw [add_assoc, diagonal_add]
@@ -529,7 +529,125 @@ theorem brenes_numberEntropy_avg (w m g θ : ℝ) (hw : 0 ≤ w) (hg : 0 < g) (e
       Real.log 3 + 1 / 2 * Real.log (2 * π * exp 1 *
         (2 / g ^ 2 * (g ^ 2 / 2 * (2 / 3 + θ ^ 2) - m * (((L + 1) / 2 : ℕ) : ℝ) / L + w + |m|) +
           1 / 12)) := by
-  sorry
+  have hLpos : (0 : ℝ) < L := Nat.cast_pos.2 hL
+  have h := wilson_numberEntropy_avg_super w m g θ hw hg e₀ (brenesQ e₀) hL
+    (brenesInit (L := L)) brenesInit_norm t
+  rw [energyDensityS_brenes w m g θ e₀ hL] at h
+  set S := ∑ ℓ ∈ Icc 1 L,
+    shannon L (numDistS (segment ℓ) (wStateS w m g θ e₀ (brenesQ e₀) (brenesInit (L := L)) t))
+    with hS
+  have hbg : ∑ ℓ ∈ Icc 1 L,
+      (shannon L (numDistS (segment ℓ) (wStateS w m g θ e₀ (brenesQ e₀) (brenesInit (L := L)) t)) -
+        bgEntropyS (brenesQ e₀) (brenesInit (L := L)) ℓ) = S - L * Real.log 3 := by
+    rw [Finset.sum_sub_distrib, hS]
+    congr 1
+    rw [Finset.sum_congr rfl (fun ℓ hℓ => bgEntropyS_brenes e₀ ℓ
+      (by have := (Finset.mem_Icc.1 hℓ).1; omega) (Finset.mem_Icc.1 hℓ).2)]
+    simp
+  rw [hbg] at h
+  have hid : (1 / (L : ℝ)) * (S - L * Real.log 3) = (1 / (L : ℝ)) * S - Real.log 3 := by
+    field_simp
+  linarith
+
+namespace BrenesU1Aux
+
+/-- **Lower Schur bound**: a real matrix with nonnegative entries whose row and column sums are at
+most `c` has `Re ⟨v, A v⟩ ≥ -c ‖v‖²`. -/
+theorem re_expect_ge {ι : Type*} [Fintype ι] (A : Matrix ι ι ℝ) (c : ℝ) (h0 : ∀ a b, 0 ≤ A a b)
+    (hrow : ∀ a, ∑ b, A a b ≤ c) (hcol : ∀ b, ∑ a, A a b ≤ c) (v : ι → ℂ) :
+    -(c * ∑ a, Complex.normSq (v a)) ≤ (expect (cplx A) v).re := by
+  rw [WilsonAux.re_expect_cplx]
+  have h1 : ∑ a, ∑ b, A a b * Complex.normSq (v a) ≤ c * ∑ a, Complex.normSq (v a) := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_le_sum (fun a _ => ?_)
+    rw [← Finset.sum_mul]
+    exact mul_le_mul_of_nonneg_right (hrow a) (Complex.normSq_nonneg _)
+  have h2 : ∑ a, ∑ b, A a b * Complex.normSq (v b) ≤ c * ∑ b, Complex.normSq (v b) := by
+    rw [Finset.sum_comm, Finset.mul_sum]
+    refine Finset.sum_le_sum (fun b _ => ?_)
+    rw [← Finset.sum_mul]
+    exact mul_le_mul_of_nonneg_right (hcol b) (Complex.normSq_nonneg _)
+  have h3 : ∑ a, ∑ b, -((A a b * Complex.normSq (v a) + A a b * Complex.normSq (v b)) / 2) ≤
+      ∑ a, ∑ b, A a b * (star (v a) * v b).re := by
+    refine Finset.sum_le_sum (fun a _ => Finset.sum_le_sum (fun b _ => ?_))
+    have h := WilsonAux.re_star_mul_le (-(v a)) (v b)
+    have ha := h0 a b
+    simp only [star_neg, neg_mul, Complex.neg_re, Complex.normSq_neg] at h
+    nlinarith
+  have h4 : ∑ a, ∑ b, -((A a b * Complex.normSq (v a) + A a b * Complex.normSq (v b)) / 2) =
+      -((∑ a, ∑ b, A a b * Complex.normSq (v a) + ∑ a, ∑ b, A a b * Complex.normSq (v b)) / 2) := by
+    simp only [Finset.sum_neg_distrib, add_div, Finset.sum_div, Finset.sum_add_distrib]
+  linarith
+
+/-- The hopping part satisfies `Re ⟨v, (∑_j hop j) v⟩ ≥ -L ‖v‖²`. -/
+theorem re_expect_hop_ge (v : Cfg L → ℂ) :
+    -(L * ∑ n, Complex.normSq (v n)) ≤ (expect (cplx (∑ j : Fin L, hop j)) v).re := by
+  refine re_expect_ge _ _ ?_ ?_ ?_ v
+  · intro a b
+    rw [Matrix.sum_apply]
+    exact Finset.sum_nonneg (fun j _ => WilsonAux.hop_nonneg j a b)
+  · intro a
+    simp only [Matrix.sum_apply]
+    rw [Finset.sum_comm]
+    calc ∑ j : Fin L, ∑ b, hop j a b ≤ ∑ _j : Fin L, (1 : ℝ) :=
+          Finset.sum_le_sum (fun j _ => WilsonAux.hop_row_le j a)
+      _ = L := by simp
+  · intro b
+    simp only [Matrix.sum_apply]
+    rw [Finset.sum_comm]
+    calc ∑ j : Fin L, ∑ a, hop j a b ≤ ∑ _j : Fin L, (1 : ℝ) :=
+          Finset.sum_le_sum (fun j _ => WilsonAux.hop_col_le j b)
+      _ = L := by simp
+
+/-- The staggered mass term is at most `|m| L`. -/
+theorem mass_le (m : ℝ) (n : Cfg L) :
+    m * ∑ j : Fin L, (-1 : ℝ) ^ (j.val + 1) * occ (n j) ≤ |m| * L := by
+  have h := WilsonAux.mass_ge (-m) n
+  rw [abs_neg, neg_mul] at h
+  linarith
+
+/-- The kinetic part `-w ⟨hop⟩ + ⟨mass⟩` of the energy is bounded by `L (w + |m|) ‖v‖²` in absolute
+value. -/
+theorem kin_abs_le (w m : ℝ) (hw : 0 ≤ w) (v : Cfg L → ℂ) :
+    |-w * (expect (cplx (∑ j : Fin L, hop j)) v).re +
+        ∑ n, (m * ∑ j : Fin L, (-1 : ℝ) ^ (j.val + 1) * occ (n j)) * Complex.normSq (v n)| ≤
+      L * (w + |m|) * ∑ n, Complex.normSq (v n) := by
+  have hB1 := mul_le_mul_of_nonneg_left (WilsonAux.re_expect_hop_le v) hw
+  have hB2 := mul_le_mul_of_nonneg_left (re_expect_hop_ge v) hw
+  have hM1 : -(|m| * L) * ∑ n, Complex.normSq (v n) ≤
+      ∑ n, (m * ∑ j : Fin L, (-1 : ℝ) ^ (j.val + 1) * occ (n j)) * Complex.normSq (v n) := by
+    rw [Finset.mul_sum]
+    exact Finset.sum_le_sum (fun n _ =>
+      mul_le_mul_of_nonneg_right (WilsonAux.mass_ge m n) (Complex.normSq_nonneg _))
+  have hM2 : ∑ n, (m * ∑ j : Fin L, (-1 : ℝ) ^ (j.val + 1) * occ (n j)) * Complex.normSq (v n) ≤
+      |m| * L * ∑ n, Complex.normSq (v n) := by
+    rw [Finset.mul_sum]
+    exact Finset.sum_le_sum (fun n _ =>
+      mul_le_mul_of_nonneg_right (mass_le m n) (Complex.normSq_nonneg _))
+  rw [abs_le]
+  constructor <;> linarith
+
+/-- **Two-sided energy conservation in a sector**: the field energy `(g²/2) ∑_j ⟨(E_j + ϑ)²⟩` changes
+by at most `2 L (w + |m|) ‖v‖²` along the evolution. -/
+theorem fieldEnergy_change_le (w m g θ : ℝ) (hw : 0 ≤ w) (e₀ : ℤ) (Q : Fin L → ℤ)
+    (v : Cfg L → ℂ) (t : ℝ) :
+    |g ^ 2 / 2 * ∑ j, fieldSq θ e₀ Q (wState w m g θ e₀ Q v t) j -
+        g ^ 2 / 2 * ∑ j, fieldSq θ e₀ Q v j| ≤
+      2 * (L * (w + |m|) * ∑ n, Complex.normSq (v n)) := by
+  have hE : (expect (cplx (schwinger w m g θ e₀ Q)) (wState w m g θ e₀ Q v t)).re =
+      (expect (cplx (schwinger w m g θ e₀ Q)) v).re := by
+    rw [wState, WilsonAux.expect_evo _ (WilsonAux.schwinger_isSymm w m g θ e₀ Q)]
+  have hnorm : ∑ n, Complex.normSq (wState w m g θ e₀ Q v t n) = ∑ n, Complex.normSq (v n) := by
+    rw [wState, WilsonAux.sum_normSq_mulVec _
+      (evo_unitary _ (WilsonAux.schwinger_isSymm w m g θ e₀ Q) t)]
+  rw [WilsonAux.re_expect_schwinger, WilsonAux.re_expect_schwinger] at hE
+  have h1 := kin_abs_le w m hw (wState w m g θ e₀ Q v t)
+  have h2 := kin_abs_le w m hw v
+  rw [hnorm] at h1
+  rw [abs_le] at h1 h2 ⊢
+  constructor <;> linarith [h1.1, h1.2, h2.1, h2.2]
+
+end BrenesU1Aux
 
 /-- **Electric-energy memory for all times** (paper: Proposition `prop:brenes`(d)): the electric energy density
 stays within `4(w + |m|)/g²` of its initial value `2/3 + ϑ²`. -/
@@ -537,6 +655,38 @@ theorem brenes_field_memory (w m g θ : ℝ) (hw : 0 ≤ w) (hg : 0 < g) (e₀ :
     |(1 / (L : ℝ)) * ∑ j, fieldSqS θ e₀ (brenesQ e₀)
         (wStateS w m g θ e₀ (brenesQ e₀) (brenesInit (L := L)) t) j - (2 / 3 + θ ^ 2)| ≤
       4 * (w + |m|) / g ^ 2 := by
-  sorry
+  have hLpos : (0 : ℝ) < L := Nat.cast_pos.2 hL
+  have hg2 : 0 < g ^ 2 := by positivity
+  have hswap : ∀ Ψ : (Fin L → Fin 3) → Cfg L → ℂ, ∑ j, fieldSqS θ e₀ (brenesQ e₀) Ψ j =
+      ∑ eb, ∑ j, fieldSq θ e₀ (brenesQ e₀ eb) (Ψ eb) j := fun Ψ => by
+    unfold fieldSqS
+    exact Finset.sum_comm
+  set X := ∑ j, fieldSqS θ e₀ (brenesQ e₀)
+    (wStateS w m g θ e₀ (brenesQ e₀) (brenesInit (L := L)) t) j with hX
+  have hdiff : |g ^ 2 / 2 * X - g ^ 2 / 2 * (L * (2 / 3 + θ ^ 2))| ≤ 2 * (L * (w + |m|)) := by
+    rw [← BrenesU1Aux.sum_fieldSqS_brenesInit θ e₀, hX, hswap, hswap, Finset.mul_sum,
+      Finset.mul_sum, ← Finset.sum_sub_distrib]
+    calc |∑ eb, (g ^ 2 / 2 * ∑ j, fieldSq θ e₀ (brenesQ e₀ eb)
+            (wStateS w m g θ e₀ (brenesQ e₀) (brenesInit (L := L)) t eb) j -
+          g ^ 2 / 2 * ∑ j, fieldSq θ e₀ (brenesQ e₀ eb) (brenesInit eb) j)|
+        ≤ ∑ eb, |g ^ 2 / 2 * ∑ j, fieldSq θ e₀ (brenesQ e₀ eb)
+            (wStateS w m g θ e₀ (brenesQ e₀) (brenesInit (L := L)) t eb) j -
+          g ^ 2 / 2 * ∑ j, fieldSq θ e₀ (brenesQ e₀ eb) (brenesInit eb) j| :=
+          Finset.abs_sum_le_sum_abs _ _
+      _ ≤ ∑ eb, 2 * (L * (w + |m|) * ∑ n, Complex.normSq (brenesInit eb n)) :=
+          Finset.sum_le_sum (fun eb _ => BrenesU1Aux.fieldEnergy_change_le w m g θ hw e₀
+            (brenesQ e₀ eb) (brenesInit eb) t)
+      _ = 2 * (L * (w + |m|)) := by
+          rw [← Finset.mul_sum, ← Finset.mul_sum, brenesInit_norm, mul_one]
+  have hid : (1 / (L : ℝ)) * X - (2 / 3 + θ ^ 2) =
+      2 / (g ^ 2 * L) * (g ^ 2 / 2 * X - g ^ 2 / 2 * (L * (2 / 3 + θ ^ 2))) := by
+    field_simp
+  rw [hid, abs_mul, abs_of_pos (by positivity : (0 : ℝ) < 2 / (g ^ 2 * L))]
+  calc 2 / (g ^ 2 * L) * |g ^ 2 / 2 * X - g ^ 2 / 2 * (L * (2 / 3 + θ ^ 2))|
+      ≤ 2 / (g ^ 2 * L) * (2 * (L * (w + |m|))) :=
+        mul_le_mul_of_nonneg_left hdiff (by positivity)
+    _ = 4 * (w + |m|) / g ^ 2 := by
+        field_simp
+        ring
 
 end DFL

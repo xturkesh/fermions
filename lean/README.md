@@ -128,17 +128,18 @@ No `axiom` is introduced anywhere.
 | Proposition `prop:gausscap` (U(1) quantum links: Gauss-law caps, superpositions of sectors, any dynamics) | `countInt_gauss`, `qlm_numberEntropy_le`, `qlm_numberEntropy_le_edge`, `qlm_numberEntropy_le_super`, `qlm_numberEntropy_le_super_edge`, `qlm_sector_preserved`, `bgEntropy_invariant` | `QLM.lean`, `QLMSuper.lean` |
 | Proposition `prop:wilson` (Wilson links: cut-averaged number entropy from energy conservation) | `wField_hop`, `wField_eq_count`, `wilson_field_bound`, `wilson_numberEntropy_avg`, `wilson_numberEntropy_most`, `wilson_numberEntropy_each` | `Wilson.lean` |
 | Remark `rem:wilson`(a) (finite superpositions of background-charge sectors: `prop:wilson`(b) still holds; `S_N(Ψ(t); [1,ℓ]) ≤ H_{Ψ(t)}(E_ℓ) + H_{Ψ₀}(UQ_{[1,ℓ]})`, the second term constant in time; `lem:intentropy` for integer-valued laws; `(1/L)∑_ℓ (S_N - H_{Ψ₀}(UQ_{[1,ℓ]})) ≤ ½ ln(2πe((2/g²)(ε₀ + w + \|m\|) + 1/12))`; bare vacuum: `H_{Ψ₀}(UQ_{[1,ℓ]}) = H_{Ψ₀}(E_ℓ) ≤ ln 3`) | `wStateS`, `energyDensityS`, `lawEntropy`, `wilson_field_bound_super`, `bgEntropyS_wStateS`, `wilson_numberEntropy_le_super`, `lawEntropy_le_massey`, `lawEntropy_le_log_card`, `wilson_numberEntropy_avg_super`, `bgEntropyS_bare_vacuum`, `bgEntropyS_le_log_three` | `WilsonSuper.lean` |
+| Proposition `prop:brenes` (the states of Brenes et al.: bare vacuum, links in the equal superposition of `E ∈ {-1,0,1}`; the background *fields* are i.i.d. and `Q_j = ē_j - ē_{j-1}`; in each sector `E_j = ē_j + F_j` and the Hamiltonian is the clean Schwinger model plus the random-walk potential `g² A_k` on the charges, `A_k = ∑_{j≥k}(ē_j + ϑ)`; a meson costs `2m + (g²/2)(1 + 2s_j(ē_j + ϑ))` (i.i.d.); background term exactly `ln 3`; explicit cut-averaged number-entropy bound; electric energy density within `4(w + \|m\|)/g²` of `2/3 + ϑ²` for all times) | `fieldOf`, `brenesQ`, `bareVac`, `brenesInit`, `brenesPot`, `wField_brenes`, `brenesPot_succ`, `schwinger_brenes`, `schwinger_meson`, `bgSum_brenes`, `bgEntropyS_brenes`, `energyDensityS_brenes`, `brenes_numberEntropy_avg`, `brenes_field_memory` | `BrenesU1.lean` |
 
 ## Verification
 
-`lake build` compiles all 94 modules (about 50,500 lines) without `sorry`; there is no `axiom`,
+`lake build` compiles all 96 modules (about 51,800 lines) without `sorry`; there is no `axiom`,
 `admit`, `native_decide` or `implemented_by` in the library. The script `CheckAxioms.lean` walks
 through every theorem declared in a `DFL` module (including private helper lemmas) and collects the
 axioms it depends on:
 
 ```
 lake env lean CheckAxioms.lean
-# checked 5601 theorems in DFL modules; with non-standard axioms: 0
+# checked 5752 theorems in DFL modules; with non-standard axioms: 0
 ```
 
 i.e. every theorem depends only on Lean's standard axioms `propext`, `Classical.choice` and
