@@ -407,6 +407,8 @@ density at most `K` with respect to the uniform law. -/
 theorem upper_bound_transfer (μ : Cfg N → ℝ) (K : ℝ) (hμ0 : ∀ q, 0 ≤ μ q)
     (hμK : ∀ q, μ q ≤ K * (1 / 2) ^ N) (F : Cfg N → ℝ) (hF : ∀ q, 0 ≤ F q) :
     ∑ q, μ q * F q ≤ K * avgQ F := by
+  -- the non-negativity of `μ` is not needed for the upper bound
+  clear hμ0
   unfold avgQ
   calc ∑ q, μ q * F q ≤ ∑ q, K * (1 / 2) ^ N * F q :=
         Finset.sum_le_sum fun q _ => mul_le_mul_of_nonneg_right (hμK q) (hF q)
