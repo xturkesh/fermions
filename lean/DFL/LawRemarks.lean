@@ -526,21 +526,3 @@ theorem muZ_mutuallySingular_muDimZ : muZ ⟂ₘ muDimZ :=
   ⟨_, LawRemarksAux.measurableSet_dimerEvent, muZ_dimerEvent, muDimZ_dimerEvent_compl⟩
 
 end DFL
-#print axioms DFL.biasedLaw_eq
-#print axioms DFL.sum_biasedLaw
-#print axioms DFL.biasedE_first
-#print axioms DFL.biasedE_bulk
-#print axioms DFL.biasedE_pair01
-#print axioms DFL.biased_cov01
-#print axioms DFL.biased_cov_bulk
-#print axioms DFL.biased_indep_far
-#print axioms DFL.biasedLaw_le
-#print axioms DFL.exists_biasedLaw_eq
-#print axioms DFL.biasedLaw_pos
-#print axioms DFL.biasedLaw_half
-#print axioms DFL.biasedLaw_pure
-#print axioms DFL.upper_bound_transfer
-#print axioms DFL.isProbabilityMeasure_muDimZ
-#print axioms DFL.muZ_dimerEvent
-#print axioms DFL.muDimZ_dimerEvent_compl
-#print axioms DFL.muZ_mutuallySingular_muDimZ
