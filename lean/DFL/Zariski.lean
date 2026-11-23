@@ -29,6 +29,194 @@ def transferSL (E v : ℝ) : Matrix.SpecialLinearGroup (Fin 2) ℝ :=
 def evalEntries (φ : MvPolynomial (Fin 2 × Fin 2) ℝ) (g : Matrix (Fin 2) (Fin 2) ℝ) : ℝ :=
   MvPolynomial.eval (fun ij => g ij.1 ij.2) φ
 
+namespace ZariskiAux
+
+/-- The upper unipotent matrix `U(t) = [[1, t], [0, 1]]`. -/
+def unipU (t : ℝ) : Matrix (Fin 2) (Fin 2) ℝ := !![1, t; 0, 1]
+
+/-- The lower unipotent matrix `L(s) = [[1, 0], [s, 1]]`. -/
+def unipL (s : ℝ) : Matrix (Fin 2) (Fin 2) ℝ := !![1, 0; s, 1]
+
+/-- Evaluating a substituted polynomial `bind₁ h ψ` at the entries of `g`. -/
+lemma evalEntries_bind₁ (h : Fin 2 × Fin 2 → MvPolynomial (Fin 2 × Fin 2) ℝ)
+    (ψ : MvPolynomial (Fin 2 × Fin 2) ℝ) (g : Matrix (Fin 2) (Fin 2) ℝ) :
+    evalEntries (MvPolynomial.bind₁ h ψ) g =
+      MvPolynomial.eval (fun ij => evalEntries (h ij) g) ψ :=
+  MvPolynomial.aeval_bind₁ _ _ _
+
+/-- Right multiplication by a fixed matrix is polynomial in the entries. -/
+lemma exists_evalEntries_mul_right (B : Matrix (Fin 2) (Fin 2) ℝ)
+    (ψ : MvPolynomial (Fin 2 × Fin 2) ℝ) :
+    ∃ ψ' : MvPolynomial (Fin 2 × Fin 2) ℝ, ∀ g, evalEntries ψ' g = evalEntries ψ (g * B) := by
+  refine ⟨MvPolynomial.bind₁ (fun ij => ∑ k : Fin 2,
+    MvPolynomial.X (ij.1, k) * MvPolynomial.C (B k ij.2)) ψ, fun g => ?_⟩
+  rw [evalEntries_bind₁]
+  unfold evalEntries
+  congr 2
+  funext ij
+  simp [Matrix.mul_apply]
+
+/-- Left multiplication by a fixed matrix is polynomial in the entries. -/
+lemma exists_evalEntries_mul_left (A : Matrix (Fin 2) (Fin 2) ℝ)
+    (ψ : MvPolynomial (Fin 2 × Fin 2) ℝ) :
+    ∃ ψ' : MvPolynomial (Fin 2 × Fin 2) ℝ, ∀ g, evalEntries ψ' g = evalEntries ψ (A * g) := by
+  refine ⟨MvPolynomial.bind₁ (fun ij => ∑ k : Fin 2,
+    MvPolynomial.C (A ij.1 k) * MvPolynomial.X (k, ij.2)) ψ, fun g => ?_⟩
+  rw [evalEntries_bind₁]
+  unfold evalEntries
+  congr 2
+  funext ij
+  simp [Matrix.mul_apply]
+
+/-- `t ↦ ψ(U(t))` is a polynomial function of `t`. -/
+lemma exists_poly_unipU (ψ : MvPolynomial (Fin 2 × Fin 2) ℝ) :
+    ∃ p : Polynomial ℝ, ∀ t, p.eval t = evalEntries ψ (unipU t) := by
+  refine ⟨MvPolynomial.aeval (fun ij : Fin 2 × Fin 2 =>
+    (!![1, Polynomial.X; 0, 1] : Matrix (Fin 2) (Fin 2) (Polynomial ℝ)) ij.1 ij.2) ψ,
+    fun t => ?_⟩
+  rw [← Polynomial.coe_aeval_eq_eval, MvPolynomial.comp_aeval_apply]
+  unfold evalEntries
+  rw [← MvPolynomial.aeval_eq_eval]
+  congr 2
+  funext ij
+  rcases ij with ⟨i, j⟩
+  fin_cases i <;> fin_cases j <;> simp [unipU]
+
+/-- If `ψ(U(n a)) = 0` for all `n : ℕ` and some `a ≠ 0`, then `ψ(U(t)) = 0` for all `t`. -/
+lemma evalEntries_unipU_eq_zero (ψ : MvPolynomial (Fin 2 × Fin 2) ℝ) {a : ℝ} (ha : a ≠ 0)
+    (h : ∀ n : ℕ, evalEntries ψ (unipU (n * a)) = 0) (t : ℝ) : evalEntries ψ (unipU t) = 0 := by
+  obtain ⟨p, hp⟩ := exists_poly_unipU ψ
+  have hp0 : p = 0 := by
+    apply Polynomial.eq_zero_of_infinite_isRoot
+    refine Set.Infinite.mono (s := Set.range (fun n : ℕ => (n : ℝ) * a)) ?_
+      (Set.infinite_range_of_injective (fun m n hmn => by simpa [ha] using hmn))
+    rintro _ ⟨n, rfl⟩
+    simp [Polynomial.IsRoot, hp, h]
+  rw [← hp, hp0, Polynomial.eval_zero]
+
+/-- The set of matrices at which every polynomial vanishing on the subgroup `Γ` vanishes. -/
+def zset (Γ : Subgroup (Matrix.SpecialLinearGroup (Fin 2) ℝ)) : Set (Matrix (Fin 2) (Fin 2) ℝ) :=
+  {x | ∀ ψ : MvPolynomial (Fin 2 × Fin 2) ℝ,
+    (∀ γ ∈ Γ, evalEntries ψ (γ : Matrix (Fin 2) (Fin 2) ℝ) = 0) → evalEntries ψ x = 0}
+
+/-- The elements of `Γ` lie in `zset Γ`. -/
+lemma coe_mem_zset {Γ : Subgroup (Matrix.SpecialLinearGroup (Fin 2) ℝ)}
+    {γ : Matrix.SpecialLinearGroup (Fin 2) ℝ} (hγ : γ ∈ Γ) :
+    (γ : Matrix (Fin 2) (Fin 2) ℝ) ∈ zset Γ :=
+  fun _ hψ => hψ γ hγ
+
+/-- `zset Γ` is stable under left multiplication by the elements of `Γ`. -/
+lemma coe_mul_mem_zset {Γ : Subgroup (Matrix.SpecialLinearGroup (Fin 2) ℝ)}
+    {γ : Matrix.SpecialLinearGroup (Fin 2) ℝ} (hγ : γ ∈ Γ) {z : Matrix (Fin 2) (Fin 2) ℝ}
+    (hz : z ∈ zset Γ) : (γ : Matrix (Fin 2) (Fin 2) ℝ) * z ∈ zset Γ := by
+  intro ψ hψ
+  obtain ⟨ψ', hψ'⟩ := exists_evalEntries_mul_left (γ : Matrix (Fin 2) (Fin 2) ℝ) ψ
+  rw [← hψ']
+  refine hz ψ' fun γ' hγ' => ?_
+  rw [hψ', ← Matrix.SpecialLinearGroup.coe_mul]
+  exact hψ _ (Γ.mul_mem hγ hγ')
+
+/-- `zset Γ` is closed under multiplication. -/
+lemma mul_mem_zset {Γ : Subgroup (Matrix.SpecialLinearGroup (Fin 2) ℝ)}
+    {x y : Matrix (Fin 2) (Fin 2) ℝ} (hx : x ∈ zset Γ) (hy : y ∈ zset Γ) : x * y ∈ zset Γ := by
+  intro ψ hψ
+  obtain ⟨ψ', hψ'⟩ := exists_evalEntries_mul_right y ψ
+  rw [← hψ']
+  refine hx ψ' fun γ hγ => ?_
+  rw [hψ']
+  exact coe_mul_mem_zset hγ hy ψ hψ
+
+/-- `U(a) U(b) = U(a + b)`. -/
+lemma unipU_mul_unipU (a b : ℝ) : unipU a * unipU b = unipU (a + b) := by
+  ext i j
+  fin_cases i <;> fin_cases j <;> simp [unipU, Matrix.mul_apply, Fin.sum_univ_two, add_comm]
+
+/-- `U(a)^n = U(n a)`. -/
+lemma unipU_pow (a : ℝ) (n : ℕ) : unipU a ^ n = unipU (n * a) := by
+  induction n with
+  | zero =>
+    ext i j
+    fin_cases i <;> fin_cases j <;> simp [unipU]
+  | succ n ih => rw [pow_succ, ih, unipU_mul_unipU]; push_cast; ring_nf
+
+/-- `W(a) = U(a) L(-a⁻¹) U(a) = [[0, a], [-a⁻¹, 0]]`. -/
+lemma unipU_mul_unipL_mul_unipU {a : ℝ} (ha : a ≠ 0) :
+    unipU a * unipL (-a⁻¹) * unipU a = !![0, a; -a⁻¹, 0] := by
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [unipU, unipL, Matrix.mul_apply, Fin.sum_univ_two, ha]
+
+/-- `diag(a, a⁻¹) = W(a) W(-1)` is a product of unipotents. -/
+lemma diag_eq {a : ℝ} (ha : a ≠ 0) :
+    unipU a * unipL (-a⁻¹) * unipU a * (unipU (-1) * unipL (-(-1)⁻¹) * unipU (-1)) =
+      !![a, 0; 0, a⁻¹] := by
+  rw [unipU_mul_unipL_mul_unipU ha, unipU_mul_unipL_mul_unipU (by norm_num)]
+  ext i j
+  fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_two]
+
+/-- A product-closed set with all `U(t)`, `L(s)` contains each `g` with `det g = 1`, `g₀₀ ≠ 0`. -/
+lemma mem_of_det_eq_one_of_ne_zero (S : Set (Matrix (Fin 2) (Fin 2) ℝ))
+    (hmul : ∀ x ∈ S, ∀ y ∈ S, x * y ∈ S) (hU : ∀ t, unipU t ∈ S) (hL : ∀ s, unipL s ∈ S)
+    (g : Matrix (Fin 2) (Fin 2) ℝ) (hg : g.det = 1) (h0 : g 0 0 ≠ 0) : g ∈ S := by
+  have key : g = unipL (g 1 0 / g 0 0) * (unipU (g 0 0) * unipL (-(g 0 0)⁻¹) * unipU (g 0 0) *
+      (unipU (-1) * unipL (-(-1)⁻¹) * unipU (-1))) * unipU (g 0 1 / g 0 0) := by
+    rw [diag_eq h0]
+    rw [Matrix.det_fin_two] at hg
+    ext i j
+    fin_cases i <;> fin_cases j <;> simp [unipU, unipL, Matrix.mul_apply, Fin.sum_univ_two]
+    all_goals field_simp
+    linarith
+  have m : ∀ {x y}, x ∈ S → y ∈ S → x * y ∈ S := fun hx hy => hmul _ hx _ hy
+  rw [key]
+  exact m (m (hL _) (m (m (m (hU _) (hL _)) (hU _)) (m (m (hU _) (hL _)) (hU _)))) (hU _)
+
+/-- A product-closed set containing all `U(t)` and `L(s)` contains every `g` with `det g = 1`. -/
+lemma mem_of_det_eq_one (S : Set (Matrix (Fin 2) (Fin 2) ℝ))
+    (hmul : ∀ x ∈ S, ∀ y ∈ S, x * y ∈ S) (hU : ∀ t, unipU t ∈ S) (hL : ∀ s, unipL s ∈ S)
+    (g : Matrix (Fin 2) (Fin 2) ℝ) (hg : g.det = 1) : g ∈ S := by
+  by_cases h0 : g 0 0 = 0
+  · have h10 : g 1 0 ≠ 0 := by
+      intro h
+      rw [Matrix.det_fin_two, h0, h] at hg
+      simp at hg
+    have h' : unipU 1 * g ∈ S := by
+      refine mem_of_det_eq_one_of_ne_zero S hmul hU hL _ ?_ ?_
+      · rw [Matrix.det_mul, hg, Matrix.det_fin_two]
+        simp [unipU]
+      · simpa [unipU, Matrix.mul_apply, Fin.sum_univ_two, h0] using h10
+    have hg' : g = unipU (-1) * (unipU 1 * g) := by
+      rw [← mul_assoc, unipU_mul_unipU]
+      ext i j
+      fin_cases i <;> fin_cases j <;> simp [unipU, Matrix.mul_apply, Fin.sum_univ_two]
+    rw [hg']
+    exact hmul _ (hU _) _ h'
+  · exact mem_of_det_eq_one_of_ne_zero S hmul hU hL g hg h0
+
+/-- `T_E(λ) T_E(-λ)⁻¹ = U(-2λ)`. -/
+lemma coe_transferSL_mul_inv (E lam : ℝ) :
+    ((transferSL E lam * (transferSL E (-lam))⁻¹ : Matrix.SpecialLinearGroup (Fin 2) ℝ) :
+      Matrix (Fin 2) (Fin 2) ℝ) = unipU (-2 * lam) := by
+  rw [Matrix.SpecialLinearGroup.coe_mul, Matrix.SpecialLinearGroup.coe_inv]
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [transferSL, transferT, unipU, Matrix.adjugate_fin_two, Matrix.mul_apply,
+      Fin.sum_univ_two]
+  ring
+
+/-- `L(s) = U(-c) T_E(λ) U(-s) T_E(λ)⁻¹ U(c)` with `c = E - λ`. -/
+lemma unipL_eq (E lam s : ℝ) :
+    unipL s = unipU (-(E - lam)) * ((transferSL E lam : Matrix (Fin 2) (Fin 2) ℝ) *
+      (unipU (-s) * ((((transferSL E lam)⁻¹ : Matrix.SpecialLinearGroup (Fin 2) ℝ) :
+        Matrix (Fin 2) (Fin 2) ℝ) * unipU (E - lam)))) := by
+  rw [Matrix.SpecialLinearGroup.coe_inv]
+  ext i j
+  fin_cases i <;> fin_cases j <;>
+    simp [transferSL, transferT, unipU, unipL, Matrix.adjugate_fin_two, Matrix.mul_apply,
+      Fin.sum_univ_two]
+  ring
+
+end ZariskiAux
+
 /-- **Zariski density** (paper: Proposition `prop:nocritical`(iii)): a polynomial in the matrix entries that
 vanishes on the group generated by `T_E(λ)` and `T_E(-λ)`, `λ ≠ 0`, vanishes on `SL(2, ℝ)`. -/
 theorem transfer_zariski_dense (E lam : ℝ) (hlam : lam ≠ 0) (φ : MvPolynomial (Fin 2 × Fin 2) ℝ)
@@ -36,6 +224,28 @@ theorem transfer_zariski_dense (E lam : ℝ) (hlam : lam ≠ 0) (φ : MvPolynomi
       ({transferSL E lam, transferSL E (-lam)} : Set (Matrix.SpecialLinearGroup (Fin 2) ℝ)),
         evalEntries φ g = 0)
     (g : Matrix.SpecialLinearGroup (Fin 2) ℝ) : evalEntries φ g = 0 := by
-  sorry
+  set Γ := Subgroup.closure
+    ({transferSL E lam, transferSL E (-lam)} : Set (Matrix.SpecialLinearGroup (Fin 2) ℝ))
+  have hT : transferSL E lam ∈ Γ := Subgroup.subset_closure (Set.mem_insert _ _)
+  have hT' : transferSL E (-lam) ∈ Γ :=
+    Subgroup.subset_closure (Set.mem_insert_of_mem _ (Set.mem_singleton _))
+  -- every upper unipotent `U(t)` lies in `Z`: `U(-2nλ) = (T_E(λ) T_E(-λ)⁻¹)ⁿ ∈ Γ`
+  have hU : ∀ t, ZariskiAux.unipU t ∈ ZariskiAux.zset Γ := by
+    intro t ψ hψ
+    refine ZariskiAux.evalEntries_unipU_eq_zero ψ (a := -2 * lam)
+      (mul_ne_zero (by norm_num) hlam) (fun n => ?_) t
+    have h := hψ _ (Γ.pow_mem (Γ.mul_mem hT (Γ.inv_mem hT')) n)
+    rwa [Matrix.SpecialLinearGroup.coe_pow, ZariskiAux.coe_transferSL_mul_inv,
+      ZariskiAux.unipU_pow] at h
+  -- every lower unipotent `L(s)` lies in `Z`: it is a product of `U`'s and `T_E(λ)^{±1}`
+  have hL : ∀ s, ZariskiAux.unipL s ∈ ZariskiAux.zset Γ := by
+    intro s
+    rw [ZariskiAux.unipL_eq E lam s]
+    exact ZariskiAux.mul_mem_zset (hU _) (ZariskiAux.mul_mem_zset (ZariskiAux.coe_mem_zset hT)
+      (ZariskiAux.mul_mem_zset (hU _) (ZariskiAux.mul_mem_zset
+        (ZariskiAux.coe_mem_zset (Γ.inv_mem hT)) (hU _))))
+  -- the unipotents generate `SL(2, ℝ)`
+  exact ZariskiAux.mem_of_det_eq_one _ (fun x hx y hy => ZariskiAux.mul_mem_zset hx hy) hU hL g
+    (Matrix.SpecialLinearGroup.det_coe g) φ hφ
 
 end DFL
