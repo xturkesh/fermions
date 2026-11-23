@@ -107,6 +107,7 @@ No `axiom` is introduced anywhere.
 | Remark `rem:gaussproj`(iii) (the clean sector on `ℤ` is ballistic: `∑_y (y-x)² \|⟨δ_y, e^{-ith_ℤ}δ_x⟩\|² = 2J²t²`; no bound `sup_t \|U_{xy}(t)\| ≤ F(\|x-y\|)` with `∑_d d²F(d)² < ∞`; columns of `U^ℤ_q(t)` orthonormal) | `ballistic_clean`, `summable_ballistic_clean`, `no_uniform_decay_clean`, `BallisticAux.hasSum_star_UZ_mul` | `Ballistic.lean` |
 | Remarks `rem:productlaws`(b),(c), `rem:biased` (biased product states: the law of the charges, `E s_0 = m`, `E s_j = m²`, `Cov(s_0, s_1) = m(1-m²)`, `Cov(q_j, q_{j+1}) = ±m²(1-m²)`, independence at distance `≥ 2`, density `≤ (2 max(ϱ, 1-ϱ))^N` attained, full support, the cases `ϱ ∈ {½, 1}`; transfer of upper bounds to laws with density `≤ K`; on `ℤ` the i.i.d. law and the dimer law are mutually singular) | `biasedLaw_eq`, `sum_biasedLaw`, `biasedE_first`, `biasedE_bulk`, `biased_cov01`, `biased_cov_bulk`, `biased_indep_far`, `biasedLaw_le`, `exists_biasedLaw_eq`, `biasedLaw_pos`, `biasedLaw_half`, `biasedLaw_pure`, `upper_bound_transfer`, `muZ_dimerEvent`, `muDimZ_dimerEvent_compl`, `muZ_mutuallySingular_muDimZ` | `LawRemarks.lean` |
 | Remarks `rem:adhh`(a), `rem:wilson`(c), `rem:gausscap`(b) (energy conservation: `\|⟨𝒩⟩_t - ⟨𝒩⟩_0\| ≤ 2C/ν`; `‖S⁺‖ = max_m ((S-m)(S+m+1))^{1/2}`, equal to `(S(S+1))^{1/2}` for integer and `S + ½` for half-integer `S`, `1 ≤ c_S ≤ 2/√3`; the caps of `prop:gausscap` are attained by equal-weight superpositions, `S_N = ln r`) | `energy_conservation_bound`, `spinPlus_opNorm`, `max_spinPlus_weight_even`, `max_spinPlus_weight_odd`, `cS_bounds`, `shannon_uniform`, `qlm_numberEntropy_attained` | `U1Remarks.lean` |
+| Remark `rem:gausscap`(c) (with fixed fermion number an interval ending at the right end obeys the edge bound `ln(2S+1)`) | `qlm_numberEntropy_le_right_edge` | `QLMEdge.lean` |
 | Remark `rem:rate`(iii) (weak disorder: Chebyshev lower bound `Q_q(1,N) ≥ ½(1+\|λ\|/2)^{-(N-1)}` for every `q`, hence every rate of (EC) satisfies `η ≤ ln(1+\|λ\|/2)`, eq. `eq:etaweak`; no `(C, η)` uniform in `λ ∈ (0, λ₁]`; free chain `Q_{Δ_N}(1,(N+1)/2) = 2/((N+1) sin(π/(N+1))) → 2/π`) | `corrQ_end_lower`, `ec_rate_le`, `no_uniform_EC_weak`, `corrQ_free_mid`, `tendsto_corrQ_free_mid` | `WeakDisorder.lean` |
 | Remark `rem:dimerdos` (density of states of the dimer model on `ℓ²(ℤ)`: `ν(f) = ½ E(⟨δ_1, f(H)δ_1⟩ + ⟨δ_2, f(H)δ_2⟩)` with the continuous functional calculus; `N⁻¹ E_dim Tr f(h_q/J) → ν(f)` for continuous `f`; by Riesz–Markov–Kakutani `ν` is a probability measure on `[-2-\|λ\|, 2+\|λ\|]` without atoms, `ν([E-ε, E+ε]) ≤ 2/L` from `lem:fewapprox`) | `dosFun`, `dosFin`, `tendsto_dosFin`, `dosFun_le_of_near`, `exists_dosMeasure`, `dosMeasure`, `isProbabilityMeasure_dosMeasure`, `dosMeasure_compl_Icc`, `dosMeasure_singleton` | `DimerDOS.lean` |
 | Theorem `thm:2dmap` for `σᶻ`-polarized gauge states, on **any finite graph** | `FinGraph.sector_average_matter`, `FinGraph.gaussOp_comm_ham`, `FinGraph.dGamma_hq` | `Graph.lean` |
@@ -118,19 +119,20 @@ No `axiom` is introduced anywhere.
 | Proposition `prop:2dlaws`(c)(iii),(iv) (checkerboard propagator `e^{-ith} = cos(tR) - i h R⁻¹ sin(tR)`, `R² = K_s² + 4h²`, on eigenvectors and as power series; `(K_s²)_{ii} = J² deg(i)` on simple graphs) | `FinGraph.checkerboard_evo_eigvec`, `FinGraph.checkerboard_evo`, `FinGraph.Ks_sq_diag` | `TwoDLaws.lean` |
 | Proposition `prop:nocompact` (no compactly supported eigenvectors on `ℤ²`) | `no_compact_eigenvector`, `no_compact_eigenvector_hqs` | `TwoD.lean` |
 | Proposition `prop:cluster` (strong-coupling cluster confinement; (c) with the percolation probability as input) | `FinGraph.hqs0_cluster`, `FinGraph.cluster_bound`, `FinGraph.cluster_leak`, `FinGraph.cluster_avg` | `Cluster.lean` |
+| Remark `rem:clusterLGT` (`σᶻ`-polarized links, Fock matter: the expected number of particles outside the regions `B a` of the occupied sites is at most `\|S_n\| [(8J/g + 16\|t\|J²/g)² + K P]`, with the percolation probability `P` as input and `K = 2^N/#sectors`) | `FinGraph.cluster_LGT` | `ClusterLGT.lean` |
 | Proposition `prop:gausscap` (U(1) quantum links: Gauss-law caps, superpositions of sectors, any dynamics) | `countInt_gauss`, `qlm_numberEntropy_le`, `qlm_numberEntropy_le_edge`, `qlm_numberEntropy_le_super`, `qlm_numberEntropy_le_super_edge`, `qlm_sector_preserved`, `bgEntropy_invariant` | `QLM.lean`, `QLMSuper.lean` |
 | Proposition `prop:wilson` (Wilson links: cut-averaged number entropy from energy conservation) | `wField_hop`, `wField_eq_count`, `wilson_field_bound`, `wilson_numberEntropy_avg`, `wilson_numberEntropy_most`, `wilson_numberEntropy_each` | `Wilson.lean` |
 
 ## Verification
 
-`lake build` compiles all 87 modules (about 47,000 lines) without `sorry`; there is no `axiom`,
+`lake build` compiles all 89 modules (about 47,200 lines) without `sorry`; there is no `axiom`,
 `admit`, `native_decide` or `implemented_by` in the library. The script `CheckAxioms.lean` walks
 through every theorem declared in a `DFL` module (including private helper lemmas) and collects the
 axioms it depends on:
 
 ```
 lake env lean CheckAxioms.lean
-# checked 5229 theorems in DFL modules; with non-standard axioms: 0
+# checked 5242 theorems in DFL modules; with non-standard axioms: 0
 ```
 
 i.e. every theorem depends only on Lean's standard axioms `propext`, `Classical.choice` and

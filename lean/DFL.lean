@@ -85,3 +85,5 @@ import DFL.WeakDisorder
 import DFL.DimerDOS
 import DFL.DimerSecond
 import DFL.DimerSuper
+import DFL.ClusterLGT
+import DFL.QLMEdge
