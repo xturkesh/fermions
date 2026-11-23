@@ -37,7 +37,7 @@ i.i.d.\ Bernoulli transfer matrices;
 \end{itemize}
 Both are published theorems (\cref{prop:nocritical,prop:LDT}).  Their proofs, Furstenberg's theory
 of products of random matrices, are not formalized.  The hypotheses of Furstenberg's theorem
-(\cref{prop:nocritical}(i),(ii),(iv)) are formalized.  Consequently \cref{thm:transport},
+(\cref{prop:nocritical}(i),(ii),(iv)), and the Zariski density of \cref{prop:nocritical}(iii), are formalized.  Consequently \cref{thm:transport},
 \cref{thm:numberentropy}, \cref{thm:imbalance} and \cref{thm:arealaw}(a),(b) are Lean theorems whose
 only external input is this literature result (\texttt{lgt\_transport\_of\_ldt},
 \texttt{lgt\_numberEntropy\_of\_ldt}, \texttt{lgtImbalance\_lower\_of\_ldt}, \texttt{lgt\_areaLaw\_of\_ldt}).
@@ -90,8 +90,10 @@ modes of $X$ (this contains $\GAlg(X)$): \texttt{expect\_embF}, \texttt{tendsto\
 \item \cref{cor:ECinfvol} for the full correlator $Q^X$, $X\in\{\Z,\N\}$, with $f(A_X)$ defined by the continuous
 functional calculus on $\ell^2(X)$: \texttt{exists\_isAZ}, \texttt{lintegral\_corrQZ\_le}, \texttt{exists\_isAN},
 \texttt{lintegral\_corrQN\_le} (\texttt{ECInfVolQ}, \texttt{ECInfVolQN}).
-\item \cref{prop:nocritical}(i),(ii),(iv): \texttt{unipotent\_pow\_unbounded},
-\texttt{no\_finite\_invariant\_lines}, \texttt{transferT\_commutator} (\texttt{Furstenberg}).
+\item \cref{prop:nocritical}: (i),(ii),(iv) \texttt{unipotent\_pow\_unbounded},
+\texttt{no\_finite\_invariant\_lines}, \texttt{transferT\_commutator} (\texttt{Furstenberg}); (iii)
+\texttt{transfer\_zariski\_dense} (\texttt{Zariski}), by an elementary argument: the zero set in $SL(2,\R)$ of the
+polynomials vanishing on the group is closed under products and contains all unipotent matrices.
 \item \cref{thm:transport}(a)--(d), with the constants of the text: \texttt{dressed\_anticomm\_t},
 \texttt{avg\_sup\_anticomm\_le}, \texttt{expect\_abs\_anticomm\_le}, \texttt{one\_particle\_moments},
 \texttt{lgt\_transport\_sharp}, \texttt{lgt\_transport\_sq}, \texttt{dressed\_corr\_le} (\texttt{TransportSharp});
@@ -186,7 +188,9 @@ for $s=+$); (b) \texttt{sector\_average\_xpol}, \texttt{xpol\_summand\_gauge}; (
 \texttt{biasedLaw\_le}, \texttt{upper\_bound\_transfer}, \texttt{muZ\_mutuallySingular\_muDimZ}
 (\texttt{LawRemarks}); \cref{rem:adhh}(a), \cref{rem:wilson}(c), \cref{rem:gausscap}(b):
 \texttt{energy\_conservation\_bound}, \texttt{spinPlus\_opNorm}, \texttt{cS\_bounds},
-\texttt{qlm\_numberEntropy\_attained} (\texttt{U1Remarks}).
+\texttt{qlm\_numberEntropy\_attained} (\texttt{U1Remarks}); \cref{rem:rate}(iii), with the bound
+\eqref{eq:etaweak}: \texttt{corrQ\_end\_lower}, \texttt{ec\_rate\_le}, \texttt{no\_uniform\_EC\_weak},
+\texttt{corrQ\_free\_mid}, \texttt{tendsto\_corrQ\_free\_mid} (\texttt{WeakDisorder}).
 \end{itemize}
 
 \paragraph{Deviations.}  Sites and links are indexed from $0$.  \Cref{thm:transport,thm:numberentropy,thm:arealaw}
@@ -213,7 +217,7 @@ using $\Gamma h^0\ge g/2$, instead of from the integral formula; the propagator 
 \paragraph{Not formalized.}  The following are not formalized:
 \begin{itemize}
 \item the literature results entering as inputs: the large-deviation estimate together with the
-positivity and continuity of the Lyapunov exponent, \cref{prop:nocritical}(iii), \cref{prop:Zline},
+positivity and continuity of the Lyapunov exponent, \cref{prop:Zline},
 the transport bounds of \cite{JSBS2003} behind the almost-sure exponent in \cref{thm:dimer}(c) and behind (d) for
 $\frac12<p\le1$, and the percolation estimate of
 \cite{LiL2022}, which enters \texttt{cluster\_avg} as the probability that the cluster leaves the

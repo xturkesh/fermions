@@ -741,16 +741,25 @@ rate bounded as $\lambda\to\infty$.
 and boundedly, to $\delta_{T_E(0)}$.  The matrix $T_E(0)$ is elliptic and fixes no line.  By the
 Furstenberg--Kifer continuity theorem in the form \cite[Thm.~2.5]{Bucaj2019},
 $\gamma_\lambda(E)\to\gamma_0(E)=0$.  Hence $\gstar(\lambda)\to0$, and the rate $\eta\le\gstar/4$ produced by the
-proof degenerates.  Some degeneration is unavoidable.  Suppose that \eqref{eq:ECmain} held on
-$\Lambda=[1,N]$ with the same $(C,\eta)$ for all $\lambda\in(0,\lambda_1]$.  For fixed $N$ and $q$, the spectrum
-of $A_{[1,N]}$ is simple (\cref{lem:consequences}(a)), so the rank-one eigenprojections, and hence
-$Q^{[1,N]}(x,y)=\sum_\alpha|(P_\alpha)_{xy}|$, are continuous in $\lambda$.  Letting $\lambda\to0$ would give
-$Q_{\Delta_N}(x,y)\le Ce^{-\eta|x-y|}$ for the free chain.  But for odd $N$, with
+proof degenerates.  Some degeneration is unavoidable, and quantitatively so: every $\eta$ admissible in
+\eqref{eq:ECmain} satisfies
+\begin{equation}\label{eq:etaweak}
+  \eta\le\ln\Bigl(1+\frac{|\lambda|}2\Bigr)\le\frac{|\lambda|}2 .
+\end{equation}
+Indeed, let $A:=\Delta_N+\lambda\diag(q)$, $m:=N-1$, $R:=2+|\lambda|\ge\norm A$, and let $T_m$ be the Chebyshev polynomial
+of degree $m$, so that $|T_m(E/R)|\le1$ on the spectrum of $A$ and $Q^{[1,N]}_q(1,N)\ge|(T_m(A/R))_{1N}|$.  Since
+$(A^k)_{1N}=0$ for $k<m$, $(A^m)_{1N}=1$, and the leading coefficient of $T_m$ is $2^{m-1}$,
+\[
+  Q^{[1,N]}_q(1,N)\ge\frac{2^{m-1}}{(2+|\lambda|)^m}=\frac12\Bigl(1+\frac{|\lambda|}2\Bigr)^{-(N-1)}\qquad\text{for every }q,
+\]
+and \eqref{eq:etaweak} follows by letting $N\to\infty$ in \eqref{eq:ECmain} with $(x,y)=(1,N)$.  In particular no pair $(C,\eta)$
+works for all $\lambda\in(0,\lambda_1]$.  For the free chain the correlator does not decay at all: for odd $N$, with
 $\varphi_k(x)=(2/(N+1))^{1/2}\sin(\pi kx/(N+1))$,
 \[
-  Q_{\Delta_N}\bigl(1,\tfrac{N+1}2\bigr)=\frac2{N+1}\sum_{k\ \rm odd}\sin\frac{\pi k}{N+1}\longrightarrow\frac2\pi\qquad(N\to\infty),
+  Q_{\Delta_N}\bigl(1,\tfrac{N+1}2\bigr)=\frac2{N+1}\sum_{k\ \rm odd}\sin\frac{\pi k}{N+1}=\frac{2}{(N+1)\sin\frac{\pi}{N+1}}
+  \longrightarrow\frac2\pi\qquad(N\to\infty).
 \]
-a contradiction.  Weak-disorder perturbation theory suggests
+Weak-disorder perturbation theory suggests
 $\gamma_\lambda(E)\asymp\lambda^2$ in the bulk of the band, i.e.\ a localization length of order
 $\lambda^{-2}$.  We do not use or prove this.
 \end{remark}

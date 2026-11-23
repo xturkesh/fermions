@@ -80,3 +80,5 @@ import DFL.Strings
 import DFL.Ballistic
 import DFL.U1Remarks
 import DFL.LawRemarks
+import DFL.Zariski
+import DFL.WeakDisorder

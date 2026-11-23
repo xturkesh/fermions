@@ -272,12 +272,535 @@ lemma abs_dosFun_sub_le (lam : ℝ) (f : ℝ → ℝ) (hf : Continuous f) (p : P
   rw [e, abs_mul, abs_of_pos (by norm_num : (0 : ℝ) < 1 / 2)]
   linarith
 
+/-! ### The dimer law as a marginal of `muZ` -/
+
+/-- The dimer charges `q_i = q(η)_{i+1}` of the chain `Fin (2M)` (Lean site `i` = paper site
+`i + 1`). -/
+def qOf (M : ℕ) (η : CfgZ) : Cfg (2 * M) := fun i => dimerQZ η ((i.val : ℤ) + 1)
+
+/-- `η ↦ q(η)|_{[1, 2M]}` is measurable. -/
+lemma measurable_qOf (M : ℕ) : Measurable (qOf M) :=
+  Measurable.of_eval fun _ => measurable_pi_apply _
+
+/-- `q(η)|_{[1, 2M]}` is a dimer configuration. -/
+lemma isDimer_qOf (M : ℕ) (η : CfgZ) : IsDimer (qOf M η) := by
+  intro k hk hk1
+  simp only [qOf, dimerQZ]
+  congr 1
+  push_cast
+  omega
+
+/-- The law of `q(η)|_{[1, 2M]}` under `muZ` is uniform on the dimer configurations. -/
+lemma muZ_qOf_preimage (M : ℕ) (q : Cfg (2 * M)) :
+    muZ (qOf M ⁻¹' {q}) = if IsDimer q then ((2 : ENNReal) ^ M)⁻¹ else 0 := by
+  split_ifs with hq
+  · have hset : qOf M ⁻¹' {q} = Set.pi (↑(Finset.Icc (1 : ℤ) M)) (fun j =>
+        if h : 2 * (j.toNat - 1) < 2 * M then {q ⟨2 * (j.toNat - 1), h⟩} else Set.univ) := by
+      ext η
+      simp only [Set.mem_preimage, Set.mem_singleton_iff, Set.mem_pi, Finset.mem_coe,
+        Finset.mem_Icc]
+      constructor
+      · rintro rfl j ⟨hj1, hj2⟩
+        rw [dite_eq_left (by omega)]
+        simp only [Set.mem_singleton_iff, qOf, dimerQZ]
+        congr 1
+        omega
+      · intro H
+        funext i
+        have hi := i.isLt
+        have h1 := H ((i.val / 2 : ℕ) + 1) ⟨by omega, by omega⟩
+        rw [dite_eq_left (by omega)] at h1
+        simp only [Set.mem_singleton_iff] at h1
+        have e1 : ((i.val : ℤ) + 1 + 1) / 2 = ((i.val / 2 : ℕ) : ℤ) + 1 := by omega
+        simp only [qOf, dimerQZ]
+        rw [e1, h1]
+        by_cases hpar : i.val % 2 = 0
+        · congr 1
+          ext
+          simp only
+          omega
+        · have := hq ⟨2 * (i.val / 2), by omega⟩ (by simp only; omega) (by simp only; omega)
+          have e2 : (⟨2 * ((((i.val / 2 : ℕ) : ℤ) + 1).toNat - 1), by omega⟩ : Fin (2 * M)) =
+              ⟨2 * (i.val / 2), by omega⟩ := by
+            ext
+            simp only
+            omega
+          rw [e2, this]
+          congr 1
+          ext
+          simp only
+          omega
+    rw [hset, muZ, Measure.infinitePi_pi _ (fun _ _ => MeasurableSet.of_discrete)]
+    rw [Finset.prod_congr rfl (g := fun _ => (2 : ENNReal)⁻¹) (fun j hj => by
+      rw [Finset.mem_Icc] at hj
+      rw [dite_eq_left (by omega), InfVolAux.unifZ2_singleton])]
+    rw [Finset.prod_const, Int.card_Icc, ENNReal.inv_pow]
+    congr 2
+    omega
+  · have : qOf M ⁻¹' {q} = ∅ := by
+      ext η
+      simp only [Set.mem_preimage, Set.mem_singleton_iff, Set.mem_empty_iff_false, iff_false]
+      rintro rfl
+      exact hq (isDimer_qOf M η)
+    rw [this, measure_empty]
+
+/-- Functions of `q(η)|_{[1, 2M]}` are integrable. -/
+lemma integrable_comp_qOf (M : ℕ) (G : Cfg (2 * M) → ℝ) :
+    Integrable (fun η => G (qOf M η)) muZ :=
+  (integrable_map_measure (measurable_of_countable G).aestronglyMeasurable
+    (measurable_qOf M).aemeasurable).mp Integrable.of_finite
+
+/-- **The dimer average is an expectation over `η`**: `E_dim G = E G(q(η)|_{[1, 2M]})`. -/
+lemma dimerAvg_eq_integral (M : ℕ) (G : Cfg (2 * M) → ℝ) :
+    dimerAvg G = ∫ η, G (qOf M η) ∂muZ := by
+  rw [← integral_map (measurable_qOf M).aemeasurable
+    (measurable_of_countable G).aestronglyMeasurable, integral_fintype Integrable.of_finite]
+  unfold dimerAvg
+  rw [card_isDimer ⟨M, by ring⟩, Finset.sum_filter, Finset.sum_div]
+  refine Finset.sum_congr rfl fun q _ => ?_
+  rw [Measure.real, Measure.map_apply (measurable_qOf M) (measurableSet_singleton q),
+    muZ_qOf_preimage, smul_eq_mul]
+  have e : 2 * M / 2 = M := by omega
+  split_ifs
+  · rw [e, ENNReal.toReal_inv, ENNReal.toReal_pow, ENNReal.toReal_ofNat]
+    push_cast
+    ring
+  · simp
+
+/-! ### Finite volume: eigenvalues and traces -/
+
+/-- The finite-volume eigenvalues lie in `[-2-|λ|, 2+|λ|]`. -/
+lemma abs_eig_le (lam : ℝ) {n : ℕ} (q : Cfg n) (α : Fin n) :
+    |(hq_isHermitian 1 (lam / 2) q).eigenvalues α| ≤ 2 + |lam| := by
+  set hB := hq_isHermitian 1 (lam / 2) q with hBdef
+  refine ECInfVolQAux.abs_eig_le (hq 1 (lam / 2) q) _ (fun i => ?_)
+    (fun j => hB.eigenvectorBasis α j) _ ?_ (NormalizationAux.eig_eq _ hB α)
+  · have := InfVolAux.sum_abs_hq_le 1 (lam / 2) q i
+    rw [abs_one, abs_div, abs_two] at this
+    linarith
+  · by_contra hcon
+    have h0 : ∀ i, hB.eigenvectorBasis α i = 0 := fun i => by
+      by_contra hi
+      exact hcon ⟨i, hi⟩
+    have := NormalizationAux.eig_orth _ hB α α
+    simp [h0] at this
+
+/-- `(Γ B Γ)^k = Γ B^k Γ`. -/
+lemma pow_stag_conj {n : ℕ} (B : Matrix (Fin n) (Fin n) ℝ) (k : ℕ) :
+    (stag n * B * stag n) ^ k = stag n * B ^ k * stag n := by
+  induction k with
+  | zero => rw [pow_zero, pow_zero, Matrix.mul_one, stag_mul_stag]
+  | succ k ih =>
+    rw [pow_succ, ih, pow_succ]
+    simp only [Matrix.mul_assoc]
+    rw [← Matrix.mul_assoc (stag n) (stag n), stag_mul_stag, Matrix.one_mul]
+
+/-- The diagonal of the powers of `h_q` does not depend on the sign of the hopping. -/
+lemma pow_hq_neg_apply_self (J h : ℝ) {n : ℕ} (q : Cfg n) (k : ℕ) (i : Fin n) :
+    ((hq (-J) h q) ^ k) i i = ((hq J h q) ^ k) i i := by
+  rw [← stag_conj_hq J h q, pow_stag_conj]
+  simp only [stag, Matrix.diagonal_mul, Matrix.mul_diagonal]
+  linear_combination (((hq J h q) ^ k) i i) * NormalizationAux.neg_one_pow_mul_self i.val
+
+/-- The finite-volume diagonal matrix element `p(A_q)_{ii}`, `A_q = Δ + λ diag(q) = hq (-1) (λ/2) q`. -/
+def momFin (lam : ℝ) (p : Polynomial ℝ) {n : ℕ} (q : Cfg n) (i : Fin n) : ℝ :=
+  ∑ k ∈ Finset.range (p.natDegree + 1), p.coeff k * ((hq (-1) (lam / 2) q) ^ k) i i
+
+/-- **Trace formula**: `∑_α p(μ_α) = ∑_i p(A_q)_{ii}`, i.e. `Tr p(h_q) = Tr p(Γ h_q Γ)`. -/
+lemma sum_eval_eig (lam : ℝ) {n : ℕ} (q : Cfg n) (p : Polynomial ℝ) :
+    ∑ α, p.eval ((hq_isHermitian 1 (lam / 2) q).eigenvalues α) = ∑ i, momFin lam p q i := by
+  unfold momFin
+  set hB := hq_isHermitian 1 (lam / 2) q with hBdef
+  have hdiag : ∀ k i, ((hq (-1) (lam / 2) q) ^ k) i i =
+      ∑ α, hB.eigenvalues α ^ k * (hB.eigenvectorBasis α i * hB.eigenvectorBasis α i) := by
+    intro k i
+    rw [pow_hq_neg_apply_self]
+    exact ECInfVolQAux.pow_apply_eq_sum _ (fun α => hB.eigenvectorBasis α) _
+      (NormalizationAux.eig_compl _ hB) (NormalizationAux.eig_eq _ hB) k i i
+  simp_rw [hdiag, Polynomial.eval_eq_sum_range, Finset.mul_sum]
+  symm
+  calc ∑ i, ∑ k ∈ Finset.range (p.natDegree + 1), ∑ α,
+        p.coeff k * (hB.eigenvalues α ^ k * (hB.eigenvectorBasis α i * hB.eigenvectorBasis α i))
+      = ∑ k ∈ Finset.range (p.natDegree + 1), ∑ α, ∑ i,
+        p.coeff k * (hB.eigenvalues α ^ k *
+          (hB.eigenvectorBasis α i * hB.eigenvectorBasis α i)) := by
+        rw [Finset.sum_comm]
+        exact Finset.sum_congr rfl fun k _ => Finset.sum_comm
+    _ = ∑ k ∈ Finset.range (p.natDegree + 1), ∑ α, p.coeff k * hB.eigenvalues α ^ k := by
+        refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun α _ => ?_
+        rw [← Finset.mul_sum, ← Finset.mul_sum, NormalizationAux.eig_orth _ hB α α]
+        simp
+    _ = ∑ α, ∑ k ∈ Finset.range (p.natDegree + 1), p.coeff k * hB.eigenvalues α ^ k :=
+        Finset.sum_comm
+
+/-! ### Finite propagation -/
+
+/-- The entries of `h_q` in a shifted box `q_i = Q_{i + a}` are those of `h^ℤ_Q`. -/
+lemma hq_apply_shift (J h : ℝ) {n : ℕ} (q : Cfg n) (Q : CfgZ) (a : ℤ)
+    (hqQ : ∀ i : Fin n, q i = Q (i.val + a)) (i l : Fin n) :
+    hq J h q i l = hZ J h Q (i.val + a) (l.val + a) := by
+  have e1 : (i.val + 1 = l.val ∨ l.val + 1 = i.val) ↔
+      ((i.val : ℤ) + a = l.val + a + 1 ∨ (l.val : ℤ) + a = i.val + a + 1) := by omega
+  have e2 : i = l ↔ (i.val : ℤ) + a = l.val + a := by rw [Fin.ext_iff]; omega
+  simp only [hq, hZ, pathAdj, Matrix.add_apply, Matrix.smul_apply, Matrix.diagonal_apply,
+    smul_eq_mul, hqQ]
+  by_cases c1 : i.val + 1 = l.val ∨ l.val + 1 = i.val
+  · rw [ite_eq_left c1, ite_eq_left (e1.mp c1)]
+    by_cases c2 : i = l
+    · rw [ite_eq_left c2, ite_eq_left (e2.mp c2)]; ring
+    · rw [ite_eq_right c2, ite_eq_right (fun h => c2 (e2.mpr h))]; ring
+  · rw [ite_eq_right c1, ite_eq_right (fun h => c1 (e1.mpr h))]
+    by_cases c2 : i = l
+    · rw [ite_eq_left c2, ite_eq_left (e2.mp c2)]; ring
+    · rw [ite_eq_right c2, ite_eq_right (fun h => c2 (e2.mpr h))]; ring
+
+/-- One row of `h_q` in a shifted box, away from the boundary. -/
+lemma sum_hq_mul_shift (J h : ℝ) {n : ℕ} (q : Cfg n) (Q : CfgZ) (a : ℤ)
+    (hqQ : ∀ i : Fin n, q i = Q (i.val + a)) (i : Fin n) (hi1 : 1 ≤ i.val)
+    (hi2 : i.val + 1 < n) (v : Fin n → ℝ) (w : ℤ → ℝ)
+    (hvw : ∀ l : Fin n, i.val ≤ l.val + 1 → l.val ≤ i.val + 1 → v l = w (l.val + a)) :
+    ∑ l, hq J h q i l * v l =
+      ∑ z ∈ Finset.Icc ((i.val : ℤ) + a - 1) (i.val + a + 1), hZ J h Q (i.val + a) z * w z := by
+  set S := Finset.univ.filter (fun l : Fin n => i.val ≤ l.val + 1 ∧ l.val ≤ i.val + 1)
+    with hS
+  rw [← Finset.sum_subset (Finset.subset_univ S) ?_]
+  · refine Finset.sum_bij (fun l _ => (l.val : ℤ) + a) ?_ ?_ ?_ ?_
+    · intro l hl
+      simp only [hS, Finset.mem_filter, Finset.mem_univ, true_and] at hl
+      simp only [Finset.mem_Icc]
+      omega
+    · intro l1 _ l2 _ h12
+      exact Fin.ext (by omega)
+    · intro z hz
+      simp only [Finset.mem_Icc] at hz
+      refine ⟨⟨(z - a).toNat, by omega⟩, ?_, ?_⟩
+      · simp only [hS, Finset.mem_filter, Finset.mem_univ, true_and]
+        omega
+      · simp only
+        omega
+    · intro l hl
+      simp only [hS, Finset.mem_filter, Finset.mem_univ, true_and] at hl
+      rw [hq_apply_shift J h q Q a hqQ, hvw l hl.1 hl.2]
+  · intro l _ hl
+    simp only [hS, Finset.mem_filter, Finset.mem_univ, true_and, not_and_or, not_le] at hl
+    rw [hq_apply_shift J h q Q a hqQ, InfVolAux.hZ_eq_zero J h Q _ _ ?_, zero_mul]
+    simp only [Finset.mem_Icc]
+    omega
+
+/-- **Finite propagation in a shifted box**: if `q_i = Q_{i + a}`, the powers of `h_q` agree with
+those of `h^ℤ_Q` as long as the paths stay in the box. -/
+lemma pow_hq_apply_shift (J h : ℝ) {n : ℕ} (q : Cfg n) (Q : CfgZ) (a : ℤ)
+    (hqQ : ∀ i : Fin n, q i = Q (i.val + a)) (j : Fin n) (k : ℕ) :
+    ∀ i : Fin n, k ≤ i.val → i.val + k < n →
+      ((hq J h q) ^ k) i j = hZpow J h Q k (i.val + a) (j.val + a) := by
+  induction k with
+  | zero =>
+    intro i _ _
+    simp only [pow_zero, Matrix.one_apply, hZpow]
+    by_cases hij : i = j
+    · rw [ite_eq_left hij, ite_eq_left (by rw [hij])]
+    · rw [ite_eq_right hij, ite_eq_right (fun h => hij (Fin.ext (by omega)))]
+  | succ k ih =>
+    intro i hi1 hi2
+    rw [pow_succ', Matrix.mul_apply]
+    simp only [hZpow]
+    exact sum_hq_mul_shift J h q Q a hqQ i (by omega) (by omega) _ _
+      fun l hl1 hl2 => ih l (by omega) (by omega)
+
+/-! ### Stationarity of the dimer law -/
+
+/-- The shift `η ↦ η(· + m)` preserves `muZ`. -/
+lemma map_shift_muZ (m : ℤ) : muZ.map (fun η : CfgZ => fun j => η (j + m)) = muZ := by
+  have h := Measure.infinitePi_map_piCongrLeft (X := fun _ : ℤ => ZMod 2)
+    (fun _ : ℤ => unifZ2) (Equiv.subRight m)
+  have e : ⇑(MeasurableEquiv.piCongrLeft (fun _ : ℤ => ZMod 2) (Equiv.subRight m)) =
+      fun η : CfgZ => fun j => η (j + m) := by
+    funext η j
+    simp [MeasurableEquiv.coe_piCongrLeft, Equiv.piCongrLeft_apply_eq_cast]
+  rw [e] at h
+  exact h
+
+/-- Integrals are invariant under the shift. -/
+lemma integral_comp_shift (m : ℤ) (G : CfgZ → ℝ) (hG : Measurable G) :
+    ∫ η, G (fun j => η (j + m)) ∂muZ = ∫ η, G η ∂muZ := by
+  have hmeas : Measurable fun η : CfgZ => fun j => η (j + m) :=
+    Measurable.of_eval fun j => measurable_pi_apply _
+  rw [← integral_map hmeas.aemeasurable hG.aestronglyMeasurable, map_shift_muZ]
+
+/-- `q(η(· + m))_y = q(η)_{y + 2m}`. -/
+lemma dimerQZ_shift (η : CfgZ) (m y : ℤ) :
+    dimerQZ (fun j => η (j + m)) y = dimerQZ η (y + 2 * m) := by
+  simp only [dimerQZ]
+  congr 1
+  omega
+
+/-- Translation covariance of `h^ℤ`. -/
+lemma hZ_shift (J h : ℝ) (Q : CfgZ) (c x z : ℤ) :
+    hZ J h (fun w => Q (w + c)) x z = hZ J h Q (x + c) (z + c) := by
+  simp only [hZ]
+  by_cases c1 : x = z + 1 ∨ z = x + 1
+  · rw [ite_eq_left c1, ite_eq_left (by omega : x + c = z + c + 1 ∨ z + c = x + c + 1)]
+    by_cases c2 : x = z
+    · rw [ite_eq_left c2, ite_eq_left (by omega : x + c = z + c)]
+    · rw [ite_eq_right c2, ite_eq_right (by omega : ¬ (x + c = z + c))]
+  · rw [ite_eq_right c1, ite_eq_right (by omega : ¬ (x + c = z + c + 1 ∨ z + c = x + c + 1))]
+    by_cases c2 : x = z
+    · rw [ite_eq_left c2, ite_eq_left (by omega : x + c = z + c)]
+    · rw [ite_eq_right c2, ite_eq_right (by omega : ¬ (x + c = z + c))]
+
+/-- Translation covariance of the powers of `h^ℤ`. -/
+lemma hZpow_shift (J h : ℝ) (Q : CfgZ) (c : ℤ) (k : ℕ) :
+    ∀ x y : ℤ, hZpow J h (fun w => Q (w + c)) k x y = hZpow J h Q k (x + c) (y + c) := by
+  induction k with
+  | zero =>
+    intro x y
+    simp only [hZpow, add_left_inj]
+  | succ k ih =>
+    intro x y
+    simp only [hZpow]
+    refine Finset.sum_nbij' (· + c) (· - c) ?_ ?_ ?_ ?_ ?_
+    · intro z hz
+      simp only [Finset.mem_Icc] at hz ⊢
+      omega
+    · intro z hz
+      simp only [Finset.mem_Icc] at hz ⊢
+      omega
+    · intro z _
+      simp
+    · intro z _
+      simp
+    · intro z _
+      rw [hZ_shift, ih]
+
+/-- `p(H_{η(· + m)})_{xx} = p(H_η)_{x + 2m, x + 2m}`. -/
+lemma momZ_shift (lam : ℝ) (p : Polynomial ℝ) (η : CfgZ) (m x : ℤ) :
+    momZ lam p (fun j => η (j + m)) x = momZ lam p η (x + 2 * m) := by
+  have e : dimerQZ (fun j => η (j + m)) = fun w => dimerQZ η (w + 2 * m) :=
+    funext fun w => dimerQZ_shift η m w
+  unfold momZ
+  rw [e]
+  refine Finset.sum_congr rfl fun k _ => ?_
+  rw [hZpow_shift]
+
+/-- **Stationarity**: `E p(H)_{x + 2m, x + 2m} = E p(H)_{xx}`. -/
+lemma integral_momZ_shift (lam : ℝ) (p : Polynomial ℝ) (m x : ℤ) :
+    ∫ η, momZ lam p η (x + 2 * m) ∂muZ = ∫ η, momZ lam p η x ∂muZ := by
+  simp_rw [← momZ_shift]
+  exact integral_comp_shift m (fun η => momZ lam p η x) (measurable_momZ lam p x)
+
+/-! ### Convergence for polynomials -/
+
+/-- Expectations of bounded functions are bounded. -/
+lemma abs_integral_le {G : CfgZ → ℝ} {C : ℝ} (h : ∀ η, |G η| ≤ C) :
+    |∫ η, G η ∂muZ| ≤ C := by
+  have := norm_integral_le_of_norm_le_const (μ := muZ) (f := G) (C := C)
+    (ae_of_all _ fun η => by rw [Real.norm_eq_abs]; exact h η)
+  rwa [probReal_univ, mul_one, Real.norm_eq_abs] at this
+
+/-- `0 ≤ ∑_k |p_k| (2 + |λ|)^k`. -/
+lemma polyBound_nonneg (lam : ℝ) (p : Polynomial ℝ) : 0 ≤ polyBound lam p :=
+  Finset.sum_nonneg fun k _ => mul_nonneg (abs_nonneg _) (by positivity)
+
+/-- `|p(A_q)_{ii}| ≤ ∑_k |p_k| (2 + |λ|)^k`. -/
+lemma abs_momFin_le (lam : ℝ) (p : Polynomial ℝ) {n : ℕ} (q : Cfg n) (i : Fin n) :
+    |momFin lam p q i| ≤ polyBound lam p := by
+  unfold momFin polyBound
+  refine (Finset.abs_sum_le_sum_abs _ _).trans (Finset.sum_le_sum fun k _ => ?_)
+  rw [abs_mul]
+  refine mul_le_mul_of_nonneg_left ?_ (abs_nonneg _)
+  have := InfVolAux.abs_pow_hq_le (-1) (lam / 2) q k i i
+  rwa [two_abs_add] at this
+
+/-- Away from the boundary, the finite-volume matrix elements are the infinite-volume ones. -/
+lemma momFin_qOf_eq (lam : ℝ) (p : Polynomial ℝ) (M : ℕ) (η : CfgZ) (i : Fin (2 * M))
+    (h1 : p.natDegree ≤ i.val) (h2 : i.val + p.natDegree < 2 * M) :
+    momFin lam p (qOf M η) i = momZ lam p η ((i.val : ℤ) + 1) := by
+  unfold momFin momZ
+  refine Finset.sum_congr rfl fun k hk => ?_
+  rw [Finset.mem_range] at hk
+  rw [pow_hq_apply_shift (-1) (lam / 2) (qOf M η) (dimerQZ η) 1 (fun _ => rfl) i k i
+    (by omega) (by omega)]
+
+/-- `N⁻¹ E_dim Tr f(h_q)` as an expectation over `η`. -/
+lemma dosFin_eq_integral (lam : ℝ) (M : ℕ) (f : ℝ → ℝ) :
+    dosFin lam M f = (1 / (2 * M : ℝ)) *
+      ∫ η, ∑ α, f ((hq_isHermitian 1 (lam / 2) (qOf M η)).eigenvalues α) ∂muZ := by
+  unfold dosFin
+  rw [dimerAvg_eq_integral]
+
+/-- The polynomial case: `N⁻¹ E_dim Tr p(h_q) = N⁻¹ ∑_i E p(A_q)_{ii}`. -/
+lemma dosFin_poly_eq (lam : ℝ) (p : Polynomial ℝ) (M : ℕ) :
+    dosFin lam M (fun t => p.eval t) =
+      (1 / (2 * M : ℝ)) * ∑ i : Fin (2 * M), ∫ η, momFin lam p (qOf M η) i ∂muZ := by
+  have hi : ∀ i ∈ (Finset.univ : Finset (Fin (2 * M))),
+      Integrable (fun η => momFin lam p (qOf M η) i) muZ :=
+    fun i _ => integrable_comp_qOf M (fun q => momFin lam p q i)
+  rw [dosFin_eq_integral, ← integral_finsetSum _ hi]
+  congr 1
+  exact integral_congr_ae (ae_of_all _ fun η => sum_eval_eig lam (qOf M η) p)
+
+/-- `∑_{i < 2M} g_i = ∑_{m < M} (g_{2m} + g_{2m+1})`. -/
+lemma sum_range_two_mul (g : ℕ → ℝ) (M : ℕ) :
+    ∑ i ∈ Finset.range (2 * M), g i = ∑ m ∈ Finset.range M, (g (2 * m) + g (2 * m + 1)) := by
+  induction M with
+  | zero => simp
+  | succ M ih =>
+    rw [show 2 * (M + 1) = 2 * M + 1 + 1 by ring, Finset.sum_range_succ, Finset.sum_range_succ,
+      ih, Finset.sum_range_succ]
+    ring
+
+/-- At most `2d` sites of `Fin n` are within distance `d` of the boundary. -/
+lemma sum_boundary_le (n d : ℕ) :
+    ∑ i : Fin n, (if d ≤ i.val ∧ i.val + d < n then (0 : ℝ) else 1) ≤ 2 * d := by
+  rw [Fin.sum_univ_eq_sum_range (fun i => if d ≤ i ∧ i + d < n then (0 : ℝ) else 1) n]
+  have h1 : ((Finset.range n).filter (fun i => i < d)).card ≤ d :=
+    (Finset.card_le_card fun i hi => by
+      simp only [Finset.mem_filter, Finset.mem_range] at hi
+      exact Finset.mem_range.mpr hi.2).trans (Finset.card_range d).le
+  have h2 : ((Finset.range n).filter (fun i => n ≤ i + d)).card ≤ d := by
+    refine (Finset.card_le_card (t := Finset.Ico (n - d) n) fun i hi => ?_).trans ?_
+    · simp only [Finset.mem_filter, Finset.mem_range] at hi
+      exact Finset.mem_Ico.mpr ⟨by omega, hi.1⟩
+    · rw [Nat.card_Ico]
+      omega
+  calc ∑ i ∈ Finset.range n, (if d ≤ i ∧ i + d < n then (0 : ℝ) else 1)
+      ≤ ∑ i ∈ Finset.range n, ((if i < d then (1 : ℝ) else 0) + (if n ≤ i + d then 1 else 0)) := by
+        refine Finset.sum_le_sum fun i _ => ?_
+        split_ifs <;> norm_num
+        omega
+    _ = (((Finset.range n).filter (fun i => i < d)).card : ℝ) +
+          (((Finset.range n).filter (fun i => n ≤ i + d)).card : ℝ) := by
+        rw [Finset.sum_add_distrib, Finset.sum_boole, Finset.sum_boole]
+    _ ≤ d + d := by
+        gcongr
+    _ = 2 * d := by ring
+
+/-- **Quantitative convergence for polynomials**: `|N⁻¹ E_dim Tr p(h_q) - ν(p)| ≤ 2 d B / M`. -/
+lemma abs_dosFin_poly_sub_le (lam : ℝ) (p : Polynomial ℝ) (M : ℕ) (hM : 0 < M) :
+    |dosFin lam M (fun t => p.eval t) -
+        (1 / 2) * (∫ η, momZ lam p η 1 ∂muZ + ∫ η, momZ lam p η 2 ∂muZ)| ≤
+      2 * p.natDegree * polyBound lam p / M := by
+  set c₁ := ∫ η, momZ lam p η 1 ∂muZ with hc₁
+  set c₂ := ∫ η, momZ lam p η 2 ∂muZ with hc₂
+  set a : Fin (2 * M) → ℝ := fun i => ∫ η, momFin lam p (qOf M η) i ∂muZ with ha
+  set b : Fin (2 * M) → ℝ := fun i => ∫ η, momZ lam p η ((i.val : ℤ) + 1) ∂muZ with hb
+  set B := polyBound lam p with hB
+  have hB0 : 0 ≤ B := polyBound_nonneg lam p
+  have hsumb : ∑ i, b i = M * (c₁ + c₂) := by
+    rw [hb, Fin.sum_univ_eq_sum_range (fun i : ℕ => ∫ η, momZ lam p η ((i : ℤ) + 1) ∂muZ) (2 * M),
+      sum_range_two_mul]
+    have e1 : ∀ m : ℕ, ∫ η, momZ lam p η (((2 * m : ℕ) : ℤ) + 1) ∂muZ = c₁ := fun m => by
+      have := integral_momZ_shift lam p m 1
+      rw [show (1 : ℤ) + 2 * (m : ℤ) = ((2 * m : ℕ) : ℤ) + 1 by push_cast; ring] at this
+      exact this
+    have e2 : ∀ m : ℕ, ∫ η, momZ lam p η (((2 * m + 1 : ℕ) : ℤ) + 1) ∂muZ = c₂ := fun m => by
+      have := integral_momZ_shift lam p m 2
+      rw [show (2 : ℤ) + 2 * (m : ℤ) = ((2 * m + 1 : ℕ) : ℤ) + 1 by push_cast; ring] at this
+      exact this
+    simp only [e1, e2, Finset.sum_const, Finset.card_range, nsmul_eq_mul]
+  have hab : ∀ i : Fin (2 * M), |a i - b i| ≤
+      2 * B * (if p.natDegree ≤ i.val ∧ i.val + p.natDegree < 2 * M then 0 else 1) := by
+    intro i
+    split_ifs with hi
+    · have : a i = b i := integral_congr_ae (ae_of_all _ fun η =>
+        momFin_qOf_eq lam p M η i hi.1 hi.2)
+      rw [this, sub_self, abs_zero, mul_zero]
+    · have h1 : |a i| ≤ B := abs_integral_le fun η => abs_momFin_le lam p _ i
+      have h2 : |b i| ≤ B := abs_integral_le fun η => abs_momZ_le lam p η _
+      rw [mul_one]
+      calc |a i - b i| ≤ |a i| + |b i| := abs_sub _ _
+        _ ≤ 2 * B := by linarith
+  have hM' : (0 : ℝ) < M := by exact_mod_cast hM
+  have e : dosFin lam M (fun t => p.eval t) - (1 / 2) * (c₁ + c₂) =
+      (1 / (2 * M : ℝ)) * ∑ i, (a i - b i) := by
+    rw [dosFin_poly_eq, Finset.sum_sub_distrib, hsumb]
+    field_simp
+    ring
+  rw [e, abs_mul, abs_of_pos (by positivity)]
+  have h3 : |∑ i, (a i - b i)| ≤ 2 * B * (2 * p.natDegree) := by
+    calc |∑ i, (a i - b i)| ≤ ∑ i, |a i - b i| := Finset.abs_sum_le_sum_abs _ _
+      _ ≤ ∑ i : Fin (2 * M), 2 * B *
+          (if p.natDegree ≤ i.val ∧ i.val + p.natDegree < 2 * M then 0 else 1) :=
+          Finset.sum_le_sum fun i _ => hab i
+      _ = 2 * B * ∑ i : Fin (2 * M),
+          (if p.natDegree ≤ i.val ∧ i.val + p.natDegree < 2 * M then (0 : ℝ) else 1) := by
+          rw [Finset.mul_sum]
+      _ ≤ 2 * B * (2 * p.natDegree) := by
+          gcongr
+          exact sum_boundary_le _ _
+  calc 1 / (2 * M : ℝ) * |∑ i, (a i - b i)| ≤ 1 / (2 * M : ℝ) * (2 * B * (2 * p.natDegree)) := by
+        gcongr
+    _ = 2 * p.natDegree * B / M := by
+        field_simp
+
+/-- **Convergence for polynomials** (finite propagation and stationarity). -/
+lemma tendsto_dosFin_poly (lam : ℝ) (p : Polynomial ℝ) :
+    Tendsto (fun M : ℕ => dosFin lam M (fun t => p.eval t)) atTop
+      (𝓝 ((1 / 2) * (∫ η, momZ lam p η 1 ∂muZ + ∫ η, momZ lam p η 2 ∂muZ))) := by
+  rw [tendsto_iff_norm_sub_tendsto_zero]
+  refine squeeze_zero' (Eventually.of_forall fun M => norm_nonneg _)
+    (eventually_atTop.mpr ⟨1, fun M hM => ?_⟩)
+    (tendsto_const_div_atTop_nhds_zero_nat (2 * p.natDegree * polyBound lam p))
+  rw [Real.norm_eq_abs]
+  exact abs_dosFin_poly_sub_le lam p M hM
+
+/-- `|N⁻¹ E_dim Tr f(h_q) - N⁻¹ E_dim Tr p(h_q)| ≤ δ` if `|p - f| ≤ δ` on the spectral interval. -/
+lemma abs_dosFin_sub_le (lam : ℝ) (M : ℕ) (hM : 0 < M) (f : ℝ → ℝ) (p : Polynomial ℝ) (δ : ℝ)
+    (hp : ∀ t ∈ Set.Icc (-(2 + |lam|)) (2 + |lam|), |p.eval t - f t| ≤ δ) :
+    |dosFin lam M f - dosFin lam M (fun t => p.eval t)| ≤ δ := by
+  have hi1 : Integrable (fun η =>
+      ∑ α, f ((hq_isHermitian 1 (lam / 2) (qOf M η)).eigenvalues α)) muZ :=
+    integrable_comp_qOf M (fun q => ∑ α, f ((hq_isHermitian 1 (lam / 2) q).eigenvalues α))
+  have hi2 : Integrable (fun η =>
+      ∑ α, (fun t => p.eval t) ((hq_isHermitian 1 (lam / 2) (qOf M η)).eigenvalues α)) muZ :=
+    integrable_comp_qOf M
+      (fun q => ∑ α, (fun t => p.eval t) ((hq_isHermitian 1 (lam / 2) q).eigenvalues α))
+  rw [dosFin_eq_integral, dosFin_eq_integral, ← mul_sub, ← integral_sub hi1 hi2]
+  have hM' : (0 : ℝ) < M := by exact_mod_cast hM
+  have hb : ∀ η, |∑ α, f ((hq_isHermitian 1 (lam / 2) (qOf M η)).eigenvalues α) -
+      ∑ α, (fun t => p.eval t) ((hq_isHermitian 1 (lam / 2) (qOf M η)).eigenvalues α)| ≤
+        2 * M * δ := by
+    intro η
+    rw [← Finset.sum_sub_distrib]
+    refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
+    calc ∑ α, |f ((hq_isHermitian 1 (lam / 2) (qOf M η)).eigenvalues α) -
+          (fun t => p.eval t) ((hq_isHermitian 1 (lam / 2) (qOf M η)).eigenvalues α)|
+        ≤ ∑ α : Fin (2 * M), δ := Finset.sum_le_sum fun α _ => by
+          have hα := abs_le.mp (abs_eig_le lam (qOf M η) α)
+          rw [abs_sub_comm]
+          exact hp _ ⟨by linarith [hα.1], hα.2⟩
+      _ = 2 * M * δ := by simp
+  rw [abs_mul, abs_of_pos (by positivity)]
+  calc 1 / (2 * M : ℝ) * |∫ η, (∑ α, f ((hq_isHermitian 1 (lam / 2) (qOf M η)).eigenvalues α) -
+        ∑ α, (fun t => p.eval t) ((hq_isHermitian 1 (lam / 2) (qOf M η)).eigenvalues α)) ∂muZ|
+      ≤ 1 / (2 * M : ℝ) * (2 * M * δ) := by
+        gcongr
+        exact abs_integral_le hb
+    _ = δ := by
+        field_simp
+
 end DimerDOSAux
 
 /-- **Convergence of the finite-volume density of states** (paper: `rem:dimerdos`(ii)). -/
 theorem tendsto_dosFin (lam : ℝ) (f : ℝ → ℝ) (hf : Continuous f) :
     Tendsto (fun M : ℕ => dosFin lam M f) atTop (𝓝 (dosFun lam f)) := by
-  sorry
+  rw [Metric.tendsto_atTop]
+  intro ε hε
+  obtain ⟨p, hp⟩ := exists_polynomial_near_of_continuousOn (-(2 + |lam|)) (2 + |lam|) f
+    hf.continuousOn (ε / 4) (by positivity)
+  have hp' : ∀ t ∈ Set.Icc (-(2 + |lam|)) (2 + |lam|), |p.eval t - f t| ≤ ε / 4 :=
+    fun t ht => (hp t ht).le
+  have h1 := DimerDOSAux.abs_dosFun_sub_le lam f hf p (ε / 4) (by positivity) hp'
+  obtain ⟨N, hN⟩ := Metric.tendsto_atTop.mp (DimerDOSAux.tendsto_dosFin_poly lam p) (ε / 4)
+    (by positivity)
+  refine ⟨max N 1, fun M hM => ?_⟩
+  have h3 := DimerDOSAux.abs_dosFin_sub_le lam M
+    (Nat.lt_of_lt_of_le Nat.one_pos (le_of_max_le_right hM)) f p (ε / 4) hp'
+  have h4 := hN M (le_of_max_le_left hM)
+  rw [Real.dist_eq] at h4 ⊢
+  rw [abs_le] at h1 h3
+  rw [abs_lt] at h4 ⊢
+  constructor <;> linarith [h1.1, h1.2, h3.1, h3.2, h4.1, h4.2]
 
 /-- `ν` is positive. -/
 theorem dosFun_nonneg (lam : ℝ) (f : ℝ → ℝ) (hf : Continuous f) (h0 : ∀ x, 0 ≤ f x) :
