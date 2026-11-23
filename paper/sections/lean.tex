@@ -146,11 +146,14 @@ the even links: \texttt{dimerState}, \texttt{prodStateXi\_dual}, \texttt{pairDef
 \texttt{dimerTL\_ii}, \texttt{dimerTL\_ii\_Z}, \texttt{dimerTL\_iii} (\texttt{DimerTL}, \texttt{DimerInfVol});
 \cref{prop:dimerlower} on finite intervals, with the Plancherel identity \eqref{eq:plancherel}, and on $\Z$:
 \texttt{dimerMom\_plancherel}, \texttt{dimer\_lower\_bound}, \texttt{dimer\_lower\_bound\_Z} (\texttt{DimerLower},
-\texttt{DimerInfVol}); \cref{thm:dimer}(a), (b), the lower bound $\Mom^{\infty,r}_p(T)\ge c_{\lambda,p}(JT)^{p-1}$ in (c),
-and (d) for $p>1$, sector by sector and for the single-fermion dimer state: \texttt{dimer\_sector\_moment\_lower},
-\texttt{dimer\_LGT\_moment\_lower}, \texttt{dimer\_TL\_D}, \texttt{dimer\_TL\_M}, \texttt{dimer\_LGT\_TL\_D},
-\texttt{dimer\_LGT\_TL\_M}, \texttt{dimerMInf\_lower}, \texttt{dimer\_sup\_moment\_unbounded},
-\texttt{dimer\_LGT\_unbounded}, \texttt{not\_EC\_dimer} (\texttt{DimerLGT}, \texttt{DimerInfVol}, \texttt{DimerState});
+\texttt{DimerInfVol}); \cref{lem:dimersecond,prop:dimersuper}: \texttt{dimer\_second\_moment},
+\texttt{integral\_hs2\_tmProd\_le}, \texttt{dimer\_super\_annealed}, \texttt{dimer\_super\_ae} (\texttt{DimerSecond},
+\texttt{DimerSuper}); \cref{thm:dimer}(a)--(d), sector by sector and for the single-fermion dimer state:
+\texttt{dimer\_sector\_moment\_lower}, \texttt{dimer\_LGT\_moment\_lower}, \texttt{dimer\_TL\_D}, \texttt{dimer\_TL\_M},
+\texttt{dimer\_LGT\_TL\_D}, \texttt{dimer\_LGT\_TL\_M}, \texttt{dimerMInf\_lower}, \texttt{dimerMInf\_super},
+\texttt{dimerMInf\_exponent}, \texttt{dimer\_sup\_moment\_unbounded}, \texttt{dimerD\_unbounded\_half},
+\texttt{dimer\_LGT\_unbounded\_half}, \texttt{not\_EC\_dimer\_half} (\texttt{DimerLGT}, \texttt{DimerInfVol},
+\texttt{DimerState}, \texttt{DimerSuper});
 \cref{prop:dimerimbalance} and \cref{lem:fewapprox}: \texttt{dimer\_stagWeight\_identity},
 \texttt{dimerImbalance\_timeAvg}, \texttt{card\_eig\_near\_le}, \texttt{dimerImbInf\_le},
 \texttt{dimerImbInf\_tendsto\_zero} (\texttt{DimerImbalance}, \texttt{DimerImbalanceLim}).
@@ -200,7 +203,7 @@ are formalized with the constants of the text.  The constants of \cref{thm:imbal
 existential quantifiers, with values depending only on $J$, $h$ and the profile $F$ (resp.\ on $|\lambda|$).  The area law is
 formalized twice: with the constant $2\ln2\,\Theta(F)$ of the text, through the exact formula of \cref{lem:slater}(a),
 and, by a shorter argument that never computes the spectrum of $\rho_A$, with the constant $2$ in place of $2\ln2$.
-Four proofs take a different route from
+Five proofs take a different route from
 the text.
 \begin{itemize}
 \item \Cref{lem:green} is replaced by the Poisson identity
@@ -211,6 +214,8 @@ the norm of the product is bounded through its action on two basis vectors.
 \item In \cref{thm:imbalance}(iv) the anticoncentration step uses the elementary fourth-moment bound of
 \cref{rem:main-imbalance}(i), on blocks of length $3m^2$, instead of Szarek's inequality, together with a different
 bound on $\kappa_N$; the Lean statement is the positivity of the time average, uniformly in $N$.
+\item In \cref{prop:dimersuper} the inequalities of Jensen and Cauchy--Schwarz are replaced by the tangent-line bound
+$1/X\ge2/a-X/a^2$, applied with a constant $a$.
 \item In \cref{prop:cluster}(b) the generator $S$ with $[h^0,S]=h^1$ and $\norm S\le\norm{h^1}/g$ is obtained
 from the anticommutator equation $\Gamma h^0S+S\Gamma h^0=\Gamma h^1$, $\Gamma=\operatorname{sgn}(h)\diag(q)$,
 using $\Gamma h^0\ge g/2$, instead of from the integral formula; the propagator estimate is the one of the text.
@@ -219,9 +224,7 @@ using $\Gamma h^0\ge g/2$, instead of from the integral formula; the propagator 
 \paragraph{Not formalized.}  The following are not formalized:
 \begin{itemize}
 \item the literature results entering as inputs: the large-deviation estimate together with the
-positivity and continuity of the Lyapunov exponent, \cref{prop:Zline},
-the transport bounds of \cite{JSBS2003} behind the almost-sure exponent in \cref{thm:dimer}(c) and behind (d) for
-$\frac12<p\le1$, and the percolation estimate of
+positivity and continuity of the Lyapunov exponent, \cref{prop:Zline}, and the percolation estimate of
 \cite{LiL2022}, which enters \texttt{cluster\_avg} as the probability that the cluster leaves the
 region, and the verification of the hypotheses of the cited theorems in their own formalism (\cref{lem:hypcheck});
 \item remarks, conjectures and numerics, except the remarks listed above.

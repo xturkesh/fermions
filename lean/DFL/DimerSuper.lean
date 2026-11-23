@@ -18,6 +18,12 @@ For the random dimer potential `v = v^{(r)}` on `ℤ` (values `±λ`, `λ = 2|h|
 * `dimerMInf_super`, `dimerMInf_exponent` (paper: `thm:dimer`(c)): `M^{∞,r}_p(T) ≥ c (JT)^{p - 1/2}`;
 * `dimerD_unbounded_half`, `dimer_LGT_unbounded_half`, `not_EC_dimer_half` (paper: `thm:dimer`(d) for every
   `p > 1/2`).
+
+*Implementation.* Jensen's inequality and the Cauchy–Schwarz step are both replaced by the tangent-line bound
+`1/X ≥ 2/a - X/a²` (`a > 0`), which turns the deterministic bound into
+`M ≥ (2πT)⁻¹ (c₀²/2) (2A/a - B/a²)` with `A = 2δ ∑_{j ≤ L} j^p` and `B = ∫ ∑_{j ≤ L} j^p X_j dE`
+(`DimerSuperAux.det_bound`); take `a = C'` for (a) and `a = (N+1)² C'` off the Markov events for (b). Fubini in
+`(η, E)` is reduced to a finite sum, since `B` depends on finitely many signs (`DimerSuperAux.integral_swap_dep`).
 -/
 
 open MeasureTheory Filter Topology Matrix Finset
@@ -1083,28 +1089,82 @@ theorem dimerMInf_super (J h : ℝ) (hJ : 0 < J) (hh0 : 0 < |h|) (hh1 : 2 * |h| 
     (hp : 0 < p) :
     ∃ c T₀ : ℝ, 0 < c ∧ 0 < T₀ ∧ ∀ T : ℝ, T₀ ≤ J * T →
       c * (J * T) ^ (p - 1 / 2) ≤ dimerMInf J h r p T := by
-  sorry
+  obtain ⟨c, T₀, hc, hT₀, hb⟩ := dimer_super_annealed J h hJ hh0 hh1 r p hp
+  exact ⟨c, T₀, hc, hT₀, fun T hT => hb (J * T) hT⟩
 
 /-- **Theorem `thm:dimer`(c)**, the annealed exponent: for every `α > 0`, `M^{∞,r}_p(T) ≥ T^{p - 1/2 - α}` for all
 large `T`. -/
 theorem dimerMInf_exponent (J h : ℝ) (hJ : 0 < J) (hh0 : 0 < |h|) (hh1 : 2 * |h| < J) (r : ℤ) (p : ℝ)
     (hp : 0 < p) (α : ℝ) (hα : 0 < α) :
     ∀ᶠ T in atTop, T ^ (p - 1 / 2 - α) ≤ dimerMInf J h r p T := by
-  sorry
+  obtain ⟨c, T₀, hc, hT₀, hb⟩ := dimerMInf_super J h hJ hh0 hh1 r p hp
+  have hcJ : 0 < c * J ^ (p - 1 / 2) := by positivity
+  have hlim : Tendsto (fun T : ℝ => T ^ α) atTop atTop := tendsto_rpow_atTop hα
+  filter_upwards [eventually_ge_atTop (T₀ / J), eventually_gt_atTop 0,
+    hlim.eventually_ge_atTop (1 / (c * J ^ (p - 1 / 2)))] with T hT1 hT0 hT2
+  have hJT : T₀ ≤ J * T := by
+    rw [div_le_iff₀ hJ] at hT1
+    linarith
+  have h1 : 1 ≤ T ^ α * (c * J ^ (p - 1 / 2)) := (div_le_iff₀ hcJ).mp hT2
+  have hq : 0 < T ^ (p - 1 / 2) := by positivity
+  calc T ^ (p - 1 / 2 - α) = T ^ (p - 1 / 2) / T ^ α := Real.rpow_sub hT0 _ _
+    _ ≤ T ^ (p - 1 / 2) * (c * J ^ (p - 1 / 2)) := by
+        rw [div_le_iff₀ (by positivity)]
+        calc T ^ (p - 1 / 2) = T ^ (p - 1 / 2) * 1 := (mul_one _).symm
+          _ ≤ T ^ (p - 1 / 2) * (T ^ α * (c * J ^ (p - 1 / 2))) := by gcongr
+          _ = T ^ (p - 1 / 2) * (c * J ^ (p - 1 / 2)) * T ^ α := by ring
+    _ = c * (J * T) ^ (p - 1 / 2) := by
+        rw [Real.mul_rpow hJ.le hT0.le]
+        ring
+    _ ≤ dimerMInf J h r p T := hb T hJT
 
 /-- **Theorem `thm:dimer`(d)** for every `p > 1/2`: `sup_{N even, x, t} D^{(N)}_p(t; x) = ∞`. -/
 theorem dimerD_unbounded_half (J h : ℝ) (hJ : 0 < J) (hh0 : 0 < |h|) (hh1 : 2 * |h| < J) (p : ℝ)
     (hp : 1 / 2 < p) :
     ¬ BddAbove (Set.range (fun r : (Σ M : ℕ, Fin (2 * M) × ℝ) =>
       dimerD J h (2 * r.1) p r.2.2 r.2.1)) := by
-  sorry
+  rcases lt_or_ge 1 p with hp1 | hp1
+  · exact dimerD_unbounded J h hJ hh0 hh1 p hp1
+  rintro ⟨C, hC⟩
+  rw [mem_upperBounds] at hC
+  obtain ⟨c, T₀, hc, hT₀, hb⟩ := dimerMInf_super J h hJ hh0 hh1 0 p (by linarith)
+  have hlim : Tendsto (fun s : ℝ => c * s ^ (p - 1 / 2)) atTop atTop :=
+    (tendsto_rpow_atTop (by linarith)).const_mul_atTop hc
+  obtain ⟨s, hs1, hs2⟩ :=
+    ((eventually_ge_atTop (max T₀ 1)).and (hlim.eventually_gt_atTop C)).exists
+  have hs0 : 0 < s := lt_of_lt_of_le one_pos (le_trans (le_max_right _ _) hs1)
+  have hJT : J * (s / J) = s := by field_simp
+  have hT0 : 0 < s / J := by positivity
+  -- `M^{∞,0}_p(s/J) > C`
+  have hMinf : C < dimerMInf J h 0 p (s / J) := by
+    have := hb (s / J) (by rw [hJT]; exact le_trans (le_max_left _ _) hs1)
+    rw [hJT] at this
+    linarith
+  -- the thermodynamic limit along `N = 2(2n + 2)`, `x = 2n`
+  have hTL := dimer_TL_M J h hJ 0 (fun n => 2 * (2 * n + 2))
+    (fun n => (⟨2 * n, by omega⟩ : Fin (2 * (2 * n + 2))))
+    (fun n => even_two_mul _) (fun n => show ((2 * n : ℕ) : ℤ) % 2 = 0 by omega)
+    (tendsto_atTop_mono (fun n => show n ≤ 2 * n by omega) tendsto_id)
+    (tendsto_atTop_mono (fun n => show n ≤ 2 * (2 * n + 2) - 2 * n by omega) tendsto_id)
+    p (s / J) (by linarith) (by linarith) hT0
+  obtain ⟨n, hn⟩ := (hTL.eventually (lt_mem_nhds hMinf)).exists
+  -- `M^{(N)}_p` is a time average of `D^{(N)}_p ≤ C`
+  have hup := DimerLGTAux.integral_weight_le (s / J) C hT0
+    (fun t => dimerD J h (2 * (2 * n + 2)) p t (⟨2 * n, by omega⟩ : Fin (2 * (2 * n + 2))))
+    (fun t => DimerLGTAux.dimerAvg_nonneg fun q => Finset.sum_nonneg fun y _ => by positivity)
+    (fun t => hC _ ⟨⟨2 * n + 2, (⟨2 * n, by omega⟩ : Fin (2 * (2 * n + 2))), t⟩, rfl⟩)
+  exact (not_le.mpr hn) hup
 
 /-- **Theorem `thm:dimer`(d)** for every `p > 1/2`, for the single-fermion dimer state. -/
 theorem dimer_LGT_unbounded_half (J h : ℝ) (hJ : 0 < J) (hh0 : 0 < |h|) (hh1 : 2 * |h| < J) (p : ℝ)
     (hp : 1 / 2 < p) :
     ¬ BddAbove (Set.range (fun r : (Σ M : ℕ, Fin (2 * M) × ℝ) =>
       dimerDLGT J h (2 * r.1) p r.2.2 r.2.1)) := by
-  sorry
+  have e : (fun r : (Σ M : ℕ, Fin (2 * M) × ℝ) => dimerDLGT J h (2 * r.1) p r.2.2 r.2.1) =
+      fun r => dimerD J h (2 * r.1) p r.2.2 r.2.1 :=
+    funext fun r => dimerDLGT_eq J h (even_two_mul r.1) p r.2.2 r.2.1
+  rw [e]
+  exact dimerD_unbounded_half J h hJ hh0 hh1 p hp
 
 /-- **Hypothesis (EC) fails for the dimer law** (paper: `thm:dimer`(d)), for every `p > 1/2`: there is no `F ≥ 0`
 with `∑_d (d+1)^p F(d) < ∞` and `E_dim Q^{[1,N]}_q(x, y) ≤ F(|x - y|)` for all even `N`. -/
@@ -1114,6 +1174,32 @@ theorem not_EC_dimer_half (J h : ℝ) (hJ : 0 < J) (hh0 : 0 < |h|) (hh1 : 2 * |h
     ¬ ∀ (N : ℕ), Even N → ∀ x y : Fin N,
       dimerAvg (fun q : Cfg N => corrQ (hq J h q) (hq_isHermitian J h q) x y) ≤
         F (Nat.dist x.val y.val) := by
-  sorry
+  intro hEC
+  set p' := min p 2 with hp'
+  have hp'0 : 1 / 2 < p' := lt_min hp (by norm_num)
+  have hp'p : p' ≤ p := min_le_left _ _
+  have hFs' : Summable (fun d : ℕ => ((d : ℝ) + 1) ^ p' * F d) :=
+    Summable.of_nonneg_of_le (fun d => mul_nonneg (by positivity) (hF0 d))
+      (fun d => mul_le_mul_of_nonneg_right (Real.rpow_le_rpow_of_exponent_le
+        (by linarith [(Nat.cast_nonneg d : (0 : ℝ) ≤ d)]) hp'p) (hF0 d)) hFs
+  apply dimerD_unbounded_half J h hJ hh0 hh1 p' hp'0
+  refine ⟨2 * ∑' d : ℕ, ((d : ℝ) + 1) ^ p' * F d, ?_⟩
+  rintro _ ⟨⟨M, x, t⟩, rfl⟩
+  have hn : Even (2 * M) := even_two_mul M
+  calc dimerD J h (2 * M) p' t x
+      = dimerAvg (fun q => ∑ y : Fin (2 * M), |((y.val : ℝ) - x.val)| ^ p' *
+          ‖evo (hq J h q) t y x‖ ^ 2) := rfl
+    _ ≤ dimerAvg (fun q => ∑ y : Fin (2 * M), |((y.val : ℝ) - x.val)| ^ p' *
+          corrQ (hq J h q) (hq_isHermitian J h q) y x) := by
+        refine DimerLGTAux.dimerAvg_mono fun q _ => Finset.sum_le_sum fun y _ => ?_
+        exact mul_le_mul_of_nonneg_left
+          (DimerLGTAux.norm_sq_evo_le_corrQ _ _ (hq_isSymm J h q) t y x) (by positivity)
+    _ = ∑ y : Fin (2 * M), |((y.val : ℝ) - x.val)| ^ p' *
+          dimerAvg (fun q => corrQ (hq J h q) (hq_isHermitian J h q) y x) :=
+        DimerLGTAux.dimerAvg_sum_mul _ (fun y q => corrQ (hq J h q) (hq_isHermitian J h q) y x)
+    _ ≤ ∑ y : Fin (2 * M), |((y.val : ℝ) - x.val)| ^ p' * F (Nat.dist y.val x.val) :=
+        Finset.sum_le_sum fun y _ => mul_le_mul_of_nonneg_left (hEC _ hn y x) (by positivity)
+    _ ≤ 2 * ∑' d : ℕ, ((d : ℝ) + 1) ^ p' * F d :=
+        DimerLGTAux.sum_dist_le F hF0 p' (by linarith) hFs' x
 
 end DFL

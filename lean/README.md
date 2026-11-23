@@ -99,7 +99,8 @@ No `axiom` is introduced anywhere.
 | Lemma `lem:dimercritical`(i),(iii),(iv) and eq. `eq:dimerangles` (commutator `[D_+, D_-] = 2λ(λ²-E²)σ_x`; rotation normal form `S⁻¹D_+(λ)S = -1`, `S⁻¹D_-(λ)S = R_{2θ}`; averaged phases; `κ = ‖S‖‖S⁻¹‖ = ((1+λ)/(1-λ))^{1/2}`; `E_c = -λ`), Lemma `lem:dimertransfer` (`‖T^z(n,m)‖ ≤ K₁e^{K₂\|z-λ\|(n-m)}` for every dimer configuration) | `dimerD_commutator`, `dimerD_commute_iff`, `dimerTheta_spec`, `dimerS_conj_plus`, `dimerS_conj_tm`, `dimerS_conj_minus`, `dimer_angles`, `dimerS_kappa`, `gamma2_tmC`, `dimerS_conj_neg`, `dimer_transfer_bound` | `DimerTransfer.lean` |
 | Lemma `lem:dimerTL` (finite speed uniformly in the potential; difference of the finite-volume propagators, for finite `Λ'` and for `Λ' = ℤ` with the propagator on `ℤ` as an exponential series; ballistic bound `∑_y \|y\|^p \|⟨δ_y, e^{-isH}δ_0⟩\|² ≤ (2\|s\|)^p`; also `≤ (4e²\|s\|)^p + C_p` for every `p > 0`) | `dimerTL_i`, `dimerTL_i'`, `dimerTL_ii`, `dimerTL_ii_Z`, `dimerTL_iii`, `evoZw`, `moment_poly_bound`, `tendsto_moment_Z` | `DimerTL.lean`, `DimerInfVol.lean` |
 | Proposition `prop:dimerlower` on finite intervals and on `ℤ` (Plancherel identity eq. `eq:plancherel`; `M_p(T;x) ≥ c_{λ,p} T^{p-1}` for every dimer configuration, of either alignment, every `x` and every `p > 0`) | `dimerMom`, `dimerGreen`, `dimerMom_plancherel`, `dimer_lower_bound`, `dimerMomZ`, `tendsto_dimerMom_Z`, `dimer_lower_bound_Z` | `DimerLower.lean`, `DimerInfVol.lean` |
-| Theorem `thm:dimer`(a) (every dimer sector, and the single-fermion dimer state), (b) (thermodynamic limit of `D^{(N)}_p(t;x_N)` and `M^{(N)}_p(T;x_N)`), the lower bound `M^{∞,r}_p(T) ≥ c_{λ,p}(JT)^{p-1}` of (c), and (d) for `p > 1` (moments unbounded, sector by sector and for the dimer state; (EC) fails for the dimer law) | `dimer_sector_moment_lower`, `dimerMN_lower`, `dimer_LGT_moment_lower`, `dimerDLGT_eq`, `dimer_TL_D`, `dimer_TL_M`, `dimer_LGT_TL_D`, `dimer_LGT_TL_M`, `dimerMInf_lower`, `dimer_sup_moment_unbounded`, `dimerD_unbounded`, `dimer_LGT_unbounded`, `not_EC_dimer` | `DimerLGT.lean`, `DimerInfVol.lean`, `DimerState.lean` |
+| Theorem `thm:dimer`(a)–(d) (a: every dimer sector, and the single-fermion dimer state; b: thermodynamic limit of `D^{(N)}_p(t;x_N)` and `M^{(N)}_p(T;x_N)`; c: `M^{∞,r}_p(T) ≥ c_{λ,p}(JT)^{p-1}` and `≥ c'(JT)^{p-1/2}`, annealed exponent; d: moments unbounded for every `p > 1/2`, sector by sector for `p > 1`, and (EC) fails for the dimer law) | `dimer_sector_moment_lower`, `dimerMN_lower`, `dimer_LGT_moment_lower`, `dimerDLGT_eq`, `dimer_TL_D`, `dimer_TL_M`, `dimer_LGT_TL_D`, `dimer_LGT_TL_M`, `dimerMInf_lower`, `dimerMInf_super`, `dimerMInf_exponent`, `dimer_sup_moment_unbounded`, `dimerD_unbounded_half`, `dimer_LGT_unbounded_half`, `not_EC_dimer_half` | `DimerLGT.lean`, `DimerInfVol.lean`, `DimerState.lean`, `DimerSuper.lean` |
+| Lemma `lem:dimersecond` (second moment of the dimer transfer matrices near `E_c = λ`: `E‖D_{ε_n}(z)⋯D_{ε_1}(z)‖₂² ≤ C e^{Kn((Re z - λ)² + \|Im z\|)}`, via the Lyapunov form `x*Yx`, `Y = [[1, λ], [λ, 1 - 2λ(Re z - λ)]]`; the same over windows of the random dimer potential), Proposition `prop:dimersuper` (`E M^ℤ_{v,p}(T;0) ≥ cT^{p-1/2}`; almost surely `M^ℤ_{v,p}(T;0) ≥ T^{p-1/2-α}` eventually, for every `α > 0`) | `hs2`, `dimer_second_moment`, `integral_hs2_tmProd_le`, `dimer_super_annealed`, `dimer_super_ae` | `DimerSecond.lean`, `DimerSuper.lean` |
 | Proposition `prop:dimerimbalance`(i)–(iii) (dimer identity; infinite-time imbalance `Ī_N = E_dim N⁻¹∑_α a_α²`; `Ī_N ≤ 8L²(2\|λ\|+1)^{2L}/N + 4/L + 4/N`, so `Ī_N → 0`), Lemma `lem:fewapprox` (at most `2(N/L+1)` eigenvalues in `[E-ε, E+ε]` if `εL(K+1)^L < 1`, for every potential) | `dimer_stagWeight_identity`, `dimerImbalance_timeAvg`, `card_eig_near_le`, `dimerImbInf_le`, `dimerImbInf_tendsto_zero` | `DimerImbalance.lean`, `DimerImbalanceLim.lean` |
 | Remarks `rem:gaussproj`(i),(ii), `rem:main-imbalance`(ii), `rem:dimersigns` (clean sector: `Q(1,N) = 1`, `a_α = 0` and vanishing infinite-time imbalance for even `N`; `a_α = 0` at `h = 0`; global reversal `h_{-q} = -Γh_qΓ`; reversing one dimer out of two changes `Tr h_q`; the anti-dimer transfer matrices never commute) | `corrQ_clean_ends`, `stagWeight_clean`, `imbInf_clean`, `imbOne_clean_timeAvg`, `stagWeight_h_zero`, `hq_flip_all`, `norm_evo_flip_all`, `trace_hq_dimer_example`, `not_similar_dimer_example`, `antidimer_commutator`, `antidimer_comm_ne` | `CleanSector.lean` |
 | Remark `rem:strings` (the left-anchored string fermion satisfies the CAR but anticommutes with `G_1`; `c̃_j` anticommutes with `σˣ_{b_N}`; the strings `∏_{k≥j}σᶻ_{b_k}` and the Gauss operators satisfy the Pauli relations and commute with the dressed fermions) | `leftDressed_eq`, `leftDressed_anticomm`, `leftDressed_CAR`, `leftDressed_anticomm_gauss0`, `dressed_anticomm_sxL_last`, `tailString_mul_self`, `tailString_comm`, `gauss_tailString`, `dressed_comm_tailString` | `Strings.lean` |
@@ -122,14 +123,14 @@ No `axiom` is introduced anywhere.
 
 ## Verification
 
-`lake build` compiles all 85 modules (about 45,100 lines) without `sorry`; there is no `axiom`,
+`lake build` compiles all 87 modules (about 47,000 lines) without `sorry`; there is no `axiom`,
 `admit`, `native_decide` or `implemented_by` in the library. The script `CheckAxioms.lean` walks
 through every theorem declared in a `DFL` module (including private helper lemmas) and collects the
 axioms it depends on:
 
 ```
 lake env lean CheckAxioms.lean
-# checked 5042 theorems in DFL modules; with non-standard axioms: 0
+# checked 5229 theorems in DFL modules; with non-standard axioms: 0
 ```
 
 i.e. every theorem depends only on Lean's standard axioms `propext`, `Classical.choice` and
@@ -186,8 +187,7 @@ lake env lean Check.lean
 - The literature theorems used as inputs: the uniform large-deviation estimate and the positivity
   and continuity of the Lyapunov exponent (Furstenberg; `prop:LDT`, entering as the hypothesis
   `LDT`), the verification of the hypotheses of the cited theorems in their own formalism
-  (`lem:hypcheck`), Ge–Zhao's annealed localization on `ℤ` (`prop:Zline`), the transport bounds of
-  Jitomirskaya–Schulz-Baldes–Stolz for the random dimer (the almost-sure exponent in `thm:dimer`(c),
-  and (d) for `1/2 < p ≤ 1`), and the percolation estimate of Li–Liang used in `prop:cluster`(c)
-  (entering `cluster_avg` as the probability that the cluster leaves the region).
+  (`lem:hypcheck`), Ge–Zhao's annealed localization on `ℤ` (`prop:Zline`), and the percolation
+  estimate of Li–Liang used in `prop:cluster`(c) (entering `cluster_avg` as the probability that the
+  cluster leaves the region).
 - Remarks, conjectures and numerics, except the remarks with mathematical content listed in the table.

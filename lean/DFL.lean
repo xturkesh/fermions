@@ -83,3 +83,5 @@ import DFL.LawRemarks
 import DFL.Zariski
 import DFL.WeakDisorder
 import DFL.DimerDOS
+import DFL.DimerSecond
+import DFL.DimerSuper
