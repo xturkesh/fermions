@@ -624,7 +624,7 @@ theorem dimer_lower_bound_Z (lam : ℝ) (h0 : 0 < lam) (h1 : lam < 1) (p : ℝ) 
 /-! ### The gauge theory -/
 
 /-- `v^{(r)}` is a dimer configuration with values `±2|h|/J` and alignment `r`. -/
-theorem isDimerCfgZ_dimerPotZ (J h : ℝ) (hJ : 0 < J) (r : ℤ) (η : CfgZ) :
+theorem isDimerCfgZ_dimerPotZ (J h : ℝ) (_hJ : 0 < J) (r : ℤ) (η : CfgZ) :
     IsDimerCfgZ (2 * |h| / J) r (dimerPotZ J h r η) := by
   refine ⟨fun y => ?_, fun k => ?_⟩
   · simp only [dimerPotZ, sgn]
@@ -919,7 +919,7 @@ theorem dimer_TL_M (J h : ℝ) (hJ : 0 < J) (r : ℤ) (Ns : ℕ → ℕ) (xs : �
     (hN : ∀ n, Even (Ns n)) (hpar : ∀ n, ((xs n).val : ℤ) % 2 = r)
     (hx1 : Tendsto (fun n => (xs n).val) atTop atTop)
     (hx2 : Tendsto (fun n => Ns n - (xs n).val) atTop atTop) (p T : ℝ) (hp0 : 0 < p)
-    (hp2 : p ≤ 2) (hT : 0 < T) :
+    (_hp2 : p ≤ 2) (hT : 0 < T) :
     Tendsto (fun n => dimerMN J h (Ns n) p T (xs n)) atTop (𝓝 (dimerMInf J h r p T)) := by
   obtain ⟨has, hbs⟩ := DimerInfVolAux.tendsto_bounds Ns xs hx1 hx2
   have ha : ∀ n, -((xs n).val : ℤ) ≤ 0 := fun n => by omega

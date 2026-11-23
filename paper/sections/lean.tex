@@ -132,16 +132,26 @@ $2\ln2\,\Theta(F)$), \texttt{vonNeumann\_rdmLGT\_xprod}, \texttt{avg\_full\_eq\_
 \texttt{avg\_sector\_shannon\_le\_cond}, \texttt{numberEntropy\_le\_avg\_add}; (d)
 \texttt{correlator\_eq\_ensemble} (\texttt{Entropies}, \texttt{EntropyBlocks}, \texttt{Taxonomy},
 \texttt{Ensemble}).
-\item \cref{prop:dimerlaw,lem:dimercritical}, \cref{prop:dimerimbalance}(i),(ii):
-\texttt{sector\_average\_dimer}, \texttt{jsbs\_condition}, \texttt{dimerD\_commutator},
-\texttt{dimerS\_conj\_plus}, \texttt{dimerS\_conj\_minus}, \texttt{dimer\_angles}, \texttt{dimerS\_kappa},
-\texttt{dimerS\_conj\_neg}, \texttt{dimerImbalance\_timeAvg} (\texttt{Dimer}, \texttt{DimerCritical},
-\texttt{DimerTransfer}, \texttt{DimerImbalance}); \cref{lem:dimertransfer}: \texttt{dimer\_transfer\_bound}
-(\texttt{DimerTransfer}); \cref{lem:dimerTL} (with $\Lambda'$ finite in (ii)): \texttt{dimerTL\_i},
-\texttt{dimerTL\_ii}, \texttt{dimerTL\_iii} (\texttt{DimerTL}); \cref{prop:dimerlower} on finite intervals, with the
-Plancherel identity \eqref{eq:plancherel}: \texttt{dimerMom\_plancherel}, \texttt{dimer\_lower\_bound}
-(\texttt{DimerLower}); \cref{thm:dimer}(a) in every dimer sector, and (d) for $p>1$: \texttt{dimer\_sector\_moment\_lower},
-\texttt{dimer\_sup\_moment\_unbounded}, \texttt{not\_EC\_dimer} (\texttt{DimerLGT}).
+\item \cref{def:dimerstate}, \cref{prop:dimerlaw}(a)--(e), for every matter configuration and every orientation of
+the even links: \texttt{dimerState}, \texttt{prodStateXi\_dual}, \texttt{pairDefect\_eq\_zero\_iff},
+\texttt{gauss\_pair\_prodStateXi}, \texttt{dimerState\_dual}, \texttt{normSq\_gaussProj\_dimerState},
+\texttt{gauss\_pair\_dimerState}, \texttt{gauss\_prefix\_dimerState}, \texttt{dimerState\_eq\_dressed},
+\texttt{sector\_average\_dimerState}, \texttt{dimer\_density\_single} (\texttt{Dimer}, \texttt{DimerState});
+\cref{lem:dimercritical}: \texttt{jsbs\_condition}, \texttt{dimerD\_commutator}, \texttt{dimerS\_conj\_plus},
+\texttt{dimerS\_conj\_minus}, \texttt{dimer\_angles}, \texttt{dimerS\_kappa}, \texttt{dimerS\_conj\_neg}
+(\texttt{DimerCritical}, \texttt{DimerTransfer}); \cref{lem:dimertransfer}: \texttt{dimer\_transfer\_bound}
+(\texttt{DimerTransfer}); \cref{lem:dimerTL}, with $\Lambda'$ finite or $\Lambda'=\Z$ in (ii): \texttt{dimerTL\_i},
+\texttt{dimerTL\_ii}, \texttt{dimerTL\_ii\_Z}, \texttt{dimerTL\_iii} (\texttt{DimerTL}, \texttt{DimerInfVol});
+\cref{prop:dimerlower} on finite intervals, with the Plancherel identity \eqref{eq:plancherel}, and on $\Z$:
+\texttt{dimerMom\_plancherel}, \texttt{dimer\_lower\_bound}, \texttt{dimer\_lower\_bound\_Z} (\texttt{DimerLower},
+\texttt{DimerInfVol}); \cref{thm:dimer}(a), (b), the lower bound $\Mom^{\infty,r}_p(T)\ge c_{\lambda,p}(JT)^{p-1}$ in (c),
+and (d) for $p>1$, sector by sector and for the single-fermion dimer state: \texttt{dimer\_sector\_moment\_lower},
+\texttt{dimer\_LGT\_moment\_lower}, \texttt{dimer\_TL\_D}, \texttt{dimer\_TL\_M}, \texttt{dimer\_LGT\_TL\_D},
+\texttt{dimer\_LGT\_TL\_M}, \texttt{dimerMInf\_lower}, \texttt{dimer\_sup\_moment\_unbounded},
+\texttt{dimer\_LGT\_unbounded}, \texttt{not\_EC\_dimer} (\texttt{DimerLGT}, \texttt{DimerInfVol}, \texttt{DimerState});
+\cref{prop:dimerimbalance} and \cref{lem:fewapprox}: \texttt{dimer\_stagWeight\_identity},
+\texttt{dimerImbalance\_timeAvg}, \texttt{card\_eig\_near\_le}, \texttt{dimerImbInf\_le},
+\texttt{dimerImbInf\_tendsto\_zero} (\texttt{DimerImbalance}, \texttt{DimerImbalanceLim}).
 \item \cref{lem:2dgauge}, \cref{thm:2dmap}(a),(b), on arbitrary finite graphs:
 \texttt{flux\_eq\_iff\_gauge}, \texttt{card\_gaugeOrbit}, \texttt{card\_fluxClasses},
 \texttt{wilsonLoop\_comm\_ham}, \texttt{gaussOp\_prod}; the joint eigenvectors $V_{q,s}\ket n$:
@@ -164,8 +174,13 @@ for $s=+$); (b) \texttt{sector\_average\_xpol}, \texttt{xpol\_summand\_gauge}; (
 \item \cref{prop:wilson}: \texttt{wField\_eq\_count}, \texttt{wilson\_field\_bound},
 \texttt{wilson\_numberEntropy\_avg}, \texttt{wilson\_numberEntropy\_most},
 \texttt{wilson\_numberEntropy\_each} (\texttt{Wilson}).
-\item \cref{rem:randomwalk}: \texttt{Hstd\_dual\_oneP}, \texttt{partialSum\_bijective}
-(\texttt{RandomWalk}).
+\item Remarks with mathematical content: \cref{rem:randomwalk}: \texttt{Hstd\_dual\_oneP},
+\texttt{partialSum\_bijective} (\texttt{RandomWalk}); \cref{rem:gaussproj}(i),(ii), \cref{rem:main-imbalance}(ii),
+\cref{rem:dimersigns}: \texttt{corrQ\_clean\_ends}, \texttt{imbInf\_clean}, \texttt{imbOne\_clean\_timeAvg},
+\texttt{stagWeight\_h\_zero}, \texttt{hq\_flip\_all}, \texttt{norm\_evo\_flip\_all},
+\texttt{not\_similar\_dimer\_example}, \texttt{antidimer\_comm\_ne} (\texttt{CleanSector}); \cref{rem:strings}:
+\texttt{leftDressed\_CAR}, \texttt{leftDressed\_anticomm\_gauss0}, \texttt{gauss\_tailString},
+\texttt{dressed\_comm\_tailString} (\texttt{Strings}).
 \end{itemize}
 
 \paragraph{Deviations.}  Sites and links are indexed from $0$.  \Cref{thm:transport,thm:numberentropy,thm:arealaw}
@@ -193,10 +208,9 @@ using $\Gamma h^0\ge g/2$, instead of from the integral formula; the propagator 
 \begin{itemize}
 \item the literature results entering as inputs: the large-deviation estimate together with the
 positivity and continuity of the Lyapunov exponent, \cref{prop:nocritical}(iii), \cref{prop:Zline},
-the transport bounds of \cite{JSBS2003} behind \cref{thm:dimer}(b),(c) and (d) for $p\le1$, and the percolation estimate of
+the transport bounds of \cite{JSBS2003} behind the almost-sure exponent in \cref{thm:dimer}(c) and behind (d) for
+$\frac12<p\le1$, and the percolation estimate of
 \cite{LiL2022}, which enters \texttt{cluster\_avg} as the probability that the cluster leaves the
 region, and the verification of the hypotheses of the cited theorems in their own formalism (\cref{lem:hypcheck});
-\item \cref{prop:dimerimbalance}(iii) and \cref{lem:dimerdos}, which need spectral projections of operators on
-$\ell^2(\Z)$ (Borel functional calculus, not available in Mathlib);
-\item remarks, conjectures and numerics.
+\item remarks, conjectures and numerics, except the remarks listed above.
 \end{itemize}

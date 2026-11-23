@@ -19,9 +19,9 @@ Consequently there is no bound `sup_t |⟨δ_x, e^{-ith_ℤ} δ_y⟩| ≤ F(|x -
   elements, `(y - z) (h^{k+1})_{yz} = -J (k+1) ((h^k)_{y,z+1} - (h^k)_{y,z-1})` (by induction, using
   the translation invariance of the clean `h_ℤ`). Summing the exponential series,
   `(y - x) U_{yx}(t) = iJt (U_{y,x+1}(t) - U_{y,x-1}(t))` (`BallisticAux.UZ_comm`).
-* `BallisticAux.hasSum_conj_UZ_mul`: the columns of `U^ℤ_q(t)` are orthonormal (limit of the
-  finite-volume unitarity, by dominated convergence with the uniform bound
-  `|U^{(M)}_{ya}(t)| ≤ e^{2r} 2^{-|y-a|}` coming from finite propagation).
+* `BallisticAux.hasSum_star_UZ_mul`: the columns of `U^ℤ_q(t)` are orthonormal (limit of the
+  finite-volume unitarity `evo_unitary`, by dominated convergence with the uniform bound
+  `|U^{(M)}_{ya}(t)| ≤ e^{2r} 2^{-|y-a|}`, `r = |t| (2|J| + 2|h|)`, from finite propagation).
 * Hence `∑_y (y - x)² |U_{yx}|² = J²t² ∑_y |U_{y,x+1} - U_{y,x-1}|² = 2J²t²`.
 -/
 
@@ -152,7 +152,32 @@ lemma tsum_star_evoZ_mul (J h : ℝ) (q : CfgZ) (t : ℝ) (M : ℕ) (a b : ℤ) 
 /-- **Unitarity in infinite volume**: the columns of `U^ℤ_q(t)` are orthonormal. -/
 lemma hasSum_star_UZ_mul (J h : ℝ) (q : CfgZ) (t : ℝ) (a b : ℤ) :
     HasSum (fun y : ℤ => star (UZ J h q t y a) * UZ J h q t y b) (if a = b then 1 else 0) := by
-  sorry
+  set C := ∑' k : ℕ, (2 * (|t| * (2 * |J| + 2 * |h|))) ^ k / k.factorial with hC
+  set bound : ℤ → ℝ := fun y => C * (1 / 2 : ℝ) ^ (y - a).natAbs with hbound
+  have hbs : Summable bound := (summable_half_pow a).mul_left C
+  have hlim : ∀ y, Tendsto (fun M : ℕ => star (evoZ J h q t M y a) * evoZ J h q t M y b) atTop
+      (𝓝 (star (UZ J h q t y a) * UZ J h q t y b)) := fun y =>
+    ((continuous_star.tendsto _).comp (tendsto_evoZ J h q t y a)).mul (tendsto_evoZ J h q t y b)
+  have hbd : ∀ (M : ℕ) (y : ℤ), ‖star (evoZ J h q t M y a) * evoZ J h q t M y b‖ ≤ bound y := by
+    intro M y
+    rw [norm_mul, norm_star]
+    calc ‖evoZ J h q t M y a‖ * ‖evoZ J h q t M y b‖ ≤ ‖evoZ J h q t M y a‖ * 1 :=
+          mul_le_mul_of_nonneg_left (InfVolAux.norm_evoZ_le_one J h q t M y b) (norm_nonneg _)
+      _ ≤ bound y := by rw [mul_one]; exact norm_evoZ_le J h q t M y a
+  have hT := tendsto_tsum_of_dominated_convergence hbs hlim (Eventually.of_forall hbd)
+  have hT2 : Tendsto (fun M : ℕ => ∑' y, star (evoZ J h q t M y a) * evoZ J h q t M y b) atTop
+      (𝓝 (if a = b then 1 else 0)) := by
+    apply tendsto_const_nhds.congr'
+    filter_upwards [eventually_ge_atTop (a.natAbs + b.natAbs)] with M hM
+    have ha : |a| ≤ M := by rw [Int.abs_eq_natAbs]; omega
+    have hb : |b| ≤ M := by rw [Int.abs_eq_natAbs]; omega
+    exact (tsum_star_evoZ_mul J h q t M a b ha hb).symm
+  have heq := tendsto_nhds_unique hT hT2
+  have hsum : Summable (fun y => star (UZ J h q t y a) * UZ J h q t y b) := by
+    refine Summable.of_norm_bounded hbs fun y => ?_
+    exact le_of_tendsto' ((continuous_norm.tendsto _).comp (hlim y)) fun M => hbd M y
+  rw [← heq]
+  exact hsum.hasSum
 
 /-- Two distinct columns of `U^ℤ_q(t)`: `∑_y |U_{ya} - U_{yb}|² = 2`. -/
 lemma hasSum_norm_sub_sq (J h : ℝ) (q : CfgZ) (t : ℝ) (a b : ℤ) (hab : a ≠ b) :
@@ -273,7 +298,8 @@ lemma UZ_comm (J h t : ℝ) (x y : ℤ) :
   calc ((y : ℂ) - x) * ((-(t : ℂ) * Complex.I) ^ k * (-(t : ℂ) * Complex.I) /
         (((k : ℂ) + 1) * (k.factorial : ℂ)) * (hZpow J h q0 (k + 1) y x : ℂ))
       = (-(t : ℂ) * Complex.I) ^ k * (-(t : ℂ) * Complex.I) /
-          (((k : ℂ) + 1) * (k.factorial : ℂ)) * (((y : ℂ) - x) * (hZpow J h q0 (k + 1) y x : ℂ)) := by
+          (((k : ℂ) + 1) * (k.factorial : ℂ)) *
+            (((y : ℂ) - x) * (hZpow J h q0 (k + 1) y x : ℂ)) := by
         ring
     _ = _ := by
         rw [hc]
@@ -309,6 +335,32 @@ theorem summable_ballistic_clean (J h t : ℝ) (x : ℤ) :
 theorem no_uniform_decay_clean (J h : ℝ) (hJ : J ≠ 0) (F : ℕ → ℝ)
     (hF : Summable (fun d : ℕ => (d : ℝ) ^ 2 * F d ^ 2)) :
     ¬ ∀ (t : ℝ) (x y : ℤ), ‖UZ J h (fun _ => 0) t y x‖ ≤ F (y - x).natAbs := by
-  sorry
+  intro hU
+  have hφZ : Summable (fun y : ℤ => ((y.natAbs : ℕ) : ℝ) ^ 2 * F y.natAbs ^ 2) := by
+    apply Summable.of_nat_of_neg
+    · simpa only [Int.natAbs_natCast] using hF
+    · simpa only [Int.natAbs_neg, Int.natAbs_natCast] using hF
+  set C := ∑' y : ℤ, ((y.natAbs : ℕ) : ℝ) ^ 2 * F y.natAbs ^ 2 with hC
+  have hle : ∀ t : ℝ, 2 * J ^ 2 * t ^ 2 ≤ C := by
+    intro t
+    rw [← ballistic_clean J h t 0]
+    refine Summable.tsum_le_tsum (fun y => ?_) (summable_ballistic_clean J h t 0) hφZ
+    have h1 := hU t 0 y
+    have h0 : 0 ≤ ‖UZ J h (fun _ => 0) t y 0‖ := norm_nonneg _
+    have e : ((y - 0 : ℤ) : ℝ) ^ 2 = ((y.natAbs : ℕ) : ℝ) ^ 2 := by
+      rw [sub_zero, Nat.cast_natAbs, Int.cast_abs, sq_abs]
+    rw [sub_zero] at h1
+    rw [e]
+    exact mul_le_mul_of_nonneg_left (pow_le_pow_left₀ h0 h1 2) (by positivity)
+  have hC0 : 0 ≤ C := tsum_nonneg fun y => by positivity
+  have hJ2 : 0 < J ^ 2 := by positivity
+  set s := (C + 1) / (2 * J ^ 2) + 1 with hs
+  have hs1 : 1 ≤ s := by
+    have : 0 ≤ (C + 1) / (2 * J ^ 2) := by positivity
+    linarith
+  have key : 2 * J ^ 2 * s = C + 1 + 2 * J ^ 2 := by
+    rw [hs]; field_simp
+  have h := hle s
+  nlinarith [mul_le_mul_of_nonneg_left hs1 (by positivity : (0 : ℝ) ≤ 2 * J ^ 2 * s)]
 
 end DFL
