@@ -296,12 +296,148 @@ theorem norm_evoZw_le_one (w : ℤ → ℝ) (W : ℝ) (hw : ∀ x, |w x| ≤ W) 
 
 /-! ### Moments -/
 
+namespace DimerInfVolAux
+
+/-- `2^n (2ce)^n ≤ n!` for `n ≥ 4e²c` (from `n^n/n! ≤ e^n`). -/
+lemma pow_le_factorial (c : ℝ) (hc : 0 ≤ c) (n : ℕ) (hn : 4 * Real.exp 2 * c ≤ n) :
+    2 ^ n * (2 * c * Real.exp 1) ^ n ≤ (n.factorial : ℝ) := by
+  have he : 0 < Real.exp 1 := Real.exp_pos 1
+  have hf : (0 : ℝ) < n.factorial := by positivity
+  have h1 : (n : ℝ) ^ n / n.factorial ≤ Real.exp n :=
+    Real.pow_div_factorial_le_exp (Nat.cast_nonneg n) n
+  have h2 : ((n : ℝ) / Real.exp 1) ^ n ≤ n.factorial := by
+    rw [div_pow, Real.exp_one_pow, div_le_iff₀ (Real.exp_pos _)]
+    rw [div_le_iff₀ hf] at h1
+    linarith [mul_comm (Real.exp n) (n.factorial : ℝ)]
+  have h3 : 2 * (2 * c * Real.exp 1) ≤ (n : ℝ) / Real.exp 1 := by
+    rw [le_div_iff₀ he]
+    have : Real.exp 2 = Real.exp 1 * Real.exp 1 := by rw [← Real.exp_add]; norm_num
+    nlinarith
+  rw [← mul_pow]
+  exact (pow_le_pow_left₀ (by positivity) h3 n).trans h2
+
+/-- `(2c)^n e^{2c}/n! ≤ 2^{-n}` for `n ≥ 4e²c`. -/
+lemma decay_le (c : ℝ) (hc : 0 ≤ c) (n : ℕ) (hn : 4 * Real.exp 2 * c ≤ n) :
+    (2 * c) ^ n / (n.factorial : ℝ) * Real.exp (2 * c) ≤ (1 / 2) ^ n := by
+  have h1 := pow_le_factorial c hc n hn
+  have hf : (0 : ℝ) < n.factorial := by positivity
+  have hc2 : 2 * c ≤ n := by
+    have : 1 ≤ Real.exp 2 := Real.one_le_exp (by norm_num)
+    nlinarith
+  have h2 : Real.exp (2 * c) ≤ Real.exp 1 ^ n := by
+    rw [Real.exp_one_pow]
+    exact Real.exp_le_exp.mpr hc2
+  have h3 : (1 / 2 : ℝ) ^ n * 2 ^ n = 1 := by rw [← mul_pow]; norm_num
+  have h4 : (2 * c * Real.exp 1) ^ n ≤ (1 / 2) ^ n * n.factorial := by
+    calc (2 * c * Real.exp 1) ^ n = (1 / 2) ^ n * (2 ^ n * (2 * c * Real.exp 1) ^ n) := by
+          rw [← mul_assoc, h3, one_mul]
+      _ ≤ (1 / 2) ^ n * n.factorial := by gcongr
+  calc (2 * c) ^ n / (n.factorial : ℝ) * Real.exp (2 * c)
+      ≤ (2 * c) ^ n / (n.factorial : ℝ) * Real.exp 1 ^ n := by gcongr
+    _ = (2 * c * Real.exp 1) ^ n / n.factorial := by ring
+    _ ≤ (1 / 2) ^ n * n.factorial / n.factorial := div_le_div_of_nonneg_right h4 hf.le
+    _ = (1 / 2) ^ n := by field_simp
+
+/-- Far from the origin, `|⟨δ_y, e^{-isH_Λ} δ_0⟩|² ≤ 4^{-|y|}`. -/
+lemma norm_sq_evo_le_far (a b : ℤ) (ha : a ≤ 0) (hb : 0 ≤ b) (w : ℤ → ℝ) (s : ℝ)
+    (y : Set.Icc a b) (hy : 4 * Real.exp 2 * |s| ≤ (y.1.natAbs : ℝ)) :
+    ‖evo (schrH a b w) s y (origin a b ha hb)‖ ^ 2 ≤ (1 / 4 : ℝ) ^ y.1.natAbs := by
+  have h3 := (dimerTL_i' a b ha hb w s y).trans (decay_le |s| (abs_nonneg s) _ hy)
+  calc ‖evo (schrH a b w) s y (origin a b ha hb)‖ ^ 2 ≤ ((1 / 2) ^ y.1.natAbs) ^ 2 :=
+        pow_le_pow_left₀ (norm_nonneg _) h3 2
+    _ = (1 / 4 : ℝ) ^ y.1.natAbs := by rw [← pow_mul, mul_comm, pow_mul]; norm_num
+
+/-- `|⟨δ_y, e^{-isH_Λ} δ_0⟩|² ≤ 4^M 4^{-|y|}` with `M = ⌈4e²|s|⌉`, uniformly in `Λ` and `w`. -/
+lemma norm_sq_evo_le (a b : ℤ) (ha : a ≤ 0) (hb : 0 ≤ b) (w : ℤ → ℝ) (s : ℝ)
+    (y : Set.Icc a b) :
+    ‖evo (schrH a b w) s y (origin a b ha hb)‖ ^ 2 ≤
+      4 ^ ⌈4 * Real.exp 2 * |s|⌉₊ * (1 / 4 : ℝ) ^ y.1.natAbs := by
+  by_cases hy : 4 * Real.exp 2 * |s| ≤ (y.1.natAbs : ℝ)
+  · exact (norm_sq_evo_le_far a b ha hb w s y hy).trans
+      (le_mul_of_one_le_left (by positivity) (one_le_pow₀ (by norm_num)))
+  · push_neg at hy
+    have hn : y.1.natAbs ≤ ⌈4 * Real.exp 2 * |s|⌉₊ := by
+      have := Nat.le_ceil (4 * Real.exp 2 * |s|)
+      exact_mod_cast hy.le.trans this
+    have h1 := norm_evo_schrH_le_one a b w s y (origin a b ha hb)
+    calc ‖evo (schrH a b w) s y (origin a b ha hb)‖ ^ 2 ≤ 1 := by
+          nlinarith [norm_nonneg (evo (schrH a b w) s y (origin a b ha hb))]
+      _ = 4 ^ ⌈4 * Real.exp 2 * |s|⌉₊ * (1 / 4 : ℝ) ^ ⌈4 * Real.exp 2 * |s|⌉₊ := by
+          rw [← mul_pow]; norm_num
+      _ ≤ 4 ^ ⌈4 * Real.exp 2 * |s|⌉₊ * (1 / 4 : ℝ) ^ y.1.natAbs := by
+          gcongr
+          · norm_num
+          · exact hn
+
+/-- `y ↦ |y|^p 4^{-|y|}` is summable on `ℤ`. -/
+lemma summable_weight (p : ℝ) (hp : 0 < p) :
+    Summable (fun y : ℤ => |(y : ℝ)| ^ p * (1 / 4 : ℝ) ^ y.natAbs) := by
+  have hN : Summable (fun n : ℕ => (n : ℝ) ^ p * (1 / 4 : ℝ) ^ n) := by
+    refine Summable.of_nonneg_of_le (fun n => by positivity) (fun n => ?_)
+      (summable_pow_mul_geometric_of_norm_lt_one ⌈p⌉₊ (r := (1 / 4 : ℝ)) (by norm_num))
+    refine mul_le_mul_of_nonneg_right ?_ (by positivity)
+    rcases Nat.eq_zero_or_pos n with rfl | hn
+    · rw [Nat.cast_zero, Real.zero_rpow hp.ne']
+      positivity
+    · rw [← Real.rpow_natCast]
+      exact Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast hn) (Nat.le_ceil p)
+  refine Summable.of_nat_of_neg ?_ ?_
+  · refine hN.congr fun n => ?_
+    simp
+  · refine hN.congr fun n => ?_
+    simp
+
+/-- A sum over `[a, b]` as a `tsum` over `ℤ` of the extension by zero. -/
+lemma sum_Icc_eq_tsum (a b : ℤ) (f : Set.Icc a b → ℝ) :
+    ∑ y, f y = ∑' y : ℤ, (if h : a ≤ y ∧ y ≤ b then f ⟨y, h⟩ else 0) := by
+  rw [tsum_eq_sum (s := Finset.Icc a b) (fun y hy => by
+      simp only [Finset.mem_Icc] at hy
+      simp [hy]),
+    Finset.sum_subtype (Finset.Icc a b) (p := fun z => z ∈ Set.Icc a b) (fun z => by simp)]
+  refine Finset.sum_congr rfl fun y _ => ?_
+  simp [y.2.1, y.2.2]
+
+end DimerInfVolAux
+
 /-- **Ballistic bound for all moments**, uniformly in the interval and the potential:
 `∑_y |y|^p |⟨δ_y, e^{-isH_Λ} δ_0⟩|² ≤ (4e²|s|)^p + ∑_{y ∈ ℤ} |y|^p 4^{-|y|}`. -/
 theorem moment_poly_bound (a b : ℤ) (ha : a ≤ 0) (hb : 0 ≤ b) (w : ℤ → ℝ) (s p : ℝ) (hp : 0 < p) :
     ∑ y : Set.Icc a b, |((y.1 : ℤ) : ℝ)| ^ p * ‖evo (schrH a b w) s y (origin a b ha hb)‖ ^ 2 ≤
       (4 * Real.exp 2 * |s|) ^ p + ∑' y : ℤ, |(y : ℝ)| ^ p * (1 / 4 : ℝ) ^ y.natAbs := by
-  sorry
+  set R := 4 * Real.exp 2 * |s| with hR
+  set g : ℤ → ℝ := fun y => |(y : ℝ)| ^ p * (1 / 4 : ℝ) ^ y.natAbs with hg
+  have hg0 : ∀ y, 0 ≤ g y := fun y => by positivity
+  have hgs : Summable g := DimerInfVolAux.summable_weight p hp
+  have hpt : ∀ y : Set.Icc a b,
+      |((y.1 : ℤ) : ℝ)| ^ p * ‖evo (schrH a b w) s y (origin a b ha hb)‖ ^ 2 ≤
+        R ^ p * ‖evo (schrH a b w) s y (origin a b ha hb)‖ ^ 2 + g y.1 := by
+    intro y
+    have habs : |((y.1 : ℤ) : ℝ)| = (y.1.natAbs : ℝ) := by rw [Nat.cast_natAbs, Int.cast_abs]
+    by_cases hy : R ≤ (y.1.natAbs : ℝ)
+    · have h1 := DimerInfVolAux.norm_sq_evo_le_far a b ha hb w s y hy
+      have h2 : |((y.1 : ℤ) : ℝ)| ^ p * ‖evo (schrH a b w) s y (origin a b ha hb)‖ ^ 2 ≤ g y.1 :=
+        mul_le_mul_of_nonneg_left h1 (by positivity)
+      have h3 : 0 ≤ R ^ p * ‖evo (schrH a b w) s y (origin a b ha hb)‖ ^ 2 := by positivity
+      linarith
+    · push_neg at hy
+      have h1 : |((y.1 : ℤ) : ℝ)| ^ p ≤ R ^ p := by
+        rw [habs]
+        exact Real.rpow_le_rpow (by positivity) hy.le hp.le
+      have h2 := mul_le_mul_of_nonneg_right h1
+        (sq_nonneg ‖evo (schrH a b w) s y (origin a b ha hb)‖)
+      linarith [hg0 y.1]
+  have hsub : ∑ y : Set.Icc a b, g y.1 ≤ ∑' y, g y := by
+    rw [← Finset.sum_subtype (Finset.Icc a b) (p := fun z => z ∈ Set.Icc a b) (fun z => by simp) g]
+    exact hgs.sum_le_tsum _ (fun y _ => hg0 y)
+  calc ∑ y : Set.Icc a b, |((y.1 : ℤ) : ℝ)| ^ p * ‖evo (schrH a b w) s y (origin a b ha hb)‖ ^ 2
+      ≤ ∑ y : Set.Icc a b, (R ^ p * ‖evo (schrH a b w) s y (origin a b ha hb)‖ ^ 2 + g y.1) :=
+        Finset.sum_le_sum fun y _ => hpt y
+    _ = R ^ p * ∑ y : Set.Icc a b, ‖evo (schrH a b w) s y (origin a b ha hb)‖ ^ 2 +
+          ∑ y : Set.Icc a b, g y.1 := by
+        rw [Finset.sum_add_distrib, Finset.mul_sum]
+    _ = R ^ p + ∑ y : Set.Icc a b, g y.1 := by
+        rw [DimerTLAux.sum_norm_sq_evo _ (DimerTLAux.schrH_isSymm a b w) s _, mul_one]
+    _ ≤ R ^ p + ∑' y, g y := by linarith [hsub]
 
 /-- The moments converge in the thermodynamic limit `[a_n, b_n] ↑ ℤ`. -/
 theorem tendsto_moment_Z (w : ℤ → ℝ) (W : ℝ) (hw : ∀ x, |w x| ≤ W) (as bs : ℕ → ℤ)
@@ -310,7 +446,115 @@ theorem tendsto_moment_Z (w : ℤ → ℝ) (W : ℝ) (hw : ∀ x, |w x| ≤ W) (
     Tendsto (fun n => ∑ y : Set.Icc (as n) (bs n), |((y.1 : ℤ) : ℝ)| ^ p *
         ‖evo (schrH (as n) (bs n) w) s y (origin (as n) (bs n) (ha n) (hb n))‖ ^ 2) atTop
       (𝓝 (∑' y : ℤ, |(y : ℝ)| ^ p * ‖evoZw w s y 0‖ ^ 2)) := by
-  sorry
+  have hW : 0 ≤ W := (abs_nonneg _).trans (hw 0)
+  set M := ⌈4 * Real.exp 2 * |s|⌉₊ with hM
+  set G : ℕ → ℤ → ℂ := fun n y => if h : as n ≤ y ∧ y ≤ bs n then
+      evo (schrH (as n) (bs n) w) s ⟨y, h⟩ (origin (as n) (bs n) (ha n) (hb n)) else 0 with hG
+  have hF : ∀ n, ∑ y : Set.Icc (as n) (bs n), |((y.1 : ℤ) : ℝ)| ^ p *
+      ‖evo (schrH (as n) (bs n) w) s y (origin (as n) (bs n) (ha n) (hb n))‖ ^ 2 =
+      ∑' y : ℤ, |(y : ℝ)| ^ p * ‖G n y‖ ^ 2 := by
+    intro n
+    rw [DimerInfVolAux.sum_Icc_eq_tsum]
+    congr 1
+    funext y
+    by_cases h : as n ≤ y ∧ y ≤ bs n
+    · simp only [hG, dite_eq_left h]
+    · simp only [hG, dite_eq_right h, norm_zero]
+      simp
+  simp_rw [hF]
+  have hm : Tendsto (fun n => (min (bs n) (-as n)).toNat) atTop atTop := by
+    rw [tendsto_atTop]
+    intro K
+    filter_upwards [hbs.eventually_ge_atTop (K : ℤ), has.eventually_le_atBot (-(K : ℤ))]
+      with n h1 h2
+    omega
+  have hτ := ((DimerInfVolAux.tendsto_tail ((2 + W) * |s|) (by positivity)).comp hm).const_mul 2
+  rw [mul_zero] at hτ
+  refine tendsto_tsum_of_dominated_convergence
+    (bound := fun y : ℤ => 4 ^ M * (|(y : ℝ)| ^ p * (1 / 4 : ℝ) ^ y.natAbs))
+    ((DimerInfVolAux.summable_weight p hp).mul_left _) (fun y => ?_)
+    (Eventually.of_forall fun n y => ?_)
+  · have hGt : Tendsto (fun n => G n y) atTop (𝓝 (evoZw w s y 0)) := by
+      rw [tendsto_iff_norm_sub_tendsto_zero]
+      refine squeeze_zero' (Eventually.of_forall fun n => norm_nonneg _) ?_ hτ
+      filter_upwards [has.eventually_le_atBot y, hbs.eventually_ge_atTop y] with n h1 h2
+      have h : as n ≤ y ∧ y ≤ bs n := ⟨h1, h2⟩
+      simp only [hG, dite_eq_left h]
+      exact dimerTL_ii_Z (as n) (bs n) (ha n) (hb n) w W hw s ⟨y, h⟩
+    exact ((tendsto_norm.comp hGt).pow 2).const_mul _
+  · have h0 : 0 ≤ |(y : ℝ)| ^ p * ‖G n y‖ ^ 2 := by positivity
+    rw [Real.norm_eq_abs, abs_of_nonneg h0]
+    by_cases h : as n ≤ y ∧ y ≤ bs n
+    · have h1 := DimerInfVolAux.norm_sq_evo_le (as n) (bs n) (ha n) (hb n) w s ⟨y, h⟩
+      simp only [hG, dite_eq_left h]
+      calc |(y : ℝ)| ^ p * ‖evo (schrH (as n) (bs n) w) s ⟨y, h⟩
+            (origin (as n) (bs n) (ha n) (hb n))‖ ^ 2
+          ≤ |(y : ℝ)| ^ p * (4 ^ M * (1 / 4 : ℝ) ^ y.natAbs) :=
+            mul_le_mul_of_nonneg_left h1 (by positivity)
+        _ = 4 ^ M * (|(y : ℝ)| ^ p * (1 / 4 : ℝ) ^ y.natAbs) := by ring
+    · simp only [hG, dite_eq_right h, norm_zero]
+      simp only [ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, mul_zero]
+      positivity
+
+namespace DimerInfVolAux
+
+set_option backward.isDefEq.respectTransparency false in
+open scoped Matrix.Norms.Operator in
+/-- The propagator `t ↦ e^{-itA}` is continuous. -/
+lemma continuous_evo {ι : Type*} [Fintype ι] [DecidableEq ι] (A : Matrix ι ι ℝ) :
+    Continuous (fun t : ℝ => evo A t) := by
+  unfold evo
+  exact NormedSpace.exp_continuous.comp (by fun_prop)
+
+/-- The time integrand of a moment is continuous. -/
+lemma continuous_integrand {ι : Type*} [Fintype ι] [DecidableEq ι] (A : Matrix ι ι ℝ)
+    (c : ι → ℝ) (x : ι) (T : ℝ) :
+    Continuous (fun t : ℝ => (1 / T) * Real.exp (-t / T) * ∑ y, c y * ‖evo A t y x‖ ^ 2) := by
+  have hU := continuous_evo A
+  refine (continuous_const.mul (Real.continuous_exp.comp (continuous_neg.div_const T))).mul ?_
+  exact continuous_finset_sum _ fun y _ => continuous_const.mul ((hU.matrix_elem y x).norm.pow 2)
+
+/-- The dominating function `(1/T) e^{-t/T} ((4e²|t|)^p + ∑_y |y|^p 4^{-|y|})`. -/
+def momBound (p T t : ℝ) : ℝ :=
+  (1 / T) * Real.exp (-t / T) *
+    ((4 * Real.exp 2 * |t|) ^ p + ∑' y : ℤ, |(y : ℝ)| ^ p * (1 / 4 : ℝ) ^ y.natAbs)
+
+/-- The dominating function is integrable on `(0, ∞)`. -/
+lemma integrableOn_momBound (p T : ℝ) (hp : 0 < p) (hT : 0 < T) :
+    IntegrableOn (momBound p T) (Set.Ioi 0) := by
+  set S := ∑' y : ℤ, |(y : ℝ)| ^ p * (1 / 4 : ℝ) ^ y.natAbs with hS
+  have h1 : IntegrableOn (fun t : ℝ => t ^ p * Real.exp (-(1 / T) * t ^ (1 : ℝ))) (Set.Ioi 0) :=
+    integrableOn_rpow_mul_exp_neg_mul_rpow (by linarith) one_pos (by positivity)
+  have h2 := (h1.const_mul ((1 / T) * (4 * Real.exp 2) ^ p)).add
+    ((DimerLGTAux.integrableOn_weight T hT).mul_const S)
+  refine h2.congr_fun (fun t ht => ?_) measurableSet_Ioi
+  have ht' : 0 < t := ht
+  simp only [momBound, Pi.add_apply, Real.rpow_one]
+  rw [abs_of_pos ht', Real.mul_rpow (by positivity) ht'.le,
+    show -(1 / T) * t = -t / T by ring]
+  ring
+
+/-- The integrand of `dimerMom` at the origin is dominated by `momBound`. -/
+lemma integrand_le (a b : ℤ) (ha : a ≤ 0) (hb : 0 ≤ b) (w : ℤ → ℝ) (p T : ℝ) (hp : 0 < p)
+    (hT : 0 < T) (t : ℝ) :
+    ‖(1 / T) * Real.exp (-t / T) * ∑ y : Set.Icc a b, |((y.1 - (origin a b ha hb).1 : ℤ) : ℝ)| ^ p *
+        ‖evo (schrH a b w) t y (origin a b ha hb)‖ ^ 2‖ ≤ momBound p T t := by
+  have e : ∀ y : Set.Icc a b, y.1 - (origin a b ha hb).1 = y.1 := fun y => sub_zero _
+  simp only [e]
+  have h0 : 0 ≤ ∑ y : Set.Icc a b, |((y.1 : ℤ) : ℝ)| ^ p *
+      ‖evo (schrH a b w) t y (origin a b ha hb)‖ ^ 2 :=
+    Finset.sum_nonneg fun y _ => by positivity
+  rw [Real.norm_eq_abs, abs_of_nonneg (by positivity), momBound]
+  exact mul_le_mul_of_nonneg_left (moment_poly_bound a b ha hb w t p hp) (by positivity)
+
+/-- `M_p(T; 0) ≤ ∫ momBound`, uniformly in the interval and the potential. -/
+lemma norm_dimerMom_le (a b : ℤ) (ha : a ≤ 0) (hb : 0 ≤ b) (w : ℤ → ℝ) (p T : ℝ) (hp : 0 < p)
+    (hT : 0 < T) :
+    ‖dimerMom a b w p T (origin a b ha hb)‖ ≤ ∫ t in Set.Ioi (0 : ℝ), momBound p T t :=
+  norm_integral_le_of_norm_le (integrableOn_momBound p T hp hT)
+    (ae_of_all _ fun t => integrand_le a b ha hb w p T hp hT t)
+
+end DimerInfVolAux
 
 /-- The time-averaged moments converge in the thermodynamic limit `[a_n, b_n] ↑ ℤ`. -/
 theorem tendsto_dimerMom_Z (w : ℤ → ℝ) (W : ℝ) (hw : ∀ x, |w x| ≤ W) (as bs : ℕ → ℤ)
@@ -318,21 +562,89 @@ theorem tendsto_dimerMom_Z (w : ℤ → ℝ) (W : ℝ) (hw : ∀ x, |w x| ≤ W)
     (hbs : Tendsto bs atTop atTop) (p T : ℝ) (hp : 0 < p) (hT : 0 < T) :
     Tendsto (fun n => dimerMom (as n) (bs n) w p T (origin (as n) (bs n) (ha n) (hb n))) atTop
       (𝓝 (dimerMomZ w p T 0)) := by
-  sorry
+  unfold dimerMom dimerMomZ
+  refine tendsto_integral_of_dominated_convergence (DimerInfVolAux.momBound p T)
+    (fun n => (DimerInfVolAux.continuous_integrand _ _ _ T).aestronglyMeasurable)
+    (DimerInfVolAux.integrableOn_momBound p T hp hT)
+    (fun n => ae_of_all _ fun t =>
+      DimerInfVolAux.integrand_le (as n) (bs n) (ha n) (hb n) w p T hp hT t)
+    (ae_of_all _ fun t => ?_)
+  have e : ∀ n, ∀ y : Set.Icc (as n) (bs n),
+      y.1 - (origin (as n) (bs n) (ha n) (hb n)).1 = y.1 := fun n y => sub_zero _
+  simp only [e, sub_zero]
+  exact (tendsto_moment_Z w W hw as bs ha hb has hbs p t hp).const_mul _
+
+namespace DimerInfVolAux
+
+/-- Shifting a dimer configuration shifts its alignment. -/
+lemma isDimerCfgZ_shift (lam : ℝ) (r : ℤ) (v : ℤ → ℝ) (hv : IsDimerCfgZ lam r v) (x : ℤ) :
+    IsDimerCfgZ lam (r + x) (fun z => v (z + x)) := by
+  refine ⟨fun y => hv.1 (y + x), fun k => ?_⟩
+  have h := hv.2 k
+  simp only
+  rw [show 2 * k - (r + x) + x = 2 * k - r by ring,
+    show 2 * k - (r + x) + 1 + x = 2 * k - r + 1 by ring]
+  exact h
+
+/-- Translation covariance of the time-averaged moments on `ℤ`. -/
+lemma dimerMomZ_shift (v : ℤ → ℝ) (p T : ℝ) (x : ℤ) :
+    dimerMomZ v p T x = dimerMomZ (fun z => v (z + x)) p T 0 := by
+  unfold dimerMomZ
+  congr 1
+  funext t
+  congr 1
+  rw [← (Equiv.addRight x).tsum_eq]
+  congr 1
+  funext y
+  simp only [Equiv.coe_addRight, add_sub_cancel_right, sub_zero, evoZw_shift]
+
+/-- `prop:dimerlower` on `ℤ`, at the origin. -/
+lemma lower_bound_origin (lam : ℝ) (h0 : 0 < lam) (h1 : lam < 1) (p : ℝ) (hp : 0 < p) (r : ℤ)
+    (v : ℤ → ℝ) (hv : IsDimerCfgZ lam r v) (T : ℝ) (hT : 1 ≤ T) :
+    dimerClp lam p * T ^ (p - 1) ≤ dimerMomZ v p T 0 := by
+  have hW : ∀ z, |v z| ≤ lam := fun z => by
+    rcases hv.1 z with h | h <;> rw [h] <;> simp [abs_of_pos h0]
+  have hlim := tendsto_dimerMom_Z v lam hW (fun n : ℕ => -(n : ℤ)) (fun n => (n : ℤ))
+    (fun n => by simp) (fun n => by positivity)
+    (tendsto_neg_atTop_atBot.comp tendsto_natCast_atTop_atTop) tendsto_natCast_atTop_atTop p T hp
+    (by linarith)
+  refine ge_of_tendsto hlim ?_
+  filter_upwards [eventually_ge_atTop ⌈T⌉₊] with n hn
+  have hTn : T ≤ n := (Nat.le_ceil T).trans (by exact_mod_cast hn)
+  exact dimer_lower_bound lam h0 h1 p hp r (-(n : ℤ)) n v
+    ⟨fun y _ _ => hv.1 y, fun k _ _ => hv.2 k⟩ _ T hT
+    ⟨by simp only [origin, Int.cast_neg, Int.cast_natCast, Int.cast_zero]; linarith,
+      by simp only [origin, Int.cast_natCast, Int.cast_zero]; linarith⟩
+
+end DimerInfVolAux
 
 /-- **Every dimer configuration on `ℤ` spreads at least diffusively** (paper: Proposition `prop:dimerlower`
 for `I = ℤ`). -/
 theorem dimer_lower_bound_Z (lam : ℝ) (h0 : 0 < lam) (h1 : lam < 1) (p : ℝ) (hp : 0 < p) (r : ℤ)
     (v : ℤ → ℝ) (hv : IsDimerCfgZ lam r v) (x : ℤ) (T : ℝ) (hT : 1 ≤ T) :
     dimerClp lam p * T ^ (p - 1) ≤ dimerMomZ v p T x := by
-  sorry
+  rw [DimerInfVolAux.dimerMomZ_shift v p T x]
+  exact DimerInfVolAux.lower_bound_origin lam h0 h1 p hp (r + x) _
+    (DimerInfVolAux.isDimerCfgZ_shift lam r v hv x) T hT
 
 /-! ### The gauge theory -/
 
 /-- `v^{(r)}` is a dimer configuration with values `±2|h|/J` and alignment `r`. -/
 theorem isDimerCfgZ_dimerPotZ (J h : ℝ) (hJ : 0 < J) (r : ℤ) (η : CfgZ) :
     IsDimerCfgZ (2 * |h| / J) r (dimerPotZ J h r η) := by
-  sorry
+  refine ⟨fun y => ?_, fun k => ?_⟩
+  · simp only [dimerPotZ, sgn]
+    rcases abs_choice h with h' | h'
+    · rw [h']
+      split_ifs
+      · left; ring
+      · right; ring
+    · rw [h']
+      split_ifs
+      · right; ring
+      · left; ring
+  · simp only [dimerPotZ]
+    rw [show (2 * k - r + r) / 2 = k by omega, show (2 * k - r + 1 + r) / 2 = k by omega]
 
 /-- **Every dimer sector, averaged** (paper: Theorem `thm:dimer`(a), second statement, in sector form):
 `M^{(N)}_p(T; x) ≥ c_{λ,p} (JT)^{p-1}` for `1 ≤ JT ≤ min(x, N-1-x)` (0-indexed sites). -/
