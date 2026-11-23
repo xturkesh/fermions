@@ -710,8 +710,11 @@ diagonal $\pm1$ gauge transformation (which leaves $|G|$ invariant).  The hoppin
 has modulus $1$ in the Poisson formula \eqref{eq:poisson}.  The bound \eqref{eq:Qgood} only uses
 $Q(x,y)\le\sum_\alpha|\varphi_\alpha(x)\varphi_\alpha(y)|$ for an orthonormal eigenbasis, which holds even when the
 spectrum is degenerate.  The ring sector law of \cref{prop:variants}(ii) is uniform on a parity hyperplane,
-so it has density at most $2$ with respect to the i.i.d.\ law; this costs a factor $2$, as in (i).  We have
-not written out the details, so we record this only as a remark.
+so it has density at most $2$ with respect to the i.i.d.\ law; this costs a factor $2$, as in (i).  The details
+are carried out in the formal verification (\cref{app:lean}), with \cref{prop:LDT} as input.  There an eigenvector of
+$h_{q,w}$ is continued to $\Z$ with a factor $w$ at every turn around the ring.  The continuation solves the
+untwisted eigenvalue equation with the periodic potential, and after a rotation of the ring the two arcs lie in
+$[1,N]$, so the estimates of \cref{lem:double}, with both ends of each box active, apply.
 \end{remark}
 
 \subsection{Constants, weak and strong disorder, numerics}\label{sec:onebody:remarks}

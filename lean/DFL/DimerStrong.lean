@@ -195,13 +195,168 @@ theorem dimer_TL_tail (J h : ℝ) (hJ : 0 < J) (r : ℤ) (Ns : ℕ → ℕ) (xs 
     exact DimerStrongAux.tendsto_ite_Z (dimerPotZ J h r η) |2 * h / J|
       (DimerInfVolAux.abs_dimerPotZ_le J h r η) _ _ ha hb has hbs _ (J * t)
 
+namespace DimerStrongAux
+
+/-- `η ↦ v^{(r)}(y)` is measurable. -/
+lemma measurable_dimerPotZ_apply (J h : ℝ) (r y : ℤ) :
+    Measurable (fun η : CfgZ => dimerPotZ J h r η y) :=
+  measurable_const.mul ((measurable_of_countable sgn).comp (measurable_pi_apply _))
+
+/-- The entries of the powers of `H_{v^{(r)}}` depend measurably on the signs. -/
+lemma measurable_schrZpow (J h : ℝ) (r : ℤ) (k : ℕ) (x y : ℤ) :
+    Measurable (fun η : CfgZ => schrZpow (dimerPotZ J h r η) k x y) := by
+  induction k generalizing x with
+  | zero => exact measurable_const
+  | succ k ih =>
+    simp only [schrZpow]
+    refine Finset.measurable_sum _ fun z _ => ?_
+    have hz : Measurable (fun η : CfgZ => schrZ (dimerPotZ J h r η) x z) := by
+      by_cases hxz : x = z
+      · subst hxz
+        simp only [DimerInfVolAux.schrZ_diag]
+        exact measurable_dimerPotZ_apply J h r x
+      · simp only [schrZ, hxz, ite_false]
+        exact measurable_const
+    exact hz.mul (ih z)
+
+/-- The entries of `e^{-isH_{v^{(r)}}}` on `ℤ` depend measurably on the signs. -/
+lemma measurable_evoZw (J h : ℝ) (r : ℤ) (s : ℝ) (x y : ℤ) :
+    Measurable (fun η : CfgZ => evoZw (dimerPotZ J h r η) s x y) := by
+  refine measurable_of_tendsto_metrizable (f := fun (n : ℕ) (η : CfgZ) => ∑ k ∈ Finset.range n,
+    ((-(s : ℂ) * Complex.I) ^ k / (k.factorial : ℂ)) *
+      ((schrZpow (dimerPotZ J h r η) k x y : ℝ) : ℂ)) (fun n => ?_) ?_
+  · exact Finset.measurable_sum _ fun k _ => measurable_const.mul
+      (Complex.measurable_ofReal.comp (measurable_schrZpow J h r k x y))
+  · rw [tendsto_pi_nhds]
+    intro η
+    exact (summable_evoZw (dimerPotZ J h r η) |2 * h / J|
+      (DimerInfVolAux.abs_dimerPotZ_le J h r η) s x y).hasSum.tendsto_sum_nat
+
+/-- `s ↦ ⟨δ_x, e^{-isH_w} δ_y⟩` is continuous on `ℤ` (locally uniform convergence of the series). -/
+lemma continuous_evoZw (w : ℤ → ℝ) (W : ℝ) (hw : ∀ x, |w x| ≤ W) (x y : ℤ) :
+    Continuous (fun s : ℝ => evoZw w s x y) := by
+  have hW : 0 ≤ W := (abs_nonneg _).trans (hw 0)
+  rw [continuous_iff_continuousAt]
+  intro s₀
+  have hcont : ContinuousOn (fun s : ℝ => evoZw w s x y)
+      (Set.Ioo (-(|s₀| + 1)) (|s₀| + 1)) := by
+    unfold evoZw
+    refine continuousOn_tsum (u := fun k => ((2 + W) * (|s₀| + 1)) ^ k / (k.factorial : ℝ))
+      (fun k => Continuous.continuousOn (by fun_prop)) (Real.summable_pow_div_factorial _)
+      (fun k s hs => ?_)
+    refine (DimerTLAux.norm_term_le s k _ (2 + W)
+      (DimerInfVolAux.abs_schrZpow_le w W hw k x y)).trans ?_
+    have hs' : |s| ≤ |s₀| + 1 := abs_le.mpr ⟨hs.1.le, hs.2.le⟩
+    have h1 : (2 + W) * |s| ≤ (2 + W) * (|s₀| + 1) :=
+      mul_le_mul_of_nonneg_left hs' (by linarith)
+    exact div_le_div_of_nonneg_right
+      (pow_le_pow_left₀ (mul_nonneg (by linarith) (abs_nonneg s)) h1 k) (by positivity)
+  exact hcont.continuousAt (Ioo_mem_nhds (by linarith [neg_abs_le s₀])
+    (by linarith [le_abs_self s₀]))
+
+/-- Partial column weights of `e^{-isH_w}` on `ℤ` are at most `1`. -/
+lemma tsum_ite_le_one (w : ℤ → ℝ) (W : ℝ) (hw : ∀ x, |w x| ≤ W) (P : ℤ → Prop)
+    [DecidablePred P] (s : ℝ) : ∑' y : ℤ, (if P y then ‖evoZw w s y 0‖ ^ 2 else 0) ≤ 1 := by
+  have hlim := tendsto_ite_Z w W hw (fun n : ℕ => -(n : ℤ)) (fun n => (n : ℤ))
+    (fun n => by simp) (fun n => by positivity)
+    (tendsto_neg_atTop_atBot.comp tendsto_natCast_atTop_atTop) tendsto_natCast_atTop_atTop P s
+  exact le_of_tendsto' hlim fun n =>
+    sum_ite_norm_sq_le_one _ (DimerTLAux.schrH_isSymm _ _ _) _ _ _
+
+/-- Chebyshev: the weight beyond `R ≥ 1` is at most the `p`-th moment divided by `R^p`. -/
+lemma tsum_tail_le (u : ℤ → ℝ) (hu : ∀ y, 0 ≤ u y) (p : ℝ) (hp : 0 < p) (R : ℕ) (hR : 1 ≤ R)
+    (B : ℝ) (hB : ∀ S : Finset ℤ, ∑ y ∈ S, |(y : ℝ)| ^ p * u y ≤ B) :
+    ∑' y : ℤ, (if (R : ℤ) < |y| then u y else 0) ≤ B / (R : ℝ) ^ p := by
+  have hR0 : (0 : ℝ) < R := by exact_mod_cast hR
+  have hRp : 0 < (R : ℝ) ^ p := Real.rpow_pos_of_pos hR0 p
+  refine Real.tsum_le_of_sum_le (fun y => ?_) fun S => ?_
+  · show (0 : ℝ) ≤ if (R : ℤ) < |y| then u y else 0
+    split_ifs
+    · exact hu y
+    · exact le_rfl
+  rw [le_div_iff₀ hRp, Finset.sum_mul]
+  refine le_trans (Finset.sum_le_sum fun y _ => ?_) (hB S)
+  split_ifs with hy
+  · have h1 : (R : ℝ) ≤ |(y : ℝ)| := by exact_mod_cast hy.le
+    have h2 : (R : ℝ) ^ p ≤ |(y : ℝ)| ^ p := Real.rpow_le_rpow hR0.le h1 hp.le
+    rw [mul_comm]
+    exact mul_le_mul_of_nonneg_right h2 (hu y)
+  · rw [zero_mul]
+    exact mul_nonneg (by positivity) (hu y)
+
+end DimerStrongAux
+
 /-- **Tightness from dynamical localization** (paper: Remark `rem:dimerstrong`): if almost surely
 `sup_t ∑_y |y|^p |⟨δ_y, e^{-itH}δ_0⟩|² < ∞` for some `p > 0`, then `sup_t dimerTailZ R t → 0`. -/
 theorem dimerTailZ_tendsto_zero (J h : ℝ) (hJ : 0 < J) (r : ℤ) (p : ℝ) (hp : 0 < p)
     (hDL : ∀ᵐ η ∂muZ, ∃ C : ℝ, ∀ (t : ℝ) (S : Finset ℤ),
       ∑ y ∈ S, |(y : ℝ)| ^ p * ‖evoZw (dimerPotZ J h r η) t y 0‖ ^ 2 ≤ C) :
     Tendsto (fun R : ℕ => ⨆ t : ℝ, dimerTailZ J h r R t) atTop (𝓝 0) := by
-  sorry
+  have _ := hJ  -- the sign of `J` is not needed here (`hDL` holds for all times)
+  -- the moment supremum over rational times and finite windows
+  set A : CfgZ → ENNReal := fun η => ⨆ (q : ℚ) (S : Finset ℤ),
+    ENNReal.ofReal (∑ y ∈ S, |(y : ℝ)| ^ p * ‖evoZw (dimerPotZ J h r η) (q : ℝ) y 0‖ ^ 2)
+    with hA
+  have hAm : Measurable A := by
+    refine Measurable.iSup fun q => Measurable.iSup fun S => ?_
+    exact ENNReal.measurable_ofReal.comp (Finset.measurable_sum _ fun y _ =>
+      measurable_const.mul (((DimerStrongAux.measurable_evoZw J h r _ y 0).norm).pow_const 2))
+  -- the dominating functions `G_R = min(1, A / R^p)`
+  set G : ℕ → CfgZ → ℝ := fun R η => min 1 ((A η).toReal / (R : ℝ) ^ p) with hG
+  have hG0 : ∀ R η, 0 ≤ G R η := fun R η =>
+    le_min zero_le_one (div_nonneg ENNReal.toReal_nonneg (Real.rpow_nonneg (Nat.cast_nonneg R) p))
+  have hG1 : ∀ R η, G R η ≤ 1 := fun R η => min_le_left _ _
+  have hGn : ∀ R η, ‖G R η‖ ≤ 1 := fun R η => by
+    rw [Real.norm_eq_abs, abs_of_nonneg (hG0 R η)]
+    exact hG1 R η
+  have hGm : ∀ R, Measurable (G R) := fun R =>
+    measurable_const.min ((ENNReal.measurable_toReal.comp hAm).div_const _)
+  have hGi : ∀ R, Integrable (G R) muZ := fun R =>
+    Integrable.mono' (integrable_const 1) (hGm R).aestronglyMeasurable (ae_of_all _ (hGn R))
+  -- `∫ G_R → 0` by dominated convergence
+  have hlimG : Tendsto (fun R : ℕ => ∫ η, G R η ∂muZ) atTop (𝓝 0) := by
+    have hpt : ∀ η, Tendsto (fun R : ℕ => G R η) atTop (𝓝 0) := fun η => by
+      have h1 : Tendsto (fun R : ℕ => (A η).toReal / (R : ℝ) ^ p) atTop (𝓝 0) :=
+        tendsto_const_nhds.div_atTop ((tendsto_rpow_atTop hp).comp tendsto_natCast_atTop_atTop)
+      exact squeeze_zero (fun R => hG0 R η) (fun R => min_le_right _ _) h1
+    have h := tendsto_integral_of_dominated_convergence (μ := muZ) (F := G)
+      (f := fun _ => (0 : ℝ)) (fun _ => (1 : ℝ)) (fun R => (hGm R).aestronglyMeasurable) (integrable_const 1)
+      (fun R => ae_of_all _ (hGn R)) (ae_of_all _ hpt)
+    simpa using h
+  -- almost surely, the tail beyond `R ≥ 1` is at most `G_R`, for all times
+  have hbound : ∀ R : ℕ, 1 ≤ R → ∀ t : ℝ, ∀ᵐ η ∂muZ, ∑' y : ℤ,
+      (if (R : ℤ) < |y| then ‖evoZw (dimerPotZ J h r η) (J * t) y 0‖ ^ 2 else 0) ≤ G R η := by
+    intro R hR t
+    filter_upwards [hDL] with η hη
+    obtain ⟨C, hC⟩ := hη
+    have hW := DimerInfVolAux.abs_dimerPotZ_le J h r η
+    have hAC : A η ≤ ENNReal.ofReal C :=
+      iSup₂_le fun q S => ENNReal.ofReal_le_ofReal (hC q S)
+    have hAt : A η ≠ ⊤ := ne_top_of_le_ne_top ENNReal.ofReal_ne_top hAC
+    have hmom : ∀ (s : ℝ) (S : Finset ℤ),
+        ∑ y ∈ S, |(y : ℝ)| ^ p * ‖evoZw (dimerPotZ J h r η) s y 0‖ ^ 2 ≤ (A η).toReal := by
+      intro s S
+      have hcl : IsClosed {s : ℝ | ∑ y ∈ S, |(y : ℝ)| ^ p *
+          ‖evoZw (dimerPotZ J h r η) s y 0‖ ^ 2 ≤ (A η).toReal} :=
+        isClosed_le (continuous_finsetSum _ fun y _ => continuous_const.mul
+          (((DimerStrongAux.continuous_evoZw _ _ hW y 0).norm).pow 2)) continuous_const
+      refine isClosed_property Rat.denseRange_cast hcl (fun q => ?_) s
+      show ∑ y ∈ S, |(y : ℝ)| ^ p * ‖evoZw (dimerPotZ J h r η) (q : ℝ) y 0‖ ^ 2 ≤ (A η).toReal
+      rw [← ENNReal.ofReal_le_iff_le_toReal hAt]
+      exact le_iSup₂ (f := fun (q : ℚ) (S : Finset ℤ) => ENNReal.ofReal
+        (∑ y ∈ S, |(y : ℝ)| ^ p * ‖evoZw (dimerPotZ J h r η) (q : ℝ) y 0‖ ^ 2)) q S
+    refine le_min (DimerStrongAux.tsum_ite_le_one _ _ hW _ _) ?_
+    exact DimerStrongAux.tsum_tail_le _ (fun y => by positivity) p hp R hR _ (hmom (J * t))
+  -- conclusion
+  have hnn : ∀ (R : ℕ) (t : ℝ) (η : CfgZ), 0 ≤ ∑' y : ℤ,
+      (if (R : ℤ) < |y| then ‖evoZw (dimerPotZ J h r η) (J * t) y 0‖ ^ 2 else 0) :=
+    fun R t η => tsum_nonneg fun y => by split_ifs <;> positivity
+  refine squeeze_zero' (Eventually.of_forall fun R => Real.iSup_nonneg fun t =>
+    integral_nonneg fun η => hnn R t η) ?_ hlimG
+  filter_upwards [eventually_ge_atTop 1] with R hR
+  refine ciSup_le fun t => ?_
+  unfold dimerTailZ
+  exact integral_mono_of_nonneg (ae_of_all _ fun η => hnn R t η) (hGi R) (hbound R hR t)
 
 /-- **The dressed fermion stays tight** (paper: Remark `rem:dimerstrong`): given dynamical localization
 of the random dimer model, `lim_{R→∞} sup_t lim_{N→∞} ⟨Ψ^{x_N}_N(t), ∑_{|y-x_N|>R} n_y Ψ^{x_N}_N(t)⟩ = 0`. -/
@@ -212,7 +367,8 @@ theorem dimer_tight_of_dynLoc (J h : ℝ) (hJ : 0 < J) (r : ℤ) (Ns : ℕ → �
     (hDL : ∀ᵐ η ∂muZ, ∃ C : ℝ, ∀ (t : ℝ) (S : Finset ℤ),
       ∑ y ∈ S, |(y : ℝ)| ^ p * ‖evoZw (dimerPotZ J h r η) t y 0‖ ^ 2 ≤ C) :
     ∃ L : ℕ → ℝ → ℝ, (∀ R t, Tendsto (fun n => dimerTailLGT J h (Ns n) R t (xs n)) atTop
-        (𝓝 (L R t))) ∧ Tendsto (fun R : ℕ => ⨆ t : ℝ, L R t) atTop (𝓝 0) := by
-  sorry
+        (𝓝 (L R t))) ∧ Tendsto (fun R : ℕ => ⨆ t : ℝ, L R t) atTop (𝓝 0) :=
+  ⟨dimerTailZ J h r, fun R t => dimer_TL_tail J h hJ r Ns xs hN hpar hx1 hx2 R t,
+    dimerTailZ_tendsto_zero J h hJ r p hp hDL⟩
 
 end DFL
