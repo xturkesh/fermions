@@ -638,7 +638,11 @@ $\hq/J=-\Delta_N+\lambda\diag(q)$ with eigenvalue $E$,
   \bar I_N=\Edim\frac1N\sum_\alpha a_\alpha^2,\qquad a_\alpha:=\langle\varphi_\alpha,\Gamma\varphi_\alpha\rangle,
 \]
 for a real orthonormal eigenbasis $(\varphi_\alpha)$ of $\hq$.
-\item $\lim_{N\to\infty}\bar I_N=0$.
+\item For every integer $L\ge1$,
+\begin{equation}\label{eq:dimerimbrate}
+  \bar I_N\le\frac{8L^2(2|\lambda|+1)^{2L}}{N}+\frac4L+\frac4N .
+\end{equation}
+In particular $\lim_{N\to\infty}\bar I_N=0$.
 \end{enumerate}
 \end{proposition}
 
@@ -646,39 +650,27 @@ For the i.i.d.\ law the corresponding quantity is bounded below uniformly in $N$
 Numerically, $\bar I_N\approx c_\lambda/N$ for the dimer law: for $100\le N\le800$, $N\bar I_N$ increases
 slowly from $0.61$ to $0.64$ at $\lambda=0.5$ and stays at $0.21$ at $\lambda=1.5$.  The i.i.d.\ values
 of $\bar I_N$ are $\approx0.015$--$0.02$ at $\lambda=0.5$ and $\approx0.13$ at $\lambda=1.5$
-(\texttt{code/dimer\_check.out}, Part~C).  The proof of (iii) gives no rate.
+(\texttt{code/dimer\_check.out}, Part~C).  Choosing $L$ of order $\log N$ in \eqref{eq:dimerimbrate} gives
+$\bar I_N=O(1/\log N)$, far from the observed $1/N$.
 
-\begin{lemma}[Density of states of the dimer model]\label{lem:dimerdos}
-Let $\lambda\in\R$, $H:=-\Delta+\lambda\diag(q)$ on $\ell^2(\Z)$ with $q_{2k-1}=q_{2k}=\eta_k$,
-$(\eta_k)_{k\in\Z}$ i.i.d.\ uniform, and let
-$\nu(B):=\frac12\E\bigl(\langle\delta_1,\one_B(H)\delta_1\rangle+\langle\delta_2,\one_B(H)\delta_2\rangle\bigr)$ for
-Borel sets $B\subset\R$.
-\begin{enumerate}[label=(\roman*)]
-\item $\nu$ is a probability measure on $[-2-|\lambda|,2+|\lambda|]$ without atoms.
-\item For every continuous $f:\R\to\R$, $\lim_{N\to\infty,\,N\ \mathrm{even}}\frac1N\Edim\Tr f(\hq/J)=\int f\,\dd\nu$.
-\end{enumerate}
+The proof of (iii) rests on a deterministic count of the eigenvalues near the energies $\pm\lambda$, valid for
+every potential.
+
+\begin{lemma}[Few eigenvalues near a given energy]\label{lem:fewapprox}
+Let $N,L\ge1$, $v:[1,N]\to\R$, $E\in\R$, $K:=\max_y|v(y)-E|$ and $H:=-\Delta_N+\diag(v)$.  If $\varepsilon\ge0$
+and $\varepsilon L(K+1)^L<1$, then $H$ has at most $2(N/L+1)$ eigenvalues in $[E-\varepsilon,E+\varepsilon]$.
 \end{lemma}
 
 \begin{proof}
-(i) Let $S_2$ be the shift by two sites.  It conjugates $H$ to the operator of the shifted sequence
-$(\eta_{k-1})_k$, which has the same law.  Hence, for every bounded Borel $f$,
-$\E\langle\delta_y,f(H)\delta_y\rangle$ depends only on the parity of $y$.  Fix $E\in\R$ and let
-$P:=\one_{\{E\}}(H)$.  If $u,u'\in\ell^2(\Z)$ satisfy $Hu=Eu$ and $Hu'=Eu'$, the Wronskian
-$u(y+1)u'(y)-u(y)u'(y+1)$ does not depend on $y$ and tends to $0$, so it vanishes.  Then
-$(u(y+1),u(y))$ and $(u'(y+1),u'(y))$ are parallel for every $y$, and both are propagated by the same
-invertible transfer matrices, so $u$ and $u'$ are linearly dependent.  Thus $\Tr P\le1$.  For every
-$L\in\N$, $4L\,\nu(\{E\})=\sum_{y=-2L+1}^{2L}\E\langle\delta_y,P\delta_y\rangle\le\E\Tr P\le1$; hence
-$\nu(\{E\})=0$.
-
-(ii) Couple $q\in\supp\mudim$ with $\eta$ by $q=(\eta_1,\eta_1,\dots,\eta_M,\eta_M)$, so that $\hq/J$ is
-the restriction of $H$ to $[1,N]$.  Given $\epsilon>0$, choose a polynomial $p_\epsilon$ of degree $m$ with
-$|f-p_\epsilon|\le\epsilon$ on $[-2-|\lambda|,2+|\lambda|]$, which contains both spectra.  For $m<x\le N-m$,
-$(p_\epsilon(\hq/J))_{xx}=(p_\epsilon(H))_{xx}$, by the path argument of \cref{lem:dimerTL}(ii).  So
-$|f(\hq/J)_{xx}-f(H)_{xx}|\le2\epsilon$ for these $x$.  For the remaining $2m$ sites both entries are
-bounded by $\norm{f}_\infty$, the supremum over that interval.  Taking expectations, and using that
-$\E f(H)_{xx}$ depends only on the parity of $x$ and that $[1,N]$ contains $N/2$ sites of each parity,
-we obtain $|\frac1N\Edim\Tr f(\hq/J)-\int f\dd\nu|\le2\epsilon+4m\norm{f}_\infty/N$.  Let $N\to\infty$,
-then $\epsilon\to0$.
+Let $V$ be the span of the eigenvectors of $H$ with eigenvalues in $[E-\varepsilon,E+\varepsilon]$, so that
+$\norm{(H-E)u}\le\varepsilon\norm u$ for $u\in V$.  Cut $[1,N]$ into the blocks
+$B_j:=[(j-1)L+1,jL]\cap[1,N]$, and let $P$ be the set of the first two sites of all blocks; $|P|\le2(N/L+1)$.
+Suppose $\dim V>|P|$.  Then some $u\in V\setminus\{0\}$ vanishes on $P$.  Put $r:=(H-E)u$, so that
+$u(y+1)=(v(y)-E)u(y)-u(y-1)-r(y)$ for $1<y<N$.  Fix a block $B_j=[s,s+\ell-1]$ and let
+$m_i:=\max\{|u(s+i)|,|u(s+i-1)|\}$ for $1\le i<\ell$.  Then $m_1=0$ and $m_{i+1}\le(K+1)m_i+|r(s+i)|$, so
+$|u(y)|\le(K+1)^L\sum_{z\in B_j}|r(z)|$ for $y\in B_j$, and by Cauchy--Schwarz
+$\sum_{y\in B_j}|u(y)|^2\le L^2(K+1)^{2L}\sum_{z\in B_j}|r(z)|^2$.  Summing over the blocks,
+$\norm u\le L(K+1)^L\norm r\le\varepsilon L(K+1)^L\norm u<\norm u$, a contradiction.
 \end{proof}
 
 \begin{proof}[Proof of \cref{prop:dimerimbalance}]
@@ -709,18 +701,51 @@ $\Tr(\Gamma U_q\Gamma U_q^*)=\sum_{\alpha,\beta}\e^{-\ii t(E_\alpha-E_\beta)}\la
 spectrum of $\hq$ is simple (\cref{lem:consequences}(a)), and $T^{-1}\int_0^T\e^{-\ii t\omega}\dd t\to\one[\omega=0]$;
 the average over $q$ is a finite sum.  This proves (ii), as in \cref{rem:gaussproj}(ii).
 
-(iii) Let $E_\alpha$ be the eigenvalues of $\hq/J$.  Since $|a_\alpha|\le1$, (i) gives
-$|a_\alpha|\le\min\{1,(\varphi_\alpha(1)^2+\varphi_\alpha(N)^2)/|\lambda^2-E_\alpha^2|\}$.  Fix $\delta>0$ and let
-$W_\delta:=\{E\in\R:|E^2-\lambda^2|<\delta\}$.  Splitting the sum according to whether $E_\alpha\in W_\delta$, and
-using $\sum_\alpha\varphi_\alpha(1)^2=\sum_\alpha\varphi_\alpha(N)^2=1$,
+(iii) Fix $q\in\supp\mudim$ and $L\ge1$, let $E_\alpha$ be the eigenvalues of $\hq/J=-\Delta_N+\lambda\diag(q)$, and put
+$\varepsilon:=1/(2L(2|\lambda|+1)^L)$ and $\delta:=\varepsilon^2$.  Since $|a_\alpha|\le\sum_x\varphi_\alpha(x)^2=1$, we have
+$a_\alpha^2\le|a_\alpha|$, and (i) gives $|a_\alpha|\le(\varphi_\alpha(1)^2+\varphi_\alpha(N)^2)/\delta$ whenever
+$|\lambda^2-E_\alpha^2|\ge\delta$.  If $|\lambda^2-E_\alpha^2|<\delta$, then $|E_\alpha-\lambda|<\varepsilon$ or
+$|E_\alpha+\lambda|<\varepsilon$.  By \cref{lem:fewapprox} with $E=\pm\lambda$, for which $K\le2|\lambda|$ and
+$\varepsilon L(K+1)^L\le\frac12$, there are at most $4(N/L+1)$ such $\alpha$.  Using
+$\sum_\alpha\varphi_\alpha(1)^2=\sum_\alpha\varphi_\alpha(N)^2=1$ for the others,
 \[
-  \sum_\alpha a_\alpha^2\le\sum_\alpha|a_\alpha|\le\frac2\delta+\Tr\one_{W_\delta}(\hq/J) .
+  \sum_\alpha a_\alpha^2\le\frac2\delta+4\Bigl(\frac NL+1\Bigr)=8L^2(2|\lambda|+1)^{2L}+\frac{4N}L+4 .
 \]
-Choose a continuous $f_\delta$ with $\one_{W_\delta}\le f_\delta\le\one_{W_{2\delta}}$.  By (ii) and
-\cref{lem:dimerdos}(ii),
-$\limsup_N\bar I_N\le\limsup_N\bigl(\frac2{\delta N}+\frac1N\Edim\Tr f_\delta(\hq/J)\bigr)=\int f_\delta\dd\nu\le\nu(W_{2\delta})$.
-As $\delta\downarrow0$, $\nu(W_{2\delta})\to\nu(\{\lambda,-\lambda\})=0$ by \cref{lem:dimerdos}(i).
+Divide by $N$ and average over $q$; by (ii) this is \eqref{eq:dimerimbrate}.  Given $\epsilon>0$, choose
+$L>8/\epsilon$ and then $N$ large: $\bar I_N<\epsilon$.
 \end{proof}
+
+\begin{remark}[Density of states of the dimer model]\label{rem:dimerdos}
+\Cref{lem:fewapprox} is a finite-volume, deterministic substitute for the following infinite-volume fact, which
+an earlier version of the proof of \cref{prop:dimerimbalance}(iii) used.  Let $\lambda\in\R$,
+$H:=-\Delta+\lambda\diag(q)$ on $\ell^2(\Z)$ with $q_{2k-1}=q_{2k}=\eta_k$, $(\eta_k)_{k\in\Z}$ i.i.d.\ uniform, and let
+$\nu(B):=\frac12\E\bigl(\langle\delta_1,\one_B(H)\delta_1\rangle+\langle\delta_2,\one_B(H)\delta_2\rangle\bigr)$ for
+Borel sets $B\subset\R$.
+\begin{enumerate}[label=(\roman*)]
+\item $\nu$ is a probability measure on $[-2-|\lambda|,2+|\lambda|]$ without atoms.
+\item For every continuous $f:\R\to\R$, $\lim_{N\to\infty,\,N\ \mathrm{even}}\frac1N\Edim\Tr f(\hq/J)=\int f\,\dd\nu$.
+\end{enumerate}
+(i) Let $S_2$ be the shift by two sites.  It conjugates $H$ to the operator of the shifted sequence
+$(\eta_{k-1})_k$, which has the same law.  Hence, for every bounded Borel $f$,
+$\E\langle\delta_y,f(H)\delta_y\rangle$ depends only on the parity of $y$.  Fix $E\in\R$ and let
+$P:=\one_{\{E\}}(H)$.  If $u,u'\in\ell^2(\Z)$ satisfy $Hu=Eu$ and $Hu'=Eu'$, the Wronskian
+$u(y+1)u'(y)-u(y)u'(y+1)$ does not depend on $y$ and tends to $0$, so it vanishes.  Then
+$(u(y+1),u(y))$ and $(u'(y+1),u'(y))$ are parallel for every $y$, and both are propagated by the same
+invertible transfer matrices, so $u$ and $u'$ are linearly dependent.  Thus $\Tr P\le1$.  For every
+$L\in\N$, $4L\,\nu(\{E\})=\sum_{y=-2L+1}^{2L}\E\langle\delta_y,P\delta_y\rangle\le\E\Tr P\le1$; hence
+$\nu(\{E\})=0$.
+
+(ii) Couple $q\in\supp\mudim$ with $\eta$ by $q=(\eta_1,\eta_1,\dots,\eta_M,\eta_M)$, so that $\hq/J$ is
+the restriction of $H$ to $[1,N]$.  Given $\epsilon>0$, choose a polynomial $p_\epsilon$ of degree $m$ with
+$|f-p_\epsilon|\le\epsilon$ on $[-2-|\lambda|,2+|\lambda|]$, which contains both spectra.  For $m<x\le N-m$,
+$(p_\epsilon(\hq/J))_{xx}=(p_\epsilon(H))_{xx}$, by the path argument of \cref{lem:dimerTL}(ii).  So
+$|f(\hq/J)_{xx}-f(H)_{xx}|\le2\epsilon$ for these $x$.  For the remaining $2m$ sites both entries are
+bounded by $\norm{f}_\infty$, the supremum over that interval.  Taking expectations, and using that
+$\E f(H)_{xx}$ depends only on the parity of $x$ and that $[1,N]$ contains $N/2$ sites of each parity,
+we obtain $|\frac1N\Edim\Tr f(\hq/J)-\int f\dd\nu|\le2\epsilon+4m\norm{f}_\infty/N$.  Let $N\to\infty$,
+then $\epsilon\to0$.  Given (ii), the absence of atoms in (i) also follows from \cref{lem:fewapprox}: if $L\ge1$ and
+$\varepsilon L(|\lambda|+|E|+1)^L<1$, then $\nu((E-\varepsilon,E+\varepsilon))\le2/L$.
+\end{remark}
 
 \begin{remark}[What the imbalance measures]\label{rem:dimerimb}
 Identity \eqref{eq:dimerimbid} says that every eigenvector of a dimer configuration is balanced
