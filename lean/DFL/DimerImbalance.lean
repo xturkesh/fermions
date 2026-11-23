@@ -11,9 +11,8 @@ with eigenvalue `E` satisfies the identity
 (0-indexed sites; the paper writes it with 1-indexed sites and `λ = 2h/J`). Hence the staggered
 weight of eigenvectors away from the critical energies `±2h` is a boundary term, which is the
 mechanism behind the vanishing of the dimer imbalance. We also identify the infinite-time
-imbalance of the dimer LGT state with the dimer average of `N⁻¹ ∑_α a_α²`. (Part (iii) of the
-paper's proposition, `Ī_N → 0`, uses the infinite-volume density of states of the dimer model and is
-not formalized.)
+imbalance of the dimer LGT state with the dimer average of `N⁻¹ ∑_α a_α²`. Part (iii) of the
+paper's proposition, `Ī_N → 0` with an explicit rate, is proved in `DimerImbalanceLim.lean`.
 -/
 
 open Matrix Finset Filter Topology
