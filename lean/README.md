@@ -130,14 +130,14 @@ No `axiom` is introduced anywhere.
 
 ## Verification
 
-`lake build` compiles all 92 modules (about 49,600 lines) without `sorry`; there is no `axiom`,
+`lake build` compiles all 94 modules (about 50,500 lines) without `sorry`; there is no `axiom`,
 `admit`, `native_decide` or `implemented_by` in the library. The script `CheckAxioms.lean` walks
 through every theorem declared in a `DFL` module (including private helper lemmas) and collects the
 axioms it depends on:
 
 ```
 lake env lean CheckAxioms.lean
-# checked 5508 theorems in DFL modules; with non-standard axioms: 0
+# checked 5601 theorems in DFL modules; with non-standard axioms: 0
 ```
 
 i.e. every theorem depends only on Lean's standard axioms `propext`, `Classical.choice` and
