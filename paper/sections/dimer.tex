@@ -35,8 +35,9 @@ to times of the order of the distance to the boundary, a single dressed fermion 
 diffusively in the time-averaged sense (\cref{prop:dimerlower}, a finite-volume version of
 \cite[Thm.~1]{JSBS2003} with an explicit constant, and \cref{thm:dimer}(a));
 \item in the thermodynamic limit its sector-averaged, time-averaged mean-square displacement grows at
-least like $T^{3/2-\alpha}$ for every $\alpha>0$ (\cref{thm:dimer}(c), which transfers
-\cite[Thm.~4]{JSBS2003} to the gauge theory);
+least like $T^{3/2}$ (\cref{thm:dimer}(c)); for almost every dimer configuration on $\Z$ the exponent is at least $\frac32$, which is
+the conclusion of \cite[Thm.~4]{JSBS2003} for the dimer model, reproved here by a second-moment bound for the
+transfer matrices (\cref{lem:dimersecond,prop:dimersuper});
 \item consequently the analogue of Hypothesis~\ref{hyp:EC} for the dimer law fails, and so does every
 bound on sector-averaged moments of order $p>\frac12$ that is uniform in $N$ (\cref{thm:dimer}(d)).  For
 $p>1$, and in particular for the failure of Hypothesis~\ref{hyp:EC}, this uses only the deterministic
@@ -302,7 +303,8 @@ and (iv) follows from (iii).
 critical energies are $\pm\lambda$ ``as long as $\lambda<1$'' (their \S2, Examples), and
 $\langle\e^{4\ii\eta_\pm}\rangle\neq1$ if and only if $\lambda\neq1/\sqrt2$ (their Remark~5).  The
 condition $\langle\e^{4\ii\eta_\pm}\rangle\ne1$ enters only their Theorem~2 (asymptotics of the Lyapunov
-exponent), which we do not use.  Theorem~4 of \cite{JSBS2003}, used in \cref{thm:dimer}(c), requires,
+exponent), which we do not use.  Theorem~4 of \cite{JSBS2003}, whose conclusion for the dimer model is reproved in
+\cref{prop:dimersuper}, requires,
 besides the criticality of $E_c$, only $|\langle\e^{2\ii\eta_\pm}\rangle|<1$, which holds for \emph{all}
 $\lambda\in(0,1)$ by
 \eqref{eq:dimerangles}; at $\lambda=1/\sqrt2$ one even has $\langle\e^{2\ii\eta_\pm}\rangle=0$.  At
@@ -489,6 +491,91 @@ configuration on $\Z$ with alignment $r$ given by $v^{(r)}(y):=\lambda\eta_k$ fo
 and $H^{(r)}:=-\Delta+\diag(v^{(r)})$ on $\ell^2(\Z)$.  For $r=0$ the origin is the left site of its
 dimer, for $r=1$ the right site.  $\E$ denotes the expectation over $\eta$.
 
+Near $E_c=\lambda$ the dimer transfer matrices are, in the basis of \cref{lem:dimercritical}(iii), rotations by the
+angles $\pi$ and $2\theta$ up to perturbations of order $|z-\lambda|$.  \Cref{lem:dimertransfer} lets these perturbations
+add up coherently, which gives the diffusive exponent of \cref{prop:dimerlower}.  On average over the dimer signs the
+rotations randomize their phases, and the products stay bounded in mean square up to lengths of order $|z-\lambda|^{-2}$.
+
+\begin{lemma}[Second moment near the critical energy]\label{lem:dimersecond}
+Let $0<\lambda<1$.  There are $C,K,\delta_0>0$, depending only on $\lambda$, such that for every $z\in\C$ with
+$|z-\lambda|\le\delta_0$ and every $n\in\N$,
+\[
+  2^{-n}\sum_{\epsilon\in\{+,-\}^n}\norm{D_{\epsilon_n}(z)\cdots D_{\epsilon_1}(z)}_2^2\le C\,\e^{Kn((\Re z-\lambda)^2+|\Im z|)},
+\]
+where $\norm\cdot_2$ is the Hilbert--Schmidt norm.
+\end{lemma}
+
+\begin{proof}
+Let $M_\pm(z):=S^{-1}D_\pm(z)S$ and $\mathcal L_z(X):=\frac12\sum_\pm M_\pm(z)^*XM_\pm(z)$ for $2\times2$ matrices $X$.  The
+average of $P^*P$ over $\epsilon$, $P:=M_{\epsilon_n}(z)\cdots M_{\epsilon_1}(z)$, is $\mathcal L_z^n(\one)$, so the left side
+is at most $\kappa^2\Tr\mathcal L_z^n(\one)$.  $\mathcal L_z$ preserves the Hermitian matrices; write them as
+$X=x\one+y\sigma_y+w_1\sigma_z+w_2\sigma_x$ with $x,y,w_1,w_2\in\R$, so that $\Tr X=2x$, and put $\delta:=z-\lambda$.  In these
+coordinates $\mathcal L_z$ is a real $4\times4$ matrix whose entries are polynomials in $\Re z$ and $\Im z$.
+\begin{itemize}
+\item At $z=\lambda$, $M_+=\Rot_\pi$ and $M_-=\Rot_{2\theta}$ (\cref{lem:dimercritical}(iii)): $\mathcal L_\lambda$ fixes
+$\one$ and $\sigma_y$ and acts on $w$ as $\frac12(\one+\Rot_{4\theta})$, of norm $\kappa_0:=|\cos2\theta|=|2\lambda^2-1|<1$.
+\item For real $z$, $M_\pm(z)$ is real with determinant one, so $M_\pm^*\sigma_yM_\pm=\sigma_y$, and $M_\pm^*XM_\pm$ has no
+$\sigma_y$-component when $X$ is real symmetric.  Hence the entries coupling $y$ with $(x,w)$, and $1$ minus the
+$(y,y)$-entry, vanish for real $z$.
+\item The $(x,x)$-entry is $\frac14\sum_\pm\norm{M_\pm(z)}_2^2$.  Its first-order term in $\delta$ is proportional to
+$\Tr(M_\pm(\lambda)^{-1}M_\pm'(\lambda))=0$, because $\det M_\pm\equiv1$.
+\end{itemize}
+So there is $K_1\ge1$ such that for $|\delta|\le1$: the $(x,x)$-entry is within $K_1|\delta|^2$ of $1$, the $(y,y)$-entry
+within $K_1|\Im z|$ of $1$, the entries coupling $y$ with $(x,w)$ are at most $K_1|\Im z|$, the entries coupling $x$ with
+$w$ are at most $K_1|\delta|$, and the $w$-block has norm at most $\kappa_0+K_1|\delta|$.  For $\delta\ne0$ let
+$|||X|||:=|x|+|y|+c|w|$ with $c:=4K_1|\delta|/(1-\kappa_0)$.  If $|\delta|\le\delta_0:=(1-\kappa_0)/(4K_1)$, the
+coefficient of $|w|$ in $|||\mathcal L_zX|||$ is at most $c(\frac{1-\kappa_0}4+\frac{1-\kappa_0}2+\kappa_0+\frac{1-\kappa_0}4)=c$,
+those of $|x|$ and $|y|$ are at most $1+K_2(|\delta|^2+|\Im z|)$, and $|\delta|^2\le(\Re z-\lambda)^2+|\Im z|$.  Hence
+$\Tr\mathcal L_z^n(\one)\le2|||\mathcal L_z^n(\one)|||\le2(1+2K_2((\Re z-\lambda)^2+|\Im z|))^n$; for $\delta=0$,
+$\mathcal L_\lambda^n(\one)=\one$.  The lemma follows with $C:=2\kappa^2$ and $K:=2K_2$.
+\end{proof}
+
+\begin{proposition}[Superdiffusion]\label{prop:dimersuper}
+Let $0<\lambda<1$, $0<p\le2$ and $r\in\{0,1\}$, and let $v:=v^{(r)}$.  There are $c,T_0>0$, depending only on $\lambda$
+and $p$, such that:
+\begin{enumerate}[label=(\alph*)]
+\item $\E\,\Mom^\Z_{v,p}(T;0)\ge c\,T^{p-1/2}$ for all $T\ge T_0$;
+\item almost surely, for every $\alpha>0$, $\Mom^\Z_{v,p}(T;0)\ge T^{p-1/2-\alpha}$ for all sufficiently large $T$.
+\end{enumerate}
+\end{proposition}
+
+This is the conclusion of \cite[Thm.~4]{JSBS2003} for the dimer model, $\beta^-_{\omega,p}\ge1-\frac1{2p}$, together with its
+annealed version; (a) has no loss $\alpha$.
+
+\begin{proof}
+Fix $T\ge1$ and $\delta\in(0,\frac12]$, let $L:=\lfloor T\rfloor$, and for $E\in\R$ let $z:=E+\ii/(2T)$ and
+\[
+  X_j(E):=\norm{\Tdim^z(j+1,1)}_2^2+\norm{\Tdim^z(0,-j)}_2^2,\qquad j=1,\dots,L .
+\]
+\emph{A deterministic bound.}  Let $I=[-L',L']$ with $L'>L$.  For $|E-\lambda|\le\delta$, Steps~2 and~3 of the proof of
+\cref{prop:dimerlower} with $x=0$, using $\norm{A^{-1}}\le\norm{A}_2$ for $A\in SL(2,\C)$ in place of
+\cref{lem:dimertransfer}, give $\norm{\Phi(j+1)}\ge\norm{\Phi(1)}/\norm{\Tdim^z(j+1,1)}_2$ and
+$\norm{\Phi(-j)}\ge\norm{\Phi(0)}/\norm{\Tdim^z(0,-j)}_2$.  In either case of Step~3 this yields
+$\sum_{y\in I}|y|^p|\gdim_z(y)|^2\ge\frac{c_0^2}2\sum_{j=1}^Lj^p/X_j(E)$.  By \eqref{eq:plancherel}, and since
+$\Mom^I_{v,p}(T;0)\to\Mom^\Z_{v,p}(T;0)$ as $L'\to\infty$ by \cref{lem:dimerTL} and dominated convergence (as in the proof
+of \cref{thm:dimer}(b) below),
+\begin{equation}\label{eq:superdet}
+  \Mom^\Z_{v,p}(T;0)\ge\frac{c_0^2}{4\pi T}\int_{\lambda-\delta}^{\lambda+\delta}\sum_{j=1}^L\frac{j^p}{X_j(E)}\,\dd E .
+\end{equation}
+
+(a) Let $\delta:=T^{-1/2}$ and $T\ge T_0:=\max\{4,4\delta_0^{-2}\}$, so that $|z-\lambda|\le2T^{-1/2}\le\delta_0$.  The
+window $[1,j]$ (resp.\ $[-j,-1]$) consists of at most $j/2\le T/2$ complete dimers, whose signs are i.i.d., and at most
+two further sites, each with a transfer matrix of Hilbert--Schmidt norm at most $3+2\lambda$.  By \cref{lem:dimersecond}
+and submultiplicativity, $\E X_j(E)\le C':=2(3+2\lambda)^4C\e^{K}$.  By Jensen's inequality for $u\mapsto1/u$,
+$\E[1/X_j(E)]\ge1/C'$.  Taking expectations in \eqref{eq:superdet} (Tonelli) and using $L\ge T/2$,
+\[
+  \E\,\Mom^\Z_{v,p}(T;0)\ge\frac{c_0^2}{4\pi T}\cdot2\delta\cdot\frac{L^{p+1}}{(p+1)C'}\ge\frac{c_0^2}{2^{p+2}\pi(p+1)C'}\,T^{p-1/2}.
+\]
+
+(b) For $T\ge\max\{T_0,8\}$ let $J_T:=\{j\in\N:L/2\le j\le L\}$, so $|J_T|\ge T/4$, and
+$Y_T:=\int_{\lambda-\delta}^{\lambda+\delta}\sum_{j\in J_T}X_j(E)\,\dd E$ with $\delta=T^{-1/2}$.  By the Cauchy--Schwarz
+inequality the integral in \eqref{eq:superdet} is at least $(L/2)^p(2\delta|J_T|)^2/Y_T$, and as in (a)
+$\E Y_T\le2\delta|J_T|C'$.  For $T_k:=2^k$, Markov's inequality gives $\Prob(Y_{T_k}>k^2\,2\delta|J_{T_k}|C')\le k^{-2}$,
+so by the Borel--Cantelli lemma, almost surely $\Mom^\Z_{v,p}(T_k;0)\ge c''T_k^{p-1/2}/k^2$ for all large $k$, with
+$c''>0$ depending only on $\lambda$ and $p$.  For $T_k\le T\le T_{k+1}$, $T^{-1}\e^{-t/T}\ge(2T_k)^{-1}\e^{-t/T_k}$, so
+$\Mom^\Z_{v,p}(T;0)\ge\frac12\Mom^\Z_{v,p}(T_k;0)$.  Since $k=\log_2T_k$, (b) follows.
+\end{proof}
+
 \begin{theorem}[Delocalization for the dimer sector law]\label{thm:dimer}
 Let $0<2|h|<J$, $\lambda:=2|h|/J\in(0,1)$, and let $c_{\lambda,p}$ be as in \eqref{eq:clp}.  For even $N$
 and $x\in\{1,\dots,N\}$ let $\Psi^x_N=\cdr_x^\dagger\Omdim$ be the single-fermion dimer state of
@@ -512,12 +599,13 @@ $x_N\equiv r+1\pmod2$ for a fixed $r\in\{0,1\}$.  Then for $0<p\le2$, $t\in\R$ a
   \lim_{N\to\infty}\Mom^{(N)}_p(T;x_N)&=\E\,\Mom^\Z_{v^{(r)},p}(JT;0)=:\Mom^{\infty,r}_p(T).
 \end{align*}
 \item \emph{(Superdiffusion.)}  Let $0<p\le2$ and $r\in\{0,1\}$.  Then
-$\Mom^{\infty,r}_p(T)\ge c_{\lambda,p}(JT)^{p-1}$ for $JT\ge1$, and
+$\Mom^{\infty,r}_p(T)\ge c_{\lambda,p}(JT)^{p-1}$ for $JT\ge1$; there are $c',T_0>0$, depending only on $\lambda$ and $p$, with
+$\Mom^{\infty,r}_p(T)\ge c'(JT)^{p-1/2}$ for $JT\ge T_0$; and
 \[
   \liminf_{T\to\infty}\frac{\log\Mom^\Z_{v^{(r)},p}(T;0)}{\log T}\ge p-\frac12\quad\text{almost surely},\qquad
   \liminf_{T\to\infty}\frac{\log\Mom^{\infty,r}_p(T)}{\log T}\ge p-\frac12 .
 \]
-In particular, for every $\alpha>0$, $\Mom^{\infty,r}_2(T)\ge T^{3/2-\alpha}$ for all sufficiently large $T$.
+In particular, $\Mom^{\infty,r}_2(T)\ge c'(JT)^{3/2}$ for $JT\ge T_0$.
 \item \emph{(Failure of uniform localization.)}  For every $p>1/2$,
 \begin{equation}\label{eq:dimerLGTd}
   \sup_{N\ \mathrm{even}}\ \sup_{1\le x\le N}\ \sup_{t\in\R}\ \Edim\sum_{y=1}^N|y-x|^p\,
@@ -532,11 +620,10 @@ $\sup_{N,x,t}\sum_y|y-x|^p|\langle\delta_y,\e^{-\ii th_{q^{(N)}}}\delta_x\rangle
 \end{theorem}
 
 For $p=2$, (a) is a diffusive bound, $\Mom_2\ge c_{\lambda,2}JT$, valid for every configuration, while
-(c) is the almost-sure exponent $\beta^\pm_{\omega,2}\ge\frac34$ of \cite[Thm.~4]{JSBS2003}: the
-time-averaged mean-square displacement grows at least like $T^{3/2-\alpha}$, as predicted by Dunlap,
-Wu and Phillips \cite{DWP1990}.  Parts (a), (b), and (d) for $p>1$ are proved completely here.  The almost-sure exponent in (c), and
-(d) for $\frac12<p\le1$, rest on \cite[Thm.~4]{JSBS2003}, whose hypotheses are verified in
-\cref{lem:dimercritical} and in the proof below.  For comparison, for the i.i.d.\ law of
+(c) gives $\Mom^{\infty,r}_2(T)\ge c'(JT)^{3/2}$ on average and, almost surely, the exponent $\beta^\pm_{\omega,2}\ge\frac34$
+of \cite[Thm.~4]{JSBS2003}: the time-averaged mean-square displacement grows like $T^{3/2}$, as predicted by Dunlap,
+Wu and Phillips \cite{DWP1990}.  All parts are proved here; the input from \cite{JSBS2003}, their Theorem~4, is reproved
+for the dimer model in \cref{prop:dimersuper}.  For comparison, for the i.i.d.\ law of
 \cite{SKKM2017}, Theorem~\ref{thm:EC} and \eqref{eq:cons4} give
 $\E_q\sup_t\sum_y(|y-x|+1)^p|(\e^{-\ii t\hq})_{yx}|^2\le2M_p(F)<\infty$ uniformly in $N$ and $x$, for
 every $p\le2$.  The two initial states differ only on the even links.
@@ -570,24 +657,9 @@ $D^{(N)}_p(t;x_N)\le(2J|t|)^p$ for every $N$, which is integrable against $T^{-1
 Dominated convergence in $t$ and Tonelli (with $s=Jt$) give the second limit.
 
 (c) The lower bound $\Mom^{\infty,r}_p(T)\ge c_{\lambda,p}(JT)^{p-1}$ is \cref{prop:dimerlower} for
-$I=\Z$, averaged over $\eta$.  For the almost-sure statement we identify $H^{(r)}$ with the random
-polymer Hamiltonians of \cite[Sect.~4.1]{JSBS2003}.  There, $\Omega_0$ is the space of two-sided
-sequences $\omega$ of signs with the Bernoulli measure $P_0$ ($p_\pm=\frac12$), and
-$\Omega=\Omega_+\cup\Omega_-$ with $\Omega_\pm=\{\omega:\omega_0=\pm\}\times\{0,\dots,L_\pm-1\}$.  The
-configuration $(\omega,l)$ has $v_{(\omega,l)}(0)=\hat v_{\omega_0}(l)$: the origin is the $(l+1)$-st site
-of the polymer $\omega_0$.  Thus $H_{(\omega,l)}=H^{(l)}$ with $\eta_k=\pm1$ if and only if $\omega_k=\pm$.
-Their measure satisfies $P(\{(\omega,l):\omega\in A\})=P_0(A)/\langle L_\pm\rangle=\frac12P_0(A)$ for
-$l\in\{0,1\}$ and $A\subset\{\omega_0=\pm\}$, because $L_+=L_-=2$.  So $P$ is the product of $P_0$ with
-the uniform measure on $l\in\{0,1\}$, and a $P$-null set has $P_0$-null sections for $l=0$ and for
-$l=1$.  By \cref{lem:dimercritical}, $E_c=\lambda$ is a critical energy in the sense of
-\cite[Def.~1]{JSBS2003} and $|\langle\e^{2\ii\eta_\pm}\rangle|<1$.  Hence \cite[Thm.~4]{JSBS2003} applies:
-$P$-almost surely, $\beta^\pm_{\omega,p}:=\lim^\pm_{T\to\infty}\log M_{\omega,p}(T)/\log(T^p)\ge1-\frac1{2p}$,
-where $M_{\omega,p}(T)=\Mom^\Z_{v,p}(T;0)$ by \eqref{eq:Mom}.  For $\beta^-$ this is the almost-sure
-statement, for both alignments.  For the annealed statement, fix $\alpha>0$.  Almost surely
-$\Mom^\Z_{v^{(r)},p}(JT;0)\ge T^{p-1/2-\alpha/2}$ for all large $T$ (since $\log(JT)/\log T\to1$), so
-$T^{-(p-1/2-\alpha)}\Mom^\Z_{v^{(r)},p}(JT;0)\to\infty$ almost surely.  By Fatou's lemma, along every
-sequence $T_k\to\infty$, $T_k^{-(p-1/2-\alpha)}\Mom^{\infty,r}_p(T_k)\to\infty$.  Hence
-$\Mom^{\infty,r}_p(T)\ge T^{p-1/2-\alpha}$ for all large $T$, and $\alpha>0$ is arbitrary.
+$I=\Z$, averaged over $\eta$.  Since $\Mom^{\infty,r}_p(T)=\E\,\Mom^\Z_{v^{(r)},p}(JT;0)$ with $v^{(r)}$ taking the values
+$\pm\lambda$, \cref{prop:dimersuper}(a) gives $\Mom^{\infty,r}_p(T)\ge c(JT)^{p-1/2}$ for $JT\ge T_0$, hence the annealed
+$\liminf$; the almost-sure statement is \cref{prop:dimersuper}(b).
 
 (d) Let $p'\in(\frac12,2]$ and $K>0$.  By (c) there is $T$ with $\Mom^{\infty,r}_{p'}(T)>K+1$, and by
 (b) there is $N$ with $\Mom^{(N)}_{p'}(T;x_N)>K$.  Since $\Mom^{(N)}_{p'}$ is an average of
@@ -603,8 +675,7 @@ uniformly in $N$, $x$ and $t$, contradicting \eqref{eq:dimerLGTd} for $p'$.  For
 $q^{(N)}\in\supp\mudim$, take $x=N/2$ and $JT=N/2-1$ in (a) ($N\ge4$): the supremum over $t$ is at least
 $c_{\lambda,p}(N/2-1)^{p-1}\to\infty$.  The same choice in the last statement of (a) gives
 $\Mom^{(N)}_p(T;N/2)\ge c_{\lambda,p}(N/2-1)^{p-1}$, and since $\Mom^{(N)}_p$ is a time average of the
-expectation in \eqref{eq:dimerLGTd}, this proves \eqref{eq:dimerLGTd} for every $p>1$ without using
-\cite[Thm.~4]{JSBS2003}.  Since Hypothesis~\ref{hyp:EC} requires $M_2(F)<\infty$, the
+expectation in \eqref{eq:dimerLGTd}, this proves \eqref{eq:dimerLGTd} for every $p>1$ using only (a).  Since Hypothesis~\ref{hyp:EC} requires $M_2(F)<\infty$, the
 argument above with $p=2$ shows that its failure for $\mudim$ rests only on (a).
 \end{proof}
 
