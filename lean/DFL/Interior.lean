@@ -614,6 +614,54 @@ lemma sum_negMulLog_quarter {ι : Type*} [Fintype ι] (P : ι → Prop) [Decidab
   push_cast
   ring
 
+/-- **Product states**: if `Ψ(a, b) = [C b] [P a] / 2` with `|C| = |P| = 2`, the reduced state of
+the interval is a rank-one projector and its entropy vanishes. -/
+lemma vonNeumann_rdmMid_prod_half (ℓ₁ m : ℕ) (h : ℓ₁ + m ≤ N) (Ψ : Cfg N × Cfg N → ℂ)
+    (C : (Cfg ℓ₁ × Cfg ℓ₁) × (Cfg (N - ℓ₁ - m) × Cfg (N - ℓ₁ - m)) → Prop) [DecidablePred C]
+    (P : Cfg m × Cfg m → Prop) [DecidablePred P]
+    (hC : (univ.filter C).card = 2) (hP : (univ.filter P).card = 2)
+    (hΨ : ∀ a b, Ψ ((splitMid ℓ₁ m h).symm (a, b)) =
+      if C b then (if P a then 1 / 2 else 0) else 0) :
+    vonNeumann (rdmMid ℓ₁ m h Ψ) (rdmMid_isHermitian ℓ₁ m h Ψ) = 0 := by
+  refine vonNeumann_rankOne (fun a => if P a then ((Real.sqrt 2 : ℝ) : ℂ)⁻¹ else 0)
+    (sum_normSq_invSqrtTwo P hP) _ _ ?_
+  intro a a'
+  rw [rdmMid_prod ℓ₁ m h Ψ C (fun a => if P a then 1 / 2 else 0) hΨ a a', hC]
+  by_cases ha : P a <;> by_cases ha' : P a' <;>
+    simp only [ha, ha', ite_true, ite_false, star_zero, mul_zero, zero_mul]
+  rw [invSqrtTwo_mul_star]
+  norm_num
+
+/-- **Graph states**: if `Ψ(a, b) = [b = g a] [P a] / 2` with `g` injective on `P` and `|P| = 4`,
+the reduced state of the interval is `diag([P a] / 4)`, with entropy `2 ln 2`. -/
+lemma vonNeumann_rdmMid_graph_quarter (ℓ₁ m : ℕ) (h : ℓ₁ + m ≤ N) (Ψ : Cfg N × Cfg N → ℂ)
+    (g : Cfg m × Cfg m → (Cfg ℓ₁ × Cfg ℓ₁) × (Cfg (N - ℓ₁ - m) × Cfg (N - ℓ₁ - m)))
+    (P : Cfg m × Cfg m → Prop) [DecidablePred P] (hP : (univ.filter P).card = 4)
+    (hg : ∀ a a', g a = g a' → P a → P a' → a = a')
+    (hΨ : ∀ a b, Ψ ((splitMid ℓ₁ m h).symm (a, b)) =
+      if b = g a then (if P a then 1 / 2 else 0) else 0) :
+    vonNeumann (rdmMid ℓ₁ m h Ψ) (rdmMid_isHermitian ℓ₁ m h Ψ) = 2 * Real.log 2 := by
+  have hD : rdmMid ℓ₁ m h Ψ = diagonal (fun a => (((if P a then 1 / 4 else 0 : ℝ)) : ℂ)) := by
+    ext a a'
+    rw [rdmMid_graph ℓ₁ m h Ψ g (fun a => if P a then 1 / 2 else 0) hΨ, diagonal_apply]
+    by_cases ha : a = a'
+    · subst ha
+      by_cases h0 : P a
+      · simp only [h0, ite_true]
+        norm_num
+      · simp only [h0, ite_true, ite_false, star_zero, mul_zero, Complex.ofReal_zero]
+    · by_cases hga : g a = g a'
+      · by_cases h0 : P a
+        · by_cases h0' : P a'
+          · exact absurd (hg a a' hga h0 h0') ha
+          · simp only [ha, hga, h0', ite_true, ite_false, star_zero, mul_zero]
+        · simp only [ha, hga, h0, ite_true, ite_false, zero_mul]
+      · simp only [ha, hga, ite_false]
+  have hH : (diagonal (fun a => (((if P a then 1 / 4 else 0 : ℝ)) : ℂ))).IsHermitian :=
+    hD ▸ rdmMid_isHermitian ℓ₁ m h Ψ
+  rw [CutLocalAux.vonNeumann_congr _ hH hD, vonNeumann_diagonal]
+  exact sum_negMulLog_quarter P hP
+
 /-- `|S - 0| = 2 ln 2` if `S = 2 ln 2`. -/
 lemma abs_two_log_two_sub_zero : |2 * Real.log 2 - 0| = 2 * Real.log 2 := by
   rw [sub_zero, abs_of_nonneg (mul_nonneg zero_le_two (Real.log_nonneg one_le_two))]
@@ -719,15 +767,9 @@ theorem exInt_norm : ∑ p, Complex.normSq (exInt p) = 1 :=
 open InteriorAux in
 /-- `S_{I'}(Φ) = 0` for `Φ = exInt`, `I'` = (mode `1`, charge `1`). -/
 theorem exInt_entropy :
-    vonNeumann (rdmMid 1 1 (by norm_num) exInt) (rdmMid_isHermitian 1 1 (by norm_num) _) = 0 := by
-  refine vonNeumann_rankOne (fun a : Cfg 1 × Cfg 1 => if a.2 = 0 then
-    ((Real.sqrt 2 : ℝ) : ℂ)⁻¹ else 0) (sum_normSq_invSqrtTwo _ card_exInt_int) _ _ ?_
-  intro a a'
-  rw [rdmMid_prod 1 1 _ exInt (fun b => b.1.1 = 0 ∧ b.2.1 = 0 ∧ b.2.2 = 0)
-    (fun a => if a.2 = 0 then 1 / 2 else 0) exInt_split a a', card_exInt_compl]
-  by_cases ha : a.2 = 0 <;> by_cases ha' : a'.2 = 0 <;>
-    simp only [ha, ha', ite_true, ite_false, star_zero, mul_zero, zero_mul, invSqrtTwo_mul_star]
-  norm_num
+    vonNeumann (rdmMid 1 1 (by norm_num) exInt) (rdmMid_isHermitian 1 1 (by norm_num) _) = 0 :=
+  vonNeumann_rdmMid_prod_half 1 1 _ exInt (fun b => b.1.1 = 0 ∧ b.2.1 = 0 ∧ b.2.2 = 0)
+    (fun a => a.2 = 0) card_exInt_compl card_exInt_int exInt_split
 
 open InteriorAux in
 /-- `S_I(UΦ) = 2 ln 2` for `Φ = exInt`, `I` = (site `1`, link `1`): the reduced state is maximally
@@ -857,44 +899,17 @@ theorem exVac_norm : ∑ p, Complex.normSq (exVac p) = 1 :=
 open InteriorAux in
 /-- `S_{I'}(Φ) = 0` for `Φ = exVac`, `I'` = (modes `1, 2`, charges `1, 2`). -/
 theorem exVac_entropy :
-    vonNeumann (rdmMid 1 2 (by norm_num) exVac) (rdmMid_isHermitian 1 2 (by norm_num) _) = 0 := by
-  refine vonNeumann_rankOne (fun a : Cfg 2 × Cfg 2 => if a.1 = 0 ∧ a.2 0 = 0 then
-    ((Real.sqrt 2 : ℝ) : ℂ)⁻¹ else 0) (sum_normSq_invSqrtTwo _ card_exVac_int) _ _ ?_
-  intro a a'
-  rw [rdmMid_prod 1 2 _ exVac (fun b => b.1.1 = 0 ∧ b.2.1 = 0 ∧ b.2.2 = 0)
-    (fun a => if a.1 = 0 ∧ a.2 0 = 0 then 1 / 2 else 0) exVac_split a a', card_exVac_compl]
-  by_cases ha : a.1 = 0 ∧ a.2 0 = 0 <;> by_cases ha' : a'.1 = 0 ∧ a'.2 0 = 0 <;>
-    simp only [ha, ha', ite_true, ite_false, star_zero, mul_zero, zero_mul, invSqrtTwo_mul_star]
-  norm_num
+    vonNeumann (rdmMid 1 2 (by norm_num) exVac) (rdmMid_isHermitian 1 2 (by norm_num) _) = 0 :=
+  vonNeumann_rdmMid_prod_half 1 2 _ exVac (fun b => b.1.1 = 0 ∧ b.2.1 = 0 ∧ b.2.2 = 0)
+    (fun a => a.1 = 0 ∧ a.2 0 = 0) card_exVac_compl card_exVac_int exVac_split
 
 open InteriorAux in
 /-- `S_I(UΦ) = 2 ln 2` for `Φ = exVac`, `I` = (sites `1, 2`, links `1, 2`). -/
 theorem exVac_U_entropy :
     vonNeumann (rdmMid 1 2 (by norm_num) (fun p => exVac (dualEquiv.symm p)))
-      (rdmMid_isHermitian 1 2 (by norm_num) _) = 2 * Real.log 2 := by
-  have hD : rdmMid 1 2 (by norm_num) (fun p => exVac (dualEquiv.symm p)) =
-      diagonal (fun a : Cfg 2 × Cfg 2 => (((if a.1 = 0 then 1 / 4 else 0 : ℝ)) : ℂ)) := by
-    ext a a'
-    rw [rdmMid_graph 1 2 _ _ gV (fun a => if a.1 = 0 then 1 / 2 else 0) exVacU_split,
-      diagonal_apply]
-    by_cases ha : a = a'
-    · subst ha
-      rw [ite_eq_left rfl, ite_eq_left rfl]
-      by_cases h0 : a.1 = 0
-      · simp only [h0, ite_true]
-        norm_num
-      · simp [h0]
-    · rw [ite_eq_right ha]
-      split_ifs with hg h0 h0'
-      · exact absurd (gV_injective a a' hg h0 h0') ha
-      · simp
-      · simp
-      · rfl
-  have hH : (diagonal (fun a : Cfg 2 × Cfg 2 =>
-      (((if a.1 = 0 then 1 / 4 else 0 : ℝ)) : ℂ))).IsHermitian :=
-    hD ▸ rdmMid_isHermitian 1 2 (by norm_num) _
-  rw [CutLocalAux.vonNeumann_congr _ hH hD, vonNeumann_diagonal]
-  exact sum_negMulLog_quarter _ card_exVac_empty
+      (rdmMid_isHermitian 1 2 (by norm_num) _) = 2 * Real.log 2 :=
+  vonNeumann_rdmMid_graph_quarter 1 2 _ _ gV (fun a => a.1 = 0) card_exVac_empty gV_injective
+    exVacU_split
 
 /-- **The bound `2 ln 2` of `interior_defect` is attained by a state with empty matter.** -/
 theorem interior_defect_attained_vacuum :
