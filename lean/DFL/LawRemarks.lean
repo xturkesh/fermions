@@ -397,8 +397,7 @@ theorem biasedLaw_pure (θ : ℝ) (hθ : Real.sin θ = 0) (n q : Cfg N) :
   · rw [ite_eq_right hq]
     obtain ⟨j, hj⟩ : ∃ j, linkOf n q j ≠ 0 := by
       by_contra hcon
-      push_neg at hcon
-      exact hq (key.mp hcon)
+      exact hq (key.mp fun j => not_not.mp fun hj => hcon ⟨j, hj⟩)
     exact Finset.prod_eq_zero (Finset.mem_univ j) (ite_eq_right hj)
 
 /-! ### Transfer of upper bounds (paper: `rem:productlaws`(c)) -/
@@ -455,7 +454,7 @@ lemma infinitePi_diag :
     Measure.infinitePi (fun _ : Fin 2 => unifZ2) {v : Fin 2 → ZMod 2 | v 0 = v 1} = 2⁻¹ := by
   have hset : {v : Fin 2 → ZMod 2 | v 0 = v 1} = {fun _ => 0} ∪ {fun _ => 1} := by
     ext v
-    simp only [Set.mem_setOf_eq, Set.mem_union, Set.mem_singleton_iff, funext_iff,
+    simp only [Set.mem_ofPred_eq, Set.mem_union, Set.mem_singleton_iff, funext_iff,
       Fin.forall_fin_two]
     rcases FreeDynAux.zmod2_cases (v 0) with h0 | h0 <;>
       rcases FreeDynAux.zmod2_cases (v 1) with h1 | h1 <;> simp [h0, h1]
@@ -504,7 +503,7 @@ theorem muZ_dimerEvent : muZ {q : CfgZ | ∀ k : ℤ, q (2 * k) = q (2 * k + 1)}
       exact measure_mono fun q hq k => hq _
   exact le_antisymm
     (ge_of_tendsto' (ENNReal.tendsto_pow_atTop_nhds_zero_of_lt_one (by norm_num)) hle)
-    (zero_le _)
+    zero_le
 
 /-- Under the dimer law, almost surely all pairs `(2k, 2k+1)` carry equal charges. -/
 theorem muDimZ_dimerEvent_compl :
@@ -515,7 +514,7 @@ theorem muDimZ_dimerEvent_compl :
   have hempty : (fun η : CfgZ => fun y : ℤ => η (y / 2)) ⁻¹'
       {q : CfgZ | ∀ k : ℤ, q (2 * k) = q (2 * k + 1)}ᶜ = ∅ := by
     ext η
-    simp only [Set.mem_preimage, Set.mem_compl_iff, Set.mem_setOf_eq, Set.mem_empty_iff_false,
+    simp only [Set.mem_preimage, Set.mem_compl_iff, Set.mem_ofPred_eq, Set.mem_empty_iff_false,
       iff_false, not_not]
     intro k
     rw [show 2 * k / 2 = k by omega, show (2 * k + 1) / 2 = k by omega]
