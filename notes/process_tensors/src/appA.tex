@@ -1,0 +1,38 @@
+\section{Verifiche numeriche: modello 1}\label{app:num1}
+
+Ogni formula della \cref{sec:model1} è verificata entro $2\sigma$ contro un Monte Carlo esatto, cioè la costruzione del process tensor completo a taglie piccole. Le verifiche includono un caso di rumore non unitale. Per $k\ge3$ a grande $D$ si usa aritmetica razionale esatta, perché la versione in virgola mobile del trasferimento su $S_k$ perde precisione.
+
+\paragraph{Purezza} ($d=2$, $\rho_{\rm E}(0)=I/D$). Monte Carlo contro formula esatta: per $D=2$, $n=1,2,3$, si ha $0.4001(19)$, $0.2802(7)$, $0.2553(3)$ contro $0.4000$, $0.2800$, $0.2560$. Con depolarizzante globale $p=0.3$: $0.2186(9)$ e $0.1329(7)$ contro $0.2188$ e $0.1341$.
+
+\paragraph{Posizione dell'incrocio} (esatto contro previsione $L^*\simeq\ln d^2/\ln(q^2/g_F)$).
+\begin{center}\small
+\begin{tabular}{@{}lcc@{}}
+\toprule
+canale & $L^*$ esatto & $L^*$ previsto\\
+\midrule
+depolarizzante, $p=0.1$ & 9.01 & 9.02\\
+dephasing, $p=0.25$ & 2.94 & 2.95\\
+amplitude damping, $\gamma=0.3$ & 4.70 & 4.71\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Limite di scala} (depolarizzante, $d=q=2$, $x^*=0.924$). Il rapporto $I_2^\infty/(2\log_2D)$ a $x=0.90$ vale $0.092$, $0.798$, $0.936$, $0.969$ per $p=0.1$, $0.03$, $0.01$, $0.005$. A $x=0.95$ vale $0$ per tutti i $p$.
+
+\paragraph{Quenched contro annealed} ($d=q=2$, $n_1=n_2=8$).
+\begin{center}\small
+\begin{tabular}{@{}cccc@{}}
+\toprule
+$p$ & $I_2$ annealed ($L=1/2/3$) & $\langle I_2\rangle$ quenched & deviazione standard\\
+\midrule
+0.30 & 0.976 / 1.267 / 0.471 & 0.978 / 1.269 / 0.472 & 0.12 / 0.05 / 0.01\\
+0.42 & 0.611 / 0.425 / 0.059 & 0.636 / 0.430 / 0.059 & 0.12 / 0.04 / 0.003\\
+0.55 & 0.316 / 0.121 / 0.014 & 0.339 / 0.123 / 0.014 & 0.09 / 0.02 / 0.002\\
+\bottomrule
+\end{tabular}
+\end{center}
+L'informazione mutua di von Neumann ($n_1=n_2=2$, $\Upsilon$ completo) vale $0.90$ e $0.70$ bit per $L=1,2$ a $p=0.2$, e $0.40$ e $0.16$ a $p=0.42$.
+
+\paragraph{Distanza dalla Markovianità.} L'identità a tre e quattro repliche è verificata in aritmetica razionale. Fallisce per amplitude damping: con $D=2$, $n_1=2$, $n_2=1$, $\gamma=0.5$ si ha $0.10517\neq0.10453$, confermato con il Monte Carlo. A grande $D$, per $n_1=n_2=1$ e $D=256$, $\delta_{\rm HS}D^2/d^{2n}=0.5624$ contro $0.5625$ previsto. La distanza di traccia vale $0.312$, $0.158$, $0.0795$ per $D=4$, $8$, $16$. Con rumore ($p=0.3$, $n_1=n_2=6$), per $L=1,\dots,5$: $\delta_{\rm HS}=0.49$, $0.57$, $0.25$, $0.023$, $0.0018$.
+
+\paragraph{Spettro} (punto critico $c=N/M=1$, rapporto con la free Poisson per $k=2,3,4$): $0.992$, $0.982$, $0.970$ a $D=16$; $0.9993$, $0.9984$, $0.9974$ a $D=64$; $0.99995$, $0.99987$, $0.99980$ a $D=256$. A $n=8$ il rapporto è $1.000$.

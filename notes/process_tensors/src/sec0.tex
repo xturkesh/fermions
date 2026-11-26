@@ -1,0 +1,19 @@
+\section{Quadro comune}\label{sec:frame}
+
+Consideriamo un sistema S, di dimensione $d$, accoppiato a un ambiente E, di dimensione $D$, con operazioni arbitrarie su S fra un passo e l'altro. Il process tensor $\Upsilon_n$ è lo stato di Choi della mappa multi-tempo. Se a ogni passo agisce un'unitaria Haar indipendente su S$\otimes$E, $\Upsilon_n$ è un \emph{RMPS nel tempo}:
+\begin{itemize}[leftmargin=1.5em]
+\item la dimensione fisica è $d^2$, cioè ingresso e uscita di S a ogni passo;
+\item la bond dimension è $D$, cioè la memoria;
+\item il tensore locale è l'unitaria Haar su S$\otimes$E, risagomata;
+\item il bordo finale è tracciato.
+\end{itemize}
+Quindi tutta la tecnologia replica--tensor network per RMPS e RMPU si applica direttamente. A $k$ repliche, la media dà una matrice di trasferimento sulle permutazioni $S_k$ dell'ambiente, con pesi di Weingarten.
+
+Il rumore su E agisce replica per replica. Nel modello di meccanica statistica è un campo che favorisce la permutazione identità: smorza le etichette che legano repliche diverse, e quindi la memoria quantistica e l'eco.
+
+Le due direzioni studiate in questa nota sono:
+\begin{enumerate}[leftmargin=2em]
+\item \textbf{Modello 1} (\cref{sec:model1}): modello di collisione Haar con memoria, cioè un'unitaria globale su S$\otimes$E a ogni passo, più rumore su E. Grandezze: purezza, informazione mutua temporale passato--futuro, distanza dal processo Markoviano, spettro di $\Upsilon$.
+\item \textbf{Modello 2} (\cref{sec:bottleneck}): bagno a collo di bottiglia di Fritzsch e Claeys, con OTOC di ordine $k$ e free probability, più rumore.
+\end{enumerate}
+In entrambi i casi il rumore produce lo stesso fenomeno: un \emph{incrocio di autovalori} nella matrice di trasferimento delle repliche, fra un settore che porta memoria o eco e un settore Markoviano. Ne risultano cambi netti nei tassi asintotici.

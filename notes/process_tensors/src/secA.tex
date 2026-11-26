@@ -1,0 +1,75 @@
+\section{Modello 1: collisione Haar con memoria e rumore}\label{sec:model1}
+
+\subsection{Definizione e chiusura a due repliche}
+L'ambiente E è formato da $L$ qudit di dimensione $q$, quindi $D=q^L$, con stato iniziale $\rho_{\rm E}(0)=I/D$. A ogni passo:
+\begin{enumerate}[leftmargin=2em]
+\item l'ingresso di S è una gamba di Choi fresca;
+\item agisce un'unitaria Haar su S$\otimes$E;
+\item agisce un canale $\mathcal N$, con operatori di Kraus $\{K_i\}$, su ogni qudit di E.
+\end{enumerate}
+Indichiamo con $\Upsilon_{\rm p}$ e $\Upsilon_{\rm f}$ i marginali sui primi $n_1$ passi (passato) e sugli ultimi $n_2$ (futuro).
+
+Dopo ogni passo Haar l'operatore a $k$ repliche su E sta in $\mathrm{span}\{P_\sigma\}$, perché ogni passo contiene un'unitaria Haar \emph{globale} su S$\otimes$E. La chiusura vale quindi per qualsiasi canale, anche non unitale. A $k=2$ il rumore entra solo tramite due costanti per qudit:
+\[
+g_I=\operatorname{Tr}\mathcal N(I)^2,\qquad g_F=\sum_{ij}|\operatorname{Tr}K_i^\dagger K_j|^2,
+\]
+con $G_{I,F}=g_{I,F}^L$. Per il depolarizzante $g_I=q$ e $g_F=uq^2+1-u$, con $u=(1-p)^2$. Per il dephasing di un qubit $g_I=2$ e $g_F=4[(1-p)^2+p^2]$. Per l'amplitude damping $g_I=2(1+\gamma^2)$ e $g_F=(2-\gamma)^2+\gamma^2$.
+
+Poniamo
+\[
+a=\frac{D^2-1}{d^2D^2-1},\quad b=\frac{D(d^2-1)}{d^2D^2-1},\quad c_I=\frac{DG_I-G_F}{D(D^2-1)},\quad c_F=\frac{DG_F-G_I}{D(D^2-1)}.
+\]
+I momenti normalizzati $(\operatorname{Tr}Y,\operatorname{Tr}F_{\rm E}Y)$ evolvono con
+\[
+T_{FF}=\begin{pmatrix}a&b\\ c_Ia&c_Ib+c_F\end{pmatrix}\ \ \text{(gambe di S in swap)},\qquad
+T_{II}=\begin{pmatrix}1&0\\ c_I+c_Fb&c_Fa\end{pmatrix}\ \ \text{(gambe tracciate)}.
+\]
+Con $v_0=(1,\operatorname{Tr}\rho_{\rm E}(0)^2)$ e $e=(1,0)$ si ha:
+\begin{itemize}[leftmargin=1.5em]
+\item $P(\Upsilon_n)=e\cdot T_{FF}^n v_0$;
+\item $P(\Upsilon_{\rm p})=P(\Upsilon_{n_1})$, per causalità;
+\item $P(\Upsilon_{\rm f})=e\cdot T_{FF}^{n_2}T_{II}^{n_1}v_0$;
+\item l'informazione mutua di Rényi-2 (annealed) è $I_2=\log_2\bigl[P(\Upsilon)/(P(\Upsilon_{\rm p})P(\Upsilon_{\rm f}))\bigr]$.
+\end{itemize}
+
+\subsection{Senza rumore: una curva di Page temporale}
+Si ha
+\[
+P(\Upsilon_n)=a^n+\frac{1-a^n}{D^2}.
+\]
+L'informazione mutua satura a $I_2\to2\log_2D$, il massimo permesso dalla memoria, per $n_1,n_2\gtrsim\log_dD$. Questo vale anche campione per campione, con deviazione standard nulla. Per $D^2\gg d^{2n}$ si ha invece
+\[
+I_2\simeq\frac{(d^{2n_1}-1)(d^{2n_2}-1)}{D^2\ln2}.
+\]
+
+L'informazione è dunque massima, ma operativamente il processo è quasi Markoviano finché $D\gg d^n$. Infatti, con rumore unitale e $\rho_{\rm E}(0)=I/D$, vale l'identità esatta
+\[
+\mathbb E\operatorname{Tr}[\Upsilon(\Upsilon_{\rm p}\otimes\Upsilon_{\rm f})]=\mathbb E\operatorname{Tr}\Upsilon_{\rm p}^2\,\mathbb E\operatorname{Tr}\Upsilon_{\rm f}^2 .
+\]
+Ne segue che la distanza di Hilbert--Schmidt normalizzata dal prodotto è
+\[
+\delta_{\rm HS}=1-2^{-I_2},
+\]
+cioè tre e quattro repliche non aggiungono nulla rispetto a due. A grande $D$ si ha $\delta_{\rm HS}\simeq(d^{2n_1}-1)(d^{2n_2}-1)/D^2$. La distanza di traccia, stimata con il Monte Carlo per $n_1=n_2=1$, va come $T\simeq1.27/D$, coerentemente con la tipicità di Figueroa-Romero, Modi e Pollock \cite{FMP19,FPM21}. L'identità fallisce per rumore non unitale (amplitude damping).
+
+\paragraph{Spettro.} Senza rumore, $\mathbb E\operatorname{Tr}\Upsilon^k$ per $k\le4$ (calcolati in aritmetica esatta) coincidono con la misura indotta, cioè la free Poisson (Marchenko--Pastur), con $N=d^{2n}$ e $M=D^2$. Lo scarto è $O(1/D^2)$ per ogni $n$: il process tensor random è ``free Poisson''. Con rumore questo non vale più: lo spettro diventa di tipo prodotto, Markoviano.
+
+\subsection{Con rumore: transizione di Markovianizzazione}
+Ci sono due livelli nudi della matrice di trasferimento:
+\begin{itemize}[leftmargin=1.5em]
+\item il settore Markoviano, $a\approx1/d^2$, in cui l'ambiente agisce come un bagno fresco;
+\item il settore di memoria, $c_F+c_Ib\approx(g_F/q^2)^L$.
+\end{itemize}
+Si incrociano a
+\[
+L^*\simeq\frac{\ln d^2}{\ln(q^2/g_F)} .
+\]
+Oltre $L^*$ l'informazione mutua a tempi lunghi, $I_2^\infty=-\log_2[(e\cdot r_+)(l_+\cdot w)]$, crolla. Qui $r_+$ e $l_+$ sono gli autovettori dominanti di $T_{FF}$, e $w=(1,y^*)$ con $y^*=(c_I+c_Fb)/(1-c_Fa)$.
+
+Interpretazione: la transizione avviene quando la produzione di entropia del settore di memoria, $L\log_2(q^2/g_F)$ bit per passo, eguaglia il tasso massimo di entropia della gamba di Choi, $2\log_2d$. Un ambiente più grande, se rumoroso localmente, è quindi \emph{più} Markoviano.
+
+\begin{itemize}[leftmargin=1.5em]
+\item \textbf{Limite di scala.} Per $p\to0$ e $L\to\infty$ con $x=pL$ fisso, $I_2^\infty/(2\log_2D)\to\Theta(x^*-x)$, con $x^*=\ln d^2/\kappa$ e $\kappa=-\partial_p\ln(g_F/q^2)|_{p=0}$. Per $d=q=2$: $x^*=0.924$ (depolarizzante), $\ln2$ (dephasing), $\ln4$ (amplitude damping).
+\item \textbf{Incrocio evitato.} A $L$ finito il gap vale $\simeq2\sqrt{d^2-1}/(d^2D^*)$, esponenzialmente piccolo in $L^*$.
+\item \textbf{Quenched contro annealed.} Per $L\le3$ la media quenched coincide con quella annealed entro $0.03$ bit, con fluttuazioni che decrescono con $L$. Anche l'informazione mutua di von Neumann, calcolata su taglie minime, mostra l'inversione in $L$. Resta aperto se la transizione sia netta a $L$ grande nel limite di replica $k\to1$.
+\end{itemize}
