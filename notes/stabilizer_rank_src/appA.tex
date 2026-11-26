@@ -1,0 +1,33 @@
+\section{Verifiche numeriche}\label{app:num}
+
+Tutti i calcoli sono in Python/NumPy. Gli stati stabilizer per $n=3$ (1080 stati) e $n=4$ (36720 stati) sono generati per visita in ampiezza a partire da $\ket{0^n}$, applicando $H$, $S$ e CNOT e identificando gli stati che differiscono per una fase globale.
+
+\begin{enumerate}[leftmargin=1.5em]
+\item \textbf{Decomposizioni esplicite.} Verificati:
+\begin{itemize}
+\item $\Hst^{\otimes2}\in\operatorname{span}\{\ket{00},\ket{11},\ket{++}\}$;
+\item $\Hst^{\otimes5}\in\operatorname{span}\{d^{\otimes5}:d\in\Stab_1\}$;
+\item $\Hst^{\otimes2}=(\ket{\Phi^+}+\mathrm{CZ}\ket{++})/\sqrt2$, con $\braket{\Phi^+}{\mathrm{CZ}\,{+}{+}}=0$.
+\end{itemize}
+
+\item \textbf{Rango prodotto (\cref{thm:prod}).} La ricerca esaustiva sui $36$ stati prodotto a $n=2$ dà $r_2=3$. A $n=3$, nessuna delle $\binom{216}{3}\approx1.7\cdot10^6$ terne di stati prodotto genera $\Hst^{\otimes3}$, quindi $r_3=4$. Entrambi i valori coincidono con quelli dedotti dalla ricorsione.
+
+\item \textbf{Identità SRE--Gowers (\cref{prop:gowers}).} Su stati casuali a $3$ qubit, $2^{-M_2}$ e $\|f_\psi\|_{U^3}^8$ coincidono a $10^{-6}$. Per esempio, $0.396849$ contro $0.396849$.
+
+\item \textbf{\cref{prop:M2F}.} Su $200$ stati casuali a $3$ qubit, con $F$ calcolata esattamente sui $1080$ stati stabilizer, il massimo di $M_2/\log_2(1/F)$ è $3.34$, sotto il bound $4$. Per $\Hst^{\otimes3}$ si trova $M_2=1.2451=3\log_2\frac43$ e $F=0.6219=\cos^6\frac\pi8$.
+
+\item \textbf{Stato $W$.} $F(W_4)=0.5625=9/16$, calcolata esattamente sui $36720$ stati stabilizer a $4$ qubit.
+
+\item \textbf{SRE di somme di $k$ stati stabilizer casuali} ($n=12$). Gli stati sono generati da circuiti Clifford casuali di profondità $400$, sommati con fasi casuali e normalizzati; $4$ campioni per ogni $k$. $M_2$ è calcolata esattamente con la trasformata di Walsh--Hadamard. Il valore tipico per uno stato di Haar, cioè la saturazione, è $\approx\log_2\frac{2^n+3}{4}\approx10$.
+\begin{center}
+\begin{tabular}{@{}rccccccc@{}}
+\toprule
+$k$ & 1 & 2 & 3 & 4 & 6 & 8\\
+\midrule
+$M_2$ & $0.00$ & $2.97\pm0.07$ & $4.74\pm0.05$ & $5.93\pm0.06$ & $7.46\pm0.06$ & $8.39\pm0.05$\\
+$3\log_2k$ & $0.00$ & $3.00$ & $4.75$ & $6.00$ & $7.75$ & $9.00$\\
+\bottomrule
+\end{tabular}
+\end{center}
+Le deviazioni per $k\ge6$ sono dovute alla vicinanza della saturazione.
+\end{enumerate}

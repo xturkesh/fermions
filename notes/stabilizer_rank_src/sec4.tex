@@ -1,0 +1,109 @@
+\section{Lower bound esponenziali incondizionati in modelli ristretti}\label{sec:restricted}
+
+In tutta la sezione $\phi\in\C^2$ è uno stato normalizzato con $\phi\notin\Stab_1$. I risultati valgono quindi per $\Tst$, per $\Hst$ e per lo stato ``faccia''. Indichiamo con $d^\perp\in\Stab_1$ lo stato ortogonale a $d\in\Stab_1$.
+
+\subsection{Un lemma di contrazione}
+
+\paragraph{Fatto (marginali a un qubit).} Sia $s\in\Stab_n$ e sia $i$ un qubit. Lo stato ridotto è $\rho_i=\tfrac12\bigl(I+\sum_{P\in\{X,Y,Z\}}\langle P_i\rangle_s P\bigr)$, con $\langle P_i\rangle_s\in\{0,\pm1\}$. Al più uno dei tre valori è non nullo, perché $X_i,Y_i,Z_i$ anticommutano a coppie. Quindi:
+\begin{itemize}[leftmargin=1.5em]
+\item o $\rho_i=\ket d\bra d$ con $d\in\Stab_1$. Diciamo allora che il qubit $i$ è \emph{libero} in $s$, nello stato $d$. In questo caso $\ket s=\ket d_i\otimes\ket{s'}$ con $s'\in\Stab_{n-1}$;
+\item oppure $\rho_i=I/2$. Diciamo allora che il qubit $i$ è \emph{entangled} in $s$.
+\end{itemize}
+Per $u\in\Stab_1$, la contrazione $(\bra u_i\otimes I)\ket s$ ha norma al quadrato $\bra u\rho_i\ket u\in\{0,\tfrac12,1\}$. Quando non è nulla, è proporzionale a uno stato stabilizer su $n-1$ qubit: lo stato post-misura della misura di Pauli che ha $u$ come autostato. Si annulla se e solo se il qubit $i$ è libero nello stato $u^\perp$.
+
+\begin{lemma}[contrazione]\label{lem:contr}
+Sia $\phi^{\otimes n}=\sum_{j=1}^kc_j\ket{s_j}$ con $s_j\in\Stab_n$. Fissiamo un qubit $i$ e $d\in\Stab_1$, e sia $K=\{j:\ \text{il qubit $i$ è libero in $s_j$ nello stato $d$}\}$. Allora $\phi^{\otimes(n-1)}$ ha una decomposizione in al più $k-|K|$ stati stabilizer. I nuovi termini sono le contrazioni dei vecchi: ogni qubit diverso da $i$ che era libero in $s_j$ resta libero.
+\end{lemma}
+
+\begin{proof}
+Si applica $\bra{d^\perp}_i\otimes I$ ad ambo i membri. A sinistra si ottiene $\braket{d^\perp}{\phi}\,\phi^{\otimes(n-1)}$, e $\braket{d^\perp}{\phi}\neq0$ perché $\phi\not\propto d$. A destra i termini con $j\in K$ si annullano, mentre gli altri diventano multipli non nulli di stati stabilizer, per il Fatto. Si divide infine per $\braket{d^\perp}\phi$.
+
+Quanto ai qubit liberi: se $\ket{s_j}=\bigotimes_{q\in U_j}\ket{d_q}\otimes\ket{r}$, dove $U_j$ è l'insieme dei qubit liberi, la contrazione agisce solo sul fattore che contiene il qubit $i$.
+\end{proof}
+
+\subsection{Decomposizioni in stati prodotto}
+
+Sia $\ChiP(\psi)$ il minimo numero di termini in una decomposizione di $\psi$ in stati stabilizer prodotto, cioè in prodotti tensoriali di elementi di $\Stab_1$.
+
+\begin{theorem}\label{thm:prod}
+Sia $\phi\notin\Stab_1$ e sia $r_n=\ChiP(\phi^{\otimes n})$. Allora:
+\begin{enumerate}[(i),leftmargin=2em]
+\item $r_1=2$ e $r_n\ge\lceil\tfrac65\,r_{n-1}\rceil$;
+\item $r_n=n+1$ per $1\le n\le 5$;
+\item $6\,(6/5)^{\,n-5}\le r_n\le 6^{\lceil n/5\rceil}$ per $n\ge5$. In particolare $1.2\le\liminf r_n^{1/n}\le\limsup r_n^{1/n}\le 6^{1/5}\approx1.431$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(i) In una decomposizione prodotto ogni qubit di ogni termine è libero, e la contrazione conserva la forma prodotto. Sia $n_d$ il numero di termini il cui primo fattore è $d$. Il \cref{lem:contr} con $i=1$ dà $r_{n-1}\le r_n-n_d$ per ciascuno dei sei $d\in\Stab_1$. Sommando si ottiene $6r_{n-1}\le 6r_n-\sum_dn_d=5r_n$. Infine $r_1=2$, perché $\phi\notin\Stab_1$ e due stati stabilizer distinti generano $\C^2$.
+
+(ii) Dal punto (i) seguono i lower bound $r_2\ge3$, $r_3\ge4$, $r_4\ge5$, $r_5\ge6$. Per l'upper bound: $\phi^{\otimes n}$ sta nel sottospazio simmetrico $\mathrm{Sym}^n(\C^2)$, che ha dimensione $n+1$. I sei vettori $d^{\otimes n}$, $d\in\Stab_1$, corrispondono a sei punti distinti della curva razionale normale. Quindi $\min(6,n+1)$ qualsiasi di essi sono linearmente indipendenti. Per $n\le5$, $n+1$ di essi generano $\mathrm{Sym}^n$, e $r_n\le n+1$.
+
+(iii) Il lower bound si ottiene iterando (i) a partire da $r_5=6$. L'upper bound segue dalla submoltiplicatività $r_{a+b}\le r_ar_b$ e da $r_m\le6$ per $m\le5$.
+\end{proof}
+
+\begin{remark}
+Le ricerche esaustive per $\phi=\Hst$ confermano $r_2=3$ e $r_3=4$ (\cref{app:num}). Il modello prodotto perde già a $n=2$: con termini entangled si ha
+\[
+\Hst^{\otimes2}=\tfrac1{\sqrt2}\bigl(\ket{\Phi^+}+\mathrm{CZ}\ket{++}\bigr),
+\]
+e i due stati sono ortogonali. Quindi $\chi(\Hst^{\otimes2})=2<3=r_2$.
+\end{remark}
+
+\subsection{Termini con molti qubit liberi}
+
+\begin{theorem}\label{thm:free}
+Sia $\phi^{\otimes n}=\sum_{j=1}^kc_j\ket{s_j}$, e supponiamo che ogni $s_j$ abbia almeno $m$ qubit liberi. Allora
+\[
+k\ \ge\ \exp\!\Bigl(\frac{m(m+1)}{12\,n}\Bigr).
+\]
+\end{theorem}
+
+\begin{proof}
+Costruiamo una successione di decomposizioni $\mathcal D_0,\dots,\mathcal D_m$. La decomposizione $\mathcal D_\sigma$ è di $\phi^{\otimes(n-\sigma)}$, ha $k_\sigma$ termini, e ogni suo termine ha almeno $m-\sigma$ qubit liberi. Si parte da $\mathcal D_0$, la decomposizione data, con $k_0=k$.
+
+Al passo $\sigma$ si scelgono a caso un qubit $i$, uniforme fra gli $n-\sigma$ rimasti, e uno stato $d$, uniforme in $\Stab_1$. Un termine con $u\ge m-\sigma$ qubit liberi viene eliminato dal \cref{lem:contr} con probabilità $\frac{u}{6(n-\sigma)}\ge\frac{m-\sigma}{6(n-\sigma)}$. Esiste quindi una scelta di $(i,d)$ che elimina almeno la frazione attesa di termini, e dà
+\[
+k_{\sigma+1}\le k_\sigma\Bigl(1-\frac{m-\sigma}{6(n-\sigma)}\Bigr).
+\]
+I termini superstiti hanno almeno $m-\sigma-1$ qubit liberi, per il \cref{lem:contr}.
+
+Dopo $m$ passi si ha $k_m\ge1$, quindi
+\[
+1\le k\prod_{\sigma=0}^{m-1}\Bigl(1-\frac{m-\sigma}{6(n-\sigma)}\Bigr)\le k\exp\Bigl(-\sum_{\sigma=0}^{m-1}\frac{m-\sigma}{6n}\Bigr)=k\,e^{-m(m+1)/(12n)}.\qedhere
+\]
+\end{proof}
+
+\begin{corollary}\label{cor:free}
+Ogni decomposizione di $\phi^{\otimes n}$ in $k$ stati stabilizer contiene un termine con meno di $\sqrt{12\,n\ln k}$ qubit liberi. In particolare:
+\begin{itemize}[leftmargin=1.5em]
+\item se $k=n^{O(1)}$, almeno un termine ha $n-O(\sqrt{n\log n})$ qubit entangled;
+\item se ogni termine ha almeno $\alpha n$ qubit liberi, allora $k\ge e^{\alpha^2n/12}$.
+\end{itemize}
+\end{corollary}
+
+\subsection{Decomposizioni ben condizionate}
+
+\begin{proposition}\label{prop:cond-number}
+Sia $\phi^{\otimes n}=\sum_{j=1}^kc_j\ket{s_j}$ con gli $s_j$ linearmente indipendenti, e sia $\Gram_{ij}=\braket{s_i}{s_j}$ la loro matrice di Gram. Allora
+\[
+k\ \ge\ \lambda_{\min}(\Gram)\,\xi(\phi)^n .
+\]
+Per $\phi=\Hst$ questo dà $k\ge\lambda_{\min}(\Gram)\,(4-2\sqrt2)^n\approx\lambda_{\min}(\Gram)\,2^{0.2284n}$.
+\end{proposition}
+
+\begin{proof}
+Si ha $1=c^\dagger\Gram c\ge\lambda_{\min}\|c\|_2^2$, quindi $\xi(\phi^{\otimes n})\le\|c\|_1^2\le k\|c\|_2^2\le k/\lambda_{\min}$. Si conclude con la moltiplicatività $\xi(\phi^{\otimes n})=\xi(\phi)^n$ \cite{BBCCGH19}.
+\end{proof}
+
+\noindent Per esempio, una decomposizione in stati ortogonali richiede almeno $\xi(\phi)^n$ termini. Più in generale, una decomposizione con $\poly(n)$ termini deve avere $\lambda_{\min}(\Gram)\le\poly(n)\cos^{2n}(\pi/8)$ e $\|c\|_2^2\ge\xi/k$: famiglie di stati stabilizer esponenzialmente vicine alla dipendenza lineare, e cancellazioni esponenziali fra i coefficienti.
+
+\begin{remark}[blocchi di taglia fissa]\label{rem:blocks}
+Supponiamo che tutti i termini siano prodotti tensoriali di stati stabilizer sui blocchi di una \emph{stessa} partizione di $[n]$ in blocchi di taglia $\le b$. Lo stesso argomento, con funzionali stabilizer su un blocco intero, dà $k\ge(1-p_b)^{-\lceil n/b\rceil}$ con $p_b\ge1/|\Stab_b|>0$.
+
+Per vederlo, si contrae un blocco $B$ alla volta con $\omega$ uniforme in $\Omega_B=\{\omega\in\Stab_{|B|}:\braket{\omega}{\phi^{\otimes|B|}}\neq0\}$. Un termine il cui fattore su $B$ è $\sigma$ viene eliminato se $\omega\perp\sigma$. Gli stati della base stabilizer di $\sigma$ diversi da $\sigma$ generano $\sigma^\perp$. Poiché $\phi^{\otimes|B|}\not\propto\sigma$, almeno uno di essi sta in $\Omega_B$, e quindi la probabilità di eliminazione è almeno $1/|\Omega_B|\ge1/|\Stab_b|$.
+
+Il bound decade però rapidamente con $b$, e non copre il caso in cui la partizione cambia da termine a termine.
+\end{remark}
+
+\input{sec4b}

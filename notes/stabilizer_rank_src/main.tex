@@ -1,0 +1,87 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[italian]{babel}
+\usepackage[sc]{mathpazo}
+\linespread{1.06}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{booktabs,array,tabularx}
+\usepackage[shortlabels]{enumitem}
+\usepackage{microtype}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[colorlinks=true,linkcolor=MidnightBlue,citecolor=MidnightBlue,urlcolor=MidnightBlue]{hyperref}
+\usepackage[italian,capitalise,nameinlink]{cleveref}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Teorema}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposizione}
+\newtheorem{corollary}[theorem]{Corollario}
+\newtheorem{conjecture}[theorem]{Congettura}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definizione}
+\newtheorem{hypothesis}[theorem]{Ipotesi}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Osservazione}
+\crefname{theorem}{Teorema}{Teoremi}
+\crefname{lemma}{Lemma}{Lemmi}
+\crefname{proposition}{Proposizione}{Proposizioni}
+\crefname{corollary}{Corollario}{Corollari}
+\crefname{conjecture}{Congettura}{Congetture}
+\crefname{definition}{Definizione}{Definizioni}
+\crefname{hypothesis}{Ipotesi}{Ipotesi}
+\crefname{remark}{Osservazione}{Osservazioni}
+\crefname{section}{Sezione}{Sezioni}
+\crefname{appendix}{Appendice}{Appendici}
+\crefname{table}{Tabella}{Tabelle}
+\crefname{equation}{}{}
+
+\newcommand{\ket}[1]{\lvert #1\rangle}
+\newcommand{\bra}[1]{\langle #1\rvert}
+\newcommand{\braket}[2]{\langle #1\vert #2\rangle}
+\newcommand{\Stab}{\mathrm{Stab}}
+\newcommand{\Paulis}{\mathcal P}
+\newcommand{\Fb}{\mathbb F}
+\newcommand{\C}{\mathbb C}
+\newcommand{\Q}{\mathbb Q}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\E}{\mathop{\mathbb E}}
+\newcommand{\poly}{\mathrm{poly}}
+\newcommand{\polylog}{\mathrm{polylog}}
+\newcommand{\ChiP}{\chi_{\otimes}}
+\newcommand{\Cl}{\mathcal C}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\Tst}{\ket{T}}
+\newcommand{\Hst}{\ket{H}}
+\newcommand{\Gram}{\mathsf G}
+
+\title{\textbf{Lower bound sul rango stabilizer di $\ket{T}^{\otimes n}$}\\[4pt]
+\large Stato dell'arte, lower bound esponenziali in modelli ristretti e una congettura in termini di entropia stabilizer}
+\author{Nota di lavoro\thanks{Bozza preparata con Claude Code. Le dimostrazioni delle Sezioni~\ref{sec:cond}--\ref{sec:sre} sono elementari ma vanno rilette con cura. Le affermazioni sulla letteratura sono state controllate sugli abstract arXiv e, dove indicato, sul testo; non sempre sulle dimostrazioni. Gli script delle verifiche numeriche (\cref{app:num}) sono disponibili a parte.}}
+\date{26 novembre 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent Il rango stabilizer $\chi(\Tst^{\otimes n})$ governa il costo delle simulazioni classiche di circuiti Clifford$+T$ basate su decomposizioni stabilizer. Ci si aspetta che cresca esponenzialmente, ma il miglior lower bound noto è $\Omega(n^2/\log n)$, contro un upper bound $O(2^{0.3963\,n})$. In questa nota:
+(i)~riassumiamo lo stato dell'arte, con particolare attenzione al ruolo dell'extent;
+(ii)~osserviamo che un lower bound $2^{\Omega(n)}$ segue da una versione non uniforme di \#ETH;
+(iii)~dimostriamo lower bound esponenziali \emph{incondizionati} in tre modelli ristretti (decomposizioni in stati prodotto, termini con molti qubit non entangled, decomposizioni ben condizionate) tramite un lemma di contrazione, e spieghiamo perché il metodo si ferma sui termini entangled;
+(iv)~riformuliamo il problema tramite l'entropia di Rényi stabilizer $M_2$, che coincide con la norma di Gowers $U^3$ delle ampiezze, e formuliamo la congettura $M_2(\psi)\le C\log_2\chi(\psi)+D$. La congettura implica $\chi(\Tst^{\otimes n})=2^{\Omega(n)}$. A meno di costanti, è equivalente alla versione polinomiale della relazione rango--fidelity lasciata aperta da Sinha e Lovitz.
+\end{abstract}
+
+\tableofcontents
+
+\input{sec1}
+\input{sec2}
+\input{sec3}
+\input{sec4}
+\input{sec5}
+\input{sec6}
+\appendix
+\input{appA}
+\input{refs}
+
+\end{document}

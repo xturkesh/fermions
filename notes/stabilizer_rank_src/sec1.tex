@@ -1,0 +1,43 @@
+\section{Il problema}\label{sec:problem}
+
+\subsection{Definizioni}
+Sia $\Stab_n$ l'insieme degli stati stabilizer puri e normalizzati su $n$ qubit, e sia $\Paulis_n=\{I,X,Y,Z\}^{\otimes n}$. Per uno stato $\ket\psi$ definiamo:
+\begin{itemize}[leftmargin=1.5em]
+\item \textbf{rango stabilizer}: $\chi(\psi)=\min\bigl\{k:\ \ket\psi=\sum_{j=1}^k c_j\ket{s_j},\ s_j\in\Stab_n,\ c_j\in\C\bigr\}$;
+\item \textbf{rango approssimato} (per $\|\psi\|=1$, $0\le\delta<1$): $\chi_\delta(\psi)=\min\{\chi(\phi):\ \|\psi-\phi\|\le\delta\}$;
+\item \textbf{extent} \cite{BBCCGH19}: $\xi(\psi)=\min\bigl\{\|c\|_1^2:\ \ket\psi=\sum_j c_j\ket{s_j}\bigr\}$;
+\item \textbf{fidelity stabilizer}: $F(\psi)=\max_{s\in\Stab_n}|\braket{s}{\psi}|^2$;
+\item \textbf{entropia di Rényi stabilizer} \cite{LOH22}: $M_2(\psi)=-\log_2\Bigl(2^{-n}\sum_{P\in\Paulis_n}\bra\psi P\ket\psi^4\Bigr)$.
+\end{itemize}
+Lo stato magic è $\Tst=(\ket0+e^{i\pi/4}\ket1)/\sqrt2=T\ket+$. È Clifford-equivalente a
+\begin{equation}\label{eq:H}
+\Hst=\cos\tfrac\pi8\,\ket0+\sin\tfrac\pi8\,\ket1 .
+\end{equation}
+Tutte le quantità sopra sono invarianti per unitarie di Clifford. Quindi $\chi(\Tst^{\otimes n})=\chi(\Hst^{\otimes n})$, e lo stesso vale per le altre quantità; useremo l'uno o l'altro stato a seconda della comodità. Fidelity ed extent sono moltiplicativi sui prodotti di stati a un qubit \cite{BBCCGH19}, mentre $M_2$ è additiva. Si ha quindi
+\begin{equation}\label{eq:values}
+\begin{gathered}
+F(\Hst^{\otimes n})=\cos^{2n}\tfrac\pi8,\qquad
+\xi(\Hst^{\otimes n})=\cos^{-2n}\tfrac\pi8=(4-2\sqrt2)^n\approx 2^{0.2284\,n},\\
+M_2(\Hst^{\otimes n})=n\log_2\tfrac43\approx 0.415\,n .
+\end{gathered}
+\end{equation}
+
+\subsection{Relazioni elementari}
+Valgono le seguenti relazioni.
+\begin{enumerate}[label=(R\arabic*),leftmargin=2.5em]
+\item\label{R1} $\chi_\delta(\psi)\le\chi(\psi)$. Inoltre $\chi_\delta(\psi)\le 1+\xi(\psi)/\delta^2$ per sparsificazione \cite{BBCCGH19}. Un lower bound su $\chi_\delta$ è quindi anche un lower bound su $\chi$.
+\item\label{R2} (Dualità) Per ogni vettore $\omega$ vale $\xi(\psi)\ge|\braket{\omega}{\psi}|^2/\max_{s\in\Stab_n}|\braket{\omega}{s}|^2$. Con $\omega=\psi$ si ottiene $\xi(\psi)\ge 1/F(\psi)$.
+\item\label{R3} (Monotonia) Se $\phi\notin\Stab_1$, allora $\chi(\phi^{\otimes(n+1)})\ge\chi(\phi^{\otimes n})$. Per vederlo, si contrae un qubit con uno stato $u\in\Stab_1$ tale che $\braket{u}{\phi}\neq0$: ogni termine diventa uno stato stabilizer oppure $0$.
+\end{enumerate}
+
+\subsection{Gate contro stati}
+Il rango di Clifford di un operatore è $\chi_\Cl(U)=\min\{k:\ U=\sum_{j=1}^k c_jC_j,\ C_j\ \text{Clifford}\}$. Se $U=\sum_jc_jC_j$, lo stato di Choi $(U\otimes I)\ket{\Phi}$ è combinazione di $k$ stati stabilizer $(C_j\otimes I)\ket\Phi$.
+
+Per il gate $T$ vale $(T\otimes I)\ket{\Phi^+}=(\ket{00}+e^{i\pi/4}\ket{11})/\sqrt2=\mathrm{CNOT}\,(\Tst\otimes\ket0)$. Quindi lo stato di Choi di $T^{\otimes n}$ è Clifford-equivalente a $\Tst^{\otimes n}\otimes\ket0^{\otimes n}$, e
+\[
+\chi_\Cl(T^{\otimes n})\ \ge\ \chi(\Tst^{\otimes n}).
+\]
+Ogni lower bound sugli stati vale dunque anche per la decomposizione del gate $T^{\otimes n}$. Nel seguito lavoriamo con gli stati.
+
+\subsection{Perché interessa}
+Data una decomposizione di $\Tst^{\otimes t}$ in $k$ termini, le ampiezze di un circuito Clifford$+T$ con $t$ gate $T$ si calcolano in tempo $k\cdot\poly(n,t)$ \cite{BG16,BBCCGH19}. Il rango stabilizer è quindi il parametro che controlla questi simulatori, e ci si aspetta $\chi(\Tst^{\otimes t})=2^{\Theta(t)}$. Il problema è dimostrarlo.

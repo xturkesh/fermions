@@ -1,0 +1,35 @@
+\section{Problemi aperti e piano di lavoro}\label{sec:open}
+
+Definiamo le funzioni
+\[
+f(k)=\sup_{n}\ \sup_{\psi:\ \chi(\psi)\le k}M_2(\psi),\qquad
+g(k)=\sup_{n}\ \sup_{\psi:\ \chi(\psi)\le k}\log_2\frac1{F(\psi)} .
+\]
+Esse sono finite e indipendenti da $n$ \cite{SL26}. Per quanto visto,
+\[
+3\log_2k-O(1)\ \lesssim\ f(k)\ \le\ 4g(k)\ \le\ O\bigl(\sqrt{k\log k}\bigr),
+\qquad \log_2k-O(1)\ \lesssim\ g(k).
+\]
+Il lower bound su $f$ è numerico/euristico (\cref{app:num}). La \cref{conj:main} dice che $f(k)=O(\log k)$; per il \cref{thm:conj-exp}, questo basta per l'esponenziale.
+
+\begin{enumerate}[label=\textbf{P\arabic*.},leftmargin=2.2em]
+\item \textbf{Crescita di $f$ e $g$.} Dimostrare $f(k)=O(\log k)$, oppure trovare famiglie con $f(k)=\omega(\log k)$. Un primo passo concreto è dimostrare la \ref{cB} per decomposizioni con Gram a blocchi, cioè unioni di poche famiglie ben condizionate. L'idea è rendere quantitativo il passo di ``fusione dei codespace'' di \cite{SL26}, che è dove si perde $\sqrt k$.
+
+\item \textbf{Ricerca di controesempi.} Massimizzare $M_2$, o minimizzare $F\cdot k$, su stati di rango $k\le 6$ per $n\le 5$: ricerca esaustiva su coppie e terne, ottimizzazione continua sui coefficienti. Poi testare famiglie strutturate: stati $W$ e di Dicke, sovrapposizioni di stati cat, stati ipergrafo di rango basso. Un controesempio superpolinomiale chiuderebbe la strada della \cref{sec:sre}, che è comunque un risultato.
+
+\item \textbf{Valori esatti.} Calcolare $\chi(\Tst^{\otimes m})$ e $\chi(\ket{F}^{\otimes m})$ (stato faccia) per $m=5,\dots,8$. Il \cref{lem:contr} dà vincoli ricorsivi utilizzabili per potare la ricerca, e le simmetrie riducono lo spazio: permutazioni dei qubit, e Clifford a un qubit che fissano $\phi$ applicati a tutti i qubit. Questi dati misurano l'esponente e mettono alla prova la forma forte $F\chi\ge1$.
+
+\item \textbf{Modelli ristretti più ricchi.}
+\begin{itemize}
+\item prodotti a blocchi con partizioni che variano da termine a termine, dove si incontra l'ostacolo \ref{B1};
+\item termini con entanglement limitato, ad esempio $S_A\le s$ per ogni $|A|\le a$;
+\item decomposizioni reali o CSS per $\Hst$, che ha ampiezze reali;
+\item coefficienti limitati: da $\xi\le k^2\|c\|_\infty^2$ si ha banalmente $k\ge\sqrt{\xi}/\|c\|_\infty$.
+\end{itemize}
+
+\item \textbf{Modello prodotto.} Determinare $\lim r_n^{1/n}\in[1.2,\,1.431]$; per esempio, $r_6\in[8,12]$.
+
+\item \textbf{Gate.} Stabilire se l'unitarietà dei termini aiuta nella decomposizione del gate, $T^{\otimes n}=\sum_jc_jC_j$. La versione operatoriale della \ref{cC} riguarda $\Lambda_\Cl(A)^2$ contro $\chi_\Cl(A)$ \cite{SL26}.
+\end{enumerate}
+
+\paragraph{Priorità suggerita.} Conviene partire da P2 e P3, perché sono calcoli finiti che possono cambiare il quadro: o rafforzano la \cref{conj:main}, o la confutano. P1 è il problema vero, e P4--P5 sono riscaldamenti con risultati pubblicabili in forma breve.

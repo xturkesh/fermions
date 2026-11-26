@@ -1,0 +1,31 @@
+\subsection{Perché il metodo si ferma}\label{sec:barriers}
+
+Le osservazioni seguenti non sono teoremi di impossibilità. Spiegano però perché le tecniche ``semplici'' non arrivano a $\Tst^{\otimes n}$ con termini arbitrari.
+
+\begin{enumerate}[label=(B\arabic*),leftmargin=2.5em]
+\item\label{B1} \textbf{I qubit entangled non si eliminano.} Se il qubit $i$ è entangled in $s$, allora $\rho_i=I/2$ e $(\bra u\otimes I)\ket s\neq0$ per ogni $u$.
+
+Più in generale, sia $A$ un insieme di qubit e $\omega$ uno stato su $A$. Allora $(\bra\omega_A\otimes I)\ket s=0$ se e solo se $\omega\perp\operatorname{range}\rho_A(s)$. Per uno stato stabilizer, $\rho_A$ è proporzionale al proiettore su un codice stabilizer di dimensione $2^{S_A}$, dove $S_A$ è l'entropia di entanglement in bit. Se $A$ è massimamente entangled con il complementare, nessun funzionale lo elimina, e questo accade tipicamente per $|A|<n/2$.
+
+Già a $n=2$ la decomposizione ottima usa stati entangled (Bell e $\mathrm{CZ}\ket{++}$).
+
+\item\label{B2} \textbf{Flattening.} Le tecniche che funzionano per fermioni e bosoni sono mappe lineari $\Phi$ (matrici di monomi di Majorana o di operatori di annichilazione applicati allo stato) con due proprietà: il rango è subadditivo, ed è piccolo su \emph{tutti} gli stati liberi simultaneamente.
+
+La seconda proprietà viene da una struttura comune di annichilatori. Gli stati gaussiani sono vuoti di modi ruotati; gli stati coerenti sono autovettori simultanei degli operatori di annichilazione \cite{RS26,WWLL26,CC26}. Gli stati stabilizer invece formano un insieme finito: ciascuno è autovettore del \emph{proprio} gruppo stabilizzatore, ma non esiste una famiglia comune.
+
+Inoltre $\phi^{\otimes n}$ è uno stato prodotto. I flattening basati su bipartizioni (rango di Schmidt) valgono $1$ su $\phi^{\otimes n}$. Gli spazi $\operatorname{span}\{O\psi: O\ \text{operatore locale di grado}\le p\}$ sono minimi proprio sugli stati prodotto. In entrambi i casi la disuguaglianza va nel verso sbagliato.
+
+\item\label{B3} \textbf{Proiezione simmetrica.} Lo stato $\phi^{\otimes n}$ vive in $\mathrm{Sym}^n(\C^2)$, che ha dimensione $n+1$. Un argomento che usa solo le proiezioni $\Pi_{\rm sym}s_j$ dei termini dà al più $n+1$.
+
+\item\label{B4} \textbf{Aritmetica.} Si veda l'osservazione seguente.
+\end{enumerate}
+
+\begin{remark}[il meccanismo aritmetico]\label{rem:arith}
+Sia $K=\Q(\zeta_8)$. Ogni stato stabilizer ha componenti in $K$, perché $1/\sqrt2\in K$. Sia $\ket\psi=\bigotimes_{q=1}^n(\ket0+\alpha_q\ket1)$ con $\alpha_1,\dots,\alpha_n$ algebricamente indipendenti su $K$.
+
+Supponiamo che $\psi\in V=\operatorname{span}_\C\{s_1,\dots,s_k\}$. Sia $\pi$ una mappa $K$-lineare con nucleo $V_K=\operatorname{span}_K\{s_j\}$. Allora $0=\pi(\psi)=\sum_x\alpha^x\pi(e_x)$, dove $\alpha^x=\prod_q\alpha_q^{x_q}$. I monomi multilineari $\alpha^x$ sono linearmente indipendenti su $K$, quindi $\pi(e_x)=0$ per ogni $x$. Dunque ogni $e_x$ sta in $V$, e $\chi(\psi)=2^n$.
+
+Se invece i fattori sono tutti uguali, $\alpha_q=\alpha$ trascendente, si ottiene solo che i vettori di Dicke stanno in $V$, cioè $\chi\ge n+1$. Per $\Hst$ si ha $\alpha=\tan\frac\pi8=\sqrt2-1\in K$, e non si ottiene alcun vincolo. Versioni esplicite (algebriche) del primo caso si trovano in \cite{LS22}.
+
+In sintesi, per $\Tst^{\otimes n}$ la via aritmetica è chiusa: lo stato è ``definito sullo stesso campo'' degli stati stabilizer, ed è invariante per un gruppo di simmetrie grande (permutazioni e $H^{\otimes n}$).
+\end{remark}

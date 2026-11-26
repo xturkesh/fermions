@@ -1,0 +1,53 @@
+\section{Un lower bound esponenziale condizionato}\label{sec:cond}
+
+L'osservazione seguente è standard, nello spirito dei risultati di difficoltà della simulazione forte. La riportiamo per completezza, con le ipotesi esplicite.
+
+\begin{hypothesis}[\#ETH non uniforme, versione per clausole]\label{hyp:nueth}
+Esiste $\delta>0$ con questa proprietà: per ogni $M$ sufficientemente grande, ogni circuito booleano che conta le soluzioni delle formule 3-CNF con $M$ clausole ha taglia almeno $2^{\delta M}$.
+\end{hypothesis}
+
+\noindent La versione uniforme è \#ETH. Che la versione per variabili implichi quella per clausole segue da un lemma di sparsificazione per il conteggio \cite{DHMTW14}. La versione non uniforme è un'ipotesi più forte, ma usata in complessità fine-grained.
+
+\begin{proposition}\label{prop:cond}
+\leavevmode
+\begin{enumerate}[(a),leftmargin=2em]
+\item Sotto l'\cref{hyp:nueth} esiste $c>0$ tale che $\chi(\Tst^{\otimes t})\ge 2^{ct}$ per ogni $t$ sufficientemente grande.
+\item (Incondizionato) Se $\chi(\Tst^{\otimes t})\le\poly(t)$, allora $\#\mathsf P\subseteq\mathsf{FP/poly}$. Di conseguenza $\mathsf P^{\#\mathsf P}=\mathsf{MA}$, e quindi $\mathsf{PH}\subseteq\mathsf{MA}$.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+\emph{Gadget.} Per uno stato a un qubit $\ket\psi=a\ket0+b\ket1$ vale
+\[
+T\ket\psi=\sqrt2\,(I\otimes\bra0)\,\mathrm{CNOT}\,(\ket\psi\otimes\Tst),
+\]
+con il CNOT controllato dal qubit dati. Infatti $\mathrm{CNOT}(\ket\psi\otimes\Tst)=\frac{1}{\sqrt2}\bigl[a\ket0(\ket0+\omega\ket1)+b\ket1(\ket1+\omega\ket0)\bigr]$ con $\omega=e^{i\pi/4}$, e la proiezione sul secondo qubit in $\ket0$ dà $(a\ket0+\omega b\ket1)/\sqrt2$.
+
+Iterando il gadget, per un circuito Clifford$+T$ $U$ su $m$ qubit con $t$ gate $T$ esiste un Clifford $W$ tale che
+\[
+\bra{x}U\ket{0^m}=2^{t/2}\,\bra{x,0^t}\,W\,\bigl(\ket{0^m}\otimes\Tst^{\otimes t}\bigr).
+\]
+
+\emph{Advice.} Sia $\Tst^{\otimes t}=\sum_{j=1}^kc_j\ket{s_j}$. Allora
+\[
+\bra xU\ket{0^m}=2^{t/2}\sum_{j=1}^k c_j\,\bra{x,0^t}W\ket{0^m,s_j}.
+\]
+Ogni termine è un'ampiezza dello stato stabilizer $W\ket{0^m,s_j}$. Si calcola esattamente in $\Q(\zeta_8)$ in tempo $\poly(m+t)$, ad esempio con la CH-form \cite{BBCCGH19}. Possiamo scegliere gli $s_j$ linearmente indipendenti. Allora i $c_j$ sono l'unica soluzione di un sistema lineare a coefficienti in $\Q(\zeta_8)$, e per Cramer hanno una rappresentazione esatta di $\poly(k,t)$ bit.
+
+La decomposizione dipende solo da $t$, quindi si può fornire come advice. Ogni ampiezza si calcola allora esattamente con un circuito di taglia $\poly(k,m,t)$.
+
+\emph{Riduzione.} Sia $\varphi$ una 3-CNF con $N\le 3M$ variabili e $M$ clausole. Esiste un circuito reversibile $V$ con $O(M)$ gate di Toffoli che scrive $\varphi(x)$ in un registro ausiliario; ogni Toffoli si realizza con $7$ gate $T$ più Clifford. Il circuito $U=H^{\otimes N}V^\dagger Z_{\rm out}VH^{\otimes N}$ ha quindi $t=O(M)$ gate $T$, e
+\[
+\bra0U\ket0=2^{-N}\sum_x(-1)^{\varphi(x)}=1-2^{1-N}\,\#\varphi .
+\]
+
+(a) Se valesse $\chi(\Tst^{\otimes t(M)})\le 2^{\eps M}$ con $\eps$ abbastanza piccolo rispetto a $\delta$, si conterebbero le soluzioni di $\varphi$ con circuiti di taglia $2^{O(\eps M)}\poly(M)<2^{\delta M}$, contro l'ipotesi. Quindi $\chi(\Tst^{\otimes t(M)})\ge 2^{\Omega(M)}$ con $t(M)=O(M)$. La monotonia \ref{R3} estende il bound a ogni $t$.
+
+(b) Con $k=\poly(t)$ si ottiene $\#3\mathsf{SAT}\in\mathsf{FP/poly}$. Poiché \#3SAT è $\#\mathsf P$-completo, $\#\mathsf P\subseteq\mathsf{FP/poly}$. Il resto è l'argomento standard: il permanente ha un protocollo interattivo con prover in $\mathsf P^{\#\mathsf P}$ \cite{LFKN92}, e se il permanente ha circuiti polinomiali Merlin può inviarli ad Arthur. Si ottiene $\mathsf P^{\#\mathsf P}\subseteq\mathsf{MA}$, e $\mathsf{PH}\subseteq\mathsf{MA}$ per il teorema di Toda.
+\end{proof}
+
+\begin{remark}
+L'argomento non dice nulla sul rango approssimato con $\delta$ costante, perché il fattore $2^{t/2}$ del gadget amplifica l'errore. Questo è coerente con $\chi_\delta\le 1+\xi/\delta^2=O(2^{0.2284t})$.
+
+Inoltre l'implicazione va in un solo verso. Un lower bound incondizionato su $\chi$ non darebbe separazioni di classi di complessità. Il problema è un lower bound per un modello di calcolo algebrico ristretto, cioè le combinazioni lineari di funzioni stabilizer, su una funzione esplicita: $x\mapsto e^{i\pi|x|/4}$.
+\end{remark}

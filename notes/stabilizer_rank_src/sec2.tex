@@ -1,0 +1,42 @@
+\section{Stato dell'arte}\label{sec:sota}
+
+\begin{table}[ht]
+\centering\small
+\renewcommand{\arraystretch}{1.25}
+\begin{tabularx}{\textwidth}{@{}p{4.3cm}Xp{3.0cm}@{}}
+\toprule
+Riferimento & Risultato & Tipo \\
+\midrule
+\multicolumn{3}{@{}l}{\emph{Upper bound}}\\
+Bravyi--Smith--Smolin \cite{BSS16} & $\chi(\Tst^{\otimes 2})=2$, $\ \chi(\Tst^{\otimes 6})\le 7$ & esatto \\
+Qassim--Pashayan--Gosset \cite{QPG21} & $\chi(\Tst^{\otimes n})=O(2^{\alpha n})$ con $\alpha\le 0.3963$ & esatto \\
+Bravyi--Gosset; Bravyi et al.\ \cite{BG16,BBCCGH19} & $\chi_\delta\le 1+\xi/\delta^2=O(2^{0.2284\,n}/\delta^2)$ & approssimato \\
+\midrule
+\multicolumn{3}{@{}l}{\emph{Lower bound}}\\
+Bravyi--Smith--Smolin \cite{BSS16} & $\Omega(\sqrt n)$ & esatto \\
+Peleg--Shpilka--Volk \cite{PSV22} & $\chi\ge n/100$;\ \ $\chi_\delta=\Omega(\sqrt n/\log n)$ & esatto / appross. \\
+Lovitz--Steffan \cite{LS22} & $\chi(\phi^{\otimes n})=\Omega(n/\log n)$, $\ \chi_\delta(\phi^{\otimes n})\ge \sqrt n/(2\log_2 n)$ per ogni $\phi\notin\Stab_1$ & esatto / appross. \\
+Labib \cite{Lab22} & $\Omega(n)$ per l'analogo qudit, via analisi di Fourier di ordine superiore & esatto \\
+Mehraban--Tahmasbi \cite{MT23} & $\chi_\delta(\Tst^{\otimes n})=\Omega(n^2)/\polylog(n)$ per $0<\delta<1$ & approssimato \\
+Kalra--Sinha \cite{KS25} & $\chi(\psi)\le k\Rightarrow F(\psi)\ge 2^{-O(k\log k)}$, da cui $\Omega(n/\log n)$ & esatto \\
+Sinha--Lovitz \cite{SL26} & $\chi(\psi)\le k\Rightarrow \xi(\psi)\le 2^{O(\sqrt{k\log k})}$;\ \ $\chi_\delta(\phi^{\otimes n})=\Omega(n^2/\log n)$ per ogni $\phi\notin\Stab_1$ & approssimato \\
+\midrule
+\multicolumn{3}{@{}l}{\emph{Valori esatti per $n$ piccolo}}\\
+Labib--Russo \cite{LR26} & $\chi(\Tst^{\otimes4})=4$; per lo stato ``faccia'' $\chi=2,2,3,3$ per $m=1,\dots,4$ copie & ricerca al computer \\
+\bottomrule
+\end{tabularx}
+\caption{Bound noti per il rango stabilizer delle potenze tensoriali di stati magic a un qubit. Per \ref{R1}, i lower bound sul rango approssimato valgono anche per il rango esatto.}
+\label{tab:sota}
+\end{table}
+
+\paragraph{Il gap.} Il miglior lower bound noto, esatto o approssimato, è $\Omega(n^2/\log n)$ \cite{MT23,SL26}. Il miglior upper bound esatto è $O(2^{0.3963n})$ \cite{QPG21}, quello approssimato è $O(2^{0.2284n})$. Un lower bound superpolinomiale è aperto \cite{CC26,SL26}.
+
+\paragraph{Da dove viene il quadratico.} Sinha e Lovitz dimostrano che uno stato di rango $k$ ha extent al più $2^{O(\sqrt{k\log k})}$. Combinato con $\xi(\Hst^{\otimes n})=2^{0.2284n}$ dà $\sqrt{k\log k}\gtrsim n$, cioè $k\gtrsim n^2/\log n$. Ogni miglioramento dell'esponente si traduce direttamente in un lower bound migliore: un bound $\log\xi\le O(k^{\alpha})$ con $\alpha<1/2$ darebbe $\chi\gtrsim n^{1/\alpha}$, e un bound polinomiale $\xi\le\poly(k)$ darebbe $\chi=2^{\Omega(n)}$. Gli autori pongono esplicitamente quest'ultima domanda \cite{SL26}.
+
+\paragraph{Lower bound esponenziali noti in altri contesti.}
+\begin{itemize}[leftmargin=1.5em]
+\item \emph{Stati prodotto ``aritmeticamente generici''.} Lovitz e Steffan costruiscono stati prodotto espliciti (con fattori diversi) con $\chi\ge 2^n/(4n)$ ma $\chi_\delta=O(1)$ \cite{LS22}. Il meccanismo è aritmetico. Non si applica a $\Tst^{\otimes n}$, le cui ampiezze stanno nello stesso campo $\Q(\zeta_8)$ di quelle degli stati stabilizer (\cref{rem:arith}).
+\item \emph{Fermioni.} Il rango gaussiano di $\ket M^{\otimes k}$, con $\ket M=(\ket{0000}+\ket{1111})/\sqrt2$, è almeno $\approx1.40^k$ \cite{RS26}. Il border rank approssimato è almeno $c_\delta(343/243)^k$ \cite{WWLL26}.
+\item \emph{Bosoni.} Il rango in stati coerenti di $\ket1^{\otimes n}$ è $n^{\Omega(\log n)}$ \cite{CC26}, e il border rank è esattamente $2^n$ \cite{RS26}.
+\end{itemize}
+In tutti questi casi lo stato bersaglio ha una struttura (entanglement, o ampiezze trascendenti) che gli stati liberi non hanno. In più, gli stati liberi formano un'orbita continua con una struttura comune di annichilatori. La \cref{sec:barriers} spiega perché nessuna delle due cose è disponibile per $\Tst^{\otimes n}$.
