@@ -1,5 +1,6 @@
 \section{Esplorazione: un IPR per i process tensor}\label{sec:ipr}
 
+\CartoonIPR
 \subsection{Definizione}
 La ``base'' di un process tensor è uno \emph{strumento}: a ogni passo si prepara e si misura il sistema in una certa base. Usiamo la misura proiettiva di S a ogni passo, con lo stato collassato che prosegue nella dinamica. Ne risulta una distribuzione dei record $p(x_1,\dots,x_n)$ su $N=d^n$ storie, con:
 \begin{itemize}[leftmargin=1.5em]
@@ -23,7 +24,12 @@ sui sottospazi simmetrico e antisimmetrico di E$\otimes$E. Ne segue
 \]
 verificato con il Monte Carlo per $D=2,3$, con ambiente puro o misto e con rumore (ricorsione generale), entro $1$--$2\sigma$. Per $D=1$ si ritrova il prodotto di fattori Porter--Thomas, $N\mathcal I_2=(2d/(d+1))^n$.
 
-\paragraph{La distribuzione temporale è log-normale.} Con il Monte Carlo sulle probabilità dei record (bagno puro, $d=2$):
+\begin{figure}[t]
+\centering\includegraphics[width=\textwidth]{figs/fig_ipr.pdf}
+\caption{IPR temporale nel modello 1 ($d=2$). (a) IPR normalizzato $N\mathcal I_2$ con bagno puro: 1 corrisponde a record uniformi, 2 a Porter--Thomas. Senza bagno ($D=1$) la crescita esponenziale è immediata; con un bagno grande i record restano quasi uniformi fino a $n\sim D$. (b) Istogrammi di $\ln(Np)$ a $n=12$ (Monte Carlo): sono log-normali e si stringono al crescere di $D$; tratteggiata la Porter--Thomas. (c) Collasso della varianza su $\sigma^2=(1-1/d)\,n/D$. (d) Memoria vista nei record, $\Delta I_{\rm rec}$: satura sotto 1 bit, mentre la memoria quantistica è $2\log_2D$, cioè 2, 6, 10 e 14 bit per $D=2,8,32,128$.}
+\label{fig:ipr}
+\end{figure}
+\paragraph{La distribuzione temporale è log-normale (\cref{fig:cartoon-ipr,fig:ipr}).} Con il Monte Carlo sulle probabilità dei record (bagno puro, $d=2$):
 \begin{itemize}[leftmargin=1.5em]
 \item $\ln(Np)$ ha varianza $\sigma^2\simeq(1-\tfrac1d)\,n/D$ (pendenza misurata $0.58$, $0.52$, $0.51$ volte $1/D$ per $D=4,16,64$) e media $-\sigma^2/2$;
 \item vale $N\mathcal I_2=e^{\sigma^2}=(d\lambda_+)^n$, e la media quenched coincide con quella annealed per $D\ge4$;

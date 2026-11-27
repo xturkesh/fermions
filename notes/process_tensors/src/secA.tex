@@ -1,5 +1,6 @@
 \section{Modello 1: collisione Haar con memoria e rumore}\label{sec:model1}
 
+\CartoonModelOne
 \subsection{Definizione e chiusura a due repliche}
 L'ambiente E è formato da $L$ qudit di dimensione $q$, quindi $D=q^L$, con stato iniziale $\rho_{\rm E}(0)=I/D$. A ogni passo:
 \begin{enumerate}[leftmargin=2em]
@@ -64,7 +65,12 @@ Si incrociano a
 \[
 L^*\simeq\frac{\ln d^2}{\ln(q^2/g_F)} .
 \]
-Oltre $L^*$ l'informazione mutua a tempi lunghi, $I_2^\infty=-\log_2[(e\cdot r_+)(l_+\cdot w)]$, crolla. Qui $r_+$ e $l_+$ sono gli autovettori dominanti di $T_{FF}$, e $w=(1,y^*)$ con $y^*=(c_I+c_Fb)/(1-c_Fa)$.
+\begin{figure}[t]
+\centering\includegraphics[width=\textwidth]{figs/fig_model1.pdf}
+\caption{Modello 1, rumore depolarizzante locale ($d=q=2$). (a) Memoria a tempi lunghi $I_2^\infty$ fra passato e futuro (Rényi-2, annealed) in funzione del numero $L$ di qudit dell'ambiente. Senza rumore vale $2\log_2D$; con rumore cresce e poi crolla. Le linee verticali punteggiate sono la previsione $L^*=\ln d^2/\ln(q^2/g_F)$. (b) Collasso di scala: $I_2^\infty/(2\log_2D)$ in funzione di $x=pL$. Per $p\to0$ la curva diventa un gradino in $x^*=0.924$.}
+\label{fig:m1}
+\end{figure}
+Oltre $L^*$ (\cref{fig:m1}) l'informazione mutua a tempi lunghi, $I_2^\infty=-\log_2[(e\cdot r_+)(l_+\cdot w)]$, crolla. Qui $r_+$ e $l_+$ sono gli autovettori dominanti di $T_{FF}$, e $w=(1,y^*)$ con $y^*=(c_I+c_Fb)/(1-c_Fa)$.
 
 Interpretazione: la transizione avviene quando la produzione di entropia del settore di memoria, $L\log_2(q^2/g_F)$ bit per passo, eguaglia il tasso massimo di entropia della gamba di Choi, $2\log_2d$. Un ambiente più grande, se rumoroso localmente, è quindi \emph{più} Markoviano.
 

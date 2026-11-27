@@ -1,5 +1,6 @@
 \section{Modello 2: bagno a collo di bottiglia, free probability e rumore}\label{sec:bottleneck}
 
+\CartoonModelTwo
 \subsection{Il modello e la ricorsione esatta}
 Seguiamo il modello minimale di Fritzsch e Claeys \cite{FC25}. Ci sono tre siti: il sistema A e il collo di bottiglia C, entrambi di dimensione $d$, e il bagno E, di dimensione $D$. Un passo in avanti consiste di tre operazioni:
 \begin{enumerate}[leftmargin=2em]
@@ -45,7 +46,18 @@ Il limite coincide con la ricorsione esatta a $D=10^3$ e $10^5$, a 6 cifre.
 \item $\mathcal M_\square$ e $\mathcal M_\circ$ hanno lo stesso spettro, cioè due copie del canale a una replica. La degenerazione produce un blocco di Jordan e il prefattore $t\,\lambda^{2t}$ (per un gate generico con $\lambda=0.462$, il tasso apparente su $t\in[10,20]$ è $0.230\approx\lambda^2(2)^{1/10}$). Qualunque $u<1$ rompe la degenerazione: il prefattore sparisce e il tasso diventa esattamente $\lambda^2$.
 \end{itemize}
 
+\begin{figure}[t]
+\centering\includegraphics[width=\textwidth]{figs/fig_model2_rates.pdf}
+\caption{Modello 2, OTOC a due repliche ($\lambda=0.462$). (a) OTOC compensato $|C_2(t)|/\lambda^{2t}$, con $A=B=Z$; si mostra l'inviluppo delle oscillazioni dovute agli autovalori complessi del canale. Senza rumore cresce linearmente in $t$ (blocco di Jordan); con rumore resta limitato. (b) Tasso di rilassamento asintotico in funzione di $p$. I punti sono la stima numerica su $t\in[14,24]$, le linee sono $\max(u,\lambda^2)$ e $\max(u,\lambda)$, e le verticali segnano gli incroci $p_c$.}
+\label{fig:m2rates}
+\end{figure}
+\begin{figure}[t]
+\centering\includegraphics[width=\textwidth]{figs/fig_model2_free.pdf}
+\caption{Modello 2, free probability e rumore. (a) $C_2(t)$ per $A=Z+\tfrac12$, $B=X+\tfrac12$: senza rumore tende al valore libero, con qualunque rumore al valore monotono $\varphi(A)^2\varphi(B^2)$. (b) Spettroscopia dei cumulanti a $p=0.1$: il termine proporzionale a $\kappa_n(A)$ decade come $(1-p)^{nt}$ (linee), per $n=2,3,4$.}
+\label{fig:m2free}
+\end{figure}
 \subsection{Risultati}
+I risultati sono riassunti nelle \cref{fig:m2rates,fig:m2free}.
 
 \begin{proposition}[valori a tempi lunghi]\label{prop:mono}
 Senza rumore, $C_k(\infty)=\sum_{\pi\in NC(k)}\kappa_\pi(A)\,\varphi_{K(\pi)}(B)$: $A(t)$ e $B$ sono liberi. Verificato per $k=2,3$, con qubit e qutrit.

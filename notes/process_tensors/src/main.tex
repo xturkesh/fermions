@@ -11,7 +11,11 @@
 \usepackage{microtype}
 \usepackage[dvipsnames]{xcolor}
 \usepackage[colorlinks=true,linkcolor=MidnightBlue,citecolor=MidnightBlue,urlcolor=MidnightBlue]{hyperref}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,decorations.pathmorphing,calc,positioning}
 \usepackage[italian,capitalise,nameinlink]{cleveref}
+\crefname{figure}{Figura}{Figure}
 
 \theoremstyle{plain}
 \newtheorem{theorem}{Teorema}[section]
@@ -60,12 +64,14 @@
 \large Due modelli esatti: memoria, Markovianizzazione e free probability}
 \author{Nota di lavoro\thanks{Bozza preparata con Claude Code. Tutte le formule sono verificate numericamente (Monte Carlo o ricorsioni esatte indipendenti), ma le derivazioni vanno rilette. Gli script sono nella cartella \texttt{scripts/} accanto ai sorgenti.}}
 \date{26 novembre 2026}
+\input{cartoons}
 \begin{document}
 \maketitle
 \begin{abstract}
 \noindent Studiamo process tensor generati da dinamiche random con rumore, in due modelli dove i calcoli a più repliche sono esatti. Nel \emph{modello 1} (collisione Haar con memoria) il process tensor è un RMPS nel tempo: a due repliche tutto si riduce a matrici $2\times2$. Ne ricaviamo purezza, informazione mutua temporale e distanza da Markov in forma chiusa, per rumore arbitrario. Troviamo una transizione di \emph{Markovianizzazione}: con rumore locale su un ambiente di $L$ qudit, la memoria crolla oltre $L^*\simeq\ln d/[p(1-q^{-2})]$. Nel \emph{modello 2} (bagno a collo di bottiglia di Fritzsch--Claeys) gli OTOC di ordine $k$ hanno valori a tempi lunghi dati dalla free probability. Mostriamo che il rumore sul bagno smorza solo il settore dell'eco, toglie il blocco di Jordan e trasforma l'indipendenza libera in indipendenza monotona. Inoltre risolve i cumulanti liberi nel tempo: il termine con $\kappa_n(A)$ decade come $(1-p)^{nt}$. In entrambi i modelli il rumore produce un incrocio netto dei tassi asintotici.
 \end{abstract}
 \tableofcontents
+\newpage
 \input{sec0}
 \input{secA}
 \input{secB}

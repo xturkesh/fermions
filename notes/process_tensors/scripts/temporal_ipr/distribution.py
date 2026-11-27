@@ -14,16 +14,17 @@ def record_probs(d, D, n):
             new[o::d, o, :] = psi[:, o, :]
         psi = new.reshape(-1, d*D)
     return np.sum(np.abs(psi)**2, axis=1)                      # p(x), x in d^n records
-d = 2
-print("statistics of ln(N p): PT reference mean=-0.577 var=1.645 ; uniform: var=0 ; log-normal: var grows ~ n")
-for D in [1, 4, 16, 64]:
-    for n in [4, 8, 12]:
-        S = 30 if n == 12 else 60
-        lnNp, niprs = [], []
-        for _ in range(S):
-            p = record_probs(d, D, n); N = d**n
-            lnNp.append(np.log(N*p[p > 0])); niprs.append(N*np.sum(p*p))
-        lnNp = np.concatenate(lnNp); niprs = np.array(niprs)
-        lp = (D+1)/(d*D+1); ann = (d*lp)**n
-        print("D=%2d n=%2d  <ln Np>=%6.3f var=%6.3f | N*IPR annealed(exact)=%7.3f  MC mean=%7.3f  quenched exp<ln>=%7.3f" % (
-            D, n, lnNp.mean(), lnNp.var(), ann, niprs.mean(), np.exp(np.mean(np.log(niprs)))))
+if __name__ == "__main__":
+  d = 2
+  print("statistics of ln(N p): PT reference mean=-0.577 var=1.645 ; uniform: var=0 ; log-normal: var grows ~ n")
+  for D in [1, 4, 16, 64]:
+      for n in [4, 8, 12]:
+          S = 30 if n == 12 else 60
+          lnNp, niprs = [], []
+          for _ in range(S):
+              p = record_probs(d, D, n); N = d**n
+              lnNp.append(np.log(N*p[p > 0])); niprs.append(N*np.sum(p*p))
+          lnNp = np.concatenate(lnNp); niprs = np.array(niprs)
+          lp = (D+1)/(d*D+1); ann = (d*lp)**n
+          print("D=%2d n=%2d  <ln Np>=%6.3f var=%6.3f | N*IPR annealed(exact)=%7.3f  MC mean=%7.3f  quenched exp<ln>=%7.3f" % (
+              D, n, lnNp.mean(), lnNp.var(), ann, niprs.mean(), np.exp(np.mean(np.log(niprs)))))
