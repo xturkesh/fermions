@@ -1,0 +1,27 @@
+\section{Lavori correlati e cosa è nuovo}\label{sec:related}
+Controllo di novità del 27 novembre 2026, fatto su abstract e testo HTML. Va ripetuto prima di scrivere un articolo: il campo si muove in fretta.
+
+\paragraph{Modello 2.}
+\begin{itemize}[leftmargin=1.5em]
+\item \textbf{Il più vicino è \cite{GGW26}.} Studia OTOC di ordine $k$ in mappe caotiche. In assenza di rumore, i tassi dipendono solo dalla parità di $k$; con decoerenza diffusiva (coarse-graining nello spazio delle fasi), l'intero $k$-OTOC decade con tasso proporzionale a $k$. Il lavoro è numerico e non risolve i singoli cumulanti liberi.
+
+  La nostra \cref{prop:spectro} è la versione esatta e risolta per cumulante: decade come $(1-p)^{nt}$ il termine con $\kappa_n(A)$, non l'OTOC intero, e il meccanismo è esplicito ($n$ copie con eco).
+\item \textbf{\cite{YS25}} studia un'eco di Loschmidt per operatori, cioè una quantità a due repliche, con lo stesso rumore depolarizzante. Trova due regimi separati da un crossover graduale a $t\sim1/p$. Non ci sono OTOC di ordine $k$, né free probability, né incroci netti di tassi.
+\item \textbf{\cite{SY23}}: nei sistemi aperti la dissipazione agisce in proporzione alla taglia dell'operatore. È un parente concettuale della spettroscopia dei cumulanti.
+\item \textbf{\cite{VSHHLA25}}: bagno random risolto esattamente e transizione dell'entanglement temporale sotto coarse-graining delle misure, senza rumore.
+\item \textbf{\cite{FGW25}}: cumulanti liberi in setup sistema--bagno chiusi.
+\item \textbf{\cite{HB23}}: il rumore \emph{genera} la struttura libera (QSSEP). È la direzione opposta alla nostra, ma va citato.
+\item Non abbiamo trovato lavori su indipendenza monotona in dinamica quantistica. Il nostro limite rumoroso è comunque banale ($A(t)\to\varphi(A)\mathbb 1$).
+\item Gli incroci netti $\max(u,\lambda^m)$ e la rimozione del blocco di Jordan non compaiono nei lavori trovati.
+\end{itemize}
+
+\paragraph{Modello 1.}
+\begin{itemize}[leftmargin=1.5em]
+\item \textbf{Markovianizzazione per tipicità.} \cite{FMP19,FPM21} mostrano che i processi Haar sono quasi Markoviani a grande $D$. \cite{MRB23} trova che, in un modello di collisione, il backflow cala aumentando il numero di ancille, in modo graduale e senza rumore.
+
+  Il nostro risultato è diverso. La memoria è non monotona in $L$ (cresce, poi crolla), c'è un incrocio netto con $L^*$ in forma chiusa, e un limite di scala in $x=pL$. Il meccanismo è analogo alla transizione indotta dal rumore nel random circuit sampling ($\varepsilon N\sim$ costante). Non l'abbiamo trovato per i process tensor.
+\item \textbf{Spettro.} Che lo stato di Choi di un canale random segua Marchenko--Pastur è noto (misura indotta, \cite{IPR26} e riferimenti). L'estensione ai process tensor multi-tempo è naturale; è un risultato minore.
+\item L'identità $\delta_{\rm HS}=1-2^{-I_2}$ per rumore unitale non l'abbiamo trovata, ma è un risultato piccolo.
+\end{itemize}
+
+\paragraph{Conclusione operativa.} Il pezzo più forte e più nuovo è la spettroscopia dei cumulanti con l'incrocio dei tassi (modello 2). Va presentata come versione esatta e risolta per cumulante di \cite{GGW26}, e conviene muoversi in fretta: i gruppi di Claeys, Lerose--Abanin e Wisniacki lavorano su temi adiacenti. La Markovianizzazione indotta dal rumore (modello 1) è un secondo lavoro naturale.
